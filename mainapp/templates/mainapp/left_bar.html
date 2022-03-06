@@ -7,9 +7,26 @@
             LG Project
         </a>
 
-        <a href="{% url 'uploadapp:upload' %}" methods="GET">
-            업로드!!!
-        </a>
+        <div>
+            <a href="{% url 'uploadapp:upload' %}" methods="GET">
+                <h3>업로드</h3>
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'labelingapp:labeling' %}" methods="GET">
+                <h3>라벨링</h3>
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'labelingapp:work' %}" methods="GET">
+                <h5>라벨링-작업</h5>
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'labelingapp:inspect' %}" methods="GET">
+                <h5>라벨링-검수</h5>
+            </a>
+        </div>
     </div>
 
 
