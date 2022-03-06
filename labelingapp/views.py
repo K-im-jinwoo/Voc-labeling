@@ -4,7 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 
 def labeling_work(request):
-    return HttpResponse('작업')
+    return render(request, 'labelingapp/labeling_work.html')
 
 def labeling_inspect(request):
-    return HttpResponse('검수')
+    return render(request, 'labelingapp/labeling_inspect.html')
