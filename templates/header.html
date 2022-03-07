@@ -1,0 +1,53 @@
+
+{% load static %}
+<style>
+    nav{
+        display: inline-block;
+    }
+    a{
+        text-decoration: none;
+        color: black;
+        font-weight: 600;
+    }
+    a:hover{
+        color: red;
+    }
+
+</style>
+
+<header>
+    <!--로그인 한 상태일 경우-->
+    <div style="text-align: right; margin-right: 2rem; margin-top: 0.5rem" >
+        <a href="logout.html" style="font-size: 0.7rem">로그아웃</a>
+        <strong style="display: inline-block; font-size: 0.7rem">  |  </strong>
+        <a href="mypage.html" style="font-size: 0.7rem">마이페이지</a>
+    </div>
+
+    <!--로고와 네비게이션 표현-->
+    <div style="margin: 0rem 2rem 1rem 2rem; height: 3rem">
+        <!--로고-->
+        <a href="{% url 'mainapp:main' %}">
+            <img src="{% static 'img/LG_logo.png' %}" alt="LG_logo" title="LG_logo" style="width: 3rem; height: 3rem; display: inline-block">
+            <h1 style="display: inline-block; font-family: 'EB Garamond', serif;font-family: 'Josefin Slab', serif;">LG Labeling</h1>
+        </a>
+        <!--네비게이션바-->
+        <div style="text-align: center; display: inline-block; margin-left: 5rem">
+            <nav style="margin-right: 2rem">
+                <a href="{% url 'uploadapp:upload' %}">Data Upload</a>
+            </nav>
+            <nav style="margin-right: 2rem">
+                <a href="working.html">1차 작업</a>
+            </nav>
+            <nav style="margin-right: 2rem">
+                <a href="inspection.html">2차 작업</a>
+            </nav>
+            <nav style="margin-right: 2rem">
+                <a href="dashboard.html">작업 현황</a>
+            </nav>
+            <nav style="">
+                <a href="export.html">Data Export</a>
+            </nav>
+        </div>
+    </div>
+
+</header>
