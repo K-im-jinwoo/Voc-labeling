@@ -21,5 +21,5 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('main/', include('mainapp.urls')),
     path('upload/', include('uploadapp.urls')),
-    #path('labeling/', include('labelingapp.urls')),
+    path('labeling/', include('labelingapp.urls')),
 ]
