@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div style="width: 100%; text-align: center">
+
+        <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem; text-align: center">
+
+
+            {% if target_user.profile %}
+                <img src="{{ target_user.profile.image.url }}" alt=""
+                     style="width: 12rem;border-radius: 8rem; margin-bottom: 1rem;">
+                <h5 style="margin-bottom: 1rem"> {{ target_user.profile.name }}</h5>
+
+
+            {% else %}
+                <a href="{% url 'mainapp:account_profile' %}" style="display: inline-block">
+                    <p class="btn"
+                       style="width: 10rem; height: auto; padding: 0.3rem 0.3rem 0.3rem 0.3rem; border-radius: 0.5rem; background-color: #eeeeee; display: block">
+                        프로필 생성하기</p>
+
+                </a>
+            {% endif %}
+
+            <br>
+            {{ target_user }}
+
+        </div>
+    </div>
+
+{% endblock %}
