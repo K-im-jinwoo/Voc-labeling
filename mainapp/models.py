@@ -58,7 +58,6 @@ class Second_Labeled_Data(models.Model):
 class Result(models.Model):
     result_id = models.AutoField(primary_key=True)
     second_labeled_id = models.ForeignKey("Second_Labeled_Data", on_delete=models.CASCADE)
-
     result_emotion = models.CharField(max_length=256)
     result_target = models.CharField(max_length=256)
     result_expression = models.CharField(max_length=256)
