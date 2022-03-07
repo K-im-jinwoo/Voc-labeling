@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 
-app_name = 'uploadapp'
+app_name = 'outputapp'
 
 urlpatterns = [
 
-    path('', views.upload, name='upload'),
+    path('', views.output, name='output'),
 
 ]
