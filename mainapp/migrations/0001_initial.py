@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Second_Labled_Data',
+            name='Second_Labeled_Data',
             fields=[
                 ('second_labeled_id', models.AutoField(primary_key=True, serialize=False)),
                 ('second_labeled_emotion', models.CharField(max_length=256)),
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='First_Labled_Data',
+            name='First_Labeled_Data',
             fields=[
                 ('first_labeled_id', models.AutoField(primary_key=True, serialize=False)),
                 ('first_labeled_emotion', models.CharField(max_length=256)),
