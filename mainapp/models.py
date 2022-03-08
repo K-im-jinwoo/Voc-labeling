@@ -1,8 +1,12 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 
 
 # Create your models here.
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    image = models.ImageField(upload_to='profile/', null=True)
+    name = models.CharField(max_length=256, null=True)
 
 
 class Category(models.Model):
@@ -24,8 +28,8 @@ class Review(models.Model):
     first_status = models.BooleanField()
     second_status = models.BooleanField()
     dummy_status = models.BooleanField()
-    first_labeled_id=models.CharField(max_length=256)
-    second_labeled_id=models.CharField(max_length=256)
+    first_labeled_id = models.CharField(max_length=256)
+    second_labeled_id = models.CharField(max_length=256)
 
     def __str__(self):
         return str(self.review_id) + ' - ' + str(self.category_product)
