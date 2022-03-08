@@ -1,5 +1,22 @@
-{% include 'mainapp/left_bar.html' %}
+{% extends 'base.html' %}
 
-<div style="display: inline-block; vertical-align: top;">
-    <h2>검수 html파일 연결</h2>
+{% block content %}
+<style>
+    .subject{
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+</style>
+
+
+<div style="width: 100%; text-align: center">
+    <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
+        <div style="text-align: left; width: 13rem;">
+            <p style="font-family: 'EB Garamond', serif; font-family: 'Josefin Slab', serif; font-family: 'Sansita Swashed', cursive; font-size: 2rem">
+                Data Inspect
+            </p>
+        </div>
+    </div>
 </div>
+{% endblock %}

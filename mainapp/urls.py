@@ -13,5 +13,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='mainapp/login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('account/<int:pk>', AccountDetailView.as_view(), name='account'),
-    path('account_profile/', ProfileCreateView.as_view(), name="account_profile")
+    path('account_profile/', ProfileCreateView.as_view(), name="account_profile"),
 ]

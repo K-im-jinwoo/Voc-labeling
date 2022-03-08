@@ -1,5 +1,28 @@
-{% include 'mainapp/left_bar.html' %}
+{% extends 'base.html' %}
 
-<div style="display: inline-block; vertical-align: top;">
-    <h2>작업 html파일 연결</h2>
+{% block content %}
+<style>
+    .subject{
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+</style>
+
+
+<div style="width: 100%; text-align: center">
+    <div style="width: 50rem; height: 1rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
+        <div style="text-align: left; width: 13rem;">
+            <p style="font-family: 'EB Garamond', serif; font-family: 'Josefin Slab', serif; font-family: 'Sansita Swashed', cursive; font-size: 2rem">
+                Data Labeling
+            </p>
+        </div>
+    </div>
+    <div>
+        <div style="background-color: aqua; width: 70%; height: 3rem; display: inline-block; margin-top: 0rem"></div>
+        <div style="background-color: gray; width: 70%; height: 6rem; display: inline-block; margin-top: 0rem"></div>
+        <div style="background-color: red; width: 70%; height: 6rem; display: inline-block; margin-top: 0rem"></div>
+        <div style="background-color: black; width: 70%; height: 15rem; display: inline-block; margin-top: 0rem"></div>
+    </div>
 </div>
+{% endblock %}
