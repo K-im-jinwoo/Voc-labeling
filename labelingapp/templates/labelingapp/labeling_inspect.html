@@ -28,7 +28,7 @@
                         {% csrf_token%}
                         <div style="text-align: left">
                             <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.2rem" class="subject">제품명</p>
-                            <select name='product' style="display: inline-block; width: 7rem; height: 1.5rem ">
+                            <select name='product' style="display: inline-block; width: 7rem; height: 1.9rem ">
                                 <option value='' selected>-- 선택 --</option>
                                 <option value='cleaner'>청소기</option>
                                 <option value='refrigerator'>냉장고</option>
@@ -52,12 +52,12 @@
             <p><div style="margin-bottom: 1rem; display: inline-block">Category</div></p>
             <p>
                 <div style="display: inline-block">Sentiment</div>
-                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.4rem; color: blue;">긍정</div>
-                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.4rem; color: red;">부정</div>
+                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.3rem; color: blue;">긍정</div>
+                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.3rem; color: red;">부정</div>
             </p>
             <p>
                 <div style="display: inline-block; margin-bottom: 1rem;">
-                    <div style="display: inline-block">Data SetUp</div>
+                    <div style="display: inline-block">DataSetUp</div>
                     <div style="display: inline-block;"><input type="text" placeholder="ex)1"></div>
                     <div style="display: inline-block">~</div>
                     <div style="display: inline-block;"><input type="text" placeholder="ex)1000"></div>
@@ -82,25 +82,24 @@
             </div>
         </div>
 
-        <!-- 버튼 및 여백 -->
-        <div style="background-color: white ;width: 70rem; height: 15rem; display: inline-block; margin-top: .5rem">
-            <div style="display: inline-block;">
+        <!-- delete 버튼 및 reset 버튼 -->
+        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
                     <div>
                         <input type="submit" value="delete">
                     </div>
                 </form>
-            </div>
-            <div style="display: inline-block;">
+        </div>
+        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
                     <div>
                         <input type="submit" value="reset">
                     </div>
                 </form>
-            </div>
-            </div>
+        </div>
+
         </div>
     </div>
 
