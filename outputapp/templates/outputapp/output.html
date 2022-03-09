@@ -1,5 +1,68 @@
-{% include 'mainapp/left_bar.html' %}
+{% extends 'base.html' %}
 
-<div style="display: inline-block; vertical-align: top;">
-    <h2>아웃풋 html 파일 연결</h2>
+{% block content %}
+<style>
+    .subject{
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+</style>
+
+
+<div style="width: 100%; text-align: center">
+    <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
+        <div style="text-align: left; width: 13rem;">
+            <p style="font-family: 'EB Garamond', serif; font-family: 'Josefin Slab', serif; font-family: 'Sansita Swashed', cursive; font-size: 2rem">
+                Data Export
+            </p>
+        </div>
+        <!-- 제품군 선택 (h5, select, input태그)-->
+        <!-- method 설정 필요합니다. -->
+        <form action="{% url 'outputapp:output' %}" method="get">
+            {% csrf_token%}
+            <div style="text-align: left">
+                <p style="display: inline-block; margin-top: 0rem; margin-bottom: 0rem" class="subject">제품 선택</p>
+                <select name='product' style="display: inline-block; width: 7rem; height: 1.5rem ">
+                    <option value='' selected>-- 선택 --</option>
+                    <option value='cleaner'>청소기</option>
+                    <option value='refrigerator'>냉장고</option>
+                    <option value='dish_washer'>식기세척기</option>
+                </select>
+                <input type="submit" value="선택 완료">
+            </div>
+        </form>
+
+        <hr>
+        <!-- 카테고리 보기 및 생성-->
+        <!-- method 설정 필요합니다. -->
+        <form action="{% url 'outputapp:output' %}" method="get">
+            {% csrf_token %}
+            <p style="text-align: left; margin-bottom: 0.5rem" class="subject">Preview</p>
+            <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
+
+                <!-- 카테고리 리스트 -->
+                <div style="height: 9rem">
+
+                </div>
+
+
+            </div>
+        </form>
+
+        <hr>
+        <p style="text-align: left" class="subject">file export</p>
+        <!--엑셀 파일 csv로 내보내기 => 엑셀 파일 필요시, 주피터로 중복 전처리 후, 엑셀로 뽑아내야함-->
+        <div style="margin-top: 1rem; width: 100%; height: 3.5rem; padding: 0rem 0.8rem 0.8rem 0.8rem; text-align: center; border-radius: 0.8rem; ">
+            <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+
+                <input style="width: 200px; margin: 0 auto 30px; padding: 10px 25px;
+                background-color: white; border-radius: 0.8rem;" type="submit" value=".csv export">
+            </form>
+        </div>
+
+    </div>
 </div>
+{% endblock %}

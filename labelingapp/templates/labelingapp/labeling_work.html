@@ -20,37 +20,89 @@
         </div>
     </div>
     <div>
+        <!-- 제품 및 데이터 선택 필드 -->
         <div style="text-align:left; background-color: white; width: 70rem; height: 3rem; display: inline-block; margin-top: 0rem">
-            <div style="margin: 0.5rem; font-size: 1rem; display: inline-block" class="subject"> 제품명 </div>
-            <div style="margin: 0.5rem;display: inline-block"><input type="text" placeholder="제품지정"></div>
-            <div style="margin: 0.5rem; padding-left: 0.5rem; font-size: 1rem; display: inline-block" class="subject"> 데이터명 </div>
-            <div style="margin: 0.5rem;display: inline-block;"><input type="text" placeholder="파일지정"></div>
             <div style="margin: 0.5rem; font-size: 1rem; display: inline-block" class="subject">
+                <div style="display: inline-block">
+                    <form action="{% url 'labelingapp:work' %}" method="get">
+                        {% csrf_token%}
+                        <div style="text-align: left">
+                            <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.2rem" class="subject">제품명</p>
+                            <select name='product' style="display: inline-block; width: 7rem; height: 1.5rem ">
+                                <option value='' selected>-- 선택 --</option>
+                                <option value='cleaner'>청소기</option>
+                                <option value='refrigerator'>냉장고</option>
+                                <option value='dish_washer'>식기세척기</option>
+                            </select>
+                            <input type="submit" value="선택">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div style="font-size: 1.2rem; display: inline-block; margin-left: 0.8rem" class="subject"> 데이터명 </div>
+            <div style="display: inline-block;"><input type="text" placeholder="파일지정"></div>
+            <div style="font-size: 1rem; display: inline-block" class="subject">
                 <form action="">
                     <input type="submit" value="선택">
                 </form>
             </div>
         </div>
-        <div style="text-align: left; background-color: #DCDCDC; width: 70rem; height: 10rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
-            <p><div style="margin-bottom: 1.5rem; display: inline-block">Category</div></p>
+        <!-- Category,sentiment,datasetup -->
+        <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 11rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
+            <p><div style="margin-bottom: 1rem; display: inline-block">Category</div></p>
             <p>
                 <div style="display: inline-block">Sentiment</div>
-                <div style="margin-left: 0.5rem; font-size: 1rem; display: inline-block" class="subject">
-                    <form action="">
-                        <input type="submit" value="긍정">
-                    </form>
-                </div>
-                <div style="margin-left: 0.5rem; font-size: 1rem; display: inline-block" class="subject">
-                    <form action="">
-                        <input type="submit" value="부정">
-                    </form>
-                </div>
-
+                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.4rem; color: blue;">긍정</div>
+                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.4rem; color: red;">부정</div>
             </p>
-            <p><div style="display: inline-block">Data SetUp</div></p>
+            <p>
+                <div style="display: inline-block; margin-bottom: 1rem;">
+                    <div style="display: inline-block">Data SetUp</div>
+                    <div style="display: inline-block;"><input type="text" placeholder="ex)1"></div>
+                    <div style="display: inline-block">~</div>
+                    <div style="display: inline-block;"><input type="text" placeholder="ex)1000"></div>
+                    <div style="font-size: 1rem; display: inline-block" class="subject">
+                        <form action="">
+                            <input type="submit" value="적용">
+                        </form>
+                    </div>
+                </div>
+            </p>
         </div>
-        <div style="background-color: red; width: 70rem; height: 6rem; display: inline-block; margin-top: 0rem"></div>
-        <div style="background-color: black ;width: 70rem; height: 15rem; display: inline-block; margin-top: 0rem"></div>
+        <!-- 작업필드 -->
+        <div style="background-color: white; border: 1px solid #bcbcbc; width: 70rem; height: 10rem; display: inline-block; margin-top: 0.5rem;">
+            <div style="display: inline-block; align: center; margin-top: 4rem">작업할 영역을 지정하세요.</div>
+            <div style="display: inline-block;">
+                <form action="{% url 'labelingapp:work' %}" method="get">
+                    {% csrf_token %}
+                    <div>
+                        <input type="submit" value="next">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 버튼 및 여백 -->
+        <div style="background-color: white; width: 70rem; height: 15rem; display: inline-block; margin-top: .5rem;">
+            <div style="display: inline-block;">
+                <form action="{% url 'labelingapp:work' %}" method="get">
+                    {% csrf_token %}
+                    <div>
+                        <input type="submit" value="delete">
+                    </div>
+                </form>
+            </div>
+            <div style="display: inline-block;">
+                <form action="{% url 'labelingapp:work' %}" method="get">
+                    {% csrf_token %}
+                    <div>
+                        <input type="submit" value="reset">
+                    </div>
+                </form>
+            </div>
+            </div>
+
+        </div>
     </div>
-</div>
+
 {% endblock %}
