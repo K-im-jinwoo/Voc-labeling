@@ -52,22 +52,22 @@
             <img src="{% static 'img/LG_logo.png' %}" alt="LG_logo" title="LG_logo" style="width: 3rem; height: 3rem; display: inline-block">
             <h1 style="display: inline-block; font-family: 'EB Garamond', serif;font-family: 'Josefin Slab', serif; font-weight: 600">LG Labeling</h1>
         </a>
-        <!--네비게이션바-->
+        <!--네비게이션바--><!--각 app별 urls.py를 참고해서 a href 연결 필요-->
         <div style="text-align: center; display: inline-block; margin-left: 5rem">
             <nav style="margin-right: 2rem">
                 <a href="{% url 'uploadapp:upload' %}">Data Upload</a>
             </nav>
             <nav style="margin-right: 2rem">
-                <a href="working.html">1차 작업</a>
+                <a href="{% url 'labelingapp:work' %}">1차 작업</a>
             </nav>
             <nav style="margin-right: 2rem">
-                <a href="inspection.html">2차 작업</a>
+                <a href="{% url 'labelingapp:inspect' %}">2차 작업</a>
             </nav>
             <nav style="margin-right: 2rem">
                 <a href="dashboard.html">작업 현황</a>
             </nav>
             <nav style="">
-                <a href="export.html">Data Export</a>
+                <a href="{% url 'outputapp:output' %}">Data Export</a>
             </nav>
         </div>
     </div>
