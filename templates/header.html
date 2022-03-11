@@ -27,17 +27,21 @@
         {{ user.username }}
         </div>
 
-        <div style="display: inline-block; width: auto; height: auto; margin-left: 1rem">
-            <a href="{% url 'mainapp:logout' %}" style="font-size: 0.7rem">로그아웃</a>
-                <strong style="display: inline-block; font-size: 0.7rem">  |  </strong>
-            <a href="{% url 'mainapp:account' pk=user.pk %}" style="font-size: 0.7rem">마이페이지</a>
+        <div style="display: inline-block; width: auto; height: auto; margin-left: 1rem;">
+            <a href="{% url 'mainapp:logout' %}"
+               style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300;">Logout</a>
+                <strong style="display: inline-block; font-size: 0.8rem; font-weight: lighter">  |  </strong>
+            <a href="{% url 'mainapp:account' pk=user.pk %}"
+               style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300">MyPage</a>
         </div>
 
 
         {% else %}  <!--로그인 안한 상태-->
-        <a href="{% url 'mainapp:login' %}?next={{ request.path }}" style="font-size: 0.7rem">로그인</a>
-        <strong style="display: inline-block; font-size: 0.7rem">  |  </strong>
-        <a href="{% url 'mainapp:signup' %}?next={{ request.path }}" style="font-size: 0.7rem">회원가입</a>
+        <a href="{% url 'mainapp:login' %}?next={{ request.path }}"
+           style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300;">Login</a>
+        <strong style="display: inline-block; font-size: 0.8rem; font-weight: lighter">  |  </strong>
+        <a href="{% url 'mainapp:signup' %}?next={{ request.path }}"
+           style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300">SignUp</a>
 
 
         {% endif %}
@@ -49,27 +53,27 @@
     <div style="margin: 0rem 2rem 1rem 2rem; height: 3rem">
         <!--로고-->
         <a href="{% url 'mainapp:main' %}">
-            <img src="{% static 'img/LG_logo.png' %}" alt="LG_logo" title="LG_logo" style="width: 3rem; height: 3rem; display: inline-block">
-            <h1 style="display: inline-block; font-family: 'EB Garamond', serif;font-family: 'Josefin Slab', serif; font-weight: 600">LG Labeling</h1>
+            <h1 style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300">Review Labeling</h1>
         </a>
         <!--네비게이션바--><!--각 app별 urls.py를 참고해서 a href 연결 필요-->
-        <div style="text-align: center; display: inline-block; margin-left: 5rem">
-            <nav style="margin-right: 2rem">
-                <a href="{% url 'uploadapp:upload' %}">Data Upload</a>
+        <div style="text-align: center; display: inline-block; margin-left: 5rem;">
+            <nav style="margin-right: 3rem;">
+                <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="{% url 'uploadapp:upload' %}">Data Upload</a>
             </nav>
-            <nav style="margin-right: 2rem">
-                <a href="{% url 'labelingapp:work' %}">1차 작업</a>
+            <nav style="margin-right: 3rem">
+                <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="{% url 'labelingapp:work' %}">Data Labeling</a>
             </nav>
-            <nav style="margin-right: 2rem">
-                <a href="{% url 'labelingapp:inspect' %}">2차 작업</a>
+            <nav style="margin-right: 3rem">
+                <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="{% url 'labelingapp:inspect' %}">Data Inspect</a>
             </nav>
-            <nav style="margin-right: 2rem">
-                <a href="dashboard.html">작업 현황</a>
+            <nav style="margin-right: 3rem">
+                <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="dashboard.html">Work Status</a>
             </nav>
             <nav style="">
-                <a href="{% url 'outputapp:output' %}">Data Export</a>
+                <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="{% url 'outputapp:output' %}">Data Export</a>
             </nav>
         </div>
     </div>
+
 
 </header>
