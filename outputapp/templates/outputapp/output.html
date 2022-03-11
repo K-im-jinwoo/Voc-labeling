@@ -22,7 +22,8 @@
         <form action="{% url 'uploadapp:upload' %}" method="get">
             {% csrf_token%}
             <div style="text-align: left ">
-                <p style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
+                <p style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;
+                    display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
                 <select name='product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                     <option style="text-align: center" value='' selected>--- 선택 ---</option>
                     <option value='cleaner'>청소기</option>
@@ -38,7 +39,7 @@
         <!-- method 설정 필요합니다. -->
         <form action="{% url 'outputapp:output' %}" method="get">
             {% csrf_token %}
-            <p style="text-align: left; margin-bottom: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">미리보기</p>
+            <p style="text-align: left; margin-bottom: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;" class="subject">미리보기</p>
             <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
 
                 <!-- 카테고리 리스트 -->
@@ -51,7 +52,7 @@
         </form>
 
         <hr>
-        <p style="text-align: left; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">내보내기</p>
+        <p style="text-align: left; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;" class="subject">내보내기</p>
         <!--엑셀 파일 csv로 내보내기 => 엑셀 파일 필요시, 주피터로 중복 전처리 후, 엑셀로 뽑아내야함-->
         <div style="margin-top: 1rem; width: 100%; height: 3.5rem; padding: 0rem 0.8rem 0.8rem 0.8rem; text-align: center; border-radius: 0.8rem; ">
             <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
