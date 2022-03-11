@@ -29,19 +29,19 @@
 
         <div style="display: inline-block; width: auto; height: auto; margin-left: 1rem;">
             <a href="{% url 'mainapp:logout' %}"
-               style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300;">Logout</a>
+               style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300;">Logout</a>
                 <strong style="display: inline-block; font-size: 0.8rem; font-weight: lighter">  |  </strong>
             <a href="{% url 'mainapp:account' pk=user.pk %}"
-               style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300">MyPage</a>
+               style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300">MyPage</a>
         </div>
 
 
         {% else %}  <!--로그인 안한 상태-->
         <a href="{% url 'mainapp:login' %}?next={{ request.path }}"
-           style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300;">Login</a>
+           style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300;">Login</a>
         <strong style="display: inline-block; font-size: 0.8rem; font-weight: lighter">  |  </strong>
         <a href="{% url 'mainapp:signup' %}?next={{ request.path }}"
-           style="font-family: 'Josefin Sans', sans-serif; font-size: 1rem; font-weight: 300">SignUp</a>
+           style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300">SignUp</a>
 
 
         {% endif %}
