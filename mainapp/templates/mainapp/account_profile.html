@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="width: 100%; text-align: center">
 
-    <form action='{% url 'mainapp:account_profile' %}' method='post' enctype='multipart/form-data'>
+<div style="width: 100%; text-align: center;">
+
+    <form action="{% url 'mainapp:account_profile' %}" method='post' enctype='multipart/form-data'>
         {% csrf_token %}
         {{ form }}
         <input type='submit' class='btn btn-primary'>
     </form>
+
 </div>
 
 {% endblock %}

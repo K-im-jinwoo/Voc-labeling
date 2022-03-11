@@ -22,7 +22,7 @@
 
         {% if user.is_authenticated %}  <!--로그인 한 상태-->
         <div style="width: auto; height: auto; display: inline-block; background-color: #eeeeee; text-align: center; border-radius: 0.5rem;
-         padding: 0.1rem 0.6rem 0.1rem 0.6rem; font-size: 0.9rem; font-weight: 500">
+         padding: 0.1rem 0.6rem 0.1rem 0.6rem; font-size: 0.8rem; font-weight: 500">
         <img src="{{ user.profile.image.url }}" style="width: 1rem">
         {{ user.username }}
         </div>
@@ -43,14 +43,13 @@
         <a href="{% url 'mainapp:signup' %}?next={{ request.path }}"
            style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300">SignUp</a>
 
+        </div>
 
         {% endif %}
 
-    </div>
-
 
     <!--로고와 네비게이션 표현-->
-    <div style="margin: 0rem 2rem 1rem 2rem; height: 3rem">
+    <div style="margin: 0rem 2rem 1rem 2rem; height: 3rem; text-align: left">
         <!--로고-->
         <a href="{% url 'mainapp:main' %}">
             <h1 style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300">Review Labeling</h1>

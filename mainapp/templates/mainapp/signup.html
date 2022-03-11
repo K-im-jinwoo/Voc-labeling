@@ -7,15 +7,14 @@
 {% load static %}
 {% load bootstrap4 %}
     <div style="text-align: center;width: 100%; margin: 5rem 5rem 3rem 0rem">
-        <img src="{% static 'img/LG_logo.png' %}" alt="LG_logo" title="LG_logo" style="width: 3rem; height: 3rem; display: inline-block">
-        <h1 style="display: inline-block; font-family: 'EB Garamond', serif;font-family: 'Josefin Slab', serif; font-weight: bold">LG Labeling</h1>
+        <h1 style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300;">Review Labeling</h1>
         <br>
         <br>
         <div style="width: 25rem; display: inline-block; text-align: left">
             <form action="" method="post">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <input type="submit" class="btn btn-info rounded-pill" value="Login" style="width: 100%; margin-top: 1rem">
+                <input type="submit" class="btn btn-info rounded-pill" value="SignUp" style="width: 100%; margin-top: 1rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;">
             </form>
         </div>
     </div>
