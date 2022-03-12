@@ -16,46 +16,42 @@
 </style>
 
 <header>
-
-
-    <div style="text-align: right; margin-right: 2rem; margin-top: 0.5rem" >
+    <div style="text-align: right; margin-right: 2rem; margin-top: 0.5rem;" >
 
         {% if user.is_authenticated %}  <!--로그인 한 상태-->
         <div style="width: auto; height: auto; display: inline-block; background-color: #eeeeee; text-align: center; border-radius: 0.5rem;
-         padding: 0.1rem 0.6rem 0.1rem 0.6rem; font-size: 0.8rem; font-weight: 500">
+         padding: 0.1rem 0.6rem 0.1rem 0.6rem; font-size: 0.8rem; font-weight: 500;">
         <img src="{{ user.profile.image.url }}" style="width: 1rem">
         {{ user.username }}
         </div>
 
         <div style="display: inline-block; width: auto; height: auto; margin-left: 1rem;">
             <a href="{% url 'mainapp:logout' %}"
-               style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300;">Logout</a>
+               style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300; ">Logout</a>
                 <strong style="display: inline-block; font-size: 0.8rem; font-weight: lighter">  |  </strong>
             <a href="{% url 'mainapp:account' pk=user.pk %}"
                style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300">MyPage</a>
         </div>
 
-
         {% else %}  <!--로그인 안한 상태-->
         <a href="{% url 'mainapp:login' %}?next={{ request.path }}"
-           style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300;">Login</a>
+           style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300; ">Login</a>
         <strong style="display: inline-block; font-size: 0.8rem; font-weight: lighter">  |  </strong>
         <a href="{% url 'mainapp:signup' %}?next={{ request.path }}"
            style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300">SignUp</a>
 
         </div>
-
         {% endif %}
 
 
     <!--로고와 네비게이션 표현-->
-    <div style="margin: 0rem 2rem 1rem 2rem; height: 3rem; text-align: left">
+    <div style="margin: 0rem 2rem 1rem 2rem; height: 3rem; text-align: left;">
         <!--로고-->
         <a href="{% url 'mainapp:main' %}">
             <h1 style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300">Review Labeling</h1>
         </a>
         <!--네비게이션바--><!--각 app별 urls.py를 참고해서 a href 연결 필요-->
-        <div style="text-align: center; display: inline-block; margin-left: 5rem;">
+        <div style="text-align: center; display: inline-block; margin-left: 5rem; width: fit-content">
             <nav style="margin-right: 3rem;">
                 <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="{% url 'uploadapp:upload' %}">Data Upload</a>
             </nav>
@@ -72,6 +68,10 @@
                 <a style="font-family: 'Josefin Sans', sans-serif; font-size: 1.2rem; font-weight: 300" href="{% url 'outputapp:output' %}">Data Export</a>
             </nav>
         </div>
+
+
+
+
     </div>
 
 
