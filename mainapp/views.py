@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 from django.http import HttpResponseForbidden
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView
 
@@ -47,3 +48,6 @@ class ProfileCreateView(CreateView):
         temp_profile.user = self.request.user
         temp_profile.save()
         return super().form_valid(form)
+
+def workstatus(request):
+    return render(request, 'mainapp/workstatus.html')
