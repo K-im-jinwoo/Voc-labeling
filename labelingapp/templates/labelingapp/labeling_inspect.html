@@ -11,68 +11,69 @@
 </style>
 
 
-<div style="width: 100%; text-align: center">
-    <div style="width: 50rem; height: 1rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
+<div style="width: 100%; text-align: center; margin-top: 3rem;">
+    <div style="width: 69rem; height: 1rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
         <div style="text-align: left; width: 13rem;">
-            <p style="font-family: 'EB Garamond', serif; font-family: 'Josefin Slab', serif; font-family: 'Sansita Swashed', cursive; font-size: 2rem">
+            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 2rem">
                 Data Inspect
             </p>
         </div>
     </div>
     <div>
-        <!-- 제품 및 데이터 선택 필드 -->
+
+        <!-- 제품 및 데이터 번호 선택 필드 -->
         <div style="text-align:left; background-color: white; width: 70rem; height: 3rem; display: inline-block; margin-top: 0rem">
             <div style="margin: 0.5rem; font-size: 1rem; display: inline-block" class="subject">
                 <div style="display: inline-block">
                     <form action="{% url 'labelingapp:work' %}" method="get">
                         {% csrf_token%}
                         <div style="text-align: left">
-                            <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.2rem" class="subject">제품명</p>
-                            <select name='product' style="display: inline-block; width: 7rem; height: 1.9rem ">
-                                <option value='' selected>-- 선택 --</option>
+                            <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.1rem;
+                                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">제품명</p>
+                            <select name='product' style="display: inline-block; width: 8rem; height: 1.9rem;
+                                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+                                <option value='' selected>--- 선택 ---</option>
                                 <option value='cleaner'>청소기</option>
                                 <option value='refrigerator'>냉장고</option>
                                 <option value='dish_washer'>식기세척기</option>
                             </select>
-                            <input type="submit" value="선택">
+                            <input style="font-family: 'Nanum Gothic Coding', monospace;
+                                font-weight: 200; margin-left: 0.2rem;" type="submit" value="적용">
                         </div>
                     </form>
                 </div>
             </div>
-            <div style="font-size: 1.2rem; display: inline-block; margin-left: 0.8rem" class="subject"> 데이터명 </div>
-            <div style="display: inline-block;"><input type="text" placeholder="파일지정"></div>
+
+            <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
+                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택</div>
+            <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+                <input style="width: 7rem" type="text" placeholder="ex)1">
+                <div style="display: inline-block">~</div>
+                <input style="width: 7rem" type="text" placeholder="ex)10000">
+            </div>
             <div style="font-size: 1rem; display: inline-block" class="subject">
                 <form action="">
-                    <input type="submit" value="선택">
+                    <input style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" type="submit" value="적용">
                 </form>
             </div>
         </div>
-        <!-- Category,sentiment,datasetup -->
-        <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 11rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
-            <p><div style="margin-bottom: 1rem; display: inline-block">Category</div></p>
+
+        <!-- Category,sentiment -->
+        <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 9rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
+            <p><div style="margin-bottom: 2.5rem; margin-left: 0.2rem; display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 400;">Category</div></p>
             <p>
-                <div style="display: inline-block">Sentiment</div>
-                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.3rem; color: blue;">긍정</div>
-                <div style="display: inline-block; background-color: white; margin-left: 0.5rem; padding:0.3rem; color: red;">부정</div>
-            </p>
-            <p>
-                <div style="display: inline-block; margin-bottom: 1rem;">
-                    <div style="display: inline-block">DataSetUp</div>
-                    <div style="display: inline-block;"><input type="text" placeholder="ex)1"></div>
-                    <div style="display: inline-block">~</div>
-                    <div style="display: inline-block;"><input type="text" placeholder="ex)1000"></div>
-                    <div style="font-size: 1rem; display: inline-block" class="subject">
-                        <form action="">
-                            <input type="submit" value="적용">
-                        </form>
-                    </div>
-                </div>
+                <div style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 400; margin-left: 0.2rem;">Sentiment</div>
+                <div style="display: inline-block; height: 2rem; width: 5rem; background-color: white; margin-left: 0.5rem;
+                    padding:0.3rem; color: blue; text-align: center; font-family: 'Josefin Sans', sans-serif; font-weight: 400;">Positive</div>
+                <div style="display: inline-block; height: 2rem; width: 5rem; background-color: white; margin-left: 0.5rem;
+                    padding:0.3rem; color: red; text-align: center; font-family: 'Josefin Sans', sans-serif; font-weight: 400;">Negative</div>
             </p>
         </div>
+
         <!-- 작업필드 -->
-        <div style="background-color: white; border: 1px solid #bcbcbc; width: 70rem; height: 10rem; display: inline-block; margin-top: 0.5rem;">
-            <div style="display: inline-block; align: center; margin-top: 4rem">작업할 영역을 지정하세요.</div>
-            <div style="display: inline-block;">
+        <div style="background-color: white; border: 1px solid #bcbcbc; width: 70rem; height: 10rem; display: inline-block; margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+            <div style="display: inline-block; align: center; margin-top: 4rem;">작업할 영역을 지정하세요.</div>
+        <div style="display: inline-block;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
                     <div>
@@ -83,10 +84,10 @@
         </div>
 
         <!-- delete 버튼 및 reset 버튼 -->
-        <div style="background-color: white; width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
+        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
-                    <div>
+                    <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                         <input type="submit" value="delete">
                     </div>
                 </form>
@@ -94,7 +95,7 @@
         <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
-                    <div>
+                    <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                         <input type="submit" value="reset">
                     </div>
                 </form>

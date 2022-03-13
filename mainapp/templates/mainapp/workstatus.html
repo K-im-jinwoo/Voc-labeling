@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .subject{
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+</style>
+
+
+<div style="width: 100%; text-align: center; margin-top: 3rem;">
+    <div style="width: 60rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
+        <div style="text-align: left; width: 13rem;">
+            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 2rem">
+                Work Status
+            </p>
+        </div>
+        <div style="display: inline-block; width: 100%; height: 30rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
+        <div style="text-align: center; font-family: 'Nanum Gothic Coding', monospace;">
+            <span style="margin-right: 2rem;">제품명</span>
+            <span style="margin-right: 2rem;">작업파일</span>
+            <span style="margin-right: 2rem;">데이터수</span>
+            <span style="margin-right: 2rem;">작업완료</span>
+            <span style="margin-right: 2rem;">검수완료</span>
+            <span style="margin-right: 2rem;">미완료</span>
+            <span style="margin-right: 2rem;">작업자</span>
+            <span style="margin-right: 2rem;">검수자</span>
+            <span style="">최근작업일시</span>
+        </div>
+        </div>
+        <div style="text-align: left; font-family: 'Nanum Gothic Coding', monospace;">
+            * 같은 파일의 데이터 작업 시, 추가 정보는 최근 정보로 다시 업데이트 된다.
+        </div>
+</div>
+</div>
+
+{% endblock %}
