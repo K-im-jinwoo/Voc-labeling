@@ -132,7 +132,8 @@ def upload_main(request):
                 dbframe = cleansing(upload_file_url)
 
                 # 현재 model의 category_product별로 최대값을 기준으로 review_number을 갱신하기 위한 변수 i
-                i = max(Review.objects.filter(category_product=request.POST.get('category_product')))
+                temp = Review.objects.filter(category_product=request.POST.get('category_product'))
+                i = count(temp)
 
                 # 데이터 하나씩 반복문 돌리기
                 for index, row in dbframe.iterrows():
