@@ -31,6 +31,7 @@
                 <input style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.2rem;" type="submit" value="완료">
             </div>
         </form>
+
         <!--현재 선택된 category를 보여줌.(나중에 삭제해야 합니다. 카테고리 작업할 때 편하라고 남겨뒀어요.)-->
         {{ request.session.category_product }}
 
@@ -69,6 +70,8 @@
                 {% csrf_token %}
                 <input type="file" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" name="upload_file">
                 <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
+
+                <!--카테고리 선택 시에만 파일 업로드 가능-->
                 {% if request.session.category_product is not null %}
                     <input type="submit">
                 {% else %}
