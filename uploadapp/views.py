@@ -4,6 +4,8 @@ from django.shortcuts import render
 import pandas as pd
 
 # Create your views here.
+from django.urls import reverse
+
 from mainapp.models import Review
 
 
@@ -117,9 +119,9 @@ def upload_main(request):
                 # csv 형식으로 저장
                 upload_file = request.FILES['upload_file']
                 if not upload_file.name.endswith('csv'):
-                    message = "엑셀 형식으로 업로드 해주세요"
-                    return render(request, 'uploadapp/upload_main.html', context={'message': message})
-                message = "업로드 되었습니다."
+                    request.session['message'] = '엑셀 형식으로 업로드 해주세요'
+                    request.session.set_expiry(3)
+                    return HttpResponseRedirect(reverse('uploadapp:upload'))
 
                 fs = FileSystemStorage()
                 filename = fs.save(upload_file.name, upload_file)
@@ -127,11 +129,18 @@ def upload_main(request):
                 dbframe = cleansing(upload_file_url)
 
                 for index, row in dbframe.iterrows():
-                    print(int(int(index) / int(dbframe.shape[0]) * 100), end='%\n')
-                    obj = Review.objects.create(review_content=row['Original Comment'], category_product=request.POST.get('category_product'))
+                    status = str(int(int(index) / int(dbframe.shape[0]) * 100)) + '%'
+                    print(status)
+                    request.session['status'] = status
+                    request.session.set_expiry(600)
+                    obj = Review.objects.create(review_content=row['Original Comment'],
+                                                category_product=request.POST.get('category_product'))
                     obj.save()
-                return render(request, 'uploadapp/upload_main.html', context={'message': message})
+                request.session['message'] = '업로드가 완료되었습니다.'
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
 
 
     except Exception as identifier:
         print(identifier)
+
+    return render(request, 'uploadapp/upload_main.html', {})
