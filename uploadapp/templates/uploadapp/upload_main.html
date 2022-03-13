@@ -7,6 +7,10 @@
         font-weight: bold;
     }
 
+    .dbcolor{
+        border-color: darkblue;
+    }
+
 </style>
 
 
@@ -45,8 +49,7 @@
             <div style="height: 9rem">
                 {% if category_detail %}
             {% for category_detail in category_detail %} |
-                category_color = category_detail.category_color
-                {{ category_detail.category_middle }}
+                <span >{{ category_detail.category_middle }}</span>
             {% endfor %}
         {% endif %}
             </div>
