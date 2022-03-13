@@ -69,7 +69,11 @@
                 {% csrf_token %}
                 <input type="file" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" name="upload_file">
                 <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
-                <input type="submit" style="margin-left: 2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" value="업로드">
+                {% if request.session.category_product is not null %}
+                    <input type="submit">
+                {% else %}
+                    <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
+                {% endif %}
             </form>
         </div>
 

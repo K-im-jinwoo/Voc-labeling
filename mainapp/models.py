@@ -21,8 +21,8 @@ class Category(models.Model):
 
 class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
-    review_number = models.CharField(max_length=256, null=True)
     category_product = models.CharField(max_length=256, null=False)
+    review_number = models.CharField(max_length=256, null=False)
     review_content = models.TextField(null=False)
     first_status = models.BooleanField(default=False)
     second_status = models.BooleanField(default=False)
