@@ -110,7 +110,7 @@ def upload_main(request):
             if 'category_product' in request.GET:
                 request.session['category_product'] = request.GET['category_product']
                 print(request.session['category_product'])
-                request.session.set_expiry(5)
+                request.session.set_expiry(300)
 
                 category_product = request.session['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
