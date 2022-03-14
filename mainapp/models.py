@@ -21,15 +21,13 @@ class Category(models.Model):
 
 class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    review_number = models.CharField(max_length=256)
-    category_product = models.CharField(max_length=256)
-    review_content = models.TextField()
-    first_status = models.BooleanField()
-    second_status = models.BooleanField()
-    dummy_status = models.BooleanField()
-    first_labeled_id = models.CharField(max_length=256)
-    second_labeled_id = models.CharField(max_length=256)
+    category_product = models.CharField(max_length=256, null=False)
+    review_number = models.IntegerField(null=False)
+    review_content = models.TextField(null=False)
+    first_status = models.BooleanField(default=False)
+    second_status = models.BooleanField(default=False)
+    dummy_status = models.BooleanField(default=False)
+    labeled_user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return str(self.review_id) + ' - ' + str(self.category_product)
