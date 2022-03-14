@@ -47,11 +47,11 @@
 
             <!-- 카테고리 리스트 -->
             <div style="height: 9rem">
-                {% if category_detail %}
-            {% for category_detail in category_detail %} |
-                <span >{{ category_detail.category_middle }}</span>
-            {% endfor %}
-        {% endif %}
+            {% if category_detail %}
+                {% for category_detail in category_detail %} |
+                    <span>{{ category_detail.category_middle }}</span>
+                {% endfor %}
+            {% endif %}
             </div>
 
             <!-- 카테고리 생성 -->
