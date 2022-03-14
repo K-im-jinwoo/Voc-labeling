@@ -4,7 +4,8 @@ from django.shortcuts import render, get_object_or_404
 import pandas as pd
 
 # Create your views here.
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView
 from numpy.ma.core import count
 
 from mainapp.models import Review, Category
@@ -183,3 +184,4 @@ def upload_main(request):
         print(identifier)
 
     return render(request, 'uploadapp/upload_main.html', {})
+
