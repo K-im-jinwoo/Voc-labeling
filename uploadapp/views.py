@@ -1,13 +1,13 @@
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import pandas as pd
 
 # Create your views here.
 from django.urls import reverse
 from numpy.ma.core import count
 
-from mainapp.models import Review
+from mainapp.models import Review, Category
 
 
 def cleansing(csv_file):
@@ -109,54 +109,74 @@ def upload_main(request):
         if request.method == "GET":
             if 'category_product' in request.GET:
                 request.session['category_product'] = request.GET['category_product']
+                print(request.session['category_product'])
                 request.session.set_expiry(5)
-                return render(request, 'uploadapp/upload_main.html')
+
+                category_product = request.session['category_product']
+                category_detail = Category.objects.filter(category_product=category_product)
+                context = {'category_detail': category_detail}
+                return render(request, 'uploadapp/upload_main.html', context)
+
             else:
-                return render(request, 'uploadapp/upload_main.html')
+                category_product = request.session['category_product']
+                category_detail = Category.objects.filter(category_product = category_product)
+                context = {'category_detail': category_detail}
+                return render(request, 'uploadapp/upload_main.html', context)
 
-        # upload_files 변수에 파일 저장시 Review 모델에 저장
         elif request.method == "POST":
-            if request.FILES['upload_file']:
+            if request.POST.get("form-type") == 'formOne':
+                category = Category()
+                category.category_product = request.session['category_product']
+                print(request.session['category_product'])
+                category.category_middle = request.POST.get('category_middle', '')
+                category.category_color = request.POST.get('category_color', '')
+                category.save()
+                print(category)
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
 
-                # csv 형식으로 저장
-                upload_file = request.FILES['upload_file']
-                if not upload_file.name.endswith('csv'):
-                    request.session['message'] = '<<Error>> 엑셀 형식으로 업로드 해주세요'
+            elif request.POST.get("form-type") == 'formTwo':
+                # upload_files 변수에 파일 저장시 Review 모델에 저장
+                if request.FILES['upload_file']:
+
+                    # csv 형식으로 저장
+                    upload_file = request.FILES['upload_file']
+                    if not upload_file.name.endswith('csv'):
+                        request.session['message'] = '<<Error>> 엑셀 형식으로 업로드 해주세요'
+                        request.session.set_expiry(3)
+                        return HttpResponseRedirect(reverse('uploadapp:upload'))
+
+                    # 데이터 전처리 및 정제 작업
+                    fs = FileSystemStorage()
+                    filename = fs.save(upload_file.name, upload_file)
+                    upload_file_url = fs.url(filename)
+                    dbframe = cleansing(upload_file_url)
+
+                    # 현재 model의 category_product별로 최대값을 기준으로 review_number을 갱신하기 위한 변수 i
+                    temp = Review.objects.filter(category_product=request.POST.get('category_product'))
+                    i = count(temp)
+
+                    # 데이터 하나씩 반복문 돌리기
+                    for index, row in dbframe.iterrows():
+
+                        # 데이터를 입력하는 category에 중복된 데이터가 있는지 검사
+                        if Review.objects.filter(category_product=request.POST.get('category_product'),
+                                                 review_content=row['Original Comment']).exists():
+                            pass
+
+                        # 데이터를 입력하는 category에 중복된 데이터가 없을 시 실행
+                        else:
+                            i += 1
+                            status = str(int(int(index) / int(dbframe.shape[0]) * 100)) + '%'
+                            print(status)
+                            print(i)
+                            obj = Review.objects.create(review_content=row['Original Comment'],
+                                                        category_product=request.POST.get('category_product'),
+                                                        review_number=i)
+                            obj.save()
+
+                    request.session['message'] = '업로드가 완료되었습니다.'
                     request.session.set_expiry(3)
                     return HttpResponseRedirect(reverse('uploadapp:upload'))
-
-                # 데이터 전처리 및 정제 작업
-                fs = FileSystemStorage()
-                filename = fs.save(upload_file.name, upload_file)
-                upload_file_url = fs.url(filename)
-                dbframe = cleansing(upload_file_url)
-
-                # 현재 model의 category_product별로 최대값을 기준으로 review_number을 갱신하기 위한 변수 i
-                temp = Review.objects.filter(category_product=request.POST.get('category_product'))
-                i = count(temp)
-
-                # 데이터 하나씩 반복문 돌리기
-                for index, row in dbframe.iterrows():
-
-                    # 데이터를 입력하는 category에 중복된 데이터가 있는지 검사
-                    if Review.objects.filter(category_product=request.POST.get('category_product'),
-                                             review_content=row['Original Comment']).exists():
-                        pass
-
-                    # 데이터를 입력하는 category에 중복된 데이터가 없을 시 실행
-                    else:
-                        i += 1
-                        status = str(int(int(index) / int(dbframe.shape[0]) * 100)) + '%'
-                        print(status)
-                        print(i)
-                        obj = Review.objects.create(review_content=row['Original Comment'],
-                                                    category_product=request.POST.get('category_product'),
-                                                    review_number=i)
-                        obj.save()
-
-                request.session['message'] = '업로드가 완료되었습니다.'
-                request.session.set_expiry(3)
-                return HttpResponseRedirect(reverse('uploadapp:upload'))
 
     # 예외 처리
     except Exception as identifier:

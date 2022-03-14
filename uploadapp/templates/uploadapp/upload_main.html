@@ -7,6 +7,10 @@
         font-weight: bold;
     }
 
+    .dbcolor{
+        border-color: darkblue;
+    }
+
 </style>
 
 
@@ -38,24 +42,34 @@
         <hr>
         <!-- 카테고리 보기 및 생성-->
         <!-- method 설정 필요합니다. -->
-        <form action="{% url 'uploadapp:upload' %}" method="get">
-            {% csrf_token %}
-            <p style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem; text-align: left; margin-bottom: 0.5rem" class="subject">카테고리</p>
-            <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
+        <p style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem; text-align: left; margin-bottom: 0.5rem" class="subject">카테고리</p>
+        <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
 
-                <!-- 카테고리 리스트 -->
-                <div style="height: 9rem">
-
-                </div>
-
-                <!-- 카테고리 생성 -->
-                <div style="text-align: right; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-                    <input type="text" name="category_name" placeholder="카테고리명 입력">
-                    <input type='color' name="category_color" value='#0000ff' style="width: 1.6rem; height: 1.6rem;">
-                    <input type="submit" value="+" style="">
-                </div>
+            <!-- 카테고리 리스트 -->
+            <div style="height: 9rem">
+                {% if category_detail %}
+            {% for category_detail in category_detail %} |
+                <span >{{ category_detail.category_middle }}</span>
+            {% endfor %}
+        {% endif %}
             </div>
-        </form>
+
+            <!-- 카테고리 생성 -->
+            <form action="{% url 'uploadapp:upload' %}" method="post" id="formOne">
+                {% csrf_token %}
+                <div style="text-align: right; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                    <input type="hidden" name="form-type" value="formOne">
+                    <label for="category-label">
+                        <input type="text" name="category_middle" id="category-label" placeholder="카테고리명 입력">
+                    </label>
+                    <label for="color-label">
+                        <input type='color' name="category_color" id="color-label" value='#0000ff' style="width: 1.6rem; height: 1.6rem;">
+                    </label>
+
+                    <button type="submit" name="category_submit" value="submit">+</button>
+                </div>
+            </form>
+        </div>
 
         <hr>
         <div style="margin: 0 0 3.2rem 0;">
@@ -66,14 +80,15 @@
         <!--엑셀 파일 업로드하기-->
         <div style="margin-top: 1rem; width: 100%; height: 3.5rem; background-color: #eeeeee; padding: 0.8rem 0.8rem 0.8rem 0.8rem; text-align: left; border-radius: 0.8rem; ">
 
-            <form action="{% url 'uploadapp:upload' %}" method="post" enctype="multipart/form-data">
+            <form name="form2" action="{% url 'uploadapp:upload' %}" method="post" id="formTwo" enctype="multipart/form-data">
                 {% csrf_token %}
+            <input type="hidden" name="form-type" value="formTwo">
                 <input type="file" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" name="upload_file">
                 <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
 
                 <!--카테고리 선택 시에만 파일 업로드 가능-->
                 {% if request.session.category_product is not null %}
-                    <input type="submit">
+                    <input type="submit" >
                 {% else %}
                     <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                 {% endif %}

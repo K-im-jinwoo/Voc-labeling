@@ -8,6 +8,6 @@ from . import views
 app_name = 'uploadapp'
 
 urlpatterns = [
-    path('', views.upload_main, name="upload")
+    path('', views.upload_main, name="upload"),
 
 ]
