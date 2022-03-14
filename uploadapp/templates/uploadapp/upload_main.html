@@ -50,8 +50,10 @@
             {% if category_detail %}
                 {% for category_detail in category_detail %}
                     <div style="background-color: {{ category_detail.category_color }}; width: 5rem;
-                            height: 1.4rem; display: inline-block; opacity: 0.5; margin-right: 0.3rem; margin-bottom: 0.3rem">
-                        {{ category_detail.category_middle }}
+                            height: 1.5rem; display: inline-block; opacity: 0.5; position: absolute; margin-bottom: 0.3rem;">
+                    </div>
+                    <div style="width: 5rem; height: 1.5rem; display: inline-block; margin-bottom: 0.3rem;">
+                        <p style="color: black; background-color: transparent;">{{ category_detail.category_middle }}</p>
                     </div>
                 {% endfor %}
             {% endif %}
