@@ -49,7 +49,8 @@
             <div style="height: 9rem">
             {% if category_detail %}
                 {% for category_detail in category_detail %} |
-                    <span>{{ category_detail.category_middle }}</span>
+                    <div style="background-color: {{ category_detail.category_color }}; width: 5rem;
+                            height: 1rem; display: inline-block">{{ category_detail.category_middle }}</div>
                 {% endfor %}
             {% endif %}
             </div>
