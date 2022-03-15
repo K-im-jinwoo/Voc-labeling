@@ -4,16 +4,6 @@
 {% include 'head.html' %}
 
 <body>
-<style>
-    a{
-        color: black;
-        font-size: 0.8rem;
-    }
-    a:hover{
-        color: blue;
-    }
-</style>
-
 {% load static %}
 {% load bootstrap4 %}
     <div style="text-align: center;width: 100%; margin: 5rem 5rem 3rem 0rem">
@@ -24,13 +14,9 @@
             <form action="" method="post">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <a style="font-family: 'Nanum Gothic Coding', monospace;" href="{% url 'mainapp:signup' %}">회원가입</a>
-                <input type="submit" class="btn btn-info rounded-pill" value="Login"  style="width: 100%; margin-top: 1rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;">
+                <input type="submit" class="btn btn-info rounded-pill" value="SignUp" style="width: 100%; margin-top: 1rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300; background-color: #eeeeee; border-color: #eeeeee">
             </form>
         </div>
     </div>
 
 </body>
-
-
-</html>

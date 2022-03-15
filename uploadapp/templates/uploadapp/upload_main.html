@@ -55,17 +55,20 @@
         <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
 
             <!-- 카테고리 리스트 -->
-           <div style="height: 9rem">
-            {% if category_detail %}
-                {% for category_detail in category_detail %}
-                    <div style="background-color: {{ category_detail.category_color }}; width: 5rem;
-                            height: 1.5rem; display: inline-block; opacity: 0.5; position: absolute; margin-bottom: 0.3rem;">
-                    </div>
-                    <div style="width: 5rem; height: 1.5rem; display: inline-block; margin-bottom: 0.3rem;">
-                        <p style="color: black; background-color: transparent;">{{ category_detail.category_middle }}</p>
-                    </div>
-                {% endfor %}
-            {% endif %}
+            <div style="height: 9rem">
+                {% if category_detail %}
+                    {% for category_detail in category_detail %}
+                        <div style="background-color: {{ category_detail.category_color }}; padding:.2rem.3rem.2rem.3rem;
+                        display: inline-block; opacity: 0.5; position: absolute;
+                                margin-bottom:.5rem">
+                            {{ category_detail.category_middle }}
+                        </div>
+                        <div style="padding:.2rem.3rem.2rem.3rem; display: inline-block;
+                        margin-bottom:.5rem;color: black; background-color: transparent;">
+                                {{ category_detail.category_middle }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <!-- 카테고리 생성 -->
