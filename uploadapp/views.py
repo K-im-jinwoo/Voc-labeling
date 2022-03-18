@@ -130,7 +130,8 @@ def upload_main(request):
                 category.category_product = request.session['category_product']
                 print(request.session['category_product'])
                 category.category_middle = request.POST.get('category_middle', '')
-                category.category_color = request.POST.get('category_color', '')
+                temp_color = str(request.POST.get('category_color', '')) + "50"
+                category.category_color = temp_color
                 category.save()
                 print(category)
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
