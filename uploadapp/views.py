@@ -185,4 +185,3 @@ def upload_main(request):
         print(identifier)
 
     return render(request, 'uploadapp/upload_main.html', {})
-
