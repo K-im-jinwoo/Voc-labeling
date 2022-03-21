@@ -8,7 +8,7 @@ from mainapp.models import Category, Review
 
 
 def print_review(start, end, category_product):
-    print_review_list = Review.objects.filter(category_product=category_product, review_number__range=(int(start), int(end))).order_by('review_number')[:1]
+    print_review_list = Review.objects.filter(category_product=category_product, review_number__range=(int(start), int(end)), first_status=False, second_status=False, dummy_status=False).order_by('review_number')[:1]
     return print_review_list
 
 
