@@ -1,3 +1,4 @@
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -17,6 +18,9 @@ def labeling_work(request):
 
         # GET 방식의 request 처리
         if request.method == "GET":
+            request.session['category_product'] = request.GET['category_product']
+            print(request.session['category_product'])
+            request.session.set_expiry(300)
 
             # 세 가지 변수를 모두 받아야 함.
             if 'category_product' in request.GET and 'start' in request.GET and 'end' in request.GET:
