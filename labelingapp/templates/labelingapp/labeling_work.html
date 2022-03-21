@@ -20,42 +20,46 @@
         </div>
     </div>
     <div>
-
+        <form action="{% url "labelingapp:work" %}" method="get">
+        {% csrf_token %}
         <!-- 제품 및 데이터 번호 선택 필드 -->
         <div style="text-align:left; background-color: white; width: 70rem; height: 3rem; display: inline-block; margin-top: 0rem">
             <div style="margin: 0.5rem; font-size: 1rem; display: inline-block" class="subject">
                 <div style="display: inline-block">
-                    <form action="{% url 'labelingapp:work' %}" method="get">
-                        {% csrf_token%}
-                        <div style="text-align: left">
-                            <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.1rem;
-                                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">제품명</p>
-                            <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
-                                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                                <option value='cleaner'>청소기</option>
-                                <option value='refrigerator'>냉장고</option>
-                                <option value='dish_washer'>식기세척기</option>
-                            </select>
-                            <input style="font-family: 'Nanum Gothic Coding', monospace;
-                                font-weight: 200; margin-left: 0.2rem;" type="submit" value="적용">
-                        </div>
-                    </form>
+
+
+                    <div style="text-align: left">
+                        <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.1rem;
+                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">제품명</p>
+                        <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
+                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+                            <option value='cleaner'>청소기</option>
+                            <option value='refrigerator'>냉장고</option>
+                            <option value='dish_washer'>식기세척기</option>
+                        </select>
+
+                        <!--{{ category_product }}-->
+                    </div>
+
                 </div>
             </div>
 
+
+
             <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
-                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택</div>
+        font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택</div>
             <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                <input style="width: 7rem" type="text" placeholder="ex)1" name="first_number">
+                <input style="width: 7rem" type="number" name="start" placeholder="ex)1" min="1">
                 <div style="display: inline-block">~</div>
-                <input style="width: 7rem" type="text" placeholder="ex)10000" name="last_number">
+                <input style="width: 7rem" type="number" name="end" placeholder="ex)10000">
             </div>
             <div style="font-size: 1rem; display: inline-block" class="subject">
-                <form action="">
-                    <input style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" type="submit" value="적용">
-                </form>
+                <input style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" type="submit" value="적용">
             </div>
+
+
         </div>
+        </form>
 
 
         <!--{{ request.session.category_product }}-->
@@ -86,7 +90,12 @@
 
         <!-- 작업필드 -->
         <div style="background-color: white; border: 1px solid #bcbcbc; width: 70rem; height: 10rem; display: inline-block; margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-            <div style="display: inline-block; align: center; margin-top: 4rem;">작업할 영역을 지정하세요.</div>
+            <div style="display: inline-block; align: center; margin-top: 4rem;">
+                {% for review_first in review_first %}
+                    {{ review_first.review_content }}
+                {% endfor %}
+
+            </div>
         <div style="display: inline-block;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
