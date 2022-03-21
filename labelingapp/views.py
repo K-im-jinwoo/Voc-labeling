@@ -15,13 +15,8 @@ def print_review(start, end, category_product):
 
 def labeling_work(request):
     try:
-
         # GET 방식의 request 처리
         if request.method == "GET":
-            request.session['category_product'] = request.GET['category_product']
-            print(request.session['category_product'])
-            request.session.set_expiry(300)
-
             # 세 가지 변수를 모두 받아야 함.
             if 'category_product' in request.GET and 'start' in request.GET and 'end' in request.GET:
 
@@ -39,8 +34,7 @@ def labeling_work(request):
 
                     context = {'category_detail': category_detail, 'category_product': category_product,
                                'review_first': review_first}
-                    return render(request, 'labelingapp/labeling_work.html', context)
-
+                return render(request, 'labelingapp/labeling_work.html', context)
             else:
                 context = {'message': '제품, 범위를 다시 선택해주세요.'}
                 return render(request, 'labelingapp/labeling_work.html', context)

@@ -58,11 +58,11 @@
             </div>
 
             <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; margin-left: 15rem; margin-bottom: 0.5rem; display: inline-block;" class=subject">
-            {% if request.session.category_product == "refrigerator" %}
+            {% if category_product == "refrigerator" %}
                 <strong>카테고리 : 냉장고</strong>
-            {% elif request.session.category_product == "cleaner" %}
+            {% elif category_product == "cleaner" %}
                 <strong>카테고리 : 청소기</strong>
-            {% elif request.session.category_product == "dish_washer"%}
+            {% elif category_product == "dish_washer"%}
                 <strong>카테고리 : 식기세척기</strong>
             {% else %}
                 카테고리
