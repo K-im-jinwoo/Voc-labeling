@@ -30,9 +30,8 @@
                         <div style="text-align: left">
                             <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.1rem;
                                 font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">제품명</p>
-                            <select name='product' style="display: inline-block; width: 8rem; height: 1.9rem;
+                            <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
                                 font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                                <option value='' selected>--- 선택 ---</option>
                                 <option value='cleaner'>청소기</option>
                                 <option value='refrigerator'>냉장고</option>
                                 <option value='dish_washer'>식기세척기</option>
@@ -47,9 +46,9 @@
             <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
                 font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택</div>
             <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                <input style="width: 7rem" type="text" placeholder="ex)1">
+                <input style="width: 7rem" type="text" placeholder="ex)1" name="first_number">
                 <div style="display: inline-block">~</div>
-                <input style="width: 7rem" type="text" placeholder="ex)10000">
+                <input style="width: 7rem" type="text" placeholder="ex)10000" name="last_number">
             </div>
             <div style="font-size: 1rem; display: inline-block" class="subject">
                 <form action="">
@@ -58,9 +57,24 @@
             </div>
         </div>
 
+
+        <!--{{ request.session.category_product }}-->
+
         <!-- Category,sentiment -->
-        <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 9rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
-            <p><div style="margin-bottom: 2.5rem; margin-left: 0.2rem; display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 400;">Category</div></p>
+        <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 11rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
+            <div style="margin-bottom: 0.4rem; margin-top: .7rem; margin-left: 0.2rem; display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 400;">Category</div>
+
+            <div style="height: 4.5rem">
+                {% if category_detail %}
+                    {% for category_detail in category_detail %}
+                        <div style="background-color: {{ category_detail.category_color }}; padding:.2rem.3rem.2rem.3rem;
+                        display: inline-block; opacity: 1;
+                                margin-bottom:.5rem">
+                            {{ category_detail.category_middle }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
             <p>
                 <div style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 400; margin-left: 0.2rem;">Sentiment</div>
                 <div style="display: inline-block; height: 2rem; width: 5rem; background-color: white; margin-left: 0.5rem;
