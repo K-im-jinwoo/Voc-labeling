@@ -33,7 +33,7 @@ class Review(models.Model):
         return str(self.review_id) + ' - ' + str(self.category_product)
 
 
-class First_Labeled_Data(models.Model):
+class FirstLabeledData(models.Model):
     first_labeled_id = models.AutoField(primary_key=True)
     first_labeled_emotion = models.CharField(max_length=256)
     first_labeled_target = models.CharField(max_length=256)
@@ -45,7 +45,7 @@ class First_Labeled_Data(models.Model):
         return str(self.first_labeled_id) + ' - ' + str(self.first_labeled_emotion)
 
 
-class Second_Labeled_Data(models.Model):
+class SecondLabeledData(models.Model):
     second_labeled_id = models.AutoField(primary_key=True)
     second_labeled_emotion = models.CharField(max_length=256)
     second_labeled_target = models.CharField(max_length=256)
@@ -59,7 +59,7 @@ class Second_Labeled_Data(models.Model):
 
 class Result(models.Model):
     result_id = models.AutoField(primary_key=True)
-    second_labeled_id = models.ForeignKey("Second_Labeled_Data", on_delete=models.CASCADE)
+    second_labeled_id = models.ForeignKey("SecondLabeledData", on_delete=models.CASCADE)
     result_emotion = models.CharField(max_length=256)
     result_target = models.CharField(max_length=256)
     result_expression = models.CharField(max_length=256)

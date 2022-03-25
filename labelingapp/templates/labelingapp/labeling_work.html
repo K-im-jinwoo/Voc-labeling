@@ -106,16 +106,21 @@
                 {% for review_first in review_first %}
                     {{ review_first.review_number }}.
                     {{ review_first.review_content }}
-                {% endfor %}
-
-            </div>
-        <div style="display: inline-block;">
-                <form action="{% url 'labelingapp:work' %}" method="get">
+                <div style="display: inline-block;">
+                <form action="" method="post">
                     {% csrf_token %}
                     <div>
-                        <input type="submit" value="next">
+                        <input type="text" name="labeled_target" placeholder="키워드">
+                        <input type="text" name="labeled_emotion" placeholder="감정">
+                        <input type="text" name="labeled_expression" placeholder="현상">
+                        {% comment %}<input type="hidden" name="category_id" value="30">{% endcomment %}
+                        <input type="hidden" name="review_number" value="{{ review_first.review_number }}">
+                        <input type="submit" value="적용">
+                        <input type="button" value="next">
                     </div>
                 </form>
+                </div>
+                {% endfor %}
             </div>
         </div>
 
@@ -139,5 +144,6 @@
 
         </div>
     </div>
+
 
 {% endblock %}
