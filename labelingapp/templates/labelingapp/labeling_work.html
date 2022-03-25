@@ -110,6 +110,13 @@
                 <form action="" method="post">
                     {% csrf_token %}
                     <div>
+                        <select name='category_middle' style="display: inline-block; width: 8rem; height: 1.9rem;
+                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+                            {% for category_detail in category_detail %}
+                            <option value='{{ category_detail.category_middle }}'>
+                                {{ category_detail.category_middle }}</option>
+                            {% endfor %}
+                        </select>
                         <input type="text" name="labeled_target" placeholder="키워드">
                         <input type="text" name="labeled_emotion" placeholder="감정">
                         <input type="text" name="labeled_expression" placeholder="현상">
