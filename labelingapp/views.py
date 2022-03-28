@@ -74,17 +74,12 @@ def labeling_work(request):
             # obj2.first_status = True
             # obj2.save()
 
+
+
             return #다음 리뷰 불러오기?
+
         else:
             return HttpResponse("아무것도 해당안됨")
-
-
-
-
-
-
-
-
 
 
 
@@ -97,3 +92,4 @@ def labeling_work(request):
 
 def labeling_inspect(request):
     return render(request, 'labelingapp/labeling_inspect.html')
+

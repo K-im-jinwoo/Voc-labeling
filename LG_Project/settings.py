@@ -119,7 +119,7 @@ USE_TZ = True
 STATIC_URL = '/static/'  # static파일에 직접 접근하기 위한 경로
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 파일 저장 경로
 STATICFILES_DIRS = [
-    BASE_DIR / "static"
+
 ]
 
 MEDIA_URL = '/media/'  #url에서 media의 각 파일에 직접 접근하기 위한 경로(media/video.mv4)
