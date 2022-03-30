@@ -37,7 +37,11 @@ def labeling_work(request):
                     review_first = print_review(start, end, category_product)
 
                     context = {'category_detail': category_detail, 'category_product': category_product,
-                               'review_first': review_first}
+                               'review_first': review_first, 'start': start, 'end': end}
+                    if request.GET.get("form-type") == 'NextForm':
+                        review_id = request.GET.get('review_id')
+                        Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
+
                     return render(request, 'labelingapp/labeling_work.html', context)
 
             else:
@@ -50,33 +54,36 @@ def labeling_work(request):
             target = request.POST.get('labeled_target')
             emotion = request.POST.get('labeled_emotion')
             expression = request.POST.get('labeled_expression')
+            review_id = request.POST.get('review_id')  # 해당 리뷰 id 받아오기
+            category_id = request.POST.get('category_id')  # 해당하는 리뷰에 맞는 카테고리id를 받아오기
             print(target, emotion, expression)
+
+            # review_information = Review.objects.get(pk='review_id')
+            # category_information = Category.objects.get(pk='category_id')
 
             # First_Labeled_Data모델을 불러와서 first_labeled_data에 저장
             first_labeled_data=FirstLabeledData()
-            review_detail = request.POST.get('review_number') #해당 리뷰 번호 받아오기
-            print(review_detail)
+
             # laveling_work에서 불러온 값들을 first_labeled_data 안에 정해진 db이름으로 넣음
             first_labeled_data.first_labeled_emotion = emotion #긍,부정 저장
             first_labeled_data.first_labeled_target = target # 대상 저장
             first_labeled_data.first_labeled_expression = expression #현상 저장
+            first_labeled_data.review_id = Review.objects.get(pk=review_id)
+            first_labeled_data.category_id = Category.objects.get(pk=category_id)
 
-
-            category_ID = request.POST.get('category_id') # 해당하는 리뷰에 맞는 카테고리와 리뷰 id를 받아오는 법 찾아야할듯(같은수정필요)
             # 지금까지 받아온 값 firstlabeleddata(First_Labeled_Data DB)에 저장
-            print(category_ID)
             first_labeled_data.save()
-            #
-            # 상태(True,False) 업데이트해서 Review DB에 다시 저장 (수정필요,업데이트 방법 찾아야함)
-            # obj2 = Review.objects.filter(pk='review_id').update(first_status=True,
-            #                                                          labeled_user_id=request.user)
-            # obj2 = review_detail.review_id
-            # obj2.first_status = True
-            # obj2.save()
+
+            Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
+
+            if request.method == "POST" and 'dummy' in request.POST:  # dummy POST가 들어올때 동작
+                Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True, labeled_user_id=request.user)
 
 
 
-            return #다음 리뷰 불러오기?
+
+                return HttpResponse("아무것도 해당안됨")
+
 
         else:
             return HttpResponse("아무것도 해당안됨")
@@ -92,4 +99,3 @@ def labeling_work(request):
 
 def labeling_inspect(request):
     return render(request, 'labelingapp/labeling_inspect.html')
-
