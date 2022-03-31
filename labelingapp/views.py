@@ -61,7 +61,7 @@ def labeling_work(request):
                     first_labeled_data.save()
 
                 # Next 버튼을 눌렀을 때
-                if request.method == "POST" and request.POST.get("form-type") == 'NextForm':
+                if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
                     review_id = request.GET.get('review_id')
 
                     # 해당 review의 작업 상태와 작업자를 변경
