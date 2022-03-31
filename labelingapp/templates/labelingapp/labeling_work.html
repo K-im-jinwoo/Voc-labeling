@@ -135,7 +135,7 @@
             </div>
         </div>
         <div style="display: inline-block;">
-            <form action="{% url 'labelingapp:work' %}" method="get" id="NextForm">
+            <form action="{% url 'labelingapp:work' %}" method="post" id="NextForm">
                 {% csrf_token %}
                 <input type="hidden" name="form-type" value="NextForm">
                 <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
