@@ -53,7 +53,7 @@ def labeling_work(request):
                     first_labeled_data = FirstLabeledData()
 
                     # laveling_work에서 불러온 값들을 first_labeled_data 안에 정해진 db이름으로 넣음
-                    first_labeled_data.first_labeled_emotion = emotion  # 긍,부정 저장
+                    first_labeled_data.first_labeled_emotion = emotion  # 긍정 ,부정, 중립 저장
                     first_labeled_data.first_labeled_target = target  # 대상 저장
                     first_labeled_data.first_labeled_expression = expression  # 현상 저장
                     first_labeled_data.review_id = Review.objects.get(pk=review_id)

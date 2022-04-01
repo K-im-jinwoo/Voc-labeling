@@ -13,7 +13,7 @@
 <div style="width: 100%; text-align: center; margin-top: 3rem;">
     <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
         <div style="text-align: left; width: 13rem;">
-            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 2rem">
+            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem;">
                 Data Export
             </p>
         </div>
@@ -21,7 +21,7 @@
         <!-- method 설정 필요합니다. -->
         <form action="{% url 'uploadapp:upload' %}" method="get">
             {% csrf_token%}
-            <div style="text-align: left ">
+            <div style="text-align: left; margin-top: 2rem; ">
                 <p style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;
                     display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
                 <select name='product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">

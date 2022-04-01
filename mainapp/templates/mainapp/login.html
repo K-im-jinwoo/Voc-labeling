@@ -6,15 +6,15 @@
 <body>
 {% load static %}
 {% load bootstrap4 %}
-    <div style="text-align: center;width: 100%; margin: 5rem 5rem 3rem 0rem">
-        <h1 style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300;">Review Labeling</h1>
+    <div style="text-align: center; width: 100%; margin: 10rem 5rem 3rem 0rem;">
+        <h1 style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.6rem">Review Labeling</h1>
         <br>
         <br>
-        <div style="width: 25rem; display: inline-block; text-align: left">
+        <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; width: 25rem; display: inline-block; text-align: left">
             <form action="" method="post">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <input type="submit" class="btn btn-info rounded-pill" value="SignUp" style="width: 100%; margin-top: 1rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300; background-color: #eeeeee; border-color: #eeeeee">
+                <input type="submit" class="btn btn-info rounded-pill" value="Login" style="width: 100%; margin-top: 1rem; font-size: 1.3rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300; background-color: #eeeeee; border-color: #eeeeee">
             </form>
         </div>
     </div>
