@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<style>
+<style xmlns:labelingapp="http://www.w3.org/1999/xhtml">
     .subject{
         font-size: 1.2rem;
         font-weight: bold;
@@ -49,7 +49,7 @@
 
             <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
         font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택</div>
-            <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+            <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace;, monospace; font-weight: 200; margin-left: 0.3rem;">
                 <input style="width: 7rem" type="number" name="start" placeholder="ex)1" min="1" value="{{ start }}">
                 <div style="display: inline-block">~</div>
                 <input style="width: 7rem" type="number" name="end" placeholder="ex)10000" value="{{ end }}">
@@ -79,7 +79,7 @@
 
         <!-- Category,sentiment -->
         <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 11rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
-            <div style="margin-bottom: 0.4rem; margin-top: .7rem; margin-left: 0.2rem; display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">Category</div>
+            <div style="margin-bottom: 0.4rem; margin-top: .7rem; margin-left: 0.2rem; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">카테고리</div>
 
             <div style="height: 4.5rem">
                 {% if category_detail %}
@@ -93,7 +93,7 @@
             </div>
 
             <p>
-                <div style="display: inline-block; font-family: 'Josefin Sans', sans-serif; font-weight: 300; margin-left: 0.2rem; font-size: 1.3rem">Sentiment</div>
+                <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-left: 0.2rem; font-size: 1rem">감정</div>
                 <div style="display: inline-block; height: 2rem; width: 4rem; background-color: white; margin-left: 0.5rem;
                     padding:0.3rem; color: blue; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">긍정</div>
                 <div style="display: inline-block; height: 2rem; width: 4rem; background-color: white; margin-left: 0.3rem;
@@ -106,11 +106,11 @@
         <!-- 작업필드 -->
         {% for review_first in review_first %}
         <div style="background-color: white; border: 1px solid #bcbcbc; width: 70rem; height: 13rem; display: inline-block; margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-            <div style="display: inline-block; align: left; margin-top: 4rem;">
-
+            <p style="margin-top: 4rem;">
                     {{ review_first.review_number }}.
                     {{ review_first.review_content }}
-                <div style="display: inline-block;">
+            </p>
+            <p>
                 <form action="{% url "labelingapp:work" %}?category_product={{ category_product }}&start={{ start }}&end={{ end }}" method="post">
                     {% csrf_token %}
                     <div style="margin-top: 1rem;">
@@ -130,12 +130,11 @@
                         </select>
                         <input type="text" name="labeled_expression" placeholder="현상">
                         <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                        <input class="btn btn-outline-success btn-sm" type="submit" value="save" onClick="window.location.reload()" style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1rem">
+                        <input class="btn btn-outline-success btn-sm" type="submit" value="저장" onClick="window.location.reload()" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
                     </div>
                 </form>
-                </div>
+                </p>
 
-            </div>
         </div>
 
 
@@ -145,7 +144,7 @@
                     {% csrf_token %}
 
                     <div>
-                        <input class="btn btn-outline-danger btn-sm" type="submit" value="delete" style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
+                        <input class="btn btn-outline-danger btn-sm" type="submit" value="삭제" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
                     </div>
                 </form>
         </div>
@@ -154,7 +153,7 @@
                     {% csrf_token %}
 
                     <div>
-                        <input class="btn btn-outline-dark btn-sm" type="submit" value="reset" style="margin-right: 0.5rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1rem;">
+                        <input class="btn btn-outline-dark btn-sm" type="submit" value="초기화" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">
                     </div>
                 </form>
         </div>
@@ -168,7 +167,7 @@
                 <input type="hidden" name="category_product" value="{{ category_product }}">
                 <input type="hidden" name="start" value="{{ start }}">
                 <input type="hidden" name="end" value="{{ end }}">
-                <input class="btn btn-outline-dark btn-sm" type="submit" value="next" style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; margin-right: 3.2rem; font-size: 1rem">
+                <input class="btn btn-outline-dark btn-sm" type="submit" value="다음" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-right: 3.2rem; font-size: 1rem">
             </form>
         </div>
 
