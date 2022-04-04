@@ -43,7 +43,7 @@ def labeling_work(request):
                         Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
 
                     if request.GET.get("form-type") == 'DummyForm':
-                        review_id = request.GET.get('review_id')# dummy POST가 들어올때 동작
+                        review_id = request.GET.get('review_id')
                         Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True,
                                                                    labeled_user_id=request.user)
 
