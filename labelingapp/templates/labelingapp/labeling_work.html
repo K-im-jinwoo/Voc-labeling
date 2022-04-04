@@ -122,13 +122,13 @@
                             {% endfor %}
                         </select>
                         <input type="text" name="labeled_target" placeholder="키워드">
+                        <input type="text" name="labeled_expression" placeholder="현상">
                         <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
                             font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
                             <option value="positive">긍정</option>
                             <option value="negative">부정</option>
                             <option value="neutral">중립</option>
                         </select>
-                        <input type="text" name="labeled_expression" placeholder="현상">
                         <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
                         <input class="btn btn-outline-success btn-sm" type="submit" value="저장" onClick="window.location.reload()" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
                     </div>
