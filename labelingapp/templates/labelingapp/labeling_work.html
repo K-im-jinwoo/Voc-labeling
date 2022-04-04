@@ -139,15 +139,20 @@
 
 
         <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
-        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
-                <form action="{% url 'labelingapp:work' %}" method="get">
-                    {% csrf_token %}
 
-                    <div>
-                        <input class="btn btn-outline-danger btn-sm" type="submit" value="삭제" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
-                    </div>
-                </form>
+        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
+            <form action="{% url 'labelingapp:work' %}" method="get" id="DummyForm">
+                {% csrf_token %}
+                <input type="hidden" name="form-type" value="DummyForm">
+                <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
+                <input type="hidden" name="category_product" value="{{ category_product }}">
+                <input type="hidden" name="start" value="{{ start }}">
+                <input type="hidden" name="end" value="{{ end }}">
+                <input class="btn btn-outline-danger btn-sm" type="submit" value="버리기" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
+            </form>
         </div>
+
+
         <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
                 <form action="{% url 'labelingapp:work' %}" method="get">
                     {% csrf_token %}
