@@ -79,3 +79,20 @@ fabric.properties
 __pycache__/
 media/
 
+*.pyc
+
+labelingapp/__pycache__
+LG_Project/__pycache__
+mainapp/__pycache__
+media/__pycache__
+outputapp/__pycache__
+templates/__pycache__
+uploadapp/__pycache__
+
+labelingapp/__pycache__/
+LG_Project/__pycache__/
+mainapp/__pycache__/
+media/__pycache__/
+outputapp/__pycache__/
+templates/__pycache__/
+uploadapp/__pycache__/
