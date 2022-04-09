@@ -53,7 +53,7 @@ def labeling_work(request):
                     first_labeled_data = FirstLabeledData()
 
                     # laveling_work에서 불러온 값들을 first_labeled_data 안에 정해진 db이름으로 넣음
-                    first_labeled_data.first_labeled_emotion = emotion  # 긍,부정 저장
+                    first_labeled_data.first_labeled_emotion = emotion  # 긍정 ,부정, 중립 저장
                     first_labeled_data.first_labeled_target = target  # 대상 저장
                     first_labeled_data.first_labeled_expression = expression  # 현상 저장
                     first_labeled_data.review_id = Review.objects.get(pk=review_id)
@@ -66,6 +66,11 @@ def labeling_work(request):
 
                     # 해당 review의 작업 상태와 작업자를 변경
                     Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
+
+                elif request.GET.get("form-type") == 'DummyForm':
+                    review_id = request.GET.get('review_id')
+                    Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True,
+                                                               labeled_user_id=request.user)
 
                 return render(request, 'labelingapp/labeling_work.html', context)
 
@@ -84,3 +89,5 @@ def labeling_work(request):
 
 def labeling_inspect(request):
     return render(request, 'labelingapp/labeling_inspect.html')
+
+

@@ -13,7 +13,7 @@
 <div style="width: 100%; text-align: center; margin-top: 3rem;">
     <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
         <div style="text-align: left; width: 13rem;">
-            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 2rem">
+            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
                 Data Export
             </p>
         </div>
@@ -30,7 +30,7 @@
                     <option value='refrigerator'>냉장고</option>
                     <option value='dish_washer'>식기세척기</option>
                 </select>
-                <input style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.2rem;" type="submit" value="완료">
+                <input class="btn btn-outline-dark btn-sm" type="submit" value="완료" style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
             </div>
         </form>
 
@@ -59,8 +59,10 @@
                 {% csrf_token %}
 
 
-                <input style="width: 200px; margin: 0 auto 30px; padding: 10px 25px; font-size: 1.4rem;
-                background-color: #eeeeee; border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" value=".csv export">
+                <input class="btn btn-outline-dark btn-sm" style="width: 200px; margin: 0 auto 30px; padding: 10px 25px; font-size: 1.4rem;
+                border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" value=".csv export">
+
+
             </form>
         </div>
 
