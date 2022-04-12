@@ -16,12 +16,12 @@
     <div style="width: 69rem; height: 1rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
         <div style="text-align: left; width: 13rem;">
             <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
-                Data Labeling
+                Data Inspect
             </p>
         </div>
     </div>
     <div>
-        <form action="{% url 'labelingapp:work' %}" method="get">
+        <form action="{% url 'labelingapp:inspect' %}" method="get">
         {% csrf_token %}
         <!-- 제품 및 데이터 번호 선택 필드 -->
         <div style="text-align:left; background-color: white; width: 70rem; height: 3rem; display: inline-block; margin-top: 0rem">
@@ -111,7 +111,7 @@
                     {{ review_first.review_content }}
             </p>
             <p>
-                <form action="{% url "labelingapp:work" %}?category_product={{ category_product }}&start={{ start }}&end={{ end }}" method="post">
+                <form action="{% url "labelingapp:inspect" %}?category_product={{ category_product }}&start={{ start }}&end={{ end }}" method="post">
                     {% csrf_token %}
                     <div style="margin-top: 1rem;">
                         <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
@@ -122,13 +122,13 @@
                             {% endfor %}
                         </select>
                         <input type="text" name="labeled_target" placeholder="키워드">
-                        <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
-                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                            <option value="positive">긍정</option>
-                            <option value="negative">부정</option>
-                            <option value="neutral">중립</option>
-                        </select>
                         <input type="text" name="labeled_expression" placeholder="현상">
+                        <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
+                                font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+                                <option value="positive">긍정</option>
+                                <option value="negative">부정</option>
+                                <option value="neutral">중립</option>
+                        </select>
                         <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
                         <input class="btn btn-outline-success btn-sm" type="submit" value="저장" onClick="window.location.reload()" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
                     </div>
@@ -140,7 +140,7 @@
 
         <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
         <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
-                <form action="{% url 'labelingapp:work' %}" method="get">
+                <form action="{% url 'labelingapp:inspect' %}" method="get">
                     {% csrf_token %}
 
                     <div>
@@ -149,7 +149,7 @@
                 </form>
         </div>
         <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
-                <form action="{% url 'labelingapp:work' %}" method="get">
+                <form action="{% url 'labelingapp:inspect' %}" method="get">
                     {% csrf_token %}
 
                     <div>
@@ -160,7 +160,7 @@
 
 
         <div style="display: inline-block;">
-            <form action="{% url 'labelingapp:work' %}" method="get" id="NextForm">
+            <form action="{% url 'labelingapp:inspect' %}" method="get" id="NextForm">
                 {% csrf_token %}
                 <input type="hidden" name="form-type" value="NextForm">
                 <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
