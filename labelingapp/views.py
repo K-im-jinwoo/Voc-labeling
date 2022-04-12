@@ -52,6 +52,9 @@ def labeling_work(request):
                     # First_Labeled_Data모델을 불러와서 first_labeled_data에 저장
                     first_labeled_data = FirstLabeledData()
 
+                    # 하이라이트 기능
+
+
                     # laveling_work에서 불러온 값들을 first_labeled_data 안에 정해진 db이름으로 넣음
                     first_labeled_data.first_labeled_emotion = emotion  # 긍정 ,부정, 중립 저장
                     first_labeled_data.first_labeled_target = target  # 대상 저장
@@ -59,6 +62,7 @@ def labeling_work(request):
                     first_labeled_data.review_id = Review.objects.get(pk=review_id)
                     first_labeled_data.category_id = Category.objects.get(pk=category_id)
                     first_labeled_data.save()
+
 
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
