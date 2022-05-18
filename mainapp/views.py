@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView
 
 from mainapp.forms import ProfileCreationForm
-from mainapp.models import Profile
+from mainapp.models import Profile, Category
 
 
 class AccountCreateView(CreateView):
@@ -50,4 +50,30 @@ class ProfileCreateView(CreateView):
         return super().form_valid(form)
 
 def workstatus(request):
+    if request.method == "GET":
+        if 'category_product' == 'cleaner':
+            status_category = Category.objects.filter(category_product='cleaner')
+            context = {'status_category': status_category}
+            return render(request, 'mainapp/workstatus.html', context)
+        elif 'category_product' == 'refigerator':
+            status_category = Category.objects.filter(category_product='refigerator')
+            context = {'status_category': status_category}
+            return render(request, 'mainapp/workstatus.html', context)
+        else:
+            status_category = Category.objects.filter(category_product='dish_washer')
+            context = {'status_category': status_category}
+            return render(request, 'mainapp/workstatus.html', context)
+
+
+    #
+    #     if 'category_product'  in ['cleaner', 'refrigerator', 'dish_washer']:
+    #         category_product = request.GET['category_product']
+    #         status_category = Category.objects.filter(category_product=category_product)
+    #         context = {'status_category': status_category}
+    #         return render(request, 'mainapp/workstatus.html', context)
+    #     return render(request, 'mainapp/workstatus.html')
+    # else:
+    #     return render(request, 'mainapp/workstatus.html')
+
+
     return render(request, 'mainapp/workstatus.html')

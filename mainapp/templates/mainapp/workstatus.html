@@ -1,39 +1,81 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-    .subject{
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
 
-</style>
+<div style="height: 40rem; width: 100%; display: flex; justify-content: center;">
+    <div style="height: 100%; width: 90%;">
+        <div>
+            <div style="display:inline-block;height: 3.5rem; width: auto; padding: 1rem">
+                <form action="" method="get">
+                {% csrf_token%}
+                    <div style="text-align: left">
+                        <input name="category_product" type="radio" name="selected" value="cleaner">&nbsp;청소기&nbsp;&nbsp;
+                        <input name="category_product" type="radio" name="selected" value="refigerator">&nbsp;냉장고&nbsp;&nbsp;
+                        <input name="category_product" type="radio" name="selected" value="dish_washer">&nbsp;식기세척기&nbsp;&nbsp;
+                        <input class="btn btn-secondary rounded-pill" type="submit" value="선택" style="width:8rem;margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                    </div>
+                </form>
+            </div>
+            <div style="display:inline-block;height: 3.5rem; width: auto; float: right;padding: 1rem">
+                <div style="display: inline-block; font-weight: bold">총 개수</div>
+                <div style="display: inline-block; font-weight: bold">작업완료</div>
+                <div style="display: inline-block; font-weight: bold">검수완료</div>
+                <div style="display: inline-block; font-weight: bold">삭제</div>
+            </div>
+        </div>
+        <div style="display:inline-block;height: 36.5rem; width: 35%">
+            <div style="height: 1.5rem;"></div>
+            <div style="height: 35rem; border: 1px solid black">
+                <div style="height: 1.5rem;text-align: center;border-bottom: 1px solid black">
+                    <div style="height: 1.5rem;display: inline-block;width: 28%">카테고리</div>
+                    <div style="height: 1.5rem;display: inline-block;width: 15%">긍정</div>
+                    <div style="height: 1.5rem;display: inline-block;width: 15%">부정</div>
+                    <div style="height: 1.5rem;display: inline-block;width: 15%">중립</div>
+                    <div style="height: 1.5rem;display: inline-block;width: 17%">총개수</div>
+                </div>
+                <div style="height: 33.5rem;text-align: center;margin-top: 1rem">
+                    <div style="display: inline-block;height: 33.5rem;width: 28%">
+                        {% if status_category %}
+                        {% for status_category in status_category %}
+                        <p>{{ status_category.category_middle }}</p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div style="display: inline-block;height: 33.5rem;width: 15%">긍정</div>
+                    <div style="display: inline-block;height: 33.5rem;width: 15%">부정</div>
+                    <div style="display: inline-block;height: 33.5rem;width: 15%">중립</div>
+                    <div style="display: inline-block;height: 33.5rem;width: 17%">총개수</div>
+                </div>
+            </div>
+        </div>
+        <div style="display:inline-block;height: 36.5rem; width: 19%; text-align: center; vertical-align: top">
+            <div style="height: 1.5rem;">Keyword</div>
+            <div style="height: 35rem; border: 1px solid black">
+                <div style="height: 1.5rem;text-align: center; border-bottom: 1px solid black">
+                    <div style="height: 1.5rem;display: inline-block;width: 45.5%">대상</div>
+                    <div style="height: 1.5rem;display: inline-block;width: 45.5%">현상</div>
+                </div>
+                <div style="height: 33.5rem;text-align: center; margin-top: 1rem;margin-bottom: .5rem">
+                    <div style="display: inline-block; height: 32rem; width:45.5%;">키워드자리</div>
+                    <div style="display: inline-block; height: 32rem; width:45.5%;">현상자리</div>
+                </div>
+            </div>
 
-
-<div style="width: 100%; text-align: center; margin-top: 3rem;">
-    <div style="width: 60rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
-        <div style="text-align: left; width: 13rem;">
-            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
-                Work Status
-            </p>
         </div>
-        <div style="display: inline-block; width: 100%; height: 30rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
-        <div style="text-align: center; font-family: 'Nanum Gothic Coding', monospace;">
-            <span style="margin-right: 2rem;">제품명</span>
-            <span style="margin-right: 2rem;">작업파일</span>
-            <span style="margin-right: 2rem;">데이터수</span>
-            <span style="margin-right: 2rem;">작업완료</span>
-            <span style="margin-right: 2rem;">검수완료</span>
-            <span style="margin-right: 2rem;">미완료</span>
-            <span style="margin-right: 2rem;">작업자</span>
-            <span style="margin-right: 2rem;">검수자</span>
-            <span style="">최근작업일시</span>
+        <div style="display:inline-block;height: 36.5rem; width: 45%; text-align: center; vertical-align: top">
+            <div style="height: 1.5rem;">Review</div>
+            <div style="height: 35rem; border: 1px solid black">
+                <div style="height: 1.5rem;text-align: center; border-bottom: 1px solid black">
+                    <div style="height: 1.5rem;display: inline-block;width: 12%">번호</div>
+                    <div style="height: 1.5rem;display: inline-block;width: 80%">원데이터</div>
+                </div>
+                <div style="height: 33.5rem;text-align: center; margin-top: 1rem;margin-bottom: .5rem">
+                    <div style="display: inline-block; height: 32rem; width:12%;">번호</div>
+                    <div style="display: inline-block; height: 32rem; width:80%;">원데이터</div>
+                </div>
+            </div>
         </div>
-        </div>
-        <div style="text-align: left; font-family: 'Nanum Gothic Coding', monospace;">
-            * 같은 파일의 데이터 작업 시, 추가 정보는 최근 정보로 다시 업데이트 된다.
-        </div>
-</div>
+    </div>
 </div>
 
 {% endblock %}
