@@ -50,19 +50,19 @@ class ProfileCreateView(CreateView):
         return super().form_valid(form)
 
 def workstatus(request):
-    if request.method == "GET":
-        if 'category_product' == 'cleaner':
-            status_category = Category.objects.filter(category_product='cleaner')
-            context = {'status_category': status_category}
-            return render(request, 'mainapp/workstatus.html', context)
-        elif 'category_product' == 'refigerator':
-            status_category = Category.objects.filter(category_product='refigerator')
-            context = {'status_category': status_category}
-            return render(request, 'mainapp/workstatus.html', context)
-        else:
-            status_category = Category.objects.filter(category_product='dish_washer')
-            context = {'status_category': status_category}
-            return render(request, 'mainapp/workstatus.html', context)
+    # if request.method == "GET":
+    #     if 'category_product' == 'cleaner':
+    #         status_category = Category.objects.filter(category_product='cleaner')
+    #         context = {'status_category': status_category}
+    #         return render(request, 'mainapp/workstatus.html', context)
+    #     elif 'category_product' == 'refigerator':
+    #         status_category = Category.objects.filter(category_product='refigerator')
+    #         context = {'status_category': status_category}
+    #         return render(request, 'mainapp/workstatus.html', context)
+    #     else:
+    #         status_category = Category.objects.filter(category_product='dish_washer')
+    #         context = {'status_category': status_category}
+    #         return render(request, 'mainapp/workstatus.html', context)
 
 
     #
@@ -75,5 +75,29 @@ def workstatus(request):
     # else:
     #     return render(request, 'mainapp/workstatus.html')
 
+
+    # return render(request, 'mainapp/workstatus.html')
+
+    try:
+
+        # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
+        if 'category_product' in request.GET:
+            # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
+            if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
+                category_product = request.GET['category_product']
+                # 해당 제품군의 카테고리 정보 불러옴
+                category_detail = Category.objects.filter(category_product=category_product)
+                # workstatus.html에 보낼 context 데이터
+                context = {'category_detail': category_detail}
+                return render(request, 'mainapp/workstatus.html', context)
+            return render(request, 'mainapp/workstatuw.html')
+
+        else:
+            context = {'message': '제품을 다시 선택해주세요.'}
+            return render(request, 'mainapp/workstatus.html', context)
+
+    # 예외처리
+    except Exception as identifier:
+        print(identifier)
 
     return render(request, 'mainapp/workstatus.html')
