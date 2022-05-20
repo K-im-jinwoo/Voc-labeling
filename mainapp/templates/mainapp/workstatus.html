@@ -55,7 +55,22 @@
         vertical-align: top;
         font-family: 'Nanum Gothic Coding', monospace;
     }
+
+    .sort{
+        display: inline-block;
+    }
+
+    .sort input[type=submit]{
+        width: 1rem;
+
+    }
 </style>
+
+<script>
+function chk_form(form_name) {
+document.getElementById(form_name).submit();
+}
+</script>
 
 <div style="height: 44rem; width: 100%; display: flex; justify-content: center;">
 <!--    전체-->
@@ -93,19 +108,41 @@
 <!--                표 속성-->
                 <div class="bot_line">
                     <div class="data_label" style="width: 28%">카테고리</div>
-                    <div class="data_label" style="width: 15%">긍정</div>
-                    <div class="data_label" style="width: 15%">부정</div>
-                    <div class="data_label" style="width: 15%">중립</div>
-                    <div class="data_label" style="width: 17%">총개수</div>
+                    <div class="data_label" style="width: 15%">긍정
+                        <form method="post" class="sort" id="positive_sort">
+                            {% csrf_token %}
+                            <input type="hidden" name="sort" value="positive">
+                        </form>
+                        <a href="#" onclick="return chk_form('positive_sort')"><b>↓</b></a>
+                    </div>
+                    <div class="data_label" style="width: 15%">부정
+                        <form method="post" class="sort" id="negative_sort">
+                            {% csrf_token %}
+                            <input type="hidden" name="sort" value="negative">
+                        </form>
+                        <a href="#" onclick="return chk_form('negative_sort')"><b>↓</b></a>
+                    </div>
+                    <div class="data_label" style="width: 15%">중립
+                        <form method="post" class="sort" id="neutral_sort">
+                            {% csrf_token %}
+                            <input type="hidden" name="sort" value="neutral">
+                        </form>
+                        <a href="#" onclick="return chk_form('neutral_sort')"><b>↓</b></a>
+                    </div>
+                    <div class="data_label" style="width: 17%">총개수
+                        <form method="post" class="sort" id="everything_sort">
+                            {% csrf_token %}
+                            <input type="hidden" name="sort" value="everything">
+                        </form>
+                        <a href="#" onclick="return chk_form('everything_sort')"><b>↓</b></a>
+                    </div>
                 </div>
 <!--                제품군에 맞는 카테고리와 개수-->
                 <div class="date_space">
                     <div class="date_space_cut" style="width: 28%;">
-                        {% if category_detail %}
-                            {% for status_category in category_detail %}
-                            <p>{{ status_category.category_middle }}</p>
-                            {% endfor %}
-                        {% endif %}
+                        {% for category in category_detail_list %}
+                        <p>{{ category }}</p>
+                        {% endfor %}
                     </div>
                     <!-- 긍정 개수 -->
                     <div class="date_space_cut" style="width: 15%;">
