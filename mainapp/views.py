@@ -49,6 +49,29 @@ class ProfileCreateView(CreateView):
         temp_profile.save()
         return super().form_valid(form)
 
+# sort를 기준으로 정렬해주는 함수
+def sorting(sort, category_detail_list, positive, negative, neutral, everything):
+    standard = []
+    if sort == "positive":
+        standard = positive
+    elif sort == "negative":
+        standard = negative
+    elif sort == "neutral":
+        standard = neutral
+    elif sort == "everything":
+        standard = everything
+
+    # 오름차순 정렬
+    for i in range(1, len(standard)):
+        for j in range(i, 0, -1):
+            if standard[j - 1].count() < standard[j].count():
+                category_detail_list[j - 1], category_detail_list[j] = category_detail_list[j], category_detail_list[
+                    j - 1]
+                positive[j - 1], positive[j] = positive[j], positive[j - 1]
+                negative[j - 1], negative[j] = negative[j], negative[j - 1]
+                neutral[j - 1], neutral[j] = neutral[j], neutral[j - 1]
+                everything[j - 1], everything[j] = everything[j], everything[j - 1]
+
 
 def workstatus(request):
     try:
@@ -57,33 +80,45 @@ def workstatus(request):
         if 'category_product' in request.GET:
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
+
+                if request.method == "POST":
+                    if 'sort' in request.POST:
+                        sort = request.POST.get('sort')
+
+                # 해당 제품군의 카테고리 정보 불러옴
+                category_product = request.GET['category_product']
+                category_detail = Category.objects.filter(category_product=category_product)
+
+                '''카테고리별 긍정 부정 개수'''
+                # 긍정, 부정, 중립, 모두를 가져옴
+                category_detail_list = []
                 positive = []
                 negative = []
                 neutral = []
                 everything = []
 
-                category_product = request.GET['category_product']
-                # 해당 제품군의 카테고리 정보 불러옴
-                category_detail = Category.objects.filter(category_product=category_product)
-                context = {'category_detail': category_detail}
-
-                '''카테고리별 긍정 부정 개수'''
-                # 긍정, 부정, 중립, 모두를 가져옴
                 for category in category_detail:
-                    positive_temp = FirstLabeledData.objects.filter(category_id=category, first_labeled_emotion='positive')
-                    negative_temp = FirstLabeledData.objects.filter(category_id=category, first_labeled_emotion='negative')
-                    neutral_temp = FirstLabeledData.objects.filter(category_id=category, first_labeled_emotion='neutral')
+                    positive_temp = FirstLabeledData.objects.filter(category_id=category,
+                                                                    first_labeled_emotion='positive')
+                    negative_temp = FirstLabeledData.objects.filter(category_id=category,
+                                                                    first_labeled_emotion='negative')
+                    neutral_temp = FirstLabeledData.objects.filter(category_id=category,
+                                                                   first_labeled_emotion='neutral')
                     everything_temp = FirstLabeledData.objects.filter(category_id=category)
 
+                    category_detail_list.append(category.category_middle)
                     positive.append(positive_temp)
                     negative.append(negative_temp)
                     neutral.append(neutral_temp)
                     everything.append(everything_temp)
+                sorting(sort, category_detail_list, positive, negative, neutral, everything)
 
-                context = {'category_detail': category_detail, 'positive': positive, 'negative': negative, 'neutral': neutral, 'everything': everything}
+                context = {'category_detail_list': category_detail_list, 'positive': positive, 'negative': negative,
+                           'neutral': neutral, 'everything': everything}
 
                 return render(request, 'mainapp/workstatus.html', context)
             return render(request, 'mainapp/workstatus.html')
+
 
         else:
             context = {'message': '제품을 다시 선택해주세요.'}
