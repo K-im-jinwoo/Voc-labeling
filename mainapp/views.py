@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView
 
 from mainapp.forms import ProfileCreationForm
-from mainapp.models import Profile, Category
+from mainapp.models import Profile, Category, Review, FirstLabeledData
 
 
 class AccountCreateView(CreateView):
@@ -49,21 +49,41 @@ class ProfileCreateView(CreateView):
         temp_profile.save()
         return super().form_valid(form)
 
-def workstatus(request):
 
+def workstatus(request):
     try:
 
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET:
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
+                positive = []
+                negative = []
+                neutral = []
+                everything = []
+
                 category_product = request.GET['category_product']
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_detail = Category.objects.filter(category_product=category_product)
-                # workstatus.html에 보낼 context 데이터
                 context = {'category_detail': category_detail}
+
+                '''카테고리별 긍정 부정 개수'''
+                # 긍정, 부정, 중립, 모두를 가져옴
+                for category in category_detail:
+                    positive_temp = FirstLabeledData.objects.filter(category_id=category, first_labeled_emotion='positive')
+                    negative_temp = FirstLabeledData.objects.filter(category_id=category, first_labeled_emotion='negative')
+                    neutral_temp = FirstLabeledData.objects.filter(category_id=category, first_labeled_emotion='neutral')
+                    everything_temp = FirstLabeledData.objects.filter(category_id=category)
+
+                    positive.append(positive_temp)
+                    negative.append(negative_temp)
+                    neutral.append(neutral_temp)
+                    everything.append(everything_temp)
+
+                context = {'category_detail': category_detail, 'positive': positive, 'negative': negative, 'neutral': neutral, 'everything': everything}
+
                 return render(request, 'mainapp/workstatus.html', context)
-            return render(request, 'mainapp/workstatuw.html')
+            return render(request, 'mainapp/workstatus.html')
 
         else:
             context = {'message': '제품을 다시 선택해주세요.'}
