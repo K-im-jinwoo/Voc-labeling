@@ -102,27 +102,33 @@
                 <div class="date_space">
                     <div class="date_space_cut" style="width: 28%;">
                         {% if category_detail %}
-                            {{ category_detail.count }}
                             {% for status_category in category_detail %}
                             <p>{{ status_category.category_middle }}</p>
                             {% endfor %}
                         {% endif %}
                     </div>
+                    <!-- 긍정 개수 -->
                     <div class="date_space_cut" style="width: 15%;">
                         {% for number in positive %}
                             <p>{{ number.count }}</p>
                         {% endfor %}
                     </div>
+
+                    <!-- 부정 개수 -->
                     <div class="date_space_cut" style="width: 15%;">
                         {% for number in negative %}
                             <p>{{ number.count }}</p>
                         {% endfor %}
                     </div>
+
+                    <!-- 중립 개수 -->
                     <div class="date_space_cut" style="width: 15%;">
                         {% for number in neutral %}
                             <p>{{ number.count }}</p>
                         {% endfor %}
                     </div>
+
+                    <!-- 총 개수 -->
                     <div class="date_space_cut" style="width: 17%;">
                         {% for number in everything %}
                             <p>{{ number.count }}</p>
