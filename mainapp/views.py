@@ -50,7 +50,7 @@ class ProfileCreateView(CreateView):
         return super().form_valid(form)
 
 
-# sort를 기준으로 정렬해주는 함수
+# sort를 기준으로 정렬해주는 함수(삽입정렬)
 def sorting(sort, category_detail_list, positive, negative, neutral, everything):
     standard = []
     if sort == "positive":
@@ -87,13 +87,13 @@ def workstatus(request):
                 category_detail = Category.objects.filter(category_product=category_product)
 
                 '''카테고리별 긍정 부정 개수'''
-                # 긍정, 부정, 중립, 모두를 가져옴
                 category_detail_list = []
                 positive = []
                 negative = []
                 neutral = []
                 everything = []
 
+                # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
                     positive_temp = FirstLabeledData.objects.filter(category_id=category,
                                                                     first_labeled_emotion='positive')
@@ -109,6 +109,7 @@ def workstatus(request):
                     neutral.append(neutral_temp)
                     everything.append(everything_temp)
 
+                # sort 요청 들어오면 수행
                 if request.method == "POST" and 'sort' in request.POST:
                     sort = request.POST.get('sort')
                     sorting(sort, category_detail_list, positive, negative, neutral, everything)
