@@ -63,7 +63,7 @@ def type_to_variable(type, positive, negative, neutral, everything):
 
 
 # sort를 기준으로 정렬해주는 함수(삽입정렬)
-def sorting(sort, category_detail_list, positive, negative, neutral, everything, order):
+def sorting(sort, category_detail_list, positive, negative, neutral, everything):
     standard = []
 
     standard = type_to_variable(sort, positive, negative, neutral, everything)
@@ -78,7 +78,6 @@ def sorting(sort, category_detail_list, positive, negative, neutral, everything,
                 negative[j - 1], negative[j] = negative[j], negative[j - 1]
                 neutral[j - 1], neutral[j] = neutral[j], neutral[j - 1]
                 everything[j - 1], everything[j] = everything[j], everything[j - 1]
-                order[j - 1], order[j] = order[j], order[j - 1]
 
 
 def workstatus(request):
@@ -127,8 +126,7 @@ def workstatus(request):
                     request.session['sort'] = sort
 
                 if request.session['sort']:
-                    sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything,
-                            order)
+                    sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything)
 
                 # 번호 개수를 눌렀을 때
                 if request.method == "GET" and 'showing_index' in request.GET:
@@ -138,7 +136,7 @@ def workstatus(request):
 
                     # labeled_word에 대상 - 현상 키워드 쌍을 저장함
                     labeled_word = type_to_variable(showing_type, positive, negative, neutral, everything)
-                    labeled_word = labeled_word[int(showing_index) - 3]
+                    labeled_word = labeled_word[int(showing_index)]
                     context['labeled_word'] = labeled_word
 
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
@@ -147,11 +145,10 @@ def workstatus(request):
                     context['labeled_review'] = labeled_review
                     print(labeled_review)
 
-                happy = zip(category_detail_list, positive, negative, neutral, everything, order)
+                happy = zip(category_detail_list, positive, negative, neutral, everything)
 
                 context['happy'] = happy
                 context['category_product'] = category_product
-                print(order)
                 return render(request, 'mainapp/workstatus.html',
                               context=context)
             return render(request, 'mainapp/workstatus.html')
