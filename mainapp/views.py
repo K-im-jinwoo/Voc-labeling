@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponseForbidden
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
 from mainapp.forms import ProfileCreationForm
@@ -50,17 +50,23 @@ class ProfileCreateView(CreateView):
         return super().form_valid(form)
 
 
+def type_to_variable(type, positive, negative, neutral, everything):
+    if type == 'positive':
+        variable = positive
+    elif type == 'negative':
+        variable = negative
+    elif type == 'neutral':
+        variable = neutral
+    elif type == 'everything':
+        variable = everything
+    return variable
+
+
 # sort를 기준으로 정렬해주는 함수(삽입정렬)
 def sorting(sort, category_detail_list, positive, negative, neutral, everything):
     standard = []
-    if sort == "positive":
-        standard = positive
-    elif sort == "negative":
-        standard = negative
-    elif sort == "neutral":
-        standard = neutral
-    elif sort == "everything":
-        standard = everything
+
+    standard = type_to_variable(sort, positive, negative, neutral, everything)
 
     # 오름차순 정렬
     for i in range(1, len(standard)):
@@ -87,11 +93,14 @@ def workstatus(request):
                 category_detail = Category.objects.filter(category_product=category_product)
 
                 '''카테고리별 긍정 부정 개수'''
+                context = {}
                 category_detail_list = []
                 positive = []
                 negative = []
                 neutral = []
                 everything = []
+                order = []
+                i = 0
 
                 # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
@@ -108,16 +117,39 @@ def workstatus(request):
                     negative.append(negative_temp)
                     neutral.append(neutral_temp)
                     everything.append(everything_temp)
+                    order.append(i)
+                    i += 1
 
-                # sort 요청 들어오면 수행
+                # 정렬 요청 들어오면 session에 정렬 요구 상태 저장
                 if request.method == "POST" and 'sort' in request.POST:
                     sort = request.POST.get('sort')
-                    sorting(sort, category_detail_list, positive, negative, neutral, everything)
+                    request.session['sort'] = sort
 
-                context = {'category_detail_list': category_detail_list, 'positive': positive, 'negative': negative,
-                           'neutral': neutral, 'everything': everything}
+                # session에 저장한 요구 상태를 읽어 정렬 수행
+                if request.session['sort']:
+                    sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything)
 
-                return render(request, 'mainapp/workstatus.html', context)
+                # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
+                if request.method == "GET" and 'showing_index' in request.GET:
+                    # 번호의 위치(showing_index)와 번호의 긍부정 여부(showing_type)을 가져옴
+                    showing_index = request.GET.get('showing_index')
+                    showing_type = request.GET.get('showing_type')
+
+                    # labeled_word에 대상 - 현상 키워드 쌍을 저장함
+                    labeled_word = type_to_variable(showing_type, positive, negative, neutral, everything)
+                    labeled_word = labeled_word[int(showing_index)]
+                    context['labeled_word'] = labeled_word
+
+                    # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
+                    labeled_review = labeled_word.values_list('review_id', flat=True)
+                    labeled_review = Review.objects.filter(pk__in=labeled_review)
+                    context['labeled_review'] = labeled_review
+
+                data = zip(category_detail_list, positive, negative, neutral, everything, order)
+
+                context['data'] = data
+                context['category_product'] = category_product
+                return render(request, 'mainapp/workstatus.html', context=context)
             return render(request, 'mainapp/workstatus.html')
 
 
