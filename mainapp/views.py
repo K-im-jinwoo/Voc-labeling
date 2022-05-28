@@ -91,6 +91,10 @@ def workstatus(request):
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
+                alltotal = Review.objects.filter(category_product=category_product).count()
+                first_num = Review.objects.filter(category_product=category_product).filter(first_status=True).count()
+                second_num = Review.objects.filter(category_product=category_product).filter(second_status=True).count()
+                dummy_num = Review.objects.filter(category_product=category_product).filter(dummy_status=True).count()
 
                 '''카테고리별 긍정 부정 개수'''
                 context = {}
@@ -149,6 +153,9 @@ def workstatus(request):
 
                 context['data'] = data
                 context['category_product'] = category_product
+                context = {'alltotal': alltotal, 'first_num': first_num,
+                           'dummy_num': dummy_num, 'second_num': second_num
+                }
                 return render(request, 'mainapp/workstatus.html', context=context)
             return render(request, 'mainapp/workstatus.html')
 

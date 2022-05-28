@@ -25,3 +25,4 @@ urlpatterns = [
     path('labeling/', include('labelingapp.urls')),
     path('output/', include('outputapp.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
