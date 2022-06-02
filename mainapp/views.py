@@ -153,9 +153,10 @@ def workstatus(request):
 
                 context['data'] = data
                 context['category_product'] = category_product
-                context = {'alltotal': alltotal, 'first_num': first_num,
-                           'dummy_num': dummy_num, 'second_num': second_num
-                }
+                context['alltotal'] = alltotal
+                context['first_num'] = first_num
+                context['dummy_num'] = dummy_num
+                context['second_num'] = second_num
                 return render(request, 'mainapp/workstatus.html', context=context)
             return render(request, 'mainapp/workstatus.html')
 
