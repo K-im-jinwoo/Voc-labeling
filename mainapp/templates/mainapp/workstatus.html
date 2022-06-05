@@ -1,186 +1,230 @@
 {% extends 'base.html' %}
-{% load bootstrap4 %}
 
 {% block content %}
-<style xmlns:labelingapp="http://www.w3.org/1999/xhtml">
-    .subject{
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
+    <style>
+        /*폰트*/
+        .english {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            height: 3rem;
 
+        }
 
-</style>
+        .korean {
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
 
+        /*오른쪽 상단 개수표시*/
+        .right_top {
+            display: inline-block;
+            font-weight: bold;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
 
-<div style="width: 100%; text-align: center; margin-top: 3rem;">
-    <div style="width: 69rem; height: 1rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
-        <div style="text-align: left; width: 13rem;">
-            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
-                Data Labeling
-            </p>
-        </div>
-    </div>
-    <div>
-        <form action="{% url 'labelingapp:work' %}" method="get">
-        {% csrf_token %}
-        <!-- 제품 및 데이터 번호 선택 필드 -->
-        <div style="text-align:left; background-color: white; width: 70rem; height: 3rem; display: inline-block; margin-top: 0rem">
-            <div style="margin: 0.5rem; font-size: 1rem; display: inline-block" class="subject">
-                <div style="display: inline-block">
+        /*데이터스크롤영역*/
+        .graph_space {
+            display: inline-block;
+            text-align: center;
+            vertical-align: top;
+            height: 40rem;
+        }
 
+        /*속성값아래 줄긋기*/
+        .bot_line {
+            height: 2rem;
+            text-align: center;
+            border-bottom: 1px solid black;
+        }
 
-                    <div style="text-align: left">
-                        <p style="height:1rem; display: inline-block; margin-top: 0rem; margin-bottom: 0rem; font-size: 1.1rem;
-                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject">제품명</p>
-                        <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
-                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;" >
-                            <option value='cleaner'>청소기</option>
-                            <option value='refrigerator'>냉장고</option>
-                            <option value='dish_washer'>식기세척기</option>
-                        </select>
+        /*데이터의 속성값*/
+        .data_label {
+            height: 1.5rem;
+            display: inline-block;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
 
-                        <!--{{ category_product }}-->
-                    </div>
+        /*실제 데이터가 들어가는 부분*/
+        .date_space {
+            overflow-y: scroll;
+            height: 33.5rem;
+            text-align: center;
+            margin-top: .5rem;
+            margin-bottom: .5rem;
+            vertical-align: top;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
 
+        /*속성마다 데이터의 구역을 구분*/
+        .date_space_cut {
+            display: inline-block;
+            vertical-align: top;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
+
+        .sort {
+            display: inline-block;
+        }
+
+        .sort input[type=submit] {
+            width: 1rem;
+
+        }
+    </style>
+
+    <script>
+        function chk_form(form_name) {
+            document.getElementById(form_name).submit();
+            var link = document.location.href;
+            console.log(link);
+
+        }
+    </script>
+
+    <div style="height: 44rem; width: 100%; display: flex; justify-content: center;">
+        <!--    전체-->
+        <div style="height: 100%; width: 90%;">
+            <div>
+                <!--            왼쪽상단:제품군선택-->
+                <div style="display:inline-block;height: 3.5rem; width: auto; padding: 1rem">
+                    <form action="" method="get">
+                        {% csrf_token %}
+                        <div class="korean" style="text-align: left">
+                            <input name="category_product" type="radio" name="selected" value="cleaner">&nbsp;청소기&nbsp;&nbsp;
+                            <input name="category_product" type="radio" name="selected" value="refrigerator">&nbsp;냉장고&nbsp;&nbsp;
+                            <input name="category_product" type="radio" name="selected" value="dish_washer">&nbsp;식기세척기&nbsp;&nbsp;
+                            <input class="btn btn-secondary rounded-pill" type="submit" value="선택"
+                                   style="width:8rem;margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                        </div>
+                    </form>
+                </div>
+
+                <!--            오른쪽상단:총개수현황-->
+                <div style="display:inline-block;height: 3.5rem; width: auto; float: right;padding: 1rem">
+                    <div class="right_top">총 개수</div>
+                    <div class="right_top">작업완료</div>
+                    <div class="right_top">검수완료</div>
+                    <div class="right_top">삭제</div>
                 </div>
             </div>
 
 
-
-            <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
-        font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택</div>
-            <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace;, monospace; font-weight: 200; margin-left: 0.3rem;">
-                <input style="width: 7rem" type="number" name="start" placeholder="ex)1" min="1" value="{{ start }}">
-                <div style="display: inline-block">~</div>
-                <input style="width: 7rem" type="number" name="end" placeholder="ex)10000" value="{{ end }}">
-            </div>
-            <div style="font-size: 1rem; display: inline-block" class="subject">
-                <input class="btn btn-outline-dark btn-sm" type="submit" value="적용" style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
-            </div>
-
-            <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; margin-left: 15rem; margin-bottom: 0.5rem; display: inline-block;" class=subject">
-            {% if category_product == "refrigerator" %}
-                <strong>카테고리 : 냉장고</strong>
-            {% elif category_product == "cleaner" %}
-                <strong>카테고리 : 청소기</strong>
-            {% elif category_product == "dish_washer"%}
-                <strong>카테고리 : 식기세척기</strong>
-            {% else %}
-                카테고리
-            {% endif %}
-        </div>
-
-
-        </div>
-        </form>
-
-
-        <!--{{ request.session.category_product }}-->
-
-        <!-- Category,sentiment -->
-        <div style="text-align: left; background-color: #eeeeee; border-radius: 1rem; width: 70rem; height: 11rem; display: inline-block; margin-left: 0rem; padding-left: 0.5rem">
-            <div style="margin-bottom: 0.4rem; margin-top: .7rem; margin-left: 0.2rem; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">카테고리</div>
-
-            <div style="height: 4.5rem">
-                {% if category_detail %}
-                    {% for category_detail in category_detail %}
-                        <div style="background-color: {{ category_detail.category_color }}; padding:.2rem.3rem.2rem.3rem;
-                        display: inline-block; opacity: 1;
-                                margin-bottom:.5rem">
-                            {{ category_detail.category_middle }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-
-            <p>
-                <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-left: 0.2rem; font-size: 1rem">감정</div>
-                <div style="display: inline-block; height: 2rem; width: 4rem; background-color: white; margin-left: 0.5rem;
-                    padding:0.3rem; color: blue; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">긍정</div>
-                <div style="display: inline-block; height: 2rem; width: 4rem; background-color: white; margin-left: 0.3rem;
-                    padding:0.3rem; color: red; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">부정</div>
-        <div style="display: inline-block; height: 2rem; width: 4rem; background-color: white; margin-left: 0.3rem;
-                    padding:0.3rem; color: gray; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">중립</div>
-            </p>
-        </div>
-
-        <!-- 작업필드 -->
-        {% for review_first in review_first %}
-        <div style="; border: 1px solid #bcbcbc; width: 70rem; height: auto; display: inline-block;
-        margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-            <p style="margin-top: 3rem">
-                    {{ review_first.review_number }}.
-                    {{ review_first.review_content }}
-            </p>
-            <p>
-                <form action="{% url "labelingapp:work" %}?category_product={{ category_product }}&start={{ start }}&end={{ end }}" method="post">
-                    {% csrf_token %}
-                    <div style="margin-bottom: 3rem">
-                        <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
-                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                            {% for category_detail in category_detail %}
-                            <option value='{{ category_detail.category_id }}'>
-                                {{ category_detail.category_middle }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" name="labeled_target" placeholder="키워드">
-                        <input type="text" name="labeled_expression" placeholder="현상">
-                        <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
-                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                            <option value="positive">긍정</option>
-                            <option value="negative">부정</option>
-                            <option value="neutral">중립</option>
-                        </select>
-                        <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                        <input class="btn btn-outline-success btn-sm" type="submit" value="저장" onClick="window.location.reload()" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
+            <!--        카테고리표구역-->
+            <div class="graph_space" style="width: 35%">
+                <div class="english"></div>
+                <div style="height: 37rem; border: 1px solid black">
+                    <!--                표 속성-->
+                    <div class="bot_line">
+                        <div class="data_label" style="width: 28%">카테고리</div>
+                        <div class="data_label" style="width: 15%">긍정
+                            <form method="post" class="sort" id="positive_sort">
+                                {% csrf_token %}
+                                <input type="hidden" name="sort" value="positive">
+                            </form>
+                            <a href="#" onclick="return chk_form('positive_sort')"><b>↓</b></a>
+                        </div>
+                        <div class="data_label" style="width: 15%">부정
+                            <form method="post" class="sort" id="negative_sort">
+                                {% csrf_token %}
+                                <input type="hidden" name="sort" value="negative">
+                            </form>
+                            <a href="#" onclick="return chk_form('negative_sort')"><b>↓</b></a>
+                        </div>
+                        <div class="data_label" style="width: 15%">중립
+                            <form method="post" class="sort" id="neutral_sort">
+                                {% csrf_token %}
+                                <input type="hidden" name="sort" value="neutral">
+                            </form>
+                            <a href="#" onclick="return chk_form('neutral_sort')"><b>↓</b></a>
+                        </div>
+                        <div class="data_label" style="width: 17%">총개수
+                            <form method="post" class="sort" id="everything_sort">
+                                {% csrf_token %}
+                                <input type="hidden" name="sort" value="everything">
+                            </form>
+                            <a href="#" onclick="return chk_form('everything_sort')"><b>↓</b></a>
+                        </div>
                     </div>
-                </form>
-                </p>
+                    <!--                제품군에 맞는 카테고리와 개수-->
+                    <div class="date_space">
+                        {% for category_detail_list, positive, negative, neutral, everything, order in data %}
+                            <div class="date_space_cut" style="width: 28%;">
+                                <p>{{ category_detail_list }}</p>
+                            </div>
 
-        </div>
+                            <!-- 긍정 개수 -->
+                            <div class="date_space_cut" style="width: 15%;">
+                                <p>
+                                    <a href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive">{{ positive.count }}</a>
+                                </p>
+                            </div>
 
+                            <!-- 부정 개수 -->
+                            <div class="date_space_cut" style="width: 15%;">
+                                <p>
+                                    <a href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative">{{ negative.count }}</a>
+                                </p>
+                            </div>
 
-        <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
+                            <!-- 중립 개수 -->
+                            <div class="date_space_cut" style="width: 15%;">
+                                <p>
+                                    <a href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral">{{ neutral.count }}</a>
+                                </p>
+                            </div>
 
-        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
-            <form action="{% url 'labelingapp:work' %}" method="get" id="DummyForm">
-                {% csrf_token %}
-                <input type="hidden" name="form-type" value="DummyForm">
-                <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                <input type="hidden" name="category_product" value="{{ category_product }}">
-                <input type="hidden" name="start" value="{{ start }}">
-                <input type="hidden" name="end" value="{{ end }}">
-                <input class="btn btn-outline-danger btn-sm" type="submit" value="버리기" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
-            </form>
-        </div>
-
-
-        <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
-                <form action="{% url 'labelingapp:work' %}" method="get">
-                    {% csrf_token %}
-
-                    <div>
-                        <input class="btn btn-outline-dark btn-sm" type="submit" value="초기화" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">
+                            <!-- 총 개수 -->
+                            <div class="date_space_cut" style="width: 15%;">
+                                <p>
+                                    <a href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything">{{ everything.count }}</a>
+                                </p>
+                            </div>
+                        {% endfor %}
                     </div>
-                </form>
-        </div>
+                </div>
+            </div>
 
 
-        <div style="display: inline-block;">
-            <form action="{% url 'labelingapp:work' %}" method="get" id="NextForm">
-                {% csrf_token %}
-                <input type="hidden" name="form-type" value="NextForm">
-                <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                <input type="hidden" name="category_product" value="{{ category_product }}">
-                <input type="hidden" name="start" value="{{ start }}">
-                <input type="hidden" name="end" value="{{ end }}">
-                <input class="btn btn-outline-dark btn-sm" type="submit" value="다음" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-right: 3.2rem; font-size: 1rem">
-            </form>
-        </div>
+            <!--        키워드현상쌍 표 구역-->
+            <div class="graph_space" style="width: 19%;">
+                <div class="english">Keyword</div>
+                <div style="height: 37rem; border: 1px solid black">
+                    <!--                표 속성-->
+                    <div class="bot_line">
+                        <div class="data_label" style="width: 45.5%">대상</div>
+                        <div class="data_label" style="width: 45.5%">현상</div>
+                    </div>
+                    <!--                실제 쌍-->
+                    <div class="date_space">
+
+                        {% for word in labeled_word %}
+                            <div class="date_space_cut" style="width:45.5%;">{{ word.first_labeled_target }}</div>
+                            <div class="date_space_cut" style="width:45.5%;">{{ word.first_labeled_expression }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
 
+            <!--        원데이터 표 구역-->
+            <div class="graph_space" style="width: 45%;">
+                <div class="english">Review</div>
+                <div style="height: 37rem; border: 1px solid black">
+                    <!--                표속성-->
+                    <div class="bot_line">
+                        <div class="data_label" style="width: 12%">번호</div>
+                        <div class="data_label" style="width: 80%">원데이터</div>
+                    </div>
+                    <!--                실제 리뷰-->
+                    <div class="date_space">
+                        {% for review in labeled_review %}
+                        <div class="date_space_cut" style="width:12%;">{{ review.review_number }}</div>
+                        <div class="date_space_cut" style="width:80%;">{{ review.review_content }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
-
 
 {% endblock %}
