@@ -105,15 +105,16 @@
 
         <!-- 작업필드 -->
         {% for review_first in review_first %}
-        <div style="background-color: white; border: 1px solid #bcbcbc; width: 70rem; height: 13rem; display: inline-block; margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-            <p style="margin-top: 4rem;">
+        <div style="; border: 1px solid #bcbcbc; width: 70rem; height: auto; display: inline-block;
+        margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+            <p style="margin-top: 3rem">
                     {{ review_first.review_number }}.
                     {{ review_first.review_content }}
             </p>
             <p>
                 <form action="{% url "labelingapp:work" %}?category_product={{ category_product }}&start={{ start }}&end={{ end }}" method="post">
                     {% csrf_token %}
-                    <div style="margin-top: 1rem;">
+                    <div style="margin-bottom: 3rem">
                         <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
                             font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
                             {% for category_detail in category_detail %}
