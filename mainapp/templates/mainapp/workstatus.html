@@ -70,6 +70,15 @@
             width: 1rem;
 
         }
+
+        #review_number {
+            border-top: black solid 0.5px;
+        }
+
+        #review_content {
+            border-bottom: black solid 0.5px;
+        }
+
     </style>
 
     <script>
@@ -218,8 +227,10 @@
                     <!--                실제 리뷰-->
                     <div class="date_space">
                         {% for review in labeled_review %}
-                        <div class="date_space_cut" style="text-align:left;width:10%;">{{ review.review_number }}</div>
-                        <div class="date_space_cut" style="text-align:left;width:82%;">{{ review.review_content }}</div>
+                            <div class="date_space_cut" id='review_number'
+                                 style="width:12%;">{{ review.review_number }}</div>
+                            <div class="date_space_cut" id='review_content'
+                                 style="width:80%;">{{ review.review_content }}</div>
                         {% endfor %}
                     </div>
                 </div>
