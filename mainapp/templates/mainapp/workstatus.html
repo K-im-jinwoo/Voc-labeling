@@ -78,6 +78,13 @@
         #review_content {
             border-bottom: black solid 0.5px;
         }
+        table tr:nth-child(even) {
+            background: #CCC
+        }
+        table tr:nth-child(odd) {
+            background: #FFF
+        }
+
 
     </style>
 
@@ -226,12 +233,15 @@
                     </div>
                     <!--                실제 리뷰-->
                     <div class="date_space">
-                        {% for review in labeled_review %}
-                            <div class="date_space_cut" id='review_number'
-                                 style="width:10%; text-align: center;">{{ review.review_number }}</div>
-                            <div class="date_space_cut" id='review_content'
-                                 style="width:82%; text-align: left;">{{ review.review_content }}</div>
-                        {% endfor %}
+                        <table>
+                            <tr>{% for review in labeled_review %}</tr>
+                            <td class="date_space_cut"
+                                 style="width:10%; text-align: center;">{{ review.review_number }}</td>
+                            <td class="date_space_cut"
+                                 style="width:82%; text-align: left;">{{ review.review_content }}</td>
+                            {% endfor %}
+                        </table>
+
                     </div>
                 </div>
             </div>
