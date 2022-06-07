@@ -221,16 +221,16 @@
                 <div style="height: 37rem; border: 1px solid black">
                     <!--                표속성-->
                     <div class="bot_line">
-                        <div class="data_label" style="text-align:left;width: 10%">번호</div>
+                        <div class="data_label" style="text-align:center;width: 10%">번호</div>
                         <div class="data_label" style="text-align:center;width: 82%">원데이터</div>
                     </div>
                     <!--                실제 리뷰-->
                     <div class="date_space">
                         {% for review in labeled_review %}
                             <div class="date_space_cut" id='review_number'
-                                 style="width:12%;">{{ review.review_number }}</div>
+                                 style="width:10%; text-align: center;">{{ review.review_number }}</div>
                             <div class="date_space_cut" id='review_content'
-                                 style="width:80%;">{{ review.review_content }}</div>
+                                 style="width:82%; text-align: left;">{{ review.review_content }}</div>
                         {% endfor %}
                     </div>
                 </div>
