@@ -200,10 +200,10 @@ def output(request):
 
 
             elif 'export' in '.data analysis':
-                print("분석")
+                print("분석입니다.")
 
             else:
-                print("에러")
+                print("에러입니다.")
 
         else:
             print("에러")
