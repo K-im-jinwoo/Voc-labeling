@@ -71,11 +71,7 @@
                 <input class="btn btn-outline-dark btn-sm" style="width: 200px; margin: 0 auto 30px; padding: 10px 25px; font-size: 1.4rem;
                 border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" name="export" value=".data analysis">
                 <input type="hidden" name="product" value="{{ request.session.category_product }}">
-                {% if request.session.category_product is not null %}
-                    <input type="submit" >
-                {% else %}
-                    <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
-                {% endif %}
+       
             </form>
         </div>
 
