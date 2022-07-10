@@ -211,7 +211,4 @@ def output(request):
 
     except Exception as identifier:
         print(identifier)
-
     return render(request, 'outputapp/output.html')
-
-
