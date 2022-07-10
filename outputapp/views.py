@@ -99,15 +99,15 @@ def output(request):
                 j = 2
                 k = 2
 
-#                 for data in data_couple: # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-#                     print(product)
-#                     p = product
-#                     sheet.cell(row=s, column=1).value = p
-#                     s = s + 1
-#                     print(category_list[0])
-#                     c = category_list[0]
-#                     sheet.cell(row=f, column=2).value = c
-#                     f = f + 1
+                for data in data_couple: # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
+                    print(product)
+                    p = product
+                    sheet.cell(row=s, column=1).value = p
+                    s = s + 1
+                    print(category_list[0])
+                    c = category_list[0]
+                    sheet.cell(row=f, column=2).value = c
+                    f = f + 1
 
                 for data in data_couple:
                     print(i, data)
@@ -163,15 +163,15 @@ def output(request):
                     j = 2
                     k = 2
 
-#                     for data in data_couple:  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-#                         print(product)
-#                         p = product
-#                         sheet.cell(row=s, column=1).value = p
-#                         s = s + 1
-#                         print(category_list[0])
-#                         c = category_list[0]
-#                         sheet.cell(row=f, column=2).value = c
-#                         f = f + 1
+                    for data in data_couple:  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
+                        print(product)
+                        p = product
+                        sheet.cell(row=s, column=1).value = p
+                        s = s + 1
+                        print(category_list[0])
+                        c = category_list[0]
+                        sheet.cell(row=f, column=2).value = c
+                        f = f + 1
 
                     for data in data_couple:
                         print(i, data)
