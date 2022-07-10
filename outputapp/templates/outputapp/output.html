@@ -2,9 +2,13 @@
 
 {% block content %}
 <style>
-    .subject{
+    .subject {
         font-size: 1.2rem;
         font-weight: bold;
+    }
+
+    .dbcolor {
+        border-color: darkblue;
     }
 
 </style>
@@ -13,19 +17,18 @@
 <div style="width: 100%; text-align: center; margin-top: 3rem;">
     <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
         <div style="text-align: left; width: 13rem;">
-            <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
+            <p
+                style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
                 Data Export
             </p>
         </div>
-        <!-- 제품군 선택 (h5, select, input태그)-->
-        <!-- method 설정 필요합니다. -->
-        <form action="{% url 'uploadapp:upload' %}" method="get">
+        <!-- 제품군 선택-->
+        <form action="" method="get">
             {% csrf_token%}
             <div style="text-align: left ">
-                <p style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;
-                    display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
-                <select name='product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-                    <option style="text-align: center" value='' selected>--- 선택 ---</option>
+                <p style="font-family: 'Nanum Gothic Coding', monospace; font-size: 1.1rem;
+                font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
+                <select name='category_product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                     <option value='cleaner'>청소기</option>
                     <option value='refrigerator'>냉장고</option>
                     <option value='dish_washer'>식기세척기</option>
@@ -34,22 +37,28 @@
             </div>
         </form>
 
+        <!--{{ request.session.category_product }}-->
+
         <hr>
         <!-- 카테고리 보기 및 생성-->
         <!-- method 설정 필요합니다. -->
-        <form action="{% url 'outputapp:output' %}" method="get">
-            {% csrf_token %}
-            <p style="text-align: left; margin-bottom: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;" class="subject">미리보기</p>
-            <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
-
-                <!-- 카테고리 리스트 -->
-                <div style="height: 9rem">
-
-                </div>
-
-
+        <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
+            <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; text-align: left; margin-bottom: 0.5rem" class="subject">
+            {% if request.session.category_product == "refrigerator" %}
+                <strong>선택한 제품 : 냉장고 (refrigerator)</strong>
+                <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
+            {% elif request.session.category_product == "cleaner" %}
+                <strong>선택한 제품 : 청소기 (cleaner)</strong>
+                <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
+            {% elif request.session.category_product == "dish_washer"%}
+                <strong>선택한 제품 : 식기세척기 (dish_washer)</strong>
+                <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
+            {% else %}
+                선택한 제품 :
+            {% endif %}
             </div>
-        </form>
+        </div>
+        <div style="text-align: right; margin-top:1rem;">* csv 파일로 뽑아내는 데이터는 검수 완료된 데이터 입니다.</div>
 
         <hr>
         <p style="text-align: left; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;" class="subject">내보내기</p>
@@ -57,12 +66,16 @@
         <div style="margin-top: 1rem; width: 100%; height: 3.5rem; padding: 0rem 0.8rem 0.8rem 0.8rem; text-align: center; border-radius: 0.8rem; ">
             <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-
-
+                <input class="btn btn-outline-dark btn-sm" style="width: 200px; margin: 0 auto 30px; margin-right: 3rem; padding: 10px 25px; font-size: 1.4rem;
+                border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" name="export" value=".xlsx export">
                 <input class="btn btn-outline-dark btn-sm" style="width: 200px; margin: 0 auto 30px; padding: 10px 25px; font-size: 1.4rem;
-                border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" value=".csv export">
-
-
+                border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" name="export" value=".data analysis">
+                <input type="hidden" name="product" value="{{ request.session.category_product }}">
+                {% if request.session.category_product is not null %}
+                    <input type="submit" >
+                {% else %}
+                    <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
+                {% endif %}
             </form>
         </div>
 
