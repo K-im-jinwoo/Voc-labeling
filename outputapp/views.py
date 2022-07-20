@@ -1,7 +1,8 @@
 from datetime import datetime
 import os
 from enum import auto
-
+from django.http import HttpResponse
+from datetime import date
 import pandas as pd
 import openpyxl
 from pathlib import Path
@@ -62,6 +63,11 @@ def output(request):
                 print("카테고리id리스트", category_id_list)
                 category_len = len(category_list)
 
+                response = HttpResponse(content_type="application/vnd.ms-excel")
+                # 다운로드 받을 때 생성될 파일명 설정
+                response["Content-Disposition"] = 'attachment; filename=' + datetime.now().strftime(
+                    "%Y-%m-%d_%I-%M-%S_%p") + '.xls'
+
                 # 워크북(엑셀파일)을 새로 만듭니다.
                 wb = openpyxl.Workbook()
                 wb.active.title = category_list[0]
@@ -70,8 +76,8 @@ def output(request):
 
                 # 음영 색 지정
                 grayFill = PatternFill(start_color='BFBFBF',
-                                         end_color='BFBFBF',
-                                         fill_type='solid')
+                                       end_color='BFBFBF',
+                                       fill_type='solid')
                 # 지정된 음영 색으로 영역 색칠하기
                 sheet["A1"].fill = grayFill
                 sheet["B1"].fill = grayFill
@@ -99,7 +105,7 @@ def output(request):
                 j = 2
                 k = 2
 
-                for data in data_couple: # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
+                for data in data_couple:  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
                     print(product)
                     p = product
                     sheet.cell(row=s, column=1).value = p
@@ -190,13 +196,15 @@ def output(request):
                         else:
                             print('해당없음')
 
-
                 # 제품명 + 날짜 + 시간으로 파일명이 생성되며 c드라이브에 labelingresult 폴더 없을시 자동 생성된 후 그 안에 파일이 담김
 
-                Path("C:\\labelingresult").mkdir(exist_ok=True)
-                filename = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
-                filedir = "C:\\labelingresult\\"
-                wb.save(filedir + product + '_' + filename + '.xlsx')
+                # Path("C:\\labelingresult").mkdir(exist_ok=True)
+
+                # filename = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
+                # filedir = "C:\\labelingresult\\"
+                wb.save(response)
+
+                return response
 
 
             elif 'export' in '.data analysis':
