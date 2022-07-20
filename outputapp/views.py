@@ -175,7 +175,7 @@ def output(request):
                         sheet.cell(row=s, column=1).value = p
                         s = s + 1
                         print(category_list[0])
-                        c = category_list[0]
+                         = data.category_id.category_middle
                         sheet.cell(row=f, column=2).value = c
                         f = f + 1
 
