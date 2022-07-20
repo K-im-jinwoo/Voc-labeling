@@ -121,15 +121,54 @@
                 <div style="; border: 1px solid #bcbcbc; width: 70rem; height: auto; display: inline-block;
         margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                     <p style="margin-top: 3rem">
+
+                        <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
                         {{ review_first.review_number }}.
-                        {{ review_first.review_content }}
-                    <div>
+                        <span class="current_target">{{ review_first.review_content }}</span>
+                        <script>
+                            {% for status_result in status_result %}
+                                $('.current_target').each(function() {
+                                $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:yellow">{{status_result.first_labeled_target}}</span>'));
+                                $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:yellow">{{status_result.first_labeled_expression}}</span>'));
+                                  });
+                            {% endfor %}
+                        </script>
+
+                        <div>
                         {% for status_result in status_result %}
-                            {{ status_result.first_labeled_emotion }}
-                            {{ status_result.first_labeled_target }}
-                            {{ status_result.first_labeled_expression }}
-                            <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                            {% if status_result.first_labeled_emotion == 'neutral' %}
+
+                                    {{ status_result.category_id.category_middle }}
+                                    {{ status_result.first_labeled_target }}
+                                    {{ status_result.first_labeled_expression }}
+
+                                    {#         라벨링 하고 옆에 뜨는  x표시 체크하는 부분  새로고침을 눌러야 현재 적용            #}
+                                    <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                        </div>
+
+                            {% elif status_result.first_labeled_emotion == 'positive' %}
+                                <div style="color: blue">
+                                    {{ status_result.category_id.category_middle }}
+                                    {{ status_result.first_labeled_target }}
+                                    {{ status_result.first_labeled_expression }}
+                                    <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                                </div>
+                            {% elif status_result.first_labeled_emotion == 'negative' %}
+                                <div style="color: red">
+                                    {{ status_result.category_id.category_middle }}
+                                    {{ status_result.first_labeled_target }}
+                                    {{ status_result.first_labeled_expression }}
+                                    <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                                </div>
+                            {% endif %}
                         {% endfor %}
+
+{% comment %}                        {% for data in auto_data %}
+                            {{ data.category_id.category_middle }}
+                            {{ data.first_labeled_target }}
+                            {{ data.first_labeled_expression }}
+                        {% endfor %}{% endcomment %}
+
                     </div>
 
                     </p>

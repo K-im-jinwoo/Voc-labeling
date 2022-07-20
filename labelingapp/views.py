@@ -60,9 +60,21 @@ def labeling_work(request):
                 review_first = print_review(start, end, category_product)
                 status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
 
+                # 자동 라벨링 부분 => auto_data에 저장됨
+                review_first = print_review(start, end, category_product)
+                current_review = review_first[0].review_content
+                auto_data = FirstLabeledData.objects.raw(
+                    'SELECT DISTINCT * FROM mainapp_firstlabeleddata WHERE "' + current_review
+                    + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
+                    + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not ""')
+
+                for data in auto_data:
+                    print(data.first_labeled_target, data.first_labeled_expression)
+
                 # labeling_work.html에 보낼 context 데이터
                 context = {'category_detail': category_detail, 'category_product': category_product,
-                           'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result}
+                           'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
+                           'auto_data': auto_data}
 
                 # POST 방식 request 받았을 때 수행함.
                 if request.method == "POST" and 'labeled_expression' in request.POST and 'labeled_target' in request.POST:
@@ -74,8 +86,8 @@ def labeling_work(request):
                     category_id = request.POST.get('category_id')  # 해당하는 리뷰에 맞는 카테고리id를 받아오기
                     print(target, emotion, expression)
                     if not FirstLabeledData.objects.filter(first_labeled_emotion=emotion, first_labeled_target=target,
-                                                       first_labeled_expression=expression, category_id=category_id):
-
+                                                           first_labeled_expression=expression,
+                                                           category_id=category_id):
                         # First_Labeled_Data모델을 불러와서 first_labeled_data에 저장
                         first_labeled_data = FirstLabeledData()
 
@@ -90,10 +102,31 @@ def labeling_work(request):
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
                     review_id = request.GET.get('review_id')
-
                     # 해당 review의 작업 상태와 작업자를 변경
                     Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
 
+                    review_first = print_review(start, end, category_product)
+                    current_review = review_first[0].review_content
+                    auto_data = FirstLabeledData.objects.raw(
+                        'SELECT * FROM mainapp_firstlabeleddata WHERE "' + current_review
+                        + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
+                        + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not "" GROUP BY mainapp_firstlabeleddata.first_labeled_target, mainapp_firstlabeleddata.first_labeled_expression')
+
+                    # 불러온 자동 keyword를 저장
+                    for data in auto_data:
+                        auto = FirstLabeledData()
+                        auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
+                        auto.first_labeled_target = data.first_labeled_target  # 대상 저장
+                        auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
+                        auto.review_id = Review.objects.get(pk=review_id)
+                        auto.category_id = data.category_id
+                        auto.save()
+
+                    context = {'category_detail': category_detail, 'category_product': category_product,
+                               'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
+                               'auto_data': auto_data}
+                    for data in auto_data:
+                        print(data.first_labeled_target, data.first_labeled_expression)
 
                 elif request.GET.get("form-type") == 'DummyForm':
                     review_id = request.GET.get('review_id')
