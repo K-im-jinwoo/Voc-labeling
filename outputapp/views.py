@@ -66,7 +66,7 @@ def output(request):
                 response = HttpResponse(content_type="application/vnd.ms-excel")
                 # 다운로드 받을 때 생성될 파일명 설정
                 response["Content-Disposition"] = 'attachment; filename=' + datetime.now().strftime(
-                    "%Y-%m-%d_%I-%M-%S_%p") + '.xls'
+                    "%Y-%m-%d_%I-%M-%S_%p") + '.xlsx'
 
                 # 워크북(엑셀파일)을 새로 만듭니다.
                 wb = openpyxl.Workbook()
