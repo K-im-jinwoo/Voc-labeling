@@ -13,7 +13,7 @@ def print_review(start, end, category_product):
     print_review_list = Review.objects.filter(category_product=category_product,
                                               review_number__range=(int(start), int(end)),
                                               first_status=False, second_status=False, dummy_status=False).order_by(
-        'review_number')[:1]
+        'review_number')[:2]
     return print_review_list
 
 
@@ -21,7 +21,7 @@ def print_inspect(start, end, category_product):
     print_review_inspect = Review.objects.filter(category_product=category_product,
                                                  review_number__range=(int(start), int(end)),
                                                  first_status=True, second_status=False, dummy_status=False).order_by(
-        'review_number')[:1]
+        'review_number')[:2]
     return print_review_inspect
 
 
@@ -31,14 +31,14 @@ def delete_label(request):
     print('실행!')
     print(request.GET['label_number'])
     FirstLabeledData.objects.filter(pk=request.GET['label_number']).delete()
-    return JsonResponse()
+    return JsonResponse(data={})
 
 @csrf_exempt
 def inspect_delete_label(request):
     print('inspectdelete_2실행!')
     print(request.GET['label_number'])
     SecondLabeledData.objects.filter(pk=request.GET['label_number']).delete()
-    return JsonResponse()
+    return JsonResponse(data={})
 
 
 def labeling_work(request):
@@ -56,25 +56,35 @@ def labeling_work(request):
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_detail = Category.objects.filter(category_product=category_product)
 
-                # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
-                review_first = print_review(start, end, category_product)
-                status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
 
                 # 자동 라벨링 부분 => auto_data에 저장됨
                 review_first = print_review(start, end, category_product)
                 current_review = review_first[0].review_content
                 auto_data = FirstLabeledData.objects.raw(
-                    'SELECT DISTINCT * FROM mainapp_firstlabeleddata WHERE "' + current_review
+                    'SELECT * FROM mainapp_firstlabeleddata WHERE "' + current_review
                     + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
-                    + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not ""')
+                    + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not "" GROUP BY mainapp_firstlabeleddata.first_labeled_target, mainapp_firstlabeleddata.first_labeled_expression')
 
-                for data in auto_data:
-                    print(data.first_labeled_target, data.first_labeled_expression)
+                # 불러온 자동 keyword를 저장
+                if FirstLabeledData.objects.filter(review_id=review_first[0]).count() == 0:
+                    for data in auto_data:
+                        print('지금 실행됨')
+                        auto = FirstLabeledData()
+                        auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
+                        auto.first_labeled_target = data.first_labeled_target  # 대상 저장
+                        auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
+                        auto.review_id = Review.objects.get(pk=review_first[0].pk)
+                        auto.category_id = data.category_id
+                        auto.save()
+
+                # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
+                review_first = print_review(start, end, category_product)
+                status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
+                print('이거 실행되나?')
 
                 # labeling_work.html에 보낼 context 데이터
                 context = {'category_detail': category_detail, 'category_product': category_product,
-                           'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
-                           'auto_data': auto_data}
+                           'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result}
 
                 # POST 방식 request 받았을 때 수행함.
                 if request.method == "POST" and 'labeled_expression' in request.POST and 'labeled_target' in request.POST:
@@ -106,27 +116,29 @@ def labeling_work(request):
                     Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
 
                     review_first = print_review(start, end, category_product)
-                    current_review = review_first[0].review_content
+                    current_review = review_first[1].review_content
                     auto_data = FirstLabeledData.objects.raw(
                         'SELECT * FROM mainapp_firstlabeleddata WHERE "' + current_review
                         + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
                         + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not "" GROUP BY mainapp_firstlabeleddata.first_labeled_target, mainapp_firstlabeleddata.first_labeled_expression')
 
                     # 불러온 자동 keyword를 저장
-                    for data in auto_data:
-                        auto = FirstLabeledData()
-                        auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
-                        auto.first_labeled_target = data.first_labeled_target  # 대상 저장
-                        auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
-                        auto.review_id = Review.objects.get(pk=review_id)
-                        auto.category_id = data.category_id
-                        auto.save()
+                    if FirstLabeledData.objects.filter(review_id=review_first[1].review_id).count() == 0:
+                        for data in auto_data:
+                            print('지금 실행됨')
+                            auto = FirstLabeledData()
+                            auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
+                            auto.first_labeled_target = data.first_labeled_target  # 대상 저장
+                            auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
+                            auto.review_id = Review.objects.get(pk=review_first[1].review_id)
+                            auto.category_id = data.category_id
+                            auto.save()
+
+                    # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
+                    status_result = FirstLabeledData.objects.filter(review_id=review_first[1].review_id)
 
                     context = {'category_detail': category_detail, 'category_product': category_product,
-                               'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
-                               'auto_data': auto_data}
-                    for data in auto_data:
-                        print(data.first_labeled_target, data.first_labeled_expression)
+                               'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result}
 
                 elif request.GET.get("form-type") == 'DummyForm':
                     review_id = request.GET.get('review_id')

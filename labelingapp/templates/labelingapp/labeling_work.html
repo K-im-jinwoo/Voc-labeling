@@ -118,6 +118,7 @@
 
             <!-- 작업필드 -->
             {% for review_first in review_first %}
+                {% if forloop.counter == 2 %}
                 <div style="; border: 1px solid #bcbcbc; width: 70rem; height: auto; display: inline-block;
         margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                     <p style="margin-top: 3rem">
@@ -162,12 +163,6 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-
-{% comment %}                        {% for data in auto_data %}
-                            {{ data.category_id.category_middle }}
-                            {{ data.first_labeled_target }}
-                            {{ data.first_labeled_expression }}
-                        {% endfor %}{% endcomment %}
 
                     </div>
 
@@ -247,6 +242,7 @@
 
                 </div>
                 </div>
+                {% endif %}
             {% endfor %}
 
     <script>
@@ -260,9 +256,11 @@
                 },
                 dataType: 'json',
                 success: function (data) {
+                    console.log('삭제 완료')
+                    window.location.reload()
                 },
                 error: function (data) {
-                    console.log('새로고침')
+                    console.log('에러 발생')
                     window.location.reload()
                 }
             })
