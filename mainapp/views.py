@@ -130,7 +130,10 @@ def workstatus(request):
                     request.session['sort'] = sort
 
                 # session에 저장한 요구 상태를 읽어 정렬 수행
-                if request.session['sort']:
+                if not request.session['sort']:
+                    sorting('positive', category_detail_list, positive, negative, neutral, everything)
+
+                else:
                     sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything)
 
                 # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
