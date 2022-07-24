@@ -163,12 +163,6 @@
                             {% endif %}
                         {% endfor %}
 
-{% comment %}                        {% for data in auto_data %}
-                            {{ data.category_id.category_middle }}
-                            {{ data.first_labeled_target }}
-                            {{ data.first_labeled_expression }}
-                        {% endfor %}{% endcomment %}
-
                     </div>
 
                     </p>
@@ -260,9 +254,11 @@
                 },
                 dataType: 'json',
                 success: function (data) {
+                    console.log('삭제 완료')
+                    window.location.reload()
                 },
                 error: function (data) {
-                    console.log('새로고침')
+                    console.log('에러 발생')
                     window.location.reload()
                 }
             })
