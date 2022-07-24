@@ -49,26 +49,27 @@ def labeling_work(request):
 
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
+
+
+                #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET['category_product']
                 start = request.GET['start']
                 end = request.GET['end']
-
-                # 해당 제품군의 카테고리 정보 불러옴
                 category_detail = Category.objects.filter(category_product=category_product)
 
-                # 자동 라벨링 부분 => auto_data에 저장됨
+
+                #####---- 자동 라벨링 기능 ----#####
+                # 자동 라벨링 - 검색
                 review_first = print_review(start, end, category_product)
                 current_review = review_first[0].review_content
                 auto_data = FirstLabeledData.objects.raw(
                     'SELECT * FROM mainapp_firstlabeleddata WHERE "' + current_review
                     + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
                     + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not "" GROUP BY mainapp_firstlabeleddata.first_labeled_target, mainapp_firstlabeleddata.first_labeled_expression')
-                print(request.session['auto_labeling_status'], review_first[0].review_id)
 
-                print(review_first[0].review_content)
-                # 불러온 auto keyword를 저장함. 한 번 저장했다면 다시 저장하지 않음.
-                if ('auto_labeling_status' in request.session and request.session['auto_labeling_status'] !=
-                        review_first[0].review_id):
+                # 자동 라벨링 - 저장
+                if 'auto_labeling_status' not in request.session:
+                    request.session['auto_labeling_status'] = review_first[0].review_id
                     for data in auto_data:
                         print('current auto labeling 지금 실행됨')
                         auto = FirstLabeledData()
@@ -78,10 +79,9 @@ def labeling_work(request):
                         auto.review_id = Review.objects.get(pk=review_first[0].pk)
                         auto.category_id = data.category_id
                         auto.save()
-                    request.session['auto_labeling_status'] = review_first[0].review_id
-                elif 'auto_labeling_status' not in request.session:
+
+                elif request.session['auto_labeling_status'] != review_first[0].review_id:
                     for data in auto_data:
-                        print('current auto labeling 지금 실행됨')
                         auto = FirstLabeledData()
                         auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
                         auto.first_labeled_target = data.first_labeled_target  # 대상 저장
@@ -90,6 +90,7 @@ def labeling_work(request):
                         auto.category_id = data.category_id
                         auto.save()
                     request.session['auto_labeling_status'] = review_first[0].review_id
+
 
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
                 review_first = print_review(start, end, category_product)
