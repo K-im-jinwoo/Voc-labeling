@@ -72,7 +72,10 @@ def labeling_work(request):
                 end = request.GET['end']
                 category_detail = Category.objects.filter(category_product=category_product)
 
-
+                if request.GET.get("form-type") == 'DummyForm':
+                    review_id = request.GET.get('review_id')
+                    Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True,
+                                                               labeled_user_id=request.user)
                 #####---- 자동 라벨링 기능 ----#####
                 # 자동 라벨링 - 검색
                 review_first = print_review(start, end, category_product)
@@ -183,11 +186,6 @@ def labeling_work(request):
                     context = {'category_detail': category_detail, 'category_product': category_product,
                                'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result}
 
-                elif request.GET.get("form-type") == 'DummyForm':
-                    review_id = request.GET.get('review_id')
-                    Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True,
-                                                               labeled_user_id=request.user)
-
                 return render(request, 'labelingapp/labeling_work.html', context)
 
             return render(request, 'labelingapp/labeling_work.html')
@@ -214,14 +212,19 @@ def labeling_inspect(request):
                 category_product = request.GET['category_product']
                 start = request.GET['start']
                 end = request.GET['end']
-
-                # 해당 제품군의 카테고리 정보 불러옴
                 category_detail = Category.objects.filter(category_product=category_product)
+
+                if request.GET.get("form-type") == 'DummyForm':
+                    print('여기')
+                    review_id = request.GET.get('review_id')
+                    Review.objects.filter(pk=review_id).update(second_status=False, dummy_status=True,
+                                                               labeled_user_id=request.user)
 
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_inspect() 함수 사용
                 review_first = print_inspect(start, end, category_product)
                 status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
                 status_result2 = SecondLabeledData.objects.filter(review_id=review_first[0].pk)
+
 
                 # labeling_inspect.html에 보낼 context 데이터
                 context = {'category_detail': category_detail, 'category_product': category_product,
@@ -285,12 +288,6 @@ def labeling_inspect(request):
                     context = {'category_detail': category_detail, 'category_product': category_product,
                                'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result}
                     return render(request, 'labelingapp/labeling_inspect.html', context)
-
-
-                elif request.GET.get("form-type") == 'DummyForm':
-                    review_id = request.GET.get('review_id')
-                    Review.objects.filter(pk=review_id).update(second_status=False, dummy_status=True,
-                                                               labeled_user_id=request.user)
 
                 return render(request, 'labelingapp/labeling_inspect.html', context)
 
