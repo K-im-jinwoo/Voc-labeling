@@ -128,8 +128,8 @@
                         <script>
                             {% for status_result in status_result %}
                                 $('.current_target').each(function() {
-                                $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:yellow">{{status_result.first_labeled_target}}</span>'));
-                                $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:yellow">{{status_result.first_labeled_expression}}</span>'));
+                                $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
+                                $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
                                   });
                             {% endfor %}
                         </script>
