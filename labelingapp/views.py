@@ -34,8 +34,8 @@ def delete_label(request):
 
 
 @csrf_exempt
-def inspect_delete_label(request):
-    print('inspectdelete_2실행!')
+def delete_inspect_label(request):
+    print('검수쪽 삭제부 실행되는 중')
     print(request.GET['label_number'])
     SecondLabeledData.objects.filter(pk=request.GET['label_number']).delete()
     return JsonResponse(data={})
