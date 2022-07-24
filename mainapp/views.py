@@ -88,6 +88,9 @@ def workstatus(request):
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
 
+                if 'sort' not in request.session:
+                    request.session['sort'] = 'positive'
+
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
@@ -131,6 +134,7 @@ def workstatus(request):
                 print(request.session['sort'])
 
                 # session에 저장한 요구 상태를 읽어 정렬 수행
+
                 if request.session['sort'] != 'sort':
                     sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything)
 
