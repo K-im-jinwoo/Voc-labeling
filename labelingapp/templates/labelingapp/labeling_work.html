@@ -217,12 +217,15 @@
                         {% csrf_token %}
 
                         <div>
-                            <input class="btn btn-outline-dark btn-sm" type="submit" value="초기화"
+                            <input class="btn btn-outline-dark btn-sm" type="submit" value="초기화ㄴㄴ"
                                    style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">
                         </div>
                     </form>
                 </div>
 
+                <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
+                    <button class="btn btn-outline-dark btn-sm" onclick="reset(`{{ review_first.review_id }}`)" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">초기화</button>
+                </div>
 
                 <div style="display: inline-block;">
                     <form action="{% url 'labelingapp:work' %}" method="get" id="NextForm">
@@ -254,6 +257,26 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log('삭제 완료')
+                    window.location.reload()
+                },
+                error: function (data) {
+                    console.log('에러 발생')
+                    window.location.reload()
+                }
+            })
+        }
+
+        function reset(review_id) {
+            console.log('초기화를 시작해볼깡?')
+            $.ajax({
+                url: 'reset',
+                type: 'GET',
+                data: {
+                    'review_id': review_id,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log('초기화 완료')
                     window.location.reload()
                 },
                 error: function (data) {

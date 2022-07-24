@@ -40,6 +40,13 @@ def delete_inspect_label(request):
     SecondLabeledData.objects.filter(pk=request.GET['label_number']).delete()
     return JsonResponse(data={})
 
+@csrf_exempt
+def reset(request):
+    print('작업 쪽 초기화 작업')
+    print(request.GET['review_id'])
+    FirstLabeledData.objects.filter(review_id=request.GET['review_id']).delete()
+    return JsonResponse(data={})
+
 
 def labeling_work(request):
     try:
