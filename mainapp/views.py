@@ -128,13 +128,14 @@ def workstatus(request):
                 if request.method == "POST" and 'sort' in request.POST:
                     sort = request.POST.get('sort')
                     request.session['sort'] = sort
+                print(request.session['sort'])
 
                 # session에 저장한 요구 상태를 읽어 정렬 수행
-                if not request.session['sort']:
-                    sorting('positive', category_detail_list, positive, negative, neutral, everything)
-
-                else:
+                if request.session['sort'] != 'sort':
                     sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything)
+
+                elif request.session['sort'] == 'sort':
+                    sorting('positive', category_detail_list, positive, negative, neutral, everything)
 
                 # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
                 if request.method == "GET" and 'showing_index' in request.GET:
