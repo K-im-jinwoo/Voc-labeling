@@ -132,33 +132,37 @@
                     <!--                표 속성-->
                     <div class="bot_line">
                         <div class="data_label" style="width: 28%">카테고리</div>
-                        <div class="data_label" style="width: 15%">긍정
+                        <div class="data_label" style="width: 15%">
+                            <a href="#" onclick="return chk_form('positive_sort')">긍정</a>
                             <form method="post" class="sort" id="positive_sort">
                                 {% csrf_token %}
                                 <input type="hidden" name="sort" value="positive">
                             </form>
-                            <a href="#" onclick="return chk_form('positive_sort')"><b>↓</b></a>
+<!--                            <a href="#" onclick="return chk_form('positive_sort')"><b>↓</b></a>-->
                         </div>
-                        <div class="data_label" style="width: 15%">부정
+                        <div class="data_label" style="width: 15%">
+                            <a href="#" onclick="return chk_form('negative_sort')">부정</a>
                             <form method="post" class="sort" id="negative_sort">
                                 {% csrf_token %}
                                 <input type="hidden" name="sort" value="negative">
                             </form>
-                            <a href="#" onclick="return chk_form('negative_sort')"><b>↓</b></a>
+<!--                            <a href="#" onclick="return chk_form('negative_sort')"><b>↓</b></a>-->
                         </div>
-                        <div class="data_label" style="width: 15%">중립
+                        <div class="data_label" style="width: 15%">
+                            <a href="#" onclick="return chk_form('neutral_sort')">중립</a>
                             <form method="post" class="sort" id="neutral_sort">
                                 {% csrf_token %}
                                 <input type="hidden" name="sort" value="neutral">
                             </form>
-                            <a href="#" onclick="return chk_form('neutral_sort')"><b>↓</b></a>
+<!--                            <a href="#" onclick="return chk_form('neutral_sort')"><b>↓</b></a>-->
                         </div>
-                        <div class="data_label" style="width: 17%">총개수
+                        <div class="data_label" style="width: 17%">
+                            <a href="#" onclick="return chk_form('everything_sort')">총개수</a>
                             <form method="post" class="sort" id="everything_sort">
                                 {% csrf_token %}
                                 <input type="hidden" name="sort" value="everything">
                             </form>
-                            <a href="#" onclick="return chk_form('everything_sort')"><b>↓</b></a>
+<!--                            <a href="#" onclick="return chk_form('everything_sort')"><b>↓</b></a>-->
                         </div>
                     </div>
                     <!--                제품군에 맞는 카테고리와 개수-->
