@@ -104,20 +104,41 @@ def output(request):
                 j = 2
                 k = 2
 
+                l1 = []
+                l2 = []
+                l3 = []
+                i1 = 0
+                i2 = 0
+                i3 = 0
                 for data in data_couple:
                     print(i, data)
                     if data.second_labeled_emotion == 'positive':
-                        t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                        sheet.cell(row=i, column=3).value = t
-                        i = i + 1
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l1:
+                            pass
+                        else:
+                            l1.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                            print('리스트쌍', l1)
+                            sheet.cell(row=i, column=3).value = l1[i1]
+                            i = i + 1
+                            i1 = i1 + 1
                     elif data.second_labeled_emotion == 'negative':
-                        t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                        sheet.cell(row=j, column=4).value = t
-                        j = j + 1
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                            pass
+                        else:
+                            l2.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                            print('리스트쌍2', l2)
+                            sheet.cell(row=j, column=4).value = l2[i2]
+                            j = j + 1
+                            i2 = i2 + 1
                     elif data.second_labeled_emotion == 'neutral':
-                        t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                        sheet.cell(row=k, column=5).value = t
-                        k = k + 1
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                            pass
+                        else:
+                            l3.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                            print('리스트쌍3', l3)
+                            sheet.cell(row=k, column=5).value = l3[i3]
+                            k = k + 1
+                            i3 = i3 + 1
                     else:
                         print('해당없음')
 
@@ -133,7 +154,6 @@ def output(request):
                     print(category_list[0])
                     c = data.category_id.category_middle
                     sheet.cell(row=m+2, column=2).value = c
-
 
                 for ii in range(1, category_len):
                     category_list[ii] = wb.create_sheet("%s" % category_list[ii])
@@ -170,21 +190,41 @@ def output(request):
                     j = 2
                     k = 2
 
-
+                    l1 = []
+                    l2 = []
+                    l3 = []
+                    i1 = 0
+                    i2 = 0
+                    i3 = 0
                     for data in data_couple:
                         print(i, data)
                         if data.second_labeled_emotion == 'positive':
-                            t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                            sheet.cell(row=i, column=3).value = t
-                            i = i + 1
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l1:
+                                pass
+                            else:
+                                l1.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                                print('리스트쌍', l1)
+                                sheet.cell(row=i, column=3).value = l1[i1]
+                                i = i + 1
+                                i1 = i1 + 1
                         elif data.second_labeled_emotion == 'negative':
-                            t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                            sheet.cell(row=j, column=4).value = t
-                            j = j + 1
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                                pass
+                            else:
+                                l2.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                                print('리스트쌍2', l2)
+                                sheet.cell(row=j, column=4).value = l2[i2]
+                                j = j + 1
+                                i2 = i2 + 1
                         elif data.second_labeled_emotion == 'neutral':
-                            t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                            sheet.cell(row=k, column=5).value = t
-                            k = k + 1
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                                pass
+                            else:
+                                l3.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                                print('리스트쌍3', l3)
+                                sheet.cell(row=k, column=5).value = l3[i3]
+                                k = k + 1
+                                i3 = i3 + 1
                         else:
                             print('해당없음')
 
