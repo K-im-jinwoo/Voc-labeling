@@ -13,6 +13,7 @@ urlpatterns = [
     path('inspect/', views.labeling_inspect, name='inspect'),
     path('inspect/delete_label', views.delete_label, name='delete_label'),
     path('inspect/delete_inspect_label', views.delete_inspect_label, name='delete_inspect_label'),
+    path('inspect/inspect_reset', views.inspect_reset, name='inspect_reset'),
 
 
 ]

@@ -225,14 +225,7 @@
                     </form>
                 </div>
                 <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
-                    <form action="{% url 'labelingapp:inspect' %}" method="get">
-                        {% csrf_token %}
-
-                        <div>
-                            <input class="btn btn-outline-dark btn-sm" type="submit" value="초기화"
-                                   style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">
-                        </div>
-                    </form>
+                    <button class="btn btn-outline-dark btn-sm" onclick="inspect_reset(`{{ review_first.review_id }}`)" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">초기화</button>
                 </div>
 
 
@@ -285,6 +278,26 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log('삭제 완료')
+                    window.location.reload()
+                },
+                error: function (data) {
+                    console.log('에러 발생')
+                    window.location.reload()
+                }
+            })
+        }
+
+        function inspect_reset(review_id) {
+            console.log('초기화를 시작해볼깡?')
+            $.ajax({
+                url: 'inspect_reset',
+                type: 'GET',
+                data: {
+                    'review_id': review_id,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log('초기화 완료')
                     window.location.reload()
                 },
                 error: function (data) {
