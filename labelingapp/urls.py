@@ -6,9 +6,8 @@ from . import views
 app_name = 'labelingapp'
 
 urlpatterns = [
-    
-    path('work/', views.labeling_work, name='work'),
-#     path(r'work/', views.labeling_work, name='work'),
+
+    path(r'work/', views.labeling_work, name='work'),
     path('work/delete_label', views.delete_label, name='delete_label'),
     path('work/reset', views.reset, name='reset'),
     path(r'inspect/', views.labeling_inspect, name='inspect'),
