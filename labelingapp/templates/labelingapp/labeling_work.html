@@ -7,6 +7,13 @@
         font-size: 1.2rem;
         font-weight: bold;
     }
+    button{
+        text-decoration: none;
+        color: black;
+    }
+    button:hover{
+        color: red;
+    }
 
 
 </style>
@@ -144,7 +151,7 @@
                     {{ status_result.first_labeled_expression }}
 
                     {# 라벨링 하고 옆에 뜨는 x표시 체크하는 부분 새로고침을 눌러야 현재 적용 #}
-                    <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                    <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
                 </div>
 
                 {% elif status_result.first_labeled_emotion == 'positive' %}
@@ -152,14 +159,14 @@
                     {{ status_result.category_id.category_middle }}
                     {{ status_result.first_labeled_target }}
                     {{ status_result.first_labeled_expression }}
-                    <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                    <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
                 </div>
                 {% elif status_result.first_labeled_emotion == 'negative' %}
                 <div style="color: red">
                     {{ status_result.category_id.category_middle }}
                     {{ status_result.first_labeled_target }}
                     {{ status_result.first_labeled_expression }}
-                    <button onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                    <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
                 </div>
                 {% endif %}
                 {% endfor %}
