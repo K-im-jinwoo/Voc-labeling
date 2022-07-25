@@ -226,6 +226,7 @@ def labeling_inspect(request):
                 status_result2 = SecondLabeledData.objects.filter(review_id=review_first[0].pk)
 
 
+
                 # labeling_inspect.html에 보낼 context 데이터
                 context = {'category_detail': category_detail, 'category_product': category_product,
                            'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
@@ -251,6 +252,14 @@ def labeling_inspect(request):
                     second_labeled_data.review_id = Review.objects.get(pk=review_id)
                     second_labeled_data.category_id = Category.objects.get(pk=category_id)
                     second_labeled_data.save()
+
+                    pp = '/labeling/inspect?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
+                    print("경로", pp)
+
+                    return HttpResponseRedirect(pp)
+
+
+
 
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
