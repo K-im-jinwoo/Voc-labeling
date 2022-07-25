@@ -99,38 +99,61 @@ def output(request):
                 sheet.column_dimensions['E'].width = 25
 
                 data_couple = SecondLabeledData.objects.filter(category_id=category_id_list[0])
-                s = 2
-                f = 2
+
                 i = 2
                 j = 2
                 k = 2
 
-                for data in data_couple:  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-                    print(product)
-                    p = product
-                    sheet.cell(row=s, column=1).value = p
-                    s = s + 1
-                    print(category_list[0])
-                    c = category_list[0]
-                    sheet.cell(row=f, column=2).value = c
-                    f = f + 1
-
+                l1 = []
+                l2 = []
+                l3 = []
+                i1 = 0
+                i2 = 0
+                i3 = 0
                 for data in data_couple:
                     print(i, data)
                     if data.second_labeled_emotion == 'positive':
-                        t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                        sheet.cell(row=i, column=3).value = t
-                        i = i + 1
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l1:
+                            pass
+                        else:
+                            l1.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                            print('리스트쌍', l1)
+                            sheet.cell(row=i, column=3).value = l1[i1]
+                            i = i + 1
+                            i1 = i1 + 1
                     elif data.second_labeled_emotion == 'negative':
-                        t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                        sheet.cell(row=j, column=4).value = t
-                        j = j + 1
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                            pass
+                        else:
+                            l2.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                            print('리스트쌍2', l2)
+                            sheet.cell(row=j, column=4).value = l2[i2]
+                            j = j + 1
+                            i2 = i2 + 1
                     elif data.second_labeled_emotion == 'neutral':
-                        t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                        sheet.cell(row=k, column=5).value = t
-                        k = k + 1
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                            pass
+                        else:
+                            l3.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                            print('리스트쌍3', l3)
+                            sheet.cell(row=k, column=5).value = l3[i3]
+                            k = k + 1
+                            i3 = i3 + 1
                     else:
                         print('해당없음')
+
+                print("ijk개수",i-2,j-2,k-2)
+                m = max(i-2,j-2,k-2)
+                print(type(m))
+
+                # 데이터쌍 max값뽑아서 적용
+                for m in range(m):  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
+                    print(product)
+                    p = product
+                    sheet.cell(row=m+2, column=1).value = p
+                    print(category_list[0])
+                    c = data.category_id.category_middle
+                    sheet.cell(row=m+2, column=2).value = c
 
                 for ii in range(1, category_len):
                     category_list[ii] = wb.create_sheet("%s" % category_list[ii])
@@ -163,38 +186,60 @@ def output(request):
                     sheet.column_dimensions['E'].width = 25
 
                     data_couple = SecondLabeledData.objects.filter(category_id=category_id_list[ii])
-                    s = 2
-                    f = 2
                     i = 2
                     j = 2
                     k = 2
 
-                    for data in data_couple:  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-                        print(product)
-                        p = product
-                        sheet.cell(row=s, column=1).value = p
-                        s = s + 1
-                        print(category_list[0])
-                        c = data.category_id.category_middle
-                        sheet.cell(row=f, column=2).value = c
-                        f = f + 1
-
+                    l1 = []
+                    l2 = []
+                    l3 = []
+                    i1 = 0
+                    i2 = 0
+                    i3 = 0
                     for data in data_couple:
                         print(i, data)
                         if data.second_labeled_emotion == 'positive':
-                            t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                            sheet.cell(row=i, column=3).value = t
-                            i = i + 1
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l1:
+                                pass
+                            else:
+                                l1.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                                print('리스트쌍', l1)
+                                sheet.cell(row=i, column=3).value = l1[i1]
+                                i = i + 1
+                                i1 = i1 + 1
                         elif data.second_labeled_emotion == 'negative':
-                            t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                            sheet.cell(row=j, column=4).value = t
-                            j = j + 1
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                                pass
+                            else:
+                                l2.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                                print('리스트쌍2', l2)
+                                sheet.cell(row=j, column=4).value = l2[i2]
+                                j = j + 1
+                                i2 = i2 + 1
                         elif data.second_labeled_emotion == 'neutral':
-                            t = data.second_labeled_target + ' AND ' + data.second_labeled_expression
-                            sheet.cell(row=k, column=5).value = t
-                            k = k + 1
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
+                                pass
+                            else:
+                                l3.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
+                                print('리스트쌍3', l3)
+                                sheet.cell(row=k, column=5).value = l3[i3]
+                                k = k + 1
+                                i3 = i3 + 1
                         else:
                             print('해당없음')
+
+                        print("ijk개수", i - 2, j - 2, k - 2)
+                        m = max(i - 2, j - 2, k - 2)
+                        print(type(m))
+
+                        # 데이터쌍 max값뽑아서 적용
+                        for m in range(m):  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
+                            print(product)
+                            p = product
+                            sheet.cell(row=m + 2, column=1).value = p
+                            print(category_list[0])
+                            c = data.category_id.category_middle
+                            sheet.cell(row=m + 2, column=2).value = c
 
                 # 제품명 + 날짜 + 시간으로 파일명이 생성되며 c드라이브에 labelingresult 폴더 없을시 자동 생성된 후 그 안에 파일이 담김
 

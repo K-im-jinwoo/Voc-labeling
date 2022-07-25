@@ -88,6 +88,9 @@ def workstatus(request):
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
 
+                if 'sort' not in request.session:
+                    request.session['sort'] = 'positive'
+
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
@@ -128,10 +131,15 @@ def workstatus(request):
                 if request.method == "POST" and 'sort' in request.POST:
                     sort = request.POST.get('sort')
                     request.session['sort'] = sort
+                print(request.session['sort'])
 
                 # session에 저장한 요구 상태를 읽어 정렬 수행
-                if request.session['sort']:
+
+                if request.session['sort'] != 'sort':
                     sorting(request.session['sort'], category_detail_list, positive, negative, neutral, everything)
+
+                elif request.session['sort'] == 'sort':
+                    sorting('positive', category_detail_list, positive, negative, neutral, everything)
 
                 # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
                 if request.method == "GET" and 'showing_index' in request.GET:
@@ -143,7 +151,6 @@ def workstatus(request):
                     labeled_word = type_to_variable(showing_type, positive, negative, neutral, everything)
                     labeled_word = labeled_word[int(showing_index)]
                     context['labeled_word'] = labeled_word
-
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                     labeled_review = labeled_word.values_list('review_id', flat=True)
                     labeled_review = Review.objects.filter(pk__in=labeled_review)
