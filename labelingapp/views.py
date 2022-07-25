@@ -141,10 +141,12 @@ def labeling_work(request):
                         first_labeled_data.category_id = Category.objects.get(pk=category_id)
                         first_labeled_data.save()
 
-                    w_pp = '/labeling/work?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
-                    print("경로", w_pp)
+                    wpp = '/labeling/work?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
+                    print("경로", wpp)
 
-                    return HttpResponseRedirect(w_pp)
+                    
+
+                    return HttpResponseRedirect(wpp)
 
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
