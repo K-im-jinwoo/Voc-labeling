@@ -151,7 +151,6 @@ def workstatus(request):
                     labeled_word = type_to_variable(showing_type, positive, negative, neutral, everything)
                     labeled_word = labeled_word[int(showing_index)]
                     context['labeled_word'] = labeled_word
-
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                     labeled_review = labeled_word.values_list('review_id', flat=True)
                     labeled_review = Review.objects.filter(pk__in=labeled_review)
