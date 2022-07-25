@@ -122,9 +122,29 @@
     {% for review_first in review_first %}
     <div style="; border: 1px solid #bcbcbc; width: 70rem; height: auto; display: inline-block;
         margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-        <p style="margin-top: 3rem">
-            {{ review_first.review_number }}.
-            {{ review_first.review_content }}
+            <p style="margin-top: 3rem">
+
+                <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
+                {{ review_first.review_number }}.
+                <span class="current_target">{{ review_first.review_content }}</span>
+                <script>
+                    {% for status_result in status_result %}
+                    $('.current_target').each(function () {
+                        $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
+                        $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
+
+                    });
+                    {% endfor %}
+                </script>
+                <script>
+                    {% for status_result2 in status_result2 %}
+                    $('.current_target').each(function () {
+                        $(this).html($(this).html().replace("{{status_result2.second_labeled_target}}", '<span style="background-color:{{ status_result2.category_id.category_color }}">{{status_result2.second_labeled_target}}</span>'));
+                        $(this).html($(this).html().replace("{{status_result2.second_labeled_expression}}", '<span style="background-color:{{ status_result2.category_id.category_color }}">{{status_result2.second_labeled_expression}}</span>'));
+
+                    });
+                    {% endfor %}
+                </script>
 
 
         <div>
@@ -189,8 +209,7 @@
         </div>
         </p>
         <p>
-        <form action="{% url 'labelingapp:inspect' %}?category_product={{ category_product }}&start={{ start }}&end={{ end }}"
-              method="post">
+        <form action="" method="post">
             {% csrf_token %}
             <div style="margin-bottom: 3rem;">
                 <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
