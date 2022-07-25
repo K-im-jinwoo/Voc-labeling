@@ -141,7 +141,7 @@ def labeling_work(request):
                         first_labeled_data.category_id = Category.objects.get(pk=category_id)
                         first_labeled_data.save()
 
-                    wpp = '/labeling/work?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
+                    wpp = '/labeling/work/?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
                     print("경로", wpp)
 
                     
@@ -260,7 +260,7 @@ def labeling_inspect(request):
                     second_labeled_data.category_id = Category.objects.get(pk=category_id)
                     second_labeled_data.save()
 
-                    pp = '/labeling/inspect?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
+                    pp = '/labeling/inspect/?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
                     print("경로", pp)
 
                     return HttpResponseRedirect(pp)
