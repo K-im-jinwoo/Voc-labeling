@@ -40,12 +40,14 @@ def delete_inspect_label(request):
     SecondLabeledData.objects.filter(pk=request.GET['label_number']).delete()
     return JsonResponse(data={})
 
+
 @csrf_exempt
 def reset(request):
     print('작업 쪽 초기화 작업')
     print(request.GET['review_id'])
     FirstLabeledData.objects.filter(review_id=request.GET['review_id']).delete()
     return JsonResponse(data={})
+
 
 @csrf_exempt
 def inspect_reset(request):
@@ -65,7 +67,6 @@ def labeling_work(request):
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
 
-
                 #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET['category_product']
                 start = request.GET['start']
@@ -80,10 +81,16 @@ def labeling_work(request):
                 # 자동 라벨링 - 검색
                 review_first = print_review(start, end, category_product)
                 current_review = review_first[0].review_content
-                auto_data = FirstLabeledData.objects.raw(
-                    'SELECT * FROM mainapp_firstlabeleddata WHERE "' + current_review
-                    + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
-                    + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not "" GROUP BY mainapp_firstlabeleddata.first_labeled_target, mainapp_firstlabeleddata.first_labeled_expression')
+                compare_data = FirstLabeledData.objects.all()
+                auto_data_id = []
+                for i in compare_data:
+                    if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
+                            i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
+                        if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
+                                'first_labeled_target',flat=True):
+                            if i.first_labeled_expression not in compare_data.filter(pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
+                                auto_data_id.append(i.pk)
+                auto_data = compare_data.filter(pk__in=auto_data_id)
 
                 # 자동 라벨링 - 저장
                 if 'auto_labeling_status' not in request.session:
@@ -109,9 +116,9 @@ def labeling_work(request):
                         auto.save()
                     request.session['auto_labeling_status'] = review_first[0].review_id
 
-
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
                 review_first = print_review(start, end, category_product)
+
                 status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
 
                 # labeling_work.html에 보낼 context 데이터
@@ -143,14 +150,10 @@ def labeling_work(request):
 
                     wpp = '/labeling/work/?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
                     print("경로", wpp)
-
-                    
-
                     return HttpResponseRedirect(wpp)
 
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
-
                     #####---- 리뷰 상태 변경 ----####
                     review_id = request.GET.get('review_id')
                     Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
@@ -159,11 +162,17 @@ def labeling_work(request):
                     ######---- 자동 라벨링 ----#####
                     # 자동라벨링 - 검색
                     current_review = review_first[0].review_content
-                    auto_data = FirstLabeledData.objects.raw(
-                        'SELECT * FROM mainapp_firstlabeleddata WHERE "' + current_review
-                        + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_target||"%" and "' + current_review
-                        + '" LIKE "%"||mainapp_firstlabeleddata.first_labeled_expression||"%" and mainapp_firstlabeleddata.first_labeled_target is not "" and mainapp_firstlabeleddata.first_labeled_target is not "" GROUP BY mainapp_firstlabeleddata.first_labeled_target, mainapp_firstlabeleddata.first_labeled_expression')
-
+                    compare_data = FirstLabeledData.objects.all()
+                    auto_data_id = []
+                    for i in compare_data:
+                        if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
+                                i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
+                            if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
+                                    'first_labeled_target', flat=True):
+                                if i.first_labeled_expression not in compare_data.filter(
+                                        pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
+                                    auto_data_id.append(i.pk)
+                    auto_data = compare_data.filter(pk__in=auto_data_id)
                     # 자동라벨링 - 저장
                     if ('auto_labeling_status' in request.session and request.session['auto_labeling_status'] !=
                             review_first[0].review_id):
@@ -232,8 +241,6 @@ def labeling_inspect(request):
                 status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
                 status_result2 = SecondLabeledData.objects.filter(review_id=review_first[0].pk)
 
-
-
                 # labeling_inspect.html에 보낼 context 데이터
                 context = {'category_detail': category_detail, 'category_product': category_product,
                            'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
@@ -264,9 +271,6 @@ def labeling_inspect(request):
                     print("경로", pp)
 
                     return HttpResponseRedirect(pp)
-
-
-
 
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
