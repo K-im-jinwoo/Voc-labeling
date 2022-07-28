@@ -136,7 +136,7 @@ def labeling_work(request):
                     print(target, emotion, expression)
                     if not FirstLabeledData.objects.filter(first_labeled_emotion=emotion, first_labeled_target=target,
                                                            first_labeled_expression=expression,
-                                                           category_id=category_id):
+                                                           category_id=category_id, review_id=review_id):
                         # First_Labeled_Data모델을 불러와서 first_labeled_data에 저장
                         first_labeled_data = FirstLabeledData()
 
