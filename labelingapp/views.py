@@ -81,7 +81,7 @@ def labeling_work(request):
                 # 자동 라벨링 - 검색
                 review_first = print_review(start, end, category_product)
                 current_review = review_first[0].review_content
-                compare_data = FirstLabeledData.objects.all()
+                compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
                 auto_data_id = []
                 for i in compare_data:
                     if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
@@ -162,7 +162,7 @@ def labeling_work(request):
                     ######---- 자동 라벨링 ----#####
                     # 자동라벨링 - 검색
                     current_review = review_first[0].review_content
-                    compare_data = FirstLabeledData.objects.all()
+                    compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
                     auto_data_id = []
                     for i in compare_data:
                         if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
