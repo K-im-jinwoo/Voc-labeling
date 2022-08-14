@@ -16,7 +16,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from openpyxl.styles import PatternFill, Alignment
 
-from mainapp.models import Category, Review, SecondLabeledData, FirstLabeledData
+from mainapp.models import Category, Review, SecondLabeledData
 
 
 def output(request):
@@ -98,7 +98,7 @@ def output(request):
                 sheet.column_dimensions['D'].width = 25
                 sheet.column_dimensions['E'].width = 25
 
-                data_couple = FirstLabeledData.objects.filter(category_id=category_id_list[0])
+                data_couple = SecondLabeledData.objects.filter(category_id=category_id_list[0])
 
                 i = 2
                 j = 2
@@ -112,29 +112,29 @@ def output(request):
                 i3 = 0
                 for data in data_couple:
                     print(i, data)
-                    if data.first_labeled_emotion == 'positive':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l1:
+                    if data.second_labeled_emotion == 'positive':
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l1:
                             pass
                         else:
-                            l1.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
+                            l1.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
                             print('리스트쌍', l1)
                             sheet.cell(row=i, column=3).value = l1[i1]
                             i = i + 1
                             i1 = i1 + 1
-                    elif data.first_labeled_emotion == 'negative':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
+                    elif data.second_labeled_emotion == 'negative':
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
                             pass
                         else:
-                            l2.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
+                            l2.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
                             print('리스트쌍2', l2)
                             sheet.cell(row=j, column=4).value = l2[i2]
                             j = j + 1
                             i2 = i2 + 1
-                    elif data.first_labeled_emotion == 'neutral':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
+                    elif data.second_labeled_emotion == 'neutral':
+                        if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
                             pass
                         else:
-                            l3.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
+                            l3.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
                             print('리스트쌍3', l3)
                             sheet.cell(row=k, column=5).value = l3[i3]
                             k = k + 1
@@ -185,7 +185,7 @@ def output(request):
                     sheet.column_dimensions['D'].width = 25
                     sheet.column_dimensions['E'].width = 25
 
-                    data_couple = FirstLabeledData.objects.filter(category_id=category_id_list[ii])
+                    data_couple = SecondLabeledData.objects.filter(category_id=category_id_list[ii])
                     i = 2
                     j = 2
                     k = 2
@@ -198,29 +198,29 @@ def output(request):
                     i3 = 0
                     for data in data_couple:
                         print(i, data)
-                        if data.first_labeled_emotion == 'positive':
-                            if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l1:
+                        if data.second_labeled_emotion == 'positive':
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l1:
                                 pass
                             else:
-                                l1.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
+                                l1.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
                                 print('리스트쌍', l1)
                                 sheet.cell(row=i, column=3).value = l1[i1]
                                 i = i + 1
                                 i1 = i1 + 1
-                        elif data.first_labeled_emotion == 'negative':
-                            if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
+                        elif data.second_labeled_emotion == 'negative':
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
                                 pass
                             else:
-                                l2.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
+                                l2.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
                                 print('리스트쌍2', l2)
                                 sheet.cell(row=j, column=4).value = l2[i2]
                                 j = j + 1
                                 i2 = i2 + 1
-                        elif data.first_labeled_emotion == 'neutral':
-                            if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
+                        elif data.second_labeled_emotion == 'neutral':
+                            if (data.second_labeled_target + ' AND ' + data.second_labeled_expression) in l2:
                                 pass
                             else:
-                                l3.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
+                                l3.append(data.second_labeled_target + ' AND ' + data.second_labeled_expression)
                                 print('리스트쌍3', l3)
                                 sheet.cell(row=k, column=5).value = l3[i3]
                                 k = k + 1
