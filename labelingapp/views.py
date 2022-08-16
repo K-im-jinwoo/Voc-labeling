@@ -261,7 +261,7 @@ def labeling_inspect(request):
                     review_id = request.GET.get('review_id')
                     Review.objects.filter(pk=review_id).update(second_status=False, dummy_status=True,
                                                                labeled_user_id=request.user)
-                    print(FirstLabeledData.objects.all[0])
+                    SecondLabeledData.objects.filter(review_id=review_id).delete()
 
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_inspect() 함수 사용
                 review_first = print_inspect(start, end, category_product)
@@ -349,3 +349,8 @@ def labeling_inspect(request):
         print(identifier)
 
     return render(request, 'labelingapp/labeling_inspect.html')
+
+
+def dummydummy(request):
+    FirstLabeledData.objects.filter(review_id__dummy_status=True).delete()
+    return render(request, 'mainapp/main_page.html')
