@@ -80,20 +80,22 @@ def labeling_work(request):
                 #####---- 자동 라벨링 기능 ----#####
                 # 자동 라벨링 - 검색
                 review_first = print_review(start, end, category_product)
-                current_review = review_first[0].review_content
-                compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
-                auto_data_id = []
-                for i in compare_data:
-                    if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
-                            i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
-                        if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
-                                'first_labeled_target',flat=True):
-                            if i.first_labeled_expression not in compare_data.filter(pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
-                                auto_data_id.append(i.pk)
-                auto_data = compare_data.filter(pk__in=auto_data_id)
+
 
                 # 자동 라벨링 - 저장
                 if 'auto_labeling_status' not in request.session:
+                    current_review = review_first[0].review_content
+                    compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
+                    auto_data_id = []
+                    for i in compare_data:
+                        if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
+                                i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
+                            if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
+                                    'first_labeled_target', flat=True):
+                                if i.first_labeled_expression not in compare_data.filter(
+                                        pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
+                                    auto_data_id.append(i.pk)
+                    auto_data = compare_data.filter(pk__in=auto_data_id)
                     request.session['auto_labeling_status'] = review_first[0].review_id
                     for data in auto_data:
                         print('current auto labeling 지금 실행됨')
@@ -106,6 +108,18 @@ def labeling_work(request):
                         auto.save()
 
                 elif request.session['auto_labeling_status'] != review_first[0].review_id:
+                    current_review = review_first[0].review_content
+                    compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
+                    auto_data_id = []
+                    for i in compare_data:
+                        if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
+                                i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
+                            if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
+                                    'first_labeled_target', flat=True):
+                                if i.first_labeled_expression not in compare_data.filter(
+                                        pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
+                                    auto_data_id.append(i.pk)
+                    auto_data = compare_data.filter(pk__in=auto_data_id)
                     for data in auto_data:
                         auto = FirstLabeledData()
                         auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
@@ -161,21 +175,22 @@ def labeling_work(request):
 
                     ######---- 자동 라벨링 ----#####
                     # 자동라벨링 - 검색
-                    current_review = review_first[0].review_content
-                    compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
-                    auto_data_id = []
-                    for i in compare_data:
-                        if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
-                                i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
-                            if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
-                                    'first_labeled_target', flat=True):
-                                if i.first_labeled_expression not in compare_data.filter(
-                                        pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
-                                    auto_data_id.append(i.pk)
-                    auto_data = compare_data.filter(pk__in=auto_data_id)
+
                     # 자동라벨링 - 저장
                     if ('auto_labeling_status' in request.session and request.session['auto_labeling_status'] !=
                             review_first[0].review_id):
+                        current_review = review_first[0].review_content
+                        compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
+                        auto_data_id = []
+                        for i in compare_data:
+                            if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
+                                    i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
+                                if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
+                                        'first_labeled_target', flat=True):
+                                    if i.first_labeled_expression not in compare_data.filter(
+                                            pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
+                                        auto_data_id.append(i.pk)
+                        auto_data = compare_data.filter(pk__in=auto_data_id)
                         for data in auto_data:
                             print('current auto labeling 지금 실행됨')
                             auto = FirstLabeledData()
@@ -187,6 +202,18 @@ def labeling_work(request):
                             auto.save()
                         request.session['auto_labeling_status'] = review_first[0].review_id
                     elif 'auto_labeling_status' not in request.session:
+                        current_review = review_first[0].review_content
+                        compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
+                        auto_data_id = []
+                        for i in compare_data:
+                            if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
+                                    i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
+                                if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
+                                        'first_labeled_target', flat=True):
+                                    if i.first_labeled_expression not in compare_data.filter(
+                                            pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
+                                        auto_data_id.append(i.pk)
+                        auto_data = compare_data.filter(pk__in=auto_data_id)
                         for data in auto_data:
                             print('current auto labeling 지금 실행됨')
                             auto = FirstLabeledData()
