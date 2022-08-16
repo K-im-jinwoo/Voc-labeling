@@ -77,10 +77,11 @@ def labeling_work(request):
                     review_id = request.GET.get('review_id')
                     Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True,
                                                                labeled_user_id=request.user)
+                    FirstLabeledData.objects.filter(review_id=review_id).delete()
+
                 #####---- 자동 라벨링 기능 ----#####
                 # 자동 라벨링 - 검색
                 review_first = print_review(start, end, category_product)
-
 
                 # 자동 라벨링 - 저장
                 if 'auto_labeling_status' not in request.session:
@@ -174,8 +175,6 @@ def labeling_work(request):
                     review_first = print_review(start, end, category_product)
 
                     ######---- 자동 라벨링 ----#####
-                    # 자동라벨링 - 검색
-
                     # 자동라벨링 - 저장
                     if ('auto_labeling_status' in request.session and request.session['auto_labeling_status'] !=
                             review_first[0].review_id):
@@ -262,6 +261,7 @@ def labeling_inspect(request):
                     review_id = request.GET.get('review_id')
                     Review.objects.filter(pk=review_id).update(second_status=False, dummy_status=True,
                                                                labeled_user_id=request.user)
+                    print(FirstLabeledData.objects.all[0])
 
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_inspect() 함수 사용
                 review_first = print_inspect(start, end, category_product)
