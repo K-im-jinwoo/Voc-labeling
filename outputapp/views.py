@@ -9,6 +9,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponseRedirect
+import csv
 
 from django.shortcuts import render
 
@@ -49,208 +50,20 @@ def output(request):
 
         elif request.method == "POST" and 'export' in request.POST:
             if 'export' in '.xlsx export':
-                print("엑셀")
-                product = request.POST['product']
-                print(product)
-                category = Category.objects.filter(category_product=product)
-                category_list = []
-                category_id_list = []
-                for i in category:
-                    category_list.append(i.category_middle)
-                    category_id_list.append(i.category_id)
+                resultdata = FirstLabeledData.objects.filter(category_id__category_product=request.session['category_product'])
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename=' + datetime.now().strftime(
+                    "%Y-%m-%d_%I-%M-%S_%p") + '.csv'
+                response.write(u'\ufeff'.encode('utf8'))
 
-                print("카테고리리스트", category_list)
-                print("카테고리id리스트", category_id_list)
-                category_len = len(category_list)
-
-                response = HttpResponse(content_type="application/vnd.ms-excel")
-                # 다운로드 받을 때 생성될 파일명 설정
-                response["Content-Disposition"] = 'attachment; filename=' + datetime.now().strftime(
-                    "%Y-%m-%d_%I-%M-%S_%p") + '.xlsx'
-
-                # 워크북(엑셀파일)을 새로 만듭니다.
-                wb = openpyxl.Workbook()
-                wb.active.title = category_list[0]
-                sheet = wb.active
-                sheet.append(["Product_Group", "Category", "긍정 키워드", "부정 키워드", "중립 키워드"])
-
-                # 음영 색 지정
-                grayFill = PatternFill(start_color='BFBFBF',
-                                       end_color='BFBFBF',
-                                       fill_type='solid')
-                # 지정된 음영 색으로 영역 색칠하기
-                sheet["A1"].fill = grayFill
-                sheet["B1"].fill = grayFill
-                sheet["C1"].fill = grayFill
-                sheet["D1"].fill = grayFill
-                sheet["E1"].fill = grayFill
-
-                # 중앙 정렬 및 너비 설정
-                format1 = Alignment(horizontal='center', vertical='center')
-                sheet["A1"].alignment = format1
-                sheet["B1"].alignment = format1
-                sheet["C1"].alignment = format1
-                sheet["D1"].alignment = format1
-                sheet["E1"].alignment = format1
-                sheet.column_dimensions['A'].width = 13
-                sheet.column_dimensions['B'].width = 13
-                sheet.column_dimensions['C'].width = 25
-                sheet.column_dimensions['D'].width = 25
-                sheet.column_dimensions['E'].width = 25
-
-                data_couple = FirstLabeledData.objects.filter(category_id=category_id_list[0])
-
-                i = 2
-                j = 2
-                k = 2
-
-                l1 = []
-                l2 = []
-                l3 = []
-                i1 = 0
-                i2 = 0
-                i3 = 0
-                for data in data_couple:
-                    print(i, data)
-                    if data.first_labeled_emotion == 'positive':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l1:
-                            pass
-                        else:
-                            l1.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                            print('리스트쌍', l1)
-                            sheet.cell(row=i, column=3).value = l1[i1]
-                            i = i + 1
-                            i1 = i1 + 1
-                    elif data.first_labeled_emotion == 'negative':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
-                            pass
-                        else:
-                            l2.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                            print('리스트쌍2', l2)
-                            sheet.cell(row=j, column=4).value = l2[i2]
-                            j = j + 1
-                            i2 = i2 + 1
-                    elif data.first_labeled_emotion == 'neutral':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
-                            pass
-                        else:
-                            l3.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                            print('리스트쌍3', l3)
-                            sheet.cell(row=k, column=5).value = l3[i3]
-                            k = k + 1
-                            i3 = i3 + 1
-                    else:
-                        print('해당없음')
-
-                print("ijk개수",i-2,j-2,k-2)
-                m = max(i-2,j-2,k-2)
-                print(type(m))
-
-                # 데이터쌍 max값뽑아서 적용
-                for m in range(m):  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-                    print(product)
-                    p = product
-                    sheet.cell(row=m+2, column=1).value = p
-                    print(category_list[0])
-                    c = data.category_id.category_middle
-                    sheet.cell(row=m+2, column=2).value = c
-
-                for ii in range(1, category_len):
-                    category_list[ii] = wb.create_sheet("%s" % category_list[ii])
-                    sheet = category_list[ii]
-                    # 헤더 추가하기
-                    sheet.append(["Product_Group", "Category", "긍정 키워드", "부정 키워드", "중립 키워드"])
-
-                    # 음영 색 지정
-                    grayFill = PatternFill(start_color='BFBFBF',
-                                           end_color='BFBFBF',
-                                           fill_type='solid')
-                    # 지정된 음영 색으로 음역 색칠하기
-                    sheet["A1"].fill = grayFill
-                    sheet["B1"].fill = grayFill
-                    sheet["C1"].fill = grayFill
-                    sheet["D1"].fill = grayFill
-                    sheet["E1"].fill = grayFill
-
-                    # 중앙 정렬 및 너비 설정
-                    format1 = Alignment(horizontal='center', vertical='center')
-                    sheet["A1"].alignment = format1
-                    sheet["B1"].alignment = format1
-                    sheet["C1"].alignment = format1
-                    sheet["D1"].alignment = format1
-                    sheet["E1"].alignment = format1
-                    sheet.column_dimensions['A'].width = 13
-                    sheet.column_dimensions['B'].width = 13
-                    sheet.column_dimensions['C'].width = 25
-                    sheet.column_dimensions['D'].width = 25
-                    sheet.column_dimensions['E'].width = 25
-
-                    data_couple = FirstLabeledData.objects.filter(category_id=category_id_list[ii])
-                    i = 2
-                    j = 2
-                    k = 2
-
-                    l1 = []
-                    l2 = []
-                    l3 = []
-                    i1 = 0
-                    i2 = 0
-                    i3 = 0
-                    for data in data_couple:
-                        print(i, data)
-                        if data.first_labeled_emotion == 'positive':
-                            if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l1:
-                                pass
-                            else:
-                                l1.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                                print('리스트쌍', l1)
-                                sheet.cell(row=i, column=3).value = l1[i1]
-                                i = i + 1
-                                i1 = i1 + 1
-                        elif data.first_labeled_emotion == 'negative':
-                            if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
-                                pass
-                            else:
-                                l2.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                                print('리스트쌍2', l2)
-                                sheet.cell(row=j, column=4).value = l2[i2]
-                                j = j + 1
-                                i2 = i2 + 1
-                        elif data.first_labeled_emotion == 'neutral':
-                            if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
-                                pass
-                            else:
-                                l3.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                                print('리스트쌍3', l3)
-                                sheet.cell(row=k, column=5).value = l3[i3]
-                                k = k + 1
-                                i3 = i3 + 1
-                        else:
-                            print('해당없음')
-
-                        print("ijk개수", i - 2, j - 2, k - 2)
-                        m = max(i - 2, j - 2, k - 2)
-                        print(type(m))
-
-                        # 데이터쌍 max값뽑아서 적용
-                        for m in range(m):  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-                            print(product)
-                            p = product
-                            sheet.cell(row=m + 2, column=1).value = p
-                            print(category_list[0])
-                            c = data.category_id.category_middle
-                            sheet.cell(row=m + 2, column=2).value = c
-
-                # 제품명 + 날짜 + 시간으로 파일명이 생성되며 c드라이브에 labelingresult 폴더 없을시 자동 생성된 후 그 안에 파일이 담김
-
-                # Path("C:\\labelingresult").mkdir(exist_ok=True)
-
-                # filename = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
-                # filedir = "C:\\labelingresult\\"
-                wb.save(response)
-
+                writer = csv.writer(response)
+                writer.writerow(
+                    ['category_id_id', 'first_labeled_emotion', 'first_labeled_target', 'first_labeled_expression'])
+                results = resultdata.values_list('category_id__category_middle', 'first_labeled_emotion',
+                                                 'first_labeled_target', 'first_labeled_expression')
+                for rlt in results:
+                    writer.writerow(rlt)
                 return response
-
 
             elif 'export' in '.data analysis':
                 print("분석입니다.")
