@@ -1,23 +1,12 @@
 from datetime import datetime
-import os
-from enum import auto
 from django.http import HttpResponse
-from datetime import date
-import pandas as pd
-import openpyxl
-from pathlib import Path
-import requests
-from bs4 import BeautifulSoup
-from django.http import HttpResponseRedirect
 import csv
-
 from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse
-from openpyxl.styles import PatternFill, Alignment
 
-from mainapp.models import Category, Review, SecondLabeledData, FirstLabeledData
+from mainapp.models import Category, Review, FirstLabeledData
 
 
 def output(request):
@@ -51,16 +40,17 @@ def output(request):
         elif request.method == "POST" and 'export' in request.POST:
             if 'export' in '.xlsx export':
                 resultdata = FirstLabeledData.objects.filter(category_id__category_product=request.session['category_product'])
+                product = request.POST['product']
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename=' + datetime.now().strftime(
+                response['Content-Disposition'] = 'attachment; filename=' + product + '_' + datetime.now().strftime(
                     "%Y-%m-%d_%I-%M-%S_%p") + '.csv'
                 response.write(u'\ufeff'.encode('utf8'))
 
                 writer = csv.writer(response)
                 writer.writerow(
-                    ['category_id_id', 'first_labeled_emotion', 'first_labeled_target', 'first_labeled_expression'])
-                results = resultdata.values_list('category_id__category_middle', 'first_labeled_emotion',
-                                                 'first_labeled_target', 'first_labeled_expression')
+                    ['Product_Group', 'Category', 'Keyword', 'Phenomenon', 'Emotion'])
+                results = resultdata.values_list('category_id__category_product', 'category_id__category_middle',
+                                                 'first_labeled_target', 'first_labeled_expression', 'first_labeled_emotion')
                 for rlt in results:
                     writer.writerow(rlt)
                 return response
