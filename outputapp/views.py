@@ -1,21 +1,11 @@
 from datetime import datetime
-import os
-from enum import auto
 from django.http import HttpResponse
-from datetime import date
-import pandas as pd
 import openpyxl
-from pathlib import Path
-import requests
-from bs4 import BeautifulSoup
-from django.http import HttpResponseRedirect
-
 from django.shortcuts import render
 
 # Create your views here.
-from django.urls import reverse
-from openpyxl.styles import PatternFill, Alignment
 
+from openpyxl.styles import PatternFill, Alignment
 from mainapp.models import Category, Review, SecondLabeledData, FirstLabeledData
 
 
@@ -68,97 +58,20 @@ def output(request):
                 response["Content-Disposition"] = 'attachment; filename=' + datetime.now().strftime(
                     "%Y-%m-%d_%I-%M-%S_%p") + '.xlsx'
 
+
+
                 # 워크북(엑셀파일)을 새로 만듭니다.
                 wb = openpyxl.Workbook()
-                wb.active.title = category_list[0]
-                sheet = wb.active
-                sheet.append(["Product_Group", "Category", "긍정 키워드", "부정 키워드", "중립 키워드"])
 
-                # 음영 색 지정
-                grayFill = PatternFill(start_color='BFBFBF',
-                                       end_color='BFBFBF',
-                                       fill_type='solid')
-                # 지정된 음영 색으로 영역 색칠하기
-                sheet["A1"].fill = grayFill
-                sheet["B1"].fill = grayFill
-                sheet["C1"].fill = grayFill
-                sheet["D1"].fill = grayFill
-                sheet["E1"].fill = grayFill
-
-                # 중앙 정렬 및 너비 설정
-                format1 = Alignment(horizontal='center', vertical='center')
-                sheet["A1"].alignment = format1
-                sheet["B1"].alignment = format1
-                sheet["C1"].alignment = format1
-                sheet["D1"].alignment = format1
-                sheet["E1"].alignment = format1
-                sheet.column_dimensions['A'].width = 13
-                sheet.column_dimensions['B'].width = 13
-                sheet.column_dimensions['C'].width = 25
-                sheet.column_dimensions['D'].width = 25
-                sheet.column_dimensions['E'].width = 25
-
-                data_couple = FirstLabeledData.objects.filter(category_id=category_id_list[0])
-
-                i = 2
-                j = 2
-                k = 2
-
-                l1 = []
-                l2 = []
-                l3 = []
-                i1 = 0
-                i2 = 0
-                i3 = 0
-                for data in data_couple:
-                    print(i, data)
-                    if data.first_labeled_emotion == 'positive':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l1:
-                            pass
-                        else:
-                            l1.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                            print('리스트쌍', l1)
-                            sheet.cell(row=i, column=3).value = l1[i1]
-                            i = i + 1
-                            i1 = i1 + 1
-                    elif data.first_labeled_emotion == 'negative':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
-                            pass
-                        else:
-                            l2.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                            print('리스트쌍2', l2)
-                            sheet.cell(row=j, column=4).value = l2[i2]
-                            j = j + 1
-                            i2 = i2 + 1
-                    elif data.first_labeled_emotion == 'neutral':
-                        if (data.first_labeled_target + ' AND ' + data.first_labeled_expression) in l2:
-                            pass
-                        else:
-                            l3.append(data.first_labeled_target + ' AND ' + data.first_labeled_expression)
-                            print('리스트쌍3', l3)
-                            sheet.cell(row=k, column=5).value = l3[i3]
-                            k = k + 1
-                            i3 = i3 + 1
+                for ii in range(0, category_len):
+                    if ii == 0:
+                        wb.active.title = category_list[0]
+                        sheet = wb.active
                     else:
-                        print('해당없음')
+                        category_list[ii] = wb.create_sheet("%s" % category_list[ii])
+                        sheet = category_list[ii]
+                        # 헤더 추가하기
 
-                print("ijk개수",i-2,j-2,k-2)
-                m = max(i-2,j-2,k-2)
-                print(type(m))
-
-                # 데이터쌍 max값뽑아서 적용
-                for m in range(m):  # 긍정, 부정, 중립 키워드 수 중 가장 큰것에 맞춰서 제품 수와 카테고리 뽑아내야함
-                    print(product)
-                    p = product
-                    sheet.cell(row=m+2, column=1).value = p
-                    print(category_list[0])
-                    c = data.category_id.category_middle
-                    sheet.cell(row=m+2, column=2).value = c
-
-                for ii in range(1, category_len):
-                    category_list[ii] = wb.create_sheet("%s" % category_list[ii])
-                    sheet = category_list[ii]
-                    # 헤더 추가하기
                     sheet.append(["Product_Group", "Category", "긍정 키워드", "부정 키워드", "중립 키워드"])
 
                     # 음영 색 지정
