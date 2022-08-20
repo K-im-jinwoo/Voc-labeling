@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div style="text-align: center">
+        <form method="get">
+        {% csrf_token %}
+            <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
+                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+                    <option value='cleaner'>청소기</option>
+                    <option value='refrigerator'>냉장고</option>
+                    <option value='dish_washer'>식기세척기</option>
+            </select>
+            <input type="submit">
+        </form>
+        {% if category_product %}
+                <h1>{{ category_product }}</h1>
+        {% endif %}
+
+        {% if result %}
+            {% for name, count in result %}
+                <div>
+                    <h4>{{ name }} : {{ count }}개</h4>
+                </div>
+
+            {% endfor %}
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -15,5 +15,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('account/<int:pk>', AccountDetailView.as_view(), name='account'),
     path('account_profile/', ProfileCreateView.as_view(), name="account_profile"),
-    path('workstatus/', views.workstatus, name='workstatus')
+    path('workstatus/', views.workstatus, name='workstatus'),
+    path('workstatus/count/', views.workstatus_count, name='workstatus_count')
 ]
