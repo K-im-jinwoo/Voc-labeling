@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div style="text-align: center">
+    <div style="text-align: center; margin-top: 3rem;">
         <form method="get">
         {% csrf_token %}
             <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
@@ -11,20 +11,22 @@
                     <option value='refrigerator'>냉장고</option>
                     <option value='dish_washer'>식기세척기</option>
             </select>
-            <input type="submit">
+            <input type="submit" value="확인">
         </form>
+        <div>
+        <div style="margin-top: 4rem;">
         {% if category_product %}
-                <h1>{{ category_product }}</h1>
+                <h4> "제품: {{ category_product }}" </h4>
         {% endif %}
-
+        <div style="margin-top: 1rem;">
         {% if result %}
             {% for name, count in result %}
-                <div>
-                    <h4>{{ name }} : {{ count }}개</h4>
-                </div>
+                    <h5>- ID) {{ name }} : {{ count }}개</h5>
 
             {% endfor %}
         {% endif %}
+        </div>
+        </div>
     </div>
 
 {% endblock %}

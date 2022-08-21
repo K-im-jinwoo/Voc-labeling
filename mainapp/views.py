@@ -180,7 +180,7 @@ def workstatus(request):
 
 
 def workstatus_count(request):
-    temp_user = User.objects.filter(is_superuser=False)
+    temp_user = User.objects.filter(is_superuser=True)
     result_name = []
     result_count = []
     context = {}
