@@ -245,11 +245,13 @@
                                  style="width:82%; text-align: left;">{{ review.review_content }}</td>
                             {% endfor %}
                         </table>
-
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div style="text-align: center">
+        <a href="{% url 'mainapp:workstatus_count' %}">작업자별 작업 상태 확안하기</a>
     </div>
 
 {% endblock %}
