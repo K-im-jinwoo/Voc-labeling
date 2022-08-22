@@ -124,11 +124,11 @@ def output(request):
 
                 ####---- csv 파일 만들기 ----####
                 writer = csv.writer(response)
-                reviews = list(Review.objects.filter(first_status=True).values_list('review_id', flat=True))
-                review_contents = list(Review.objects.filter(first_status=True).values_list('review_content', flat=True))
+                reviews = list(Review.objects.filter(first_status=True, category_product=product).values_list('review_id', flat=True))
+                review_contents = list(Review.objects.filter(first_status=True, category_product=product).values_list('review_content', flat=True))
                 result = [['']] * len(reviews)
                 for i in range(len(reviews)):
-                    categorys = FirstLabeledData.objects.filter(review_id=reviews[i]).values_list('category_id__category_middle', flat=True)
+                    categorys = FirstLabeledData.objects.filter(review_id=reviews[i], category_id__category_product=product).values_list('category_id__category_middle', flat=True)
                     review_category = ''
                     for category in categorys:
                         review_category += category + 'and'
