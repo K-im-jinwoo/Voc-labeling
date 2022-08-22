@@ -352,8 +352,8 @@ def labeling_inspect(request):
 
 
 def dummydummy(request):
-    FirstLabeledData.objects.filter(first_labeled_target='1', first_labeled_expression='1').delete()
-    FirstLabeledData.objects.filter(first_labeled_target='1', first_labeled_expression='1').delete()
+    FirstLabeledData.objects.filter(first_labeled_target='시간', first_labeled_expression='2시간').delete()
+    FirstLabeledData.objects.filter(first_labeled_target='시간', first_labeled_expression='오래').delete()
     FirstLabeledData.objects.filter(first_labeled_target='세척', first_labeled_expression='만족',
                                     category_id__category_product='dish_washer').delete()
     return render(request, 'mainapp/main_page.html')
