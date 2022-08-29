@@ -46,68 +46,66 @@ def output(request):
                 response['Content-Disposition'] = 'attachment; filename=' + product + '_' + datetime.now().strftime(
                     "%Y-%m-%d_%I-%M-%S_%p") + '.csv'
                 response.write(u'\ufeff'.encode('utf8'))
-
-                ####---- csv 파일 만들기 ----####
                 writer = csv.writer(response)
-                temp_keyword = list(FirstLabeledData.objects.filter(category_id__category_product=request.session['category_product']).values_list('category_id__category_middle', 'first_labeled_emotion', 'first_labeled_target', 'first_labeled_expression').distinct())
-                all_keyword = [['']] * len(temp_keyword)
 
-                ####---- 전체 키워드 뽑아오기 ----####
-                row_names = ['카테고리', '감정', '키워드']
-                for i in range(len(temp_keyword)):
-                    all_keyword[i] = [list(temp_keyword[i])[0], list(temp_keyword[i])[1], list(temp_keyword[i])[2] + 'and' + list(temp_keyword[i])[3]]
 
-                # 1. 카테고리 목록 만들기
-                category_list = [list(
+                """ 카테고리별 개수 저장 & 열 이름 지정 """
+                ##### ---- 카테고리별 [긍정, 부정, 중립] 중 가장 많은 수 딕셔너리에 저장 ---- #####
+                category_list = list(
                     Category.objects.filter(category_product=request.session['category_product']).values_list(
-                        'category_id', flat=True))]
-                for i in category_list[0]:
-                    category_list += [[int(i)]]
-                print(category_list)
-
-                # 2. 감정 목록 만들기
-                emotion_list = [list(FirstLabeledData.objects.filter(
-                    category_id__category_product=request.session['category_product']).values_list(
-                    'first_labeled_emotion', flat=True).distinct())]
-                for i in emotion_list[0]:
-                    emotion_list += [[i]]
-
+                        'category_id', flat=True))
+                category_dict = {}
                 for category in category_list:
-                    category_keyword = FirstLabeledData.objects.filter(
-                        category_id__category_product=request.session['category_product'], category_id__in=category)
+                    max_count = 0
+                    for emotion in ['positive', 'negative', 'neutral']:
+                        emotion_count = len(FirstLabeledData.objects.filter(
+                            category_id__category_product=request.session['category_product'], category_id=category,
+                            first_labeled_emotion=emotion).values_list('first_labeled_target',
+                                                                       'first_labeled_expression').distinct())
+                        if emotion_count >= max_count:
+                            max_count = emotion_count
+                    if max_count == 0:
+                        continue
+                    category_dict[category] = max_count
+                print(category_dict)
 
-                    # 3. 한 칸 띄워주기
-                    row_names += ['']
-                    for i in range(len(all_keyword)):
+                ##### ---- 가장 많은 카테고리 기준으로 만들기 ---- #####
+                max_count = max(list(category_dict.values()))
+                all_keyword = [['']] * max_count
+
+                ##### ---- 열 이름 지정하기 ---- #####
+                row_names = ['', '카테고리', '긍정', '부정', '중립'] * len(list(category_dict.keys()))
+                writer.writerow(row_names)
+
+
+                """ 내용 입력 부분 """
+                for category in list(category_dict.keys()):
+
+                    ##### ---- 카테고리명 입력 ---- #####
+                    category_name = Category.objects.get(category_id=category).category_middle
+                    category_keyword = FirstLabeledData.objects.filter(category_id=category,
+                                                                       category_id__category_product=request.session[
+                                                                           'category_product'])
+                    for i in range(category_dict[category]):
+                        all_keyword[i] = all_keyword[i] + [category_name]
+                    for i in range(category_dict[category], max_count):
                         all_keyword[i] = all_keyword[i] + ['']
 
-                    for emotion in emotion_list:
-
-                        # 4. 열 이름 지정해주기
-                        if category == category_list[0]:
-                            category_name = '전체'
-                        else:
-                            category_name = str(
-                                Category.objects.filter(category_id__in=category).values_list('category_middle', flat=True)[
-                                    0])
-                        if emotion == emotion_list[0]:
-                            emotion_name = 'all'
-                        else:
-                            emotion_name = emotion[0]
-                        row_names += [category_name + '_' + emotion_name]
-
-                        # 5. 값 입력하기
-                        emotion_keyword = list(category_keyword.filter(first_labeled_emotion__in=emotion).values_list(
-                            'first_labeled_target', 'first_labeled_expression').distinct())
-                        print(category_name, emotion, len(emotion_keyword))
-
+                    ##### ---- 감정별 키워드 입력 ---- #####
+                    for emotion in ['positive', 'negative', 'neutral']:
+                        emotion_keyword = list(
+                            category_keyword.filter(first_labeled_emotion=emotion).values_list('first_labeled_target',
+                                                                                               'first_labeled_expression').distinct())
                         for i in range(len(emotion_keyword)):
-                            all_keyword[i] = all_keyword[i] + [list(emotion_keyword[i])[0] + 'and' + list(emotion_keyword[i])[1]]
-                        for i in range(len(emotion_keyword), len(all_keyword)):
+                            all_keyword[i] = all_keyword[i] + [
+                                list(emotion_keyword[i])[0] + 'AND' + list(emotion_keyword[i])[1]]
+                        for i in range(len(emotion_keyword), max_count):
                             all_keyword[i] = all_keyword[i] + ['']
 
-                # 6. csv 파일 만들기
-                writer.writerow(row_names)
+                    ##### ---- 한 칸 띄우기 ---- #####
+                    for i in range(max_count):
+                        all_keyword[i] = all_keyword[i] + ['']
+
                 for rlt in all_keyword:
                     writer.writerow(rlt)
 
@@ -124,11 +122,17 @@ def output(request):
 
                 ####---- csv 파일 만들기 ----####
                 writer = csv.writer(response)
-                reviews = list(Review.objects.filter(first_status=True, category_product=product).values_list('review_id', flat=True))
-                review_contents = list(Review.objects.filter(first_status=True, category_product=product).values_list('review_content', flat=True))
+                reviews = list(
+                    Review.objects.filter(first_status=True, category_product=product).values_list('review_id',
+                                                                                                   flat=True))
+                review_contents = list(
+                    Review.objects.filter(first_status=True, category_product=product).values_list('review_content',
+                                                                                                   flat=True))
                 result = [['']] * len(reviews)
                 for i in range(len(reviews)):
-                    categorys = FirstLabeledData.objects.filter(review_id=reviews[i], category_id__category_product=product).values_list('category_id__category_middle', flat=True)
+                    categorys = FirstLabeledData.objects.filter(review_id=reviews[i],
+                                                                category_id__category_product=product).values_list(
+                        'category_id__category_middle', flat=True)
                     review_category = ''
                     for category in categorys:
                         review_category += category + 'and'
