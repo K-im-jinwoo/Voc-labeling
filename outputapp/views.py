@@ -42,9 +42,9 @@ def output(request):
 
                 ####---- HttpResponse 설정 ----####
                 product = request.POST['product']
-                response = HttpResponse(content_type='text/csv')
+                response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                 response['Content-Disposition'] = 'attachment; filename=' + product + '_' + datetime.now().strftime(
-                    "%Y-%m-%d_%I-%M-%S_%p") + '.csv'
+                    "%Y-%m-%d_%I-%M-%S_%p") + '.xlsx'
                 response.write(u'\ufeff'.encode('utf8'))
                 writer = csv.writer(response)
 

@@ -352,8 +352,12 @@ def labeling_inspect(request):
 
 
 def dummydummy(request):
-    FirstLabeledData.objects.filter(first_labeled_target='시간', first_labeled_expression='2시간').delete()
-    FirstLabeledData.objects.filter(first_labeled_target='시간', first_labeled_expression='오래').delete()
-    FirstLabeledData.objects.filter(first_labeled_target='세척', first_labeled_expression='만족',
-                                    category_id__category_product='dish_washer').delete()
+    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
+                                    first_labeled_target='생각보다', first_labeled_expression='무겁').delete()
+    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
+                                    first_labeled_target='다빨아', first_labeled_expression='깨끗').delete()
+    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
+                                    first_labeled_target='강력', first_labeled_expression='좋아').delete()
+    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
+                                    first_labeled_target='가볍고', first_labeled_expression='좋습').delete()
     return render(request, 'mainapp/main_page.html')
