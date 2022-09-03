@@ -362,7 +362,7 @@ def dummydummy(request):
                 category_id__category_product=request.POST.get("category_product"),
                 category_id__category_middle=request.POST.get("category_middle"),
                 first_labeled_target=request.POST.get("first_labeled_target"),
-                first_labeled_expression=request.POST.get("first_labeled_target"))
+                first_labeled_expression=request.POST.get("first_labeled_expression"))
             message = request.POST.get("category_product") + "제품의 " + request.POST.get(
                 "category_middle") + "카테고리의 " + request.POST.get("first_labeled_target") + " - " + request.POST.get(
                 "first_labeled_expression") + "을 " + str(dummy_data.count()) + "개 지웠습니다. "
