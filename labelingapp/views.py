@@ -462,6 +462,9 @@ def dummydummy(request):
                                     first_labeled_target='가벼워서', first_labeled_expression='좋아').delete()
     FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
                                     first_labeled_target='가벼워', first_labeled_expression='좋').delete()
+    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='조립성',
+                                    first_labeled_target='코드선', first_labeled_expression='좀 짧아').delete()
+    
 
 
     return render(request, 'mainapp/main_page.html')
