@@ -38,7 +38,7 @@ def output(request):
                 return render(request, 'outputapp/output.html', context)
 
         elif request.method == "POST" and 'export' in request.POST:
-            if request.POST['export'] == '.xlsx export':
+            if request.POST['export'] == '.csv export':
 
                 ####---- HttpResponse 설정 ----####
                 product = request.POST['product']
