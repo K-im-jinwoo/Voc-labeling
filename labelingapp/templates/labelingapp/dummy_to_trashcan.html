@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    청소기는 cleaner, 냉장고는 refrigerator, 식세기는 dish_washer
+    <h3>{{ message }}</h3>
+    <hr>
+    <form action="{% url 'labelingapp:dummydummy' %}" method="post">
+        {% csrf_token %}
+        <input name="category_product" type="text" value="{{ product }}" placeholder="제품명(영어 작성)">
+        <input name="category_middle" type="text" value="{{ category }}" placeholder="카테고리명">
+        <input name="first_labeled_target" type="text" placeholder="키워드">
+        <input name="first_labeled_expression" type="text" placeholder="현상">
+        <input type="submit" value="삭제">
+    </form>
+{% endblock %}

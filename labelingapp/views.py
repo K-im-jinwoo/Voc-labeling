@@ -352,119 +352,23 @@ def labeling_inspect(request):
 
 
 def dummydummy(request):
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='무겁지', first_labeled_expression='않').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='좀', first_labeled_expression='무겁').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='소음',
-                                    first_labeled_target='조용', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='소음',
-                                    first_labeled_target='조용', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='동작편리성',
-                                    first_labeled_target='무선', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='줄', first_labeled_expression='뻣뻣').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
-                                    first_labeled_target=' 흡입력', first_labeled_expression='좋고').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
-                                    first_labeled_target=' 흡입력 ', first_labeled_expression='좋고').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
-                                    first_labeled_target='흡입력 ', first_labeled_expression='좋고').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가볍', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='동작편리성',
-                                    first_labeled_target='선', first_labeled_expression='없으니').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
-                                    first_labeled_target='잘', first_labeled_expression='흡입').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='동작편리성',
-                                    first_labeled_target='무선', first_labeled_expression='편해').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가벼워', first_labeled_expression='사용하기 편').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='청소가능영역',
-                                    first_labeled_target='구석구석', first_labeled_expression='청소').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='핸들링',
-                                    first_labeled_target='장애물', first_labeled_expression='피해').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='소음',
-                                    first_labeled_target='배터리 수명', first_labeled_expression='고 ').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='줄', first_labeled_expression='짧').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='소음',
-                                    first_labeled_target='조용', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='소음',
-                                    first_labeled_target='물걸레', first_labeled_expression='조용').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='선', first_labeled_expression='긴').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='선', first_labeled_expression='없어').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='선', first_labeled_expression='불편').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='무선', first_labeled_expression='편').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='유선', first_labeled_expression='불편함').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='코드길이', first_labeled_expression='짧').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='동작편리성',
-                                    first_labeled_target='유선', first_labeled_expression='불편').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='먼지통', first_labeled_expression='분리').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='디자인',
-                                    first_labeled_target='깔끔', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='무선', first_labeled_expression='무겁').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='무겁긴', first_labeled_expression='하네').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='무겁', first_labeled_expression='않').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='제트', first_labeled_expression='무거').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='다이슨', first_labeled_expression='무거').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='물걸레', first_labeled_expression='무거워').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='무게가', first_labeled_expression='있어').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가벼워서', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가벼워', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='무선', first_labeled_expression='만족').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='살짝', first_labeled_expression='무겁').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가벼워', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='물걸레', first_labeled_expression='동시').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='동작편리성',
-                                    first_labeled_target='무선', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='걸레', first_labeled_expression='작아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='선', first_labeled_expression='짧').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='줄', first_labeled_expression='짧아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='유지관리',
-                                    first_labeled_target='거치', first_labeled_expression='편하').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='위생',
-                                    first_labeled_target='머리카락 흡입', first_labeled_expression='안되').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='흡입력',
-                                    first_labeled_target='흡입력', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='물걸레', first_labeled_expression='가볍').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가볍고', first_labeled_expression='만족').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가볍', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='기타',
-                                    first_labeled_target='청소기', first_labeled_expression='유선이 최고').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가벼워서', first_labeled_expression='좋아').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='무게',
-                                    first_labeled_target='가벼워', first_labeled_expression='좋').delete()
-    FirstLabeledData.objects.filter(category_id__category_product='cleaner', category_id__category_middle='조립성',
-                                    first_labeled_target='코드선', first_labeled_expression='좀 짧아').delete()
-    
+    message = ""
+    product = ""
+    category = ""
 
+    if request.method == "POST":
+        if request.POST.get("category_product") != "" and request.POST.get("category_middle") != "":
+            dummy_data = FirstLabeledData.objects.filter(
+                category_id__category_product=request.POST.get("category_product"),
+                category_id__category_middle=request.POST.get("category_middle"),
+                first_labeled_target=request.POST.get("first_labeled_target"),
+                first_labeled_expression=request.POST.get("first_labeled_target"))
+            message = request.POST.get("category_product") + "제품의 " + request.POST.get(
+                "category_middle") + "카테고리의 " + request.POST.get("first_labeled_target") + " - " + request.POST.get(
+                "first_labeled_expression") + "을 " + str(dummy_data.count()) + "개 지웠습니다. "
+            dummy_data.delete()
+            product = request.POST.get("category_product")
+            category = request.POST.get("category_middle")
 
-    return render(request, 'mainapp/main_page.html')
+    context = {"message": message, "product": product, "category": category}
+    return render(request, 'labelingapp/dummy_to_trashcan.html', context=context)
