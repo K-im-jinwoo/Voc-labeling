@@ -48,26 +48,28 @@ def output(request):
                 with BytesIO() as b:
                     writer = pd.ExcelWriter(b, engine='xlsxwriter')
                     for category in categorys:
-                        keywords = {'positive_keyword':'', 'negative_keyword':'', 'neutral_keyword':''}
+                        keywords = {'positive_keyword': '', 'negative_keyword': '', 'neutral_keyword': ''}
                         counts = {}
                         for emotion in ['positive', 'negative', 'neutral']:
-                                temp_keyword = list(all_keywords.filter(category_id__category_middle=category,
-                                                                        first_labeled_emotion=emotion).values_list(
-                                    'first_labeled_target', 'first_labeled_expression').distinct())
-                                for i in range(len(temp_keyword)):
-                                    temp_keyword[i] = list(temp_keyword[i])[0] + ' AND ' + list(temp_keyword[i])[1]
+                            temp_keyword = list(all_keywords.filter(category_id__category_middle=category,
+                                                                    first_labeled_emotion=emotion).values_list(
+                                'first_labeled_target', 'first_labeled_expression').distinct().order_by(
+                                '-first_labeled_target'))
+                            for i in range(len(temp_keyword)):
+                                temp_keyword[i] = list(temp_keyword[i])[0] + ' AND ' + list(temp_keyword[i])[1]
 
-                                counts[emotion + '_keyword'] = len(temp_keyword)
-                                keywords[emotion + '_keyword'] = temp_keyword
-                                product_group = [request.POST['product']] * max(counts.values())
-                                type_ = ['3F_Ergonomics'] * max(counts.values())
-                                category_list = [category] * max(counts.values())
-                                dict_ = {'Product_Group': product_group,
-                                              'Type': type_, 'Category': category_list, '긍정 키워드':keywords['positive_keyword'], '부정 키워드':keywords['negative_keyword'], '중립 키워드':keywords['neutral_keyword']}
-                                df = pd.DataFrame.from_dict(dict_, orient='index')
-                                df = df.transpose()
+                            counts[emotion + '_keyword'] = len(temp_keyword)
+                            keywords[emotion + '_keyword'] = temp_keyword
+                            product_group = [request.POST['product']] * max(counts.values())
+                            type_ = ['3F_Ergonomics'] * max(counts.values())
+                            category_list = [category] * max(counts.values())
+                            dict_ = {'Product_Group': product_group,
+                                     'Type': type_, 'Category': category_list, '긍정 키워드': keywords['positive_keyword'],
+                                     '부정 키워드': keywords['negative_keyword'], '중립 키워드': keywords['neutral_keyword']}
+                            df = pd.DataFrame.from_dict(dict_, orient='index')
+                            df = df.transpose()
 
-                                df.to_excel(writer, sheet_name=category)
+                            df.to_excel(writer, sheet_name=category)
                     writer.save()
                     filename = request.POST['product']
                     content_type = 'application/vnd.ms-excel'
