@@ -54,7 +54,7 @@ def output(request):
                             temp_keyword = list(all_keywords.filter(category_id__category_middle=category,
                                                                     first_labeled_emotion=emotion).values_list(
                                 'first_labeled_target', 'first_labeled_expression').distinct().order_by(
-                                '-first_labeled_target'))
+                                '-first_labeled_target', '-first_labeled_expression'))
                             for i in range(len(temp_keyword)):
                                 temp_keyword[i] = list(temp_keyword[i])[0] + ' AND ' + list(temp_keyword[i])[1]
 
