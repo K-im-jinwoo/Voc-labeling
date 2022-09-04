@@ -1,4 +1,7 @@
 from datetime import datetime
+from io import BytesIO
+
+import pandas as pd
 from django.http import HttpResponse
 import csv
 from django.shortcuts import render
@@ -39,77 +42,38 @@ def output(request):
 
         elif request.method == "POST" and 'export' in request.POST:
             if request.POST['export'] == '.csv export':
+                all_keywords = FirstLabeledData.objects.filter(category_id__category_product=request.POST['product'])
+                categorys = Category.objects.filter(category_product=request.POST['product']).values_list(
+                    'category_middle', flat=True)
+                with BytesIO() as b:
+                    writer = pd.ExcelWriter(b, engine='xlsxwriter')
+                    for category in categorys:
+                        keywords = {'positive_keyword':'', 'negative_keyword':'', 'neutral_keyword':''}
+                        counts = {}
+                        for emotion in ['positive', 'negative', 'neutral']:
+                                temp_keyword = list(all_keywords.filter(category_id__category_middle=category,
+                                                                        first_labeled_emotion=emotion).values_list(
+                                    'first_labeled_target', 'first_labeled_expression').distinct())
+                                for i in range(len(temp_keyword)):
+                                    temp_keyword[i] = list(temp_keyword[i])[0] + ' AND ' + list(temp_keyword[i])[1]
 
-                ####---- HttpResponse 설정 ----####
-                product = request.POST['product']
-                response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                response['Content-Disposition'] = 'attachment; filename=' + product + '_' + datetime.now().strftime(
-                    "%Y-%m-%d_%I-%M-%S_%p") + '.csv'
-                response.write(u'\ufeff'.encode('utf8'))
-                writer = csv.writer(response)
+                                counts[emotion + '_keyword'] = len(temp_keyword)
+                                keywords[emotion + '_keyword'] = temp_keyword
+                                product_group = [request.POST['product']] * max(counts.values())
+                                type_ = ['3F_Ergonomics'] * max(counts.values())
+                                category_list = [category] * max(counts.values())
+                                dict_ = {'Product_Group': product_group,
+                                              'Type': type_, 'Category': category_list, '긍정 키워드':keywords['positive_keyword'], '부정 키워드':keywords['negative_keyword'], '중립 키워드':keywords['neutral_keyword']}
+                                df = pd.DataFrame.from_dict(dict_, orient='index')
+                                df = df.transpose()
 
-
-                """ 카테고리별 개수 저장 & 열 이름 지정 """
-                ##### ---- 카테고리별 [긍정, 부정, 중립] 중 가장 많은 수 딕셔너리에 저장 ---- #####
-                category_list = list(
-                    Category.objects.filter(category_product=request.session['category_product']).values_list(
-                        'category_id', flat=True))
-                category_dict = {}
-                for category in category_list:
-                    max_count = 0
-                    for emotion in ['positive', 'negative', 'neutral']:
-                        emotion_count = len(FirstLabeledData.objects.filter(
-                            category_id__category_product=request.session['category_product'], category_id=category,
-                            first_labeled_emotion=emotion).values_list('first_labeled_target',
-                                                                       'first_labeled_expression').distinct())
-                        if emotion_count >= max_count:
-                            max_count = emotion_count
-                    if max_count == 0:
-                        continue
-                    category_dict[category] = max_count
-                print(category_dict)
-
-                ##### ---- 가장 많은 카테고리 기준으로 만들기 ---- #####
-                max_count = max(list(category_dict.values()))
-                all_keyword = [['']] * max_count
-
-                ##### ---- 열 이름 지정하기 ---- #####
-                row_names = ['', '카테고리', '긍정', '부정', '중립'] * len(list(category_dict.keys()))
-                writer.writerow(row_names)
-
-
-                """ 내용 입력 부분 """
-                for category in list(category_dict.keys()):
-
-                    ##### ---- 카테고리명 입력 ---- #####
-                    category_name = Category.objects.get(category_id=category).category_middle
-                    category_keyword = FirstLabeledData.objects.filter(category_id=category,
-                                                                       category_id__category_product=request.session[
-                                                                           'category_product'])
-                    for i in range(category_dict[category]):
-                        all_keyword[i] = all_keyword[i] + [category_name]
-                    for i in range(category_dict[category], max_count):
-                        all_keyword[i] = all_keyword[i] + ['']
-
-                    ##### ---- 감정별 키워드 입력 ---- #####
-                    for emotion in ['positive', 'negative', 'neutral']:
-                        emotion_keyword = list(
-                            category_keyword.filter(first_labeled_emotion=emotion).values_list('first_labeled_target',
-                                                                                               'first_labeled_expression').distinct())
-                        for i in range(len(emotion_keyword)):
-                            all_keyword[i] = all_keyword[i] + [
-                                list(emotion_keyword[i])[0] + 'AND' + list(emotion_keyword[i])[1]]
-                        for i in range(len(emotion_keyword), max_count):
-                            all_keyword[i] = all_keyword[i] + ['']
-
-                    ##### ---- 한 칸 띄우기 ---- #####
-                    for i in range(max_count):
-                        all_keyword[i] = all_keyword[i] + ['']
-
-                for rlt in all_keyword:
-                    writer.writerow(rlt)
-
-                return response
+                                df.to_excel(writer, sheet_name=category)
+                    writer.save()
+                    filename = request.POST['product']
+                    content_type = 'application/vnd.ms-excel'
+                    response = HttpResponse(b.getvalue(), content_type=content_type)
+                    response['Content-Disposition'] = 'attachment; filename="' + filename + '.xlsx"'
+                    return response
 
             elif request.POST['export'] == '.data analysis':
 
