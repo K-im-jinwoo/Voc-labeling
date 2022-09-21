@@ -41,7 +41,7 @@ def output(request):
                 return render(request, 'outputapp/output.html', context)
 
         elif request.method == "POST" and 'export' in request.POST:
-            if request.POST['export'] == '.csv export':
+            if request.POST['export'] == '.xlsx export':
                 all_keywords = FirstLabeledData.objects.filter(category_id__category_product=request.POST['product'])
                 categorys = Category.objects.filter(category_product=request.POST['product']).values_list(
                     'category_middle', flat=True)
