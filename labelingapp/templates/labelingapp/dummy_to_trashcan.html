@@ -8,6 +8,12 @@
         {% csrf_token %}
         <input name="category_product" type="text" value="{{ product }}" placeholder="제품명(영어 작성)">
         <input name="category_middle" type="text" value="{{ category }}" placeholder="카테고리명">
+        <select name='first_labeled_emotion' style="display: inline-block; width: 8rem; height: 1.9rem;
+                            font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+            <option value='positive'>긍정</option>
+            <option value='negative'>부정</option>
+            <option value='neutral'>중립</option>
+        </select>
         <input name="first_labeled_target" type="text" placeholder="키워드">
         <input name="first_labeled_expression" type="text" placeholder="현상">
         <input type="submit" value="삭제">
