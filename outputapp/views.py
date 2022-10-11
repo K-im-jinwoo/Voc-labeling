@@ -8,8 +8,15 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse
+from openpyxl import load_workbook
 
 from mainapp.models import Category, Review, FirstLabeledData
+
+
+def format_change(writer, category):
+    writer.sheets[category].set_column('A:B', 15)  # Product_Group, Type 컬럼 넓이 변경
+    writer.sheets[category].set_column('C:C', 10)  # Category 컬럼 넓이 변경
+    writer.sheets[category].set_column('D:F', 35)  # 키워드 컬럼 넓이 변경
 
 
 def output(request):
@@ -47,6 +54,7 @@ def output(request):
                     'category_middle', flat=True)
                 with BytesIO() as b:
                     writer = pd.ExcelWriter(b, engine='xlsxwriter')
+
                     for category in categorys:
                         keywords = {'positive_keyword': '', 'negative_keyword': '', 'neutral_keyword': ''}
                         counts = {}
@@ -69,7 +77,7 @@ def output(request):
                             df = pd.DataFrame.from_dict(dict_, orient='index')
                             df = df.transpose()
                             df.to_excel(writer, sheet_name=category, index=False)
-
+                        format_change(writer, category)
                     writer.save()
                     filename = request.POST['product']
                     content_type = 'application/vnd.ms-excel'
@@ -117,7 +125,6 @@ def output(request):
 
         else:
             print("에러")
-
 
     except Exception as identifier:
         print(identifier)
