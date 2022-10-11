@@ -68,8 +68,8 @@ def output(request):
                                      '부정 키워드': keywords['negative_keyword'], '중립 키워드': keywords['neutral_keyword']}
                             df = pd.DataFrame.from_dict(dict_, orient='index')
                             df = df.transpose()
+                            df.to_excel(writer, sheet_name=category, index=False)
 
-                            df.to_excel(writer, sheet_name=category)
                     writer.save()
                     filename = request.POST['product']
                     content_type = 'application/vnd.ms-excel'
