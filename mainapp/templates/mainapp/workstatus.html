@@ -106,9 +106,9 @@
                     <form action="" method="get">
                         {% csrf_token %}
                         <div class="korean" style="text-align: left">
-                            <input name="category_product" type="radio" name="selected" value="cleaner">&nbsp;청소기&nbsp;&nbsp;
-                            <input name="category_product" type="radio" name="selected" value="refrigerator">&nbsp;냉장고&nbsp;&nbsp;
-                            <input name="category_product" type="radio" name="selected" value="dish_washer">&nbsp;식기세척기&nbsp;&nbsp;
+                            {% for product_name in product_names %}
+                                <input name="category_product" type="radio" name="selected" value="{{ product_name.category_product }}">&nbsp;{{ product_name.category_product }}&nbsp;&nbsp;
+                            {% endfor %}
                             <input class="btn btn-secondary rounded-pill" type="submit" value="선택"
                                    style="width:8rem;margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                         </div>
