@@ -165,8 +165,8 @@ def upload_main(request):
                         else:
                             i += 1
                             status = str(int(int(index) / int(dbframe.shape[0]) * 100)) + '%'
-                            print(status)
-                            print(i)
+                            #print(status)
+                            #print(i)
                             obj = Review.objects.create(review_content=row['Original Comment'],
                                                         category_product=request.POST.get('category_product'),
                                                         review_number=i)
