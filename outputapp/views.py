@@ -21,6 +21,8 @@ def format_change(writer, category):
 
 def output(request):
     try:
+        context = dict()
+        context['product_names'] = Category.objects.all().values('category_product').distinct()
 
         # category_product 변수를 get 방식 으로 받으면 세션에 저장
         if request.method == "GET":
@@ -36,7 +38,7 @@ def output(request):
                 second_num = Review.objects.filter(category_product=category_product).filter(second_status=True).count()
                 dummy_num = Review.objects.filter(category_product=category_product).filter(dummy_status=True).count()
 
-                context = {'category_detail': category_detail}
+                context['category_detail'] = category_detail
                 context['alltotal'] = alltotal
                 context['first_num'] = first_num
                 context['dummy_num'] = dummy_num
@@ -45,6 +47,7 @@ def output(request):
 
             else:
                 context = {'message': '제품을 다시 선택해주세요.'}
+                context['product_names'] = Category.objects.all().values('category_product').distinct()
                 return render(request, 'outputapp/output.html', context)
 
         elif request.method == "POST" and 'export' in request.POST:
