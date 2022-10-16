@@ -106,11 +106,14 @@
                     <form action="" method="get">
                         {% csrf_token %}
                         <div class="korean" style="text-align: left">
-                            {% for product_name in product_names %}
-                                <input name="category_product" type="radio" name="selected" value="{{ product_name.category_product }}">&nbsp;{{ product_name.category_product }}&nbsp;&nbsp;
-                            {% endfor %}
-                            <input class="btn btn-secondary rounded-pill" type="submit" value="선택"
-                                   style="width:8rem;margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                            <p style="font-family: 'Nanum Gothic Coding', monospace; font-size: 1.1rem;
+                font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
+                <select name='category_product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                    {% for product_name in product_names %}
+                        <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                    {% endfor %}
+                </select>
+                <input class="btn btn-outline-dark btn-sm" type="submit" value="완료" style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
                         </div>
                     </form>
                 </div>

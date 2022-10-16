@@ -25,9 +25,10 @@
 
 
         <!-- 제품군 선택-->
-        <form action="" method="get">
+        <div>
+        <form style="display: inline-block; width: 49.5%" action="" method="get">
             {% csrf_token%}
-            <div style="text-align: left ">
+            <div style="text-align: left">
                 <p style="font-family: 'Nanum Gothic Coding', monospace; font-size: 1.1rem;
                 font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
                 <select name='category_product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
@@ -39,12 +40,15 @@
             </div>
         </form>
 
-        <form action="" method="post">
+        <form style="display: inline-block; text-align: right; width: 49.5%" action="" method="post">
             {% csrf_token %}
-
-            <input type="text" name="category_add">
-            <input type="submit" value="추가하기">
+            <p style="font-family: 'Nanum Gothic Coding', monospace; font-size: 1.1rem;
+                font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;">
+                제품 추가 </p>
+            <input style="margin-left: 0.5rem;" type="text" name="category_add">
+            <input style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem" class="btn btn-outline-dark btn-sm" type="submit" value="확인">
         </form>
+        </div>
 
         <!--{{ request.session.category_product }}-->
 
