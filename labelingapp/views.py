@@ -256,7 +256,8 @@ def labeling_work(request):
 
 def labeling_inspect(request):
     try:
-
+        context = dict()
+        context['product_names'] = Category.objects.all().values('category_product').distinct()
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET and 'start' in request.GET and 'end' in request.GET:
 
@@ -280,9 +281,14 @@ def labeling_inspect(request):
                 status_result2 = SecondLabeledData.objects.filter(review_id=review_first[0].pk)
 
                 # labeling_inspect.html에 보낼 context 데이터
-                context = {'category_detail': category_detail, 'category_product': category_product,
-                           'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result,
-                           'status_result2': status_result2}
+
+                context['category_detail'] = category_detail
+                context['category_product'] = category_product
+                context['review_first'] = review_first
+                context['start'] = start
+                context['end'] = end
+                context['status_result'] = status_result
+                context['status_result2'] = status_result2
 
                 # POST 방식 request 받았을 때 수행함.
                 if request.method == "POST" and 'labeled_expression' in request.POST and 'labeled_target' in request.POST:
@@ -343,8 +349,12 @@ def labeling_inspect(request):
                     status_result = FirstLabeledData.objects.filter(review_id=next_review)
 
                     # labeling_inspect.html에 보낼 context 데이터
-                    context = {'category_detail': category_detail, 'category_product': category_product,
-                               'review_first': review_first, 'start': start, 'end': end, 'status_result': status_result}
+                    context['category_detail'] = category_detail
+                    context['category_product'] = category_product
+                    context['review_first'] = review_first
+                    context['start'] = start
+                    context['end'] = end
+                    context['status_result'] = status_result
                     return render(request, 'labelingapp/labeling_inspect.html', context)
 
                 return render(request, 'labelingapp/labeling_inspect.html', context)
@@ -353,6 +363,7 @@ def labeling_inspect(request):
 
         else:
             context = {'message': '제품, 범위를 다시 선택해주세요.'}
+            context['product_names'] = Category.objects.all().values('category_product').distinct()
             return render(request, 'labelingapp/labeling_inspect.html', context)
 
     # 예외처리
