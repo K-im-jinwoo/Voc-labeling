@@ -105,35 +105,31 @@ def cleansing(csv_file):
 
 def upload_main(request):
     try:
-
-        # category_product 변수를 get 방식 으로 받으면 세션에 저장
         if request.method == "GET":
-            if 'category_product' in request.GET:
-                request.session['category_product'] = request.GET['category_product']
-                print(request.session['category_product'])
-                request.session.set_expiry(300)
-
-                category_product = request.session['category_product']
-                category_detail = Category.objects.filter(category_product=category_product)
-                context = {'category_detail': category_detail}
-                return render(request, 'uploadapp/upload_main.html', context)
-
-            else:
-                category_product = request.session['category_product']
-                category_detail = Category.objects.filter(category_product = category_product)
-                context = {'category_detail': category_detail}
-                return render(request, 'uploadapp/upload_main.html', context)
+            context = dict()
+            context['product_names'] = Category.objects.all().values('category_product').distinct()
+            request.session['category_product'] = 'cleaner'
+            if request.GET.get('category_product'):
+                request.session['category_product'] = request.GET.get('category_product')
+            context['category_detail'] = Category.objects.filter(category_product=request.session['category_product'])
+            return render(request, 'uploadapp/upload_main.html', context)
 
         elif request.method == "POST":
+            if request.POST.get('category_add'):
+                category = Category()
+                category.category_product = request.POST.get('category_add')
+                category.category_middle = '기타'
+                category.category_color = '#c8c8c850'
+                category.save()
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
+
             if request.POST.get("form-type") == 'formOne':
                 category = Category()
                 category.category_product = request.session['category_product']
-                print(request.session['category_product'])
                 category.category_middle = request.POST.get('category_middle', '')
                 temp_color = str(request.POST.get('category_color', '')) + "50"
                 category.category_color = temp_color
                 category.save()
-                print(category)
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
             elif request.POST.get("form-type") == 'formTwo':
@@ -169,8 +165,8 @@ def upload_main(request):
                         else:
                             i += 1
                             status = str(int(int(index) / int(dbframe.shape[0]) * 100)) + '%'
-                            print(status)
-                            print(i)
+                            #print(status)
+                            #print(i)
                             obj = Review.objects.create(review_content=row['Original Comment'],
                                                         category_product=request.POST.get('category_product'),
                                                         review_number=i)
@@ -179,6 +175,7 @@ def upload_main(request):
                     request.session['message'] = '업로드가 완료되었습니다.'
                     request.session.set_expiry(3)
                     return HttpResponseRedirect(reverse('uploadapp:upload'))
+        return render(request, 'uploadapp/upload_main.html', {})
 
     # 예외 처리
     except Exception as identifier:

@@ -29,9 +29,10 @@
                 <p style="font-family: 'Nanum Gothic Coding', monospace; font-size: 1.1rem;
                 font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
                 <select name='category_product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-                    <option value='cleaner'>청소기</option>
-                    <option value='refrigerator'>냉장고</option>
-                    <option value='dish_washer'>식기세척기</option>
+                    {% for product_name in product_names %}
+                        <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                        {{ product_name.category_product }}
+                    {% endfor %}
                 </select>
                 <input class="btn btn-outline-dark btn-sm" type="submit" value="완료" style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
             </div>
@@ -44,14 +45,8 @@
         <!-- method 설정 필요합니다. -->
         <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
             <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; text-align: left; margin-bottom: 0.5rem" class="subject">
-            {% if request.session.category_product == "refrigerator" %}
-                <strong>선택한 제품 : 냉장고 (refrigerator)</strong>
-                <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
-            {% elif request.session.category_product == "cleaner" %}
-                <strong>선택한 제품 : 청소기 (cleaner)</strong>
-                <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
-            {% elif request.session.category_product == "dish_washer"%}
-                <strong>선택한 제품 : 식기세척기 (dish_washer)</strong>
+            {% if request.session.category_product %}
+                <strong>선택한 제품 : {{ request.session.category_product }}</strong>
                 <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
             {% else %}
                 선택한 제품 :
