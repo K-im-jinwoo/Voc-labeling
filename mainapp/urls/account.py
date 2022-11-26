@@ -1,7 +1,6 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-
-from mainapp.viewss import AccountCreateView, AccountDetailView, ProfileCreateView
+from mainapp.views.account import AccountCreateView, AccountDetailView, ProfileCreateView
 
 patterns = [
     path('login/', LoginView.as_view(template_name='mainapp/login.html'), name='login'),

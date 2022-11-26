@@ -1,12 +1,46 @@
-from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import path
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView
 
-from mainapp.viewss import AccountCreateView, AccountDetailView, ProfileCreateView
+from mainapp.forms import ProfileCreationForm
+from mainapp.models import Profile
 
-patterns = [
-    path('login/', LoginView.as_view(template_name='mainapp/login.html'), name='login'),
-    path('signup/', AccountCreateView.as_view(), name='signup'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('account/<int:pk>', AccountDetailView.as_view(), name='account'),
-    path('account_profile/', ProfileCreateView.as_view(), name="account_profile"),
-]
+
+class AccountCreateView(CreateView):
+    model = User
+    form_class = UserCreationForm  # 기본적인 userform을 제공해준다.
+    success_url = reverse_lazy('mainapp:login')  # reverse는 함수형, reverse_lazy는 class에서 사욯한다.
+    template_name = 'mainapp/signup.html'
+
+
+class AccountDetailView(DetailView):
+    model = User
+    context_object_name = 'target_user'
+    template_name = 'mainapp/account.html'
+
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated and self.get_object() == self.request.user:
+            return super().get(*args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+
+    def post(self, *args, **kwargs):
+        if self.request.user.is_authenticated and self.get_object() == self.request.user:
+            return super().get(*args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+
+class ProfileCreateView(CreateView):
+    model = Profile
+    context_object_name = 'target_profile'
+    form_class = ProfileCreationForm
+    success_url = reverse_lazy('mainapp:main')
+    template_name = 'mainapp/account_profile.html'
+
+    def form_valid(self, form):
+        temp_profile = form.save(commit=False)
+        temp_profile.user = self.request.user
+        temp_profile.save()
+        return super().form_valid(form)

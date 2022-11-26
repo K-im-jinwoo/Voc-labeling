@@ -1,7 +1,6 @@
 from django.urls import path
-
-from mainapp import viewss
+from mainapp.views import workstatus_review
 
 patterns = [
-    path('workstatus/', viewss.workstatus_review, name='workstatus'),
+    path('workstatus/', workstatus_review.workstatus_review, name='workstatus'),
 ]
