@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mainapp.urls')),
     path('upload/', include('uploadapp.urls')),
-    path('labeling/', include('labelingapp.urls')),
+    path('labeling/', include('labelingapp.url')),
     path('output/', include('outputapp.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
