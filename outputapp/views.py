@@ -1,14 +1,9 @@
 from datetime import datetime
 from io import BytesIO
-
 import pandas as pd
 from django.http import HttpResponse
 import csv
 from django.shortcuts import render
-
-# Create your views here.
-from django.urls import reverse
-from openpyxl import load_workbook
 
 from mainapp.models import Category, Review, FirstLabeledData
 
