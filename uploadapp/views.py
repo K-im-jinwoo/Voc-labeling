@@ -9,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView
 from numpy.ma.core import count
 
+from LG_Project.settings.base import BASE_DIR
 from mainapp.models import Review, Category
 
 
@@ -149,6 +150,7 @@ def upload_main(request):
                     filename = fs.save(upload_file.name, upload_file)
                     upload_file_url = fs.url(filename)
                     dbframe = cleansing(upload_file_url)
+                    fs.delete(str(BASE_DIR) + upload_file_url)
 
                     # 중복 제거하기
                     dbreviews = Review.objects.filter(category_product=request.POST.get('category_product')).values_list('review_content', flat=True)
