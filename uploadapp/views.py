@@ -150,6 +150,12 @@ def upload_main(request):
                     upload_file_url = fs.url(filename)
                     dbframe = cleansing(upload_file_url)
 
+                    # 중복 제거하기
+                    dbreviews = Review.objects.filter(category_product=request.POST.get('category_product')).values_list('review_content', flat=True)
+                    dbreviews = pd.DataFrame({"Original Comment" : dbreviews})
+
+                    dbframe = pd.merge(dbreviews, dbframe, how='outer', indicator=True).query('_merge == "right_only"').drop(columns=['_merge'])
+                    print(dbframe)
                     # 현재 model의 category_product별로 최대값을 기준으로 review_number을 갱신하기 위한 변수 category_max_num
                     category_max_num = Review.objects.filter(
                         category_product=request.POST.get('category_product')).aggregate(temp=Max('review_number')).get(
