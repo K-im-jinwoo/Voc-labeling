@@ -1,10 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from mainapp.decorators import profile_ownership_required
 
-from mainapp.forms import ProfileCreationForm
+from mainapp.forms import ProfileCreationForm, AccountUpdateForm
 from mainapp.models import Profile
 
 
@@ -32,6 +34,19 @@ class AccountDetailView(DetailView):
         else:
             return HttpResponseForbidden()
 
+class AccountUpdateView(UpdateView):
+    model = User
+    context_object_name = 'target_user'
+    form_class = AccountUpdateForm
+    success_url = reverse_lazy('mainapp:main')
+    template_name = 'mainapp/update.html'
+
+class AccountDeleteView(DeleteView):
+    model = User
+    context_object_name = 'target_user'
+    success_url = reverse_lazy('mainapp:main')
+    template_name = 'mainapp/delete.html'
+
 class ProfileCreateView(CreateView):
     model = Profile
     context_object_name = 'target_profile'
@@ -44,3 +59,19 @@ class ProfileCreateView(CreateView):
         temp_profile.user = self.request.user
         temp_profile.save()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('mainapp:account', kwargs={'pk': self.object.user.pk})
+
+
+@method_decorator(profile_ownership_required, 'get')
+@method_decorator(profile_ownership_required, 'post')
+class ProfileUpdateView(UpdateView):
+    model = Profile
+    context_object_name = 'target_profile'
+    form_class = ProfileCreationForm
+    success_url = reverse_lazy('mainapp:main')
+    template_name = 'mainapp/update_profile.html'
+
+    def get_success_url(self):
+        return reverse('mainapp:account', kwargs={'pk': self.object.user.pk})
