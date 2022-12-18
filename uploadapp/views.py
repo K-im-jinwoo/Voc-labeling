@@ -125,6 +125,15 @@ def upload_main(request):
                 category.save()
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
+            if request.POST.get('session_product'):
+                print("제품삭제 뷰")
+                session_product = request.POST.get('session_product')
+                print(session_product)
+                product_review = Review.objects.filter(category_product=session_product).delete()
+                product_category = Category.objects.filter(category_product=session_product).delete()
+                print(product_category)
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
+
             if request.POST.get("form-type") == 'formOne':
                 category = Category()
                 category.category_product = request.session['category_product']
