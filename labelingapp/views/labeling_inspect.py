@@ -46,7 +46,9 @@ def labeling_inspect(request):
         if 'category_product' in request.GET and 'start' in request.GET and 'end' in request.GET:
 
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
-            if request.GET['category_product'] in ['cleaner', 'refrigerator', 'dish_washer']:
+            if request.GET.get('category_product'):
+
+                #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET['category_product']
                 start = request.GET['start']
                 end = request.GET['end']
