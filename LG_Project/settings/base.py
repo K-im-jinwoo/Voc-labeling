@@ -119,6 +119,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'  # static파일에 직접 접근하기 위한 경로
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 파일 저장 경로
+
 STATICFILES_DIRS = [
 
 ]
@@ -146,4 +147,4 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/')
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

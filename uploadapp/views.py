@@ -3,6 +3,7 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 import pandas as pd
+import boto3
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
