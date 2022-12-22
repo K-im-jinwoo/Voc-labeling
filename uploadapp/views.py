@@ -16,7 +16,7 @@ from mainapp.models import Review, Category
 
 def cleansing(csv_file):
     '''전처리 시작'''
-    raw_data = pd.read_csv("." + csv_file, encoding='utf-8')
+    raw_data = pd.read_csv("." + csv_file, encoding='cp949')
     print(raw_data)
     data = raw_data.filter(['Original Comment'])
 
