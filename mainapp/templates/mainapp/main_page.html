@@ -19,11 +19,12 @@
                 8. Data Export은 검수 완료된 키워드를 보여주며, 데이터를 .xlsx 파일로 내보낼 수 있다.<br>
             </p>
         </div>
-        <div>
-            <form action="{% url 'mainapp:server' %}" method="post">
-                {% csrf_token %}
-                <input type="submit" name="server" value="서버적용">
-            </form>
-        </div>
+<!--        리뷰할당량 속성 상태변경 버튼(서버적용완료해서 숨겨놓음)-->
+<!--        <div>-->
+<!--            <form action="{% url 'mainapp:server' %}" method="post">-->
+<!--                {% csrf_token %}-->
+<!--                <input type="submit" name="server" value="서버적용">-->
+<!--            </form>-->
+<!--        </div>-->
     </div>
 {% endblock %}
