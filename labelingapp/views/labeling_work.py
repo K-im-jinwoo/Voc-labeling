@@ -8,7 +8,8 @@ from mainapp.models import Category, Review, FirstLabeledData
 def print_review(start, end, category_product):
     print_review_list = Review.objects.filter(category_product=category_product,
                                               review_number__range=(int(start), int(end)),
-                                              first_status=False, second_status=False, dummy_status=False).order_by(
+                                              first_status=False, second_status=False, dummy_status=False,
+                                              first_assignment=False, second_assignment=False).order_by(
         'review_number')[:1]
     return print_review_list
 
