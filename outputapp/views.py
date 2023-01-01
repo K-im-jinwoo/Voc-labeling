@@ -91,7 +91,7 @@ def output(request):
                                     temp_dict[k].remove(d)
 
                                 for t in temp_dict[k]:
-                                    temp_keyword.append(k + " AND " + t)
+                                    temp_keyword.append(k + " ANDD " + t)
 
                             #### csv파일 만들기 부분 ####
                             counts[emotion + '_keyword'] = len(temp_keyword)
