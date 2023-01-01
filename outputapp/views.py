@@ -76,15 +76,14 @@ def output(request):
                             delete_list = list()
                             temp_keyword = list()
                             for k in temp_dict.keys():
-
+                                delete_list = list()
                                 for i in temp_dict[k]:
-                                    delete_list = list()
                                     for q in temp_dict[k]:
                                         if i == q:
                                             continue
-                                        if i.__contains__(q):
+                                        if i.__contains__(q) and i not in delete_list:
                                             delete_list.append(i)
-                                        if q.__contains__(i):
+                                        if q.__contains__(i) and q not in delete_list:
                                             delete_list.append(q)
 
                                 for d in delete_list:
