@@ -5,13 +5,18 @@ from django.views.decorators.csrf import csrf_exempt
 from mainapp.models import Category, Review, FirstLabeledData
 
 
-def print_review(start, end, category_product):
+def print_review(assignment_num, category_product):
+    # start,end와 같은 번호로 영역대 지정이 아닌 50개,100개들의 데이터 개수로 영역대 지정
+    # '다음','버리기'시 리스트 변동 없게 해야함
+    # 개수 지정하고 적용시켰을때 그 개수만큼 리스트에 들어오지만, '다음','버리기' 눌렀을 때, 리스트 마지막 숫자도
+    # +1돼서 계속 무한으로 +1씩 늘어나는 상황 => 할당량 10개만 하고싶은데 새로운 10개씩 리스트 반복 생성(문제 해결해야 함)
+    # 이후 할당 상태와 할당받은 사람 사용 예정
     print_review_list = Review.objects.filter(category_product=category_product,
-                                              review_number__range=(int(start), int(end)),
                                               first_status=False, second_status=False, dummy_status=False,
-                                              first_assignment=False, second_assignment=False).order_by(
-        'review_number')[:1]
-    return print_review_list
+                                              first_assignment=False, second_assignment=False).order_by('review_id')[:assignment_num]
+
+    print("리스트",print_review_list)
+    return print_review_list[:1]
 
 @csrf_exempt
 def reset(request):
@@ -34,15 +39,27 @@ def labeling_work(request):
         context = dict()
         context['product_names'] = Category.objects.all().values('category_product').distinct()
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
-        if 'category_product' in request.GET and 'start' in request.GET and 'end' in request.GET:
-
+        if 'assignment' in request.GET and 'assignment' in request.GET:
+            print(request.GET.get('assignment'))
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET.get('category_product'):
 
                 #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET['category_product']
-                start = request.GET['start']
-                end = request.GET['end']
+                # assignment는 url을 위해 string형태로 지정한 것, assignment_num은 int값으로 변경하여 리스트 생성시 사용
+                assignment = request.GET['assignment']
+                print(assignment)
+                assignment_num = request.GET['assignment']
+                if assignment_num == "ten":
+                    assignment_num = int(10)
+                elif assignment_num == "fifty":
+                    assignment_num = int(50)
+                elif assignment_num == "hundred":
+                    assignment_num = int(100)
+                else:
+                    print('갯수할당 실패')
+
+                print("assignment_num=>할당된 데이터 개수",assignment_num)
                 category_detail = Category.objects.filter(category_product=category_product)
 
                 if request.GET.get("form-type") == 'DummyForm':
@@ -53,7 +70,8 @@ def labeling_work(request):
 
                 #####---- 자동 라벨링 기능 ----#####
                 # 자동 라벨링 - 검색
-                review_first = print_review(start, end, category_product)
+                review_first = print_review(assignment_num, category_product)
+                # assignment_num은 html에서 받아온 할당량 name에 따라 int값으로 변경한 것을 저장한 변수
 
                 # 자동 라벨링 - 저장
                 if 'auto_labeling_status' not in request.session:
@@ -104,7 +122,7 @@ def labeling_work(request):
                     request.session['auto_labeling_status'] = review_first[0].review_id
 
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
-                review_first = print_review(start, end, category_product)
+                review_first = print_review(assignment_num, category_product)
 
                 status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
 
@@ -112,8 +130,8 @@ def labeling_work(request):
                 context['category_detail'] = category_detail
                 context['category_product'] = category_product
                 context['review_first'] = review_first
-                context['start'] = start
-                context['end'] = end
+                context['assignment_num'] = assignment_num
+                context['assignment'] = assignment
                 context['status_result'] = status_result
 
                 # POST 방식 request 받았을 때 수행함.
@@ -139,7 +157,7 @@ def labeling_work(request):
                         first_labeled_data.category_id = Category.objects.get(pk=category_id)
                         first_labeled_data.save()
 
-                    wpp = '/labeling/work/?' + 'category_product=' + category_product + '&start=' + start + '&end=' + end
+                    wpp = '/labeling/work/?' + 'category_product=' + category_product + '&assignment=' + assignment
                     print("경로", wpp)
                     return HttpResponseRedirect(wpp)
 
@@ -148,7 +166,7 @@ def labeling_work(request):
                     #####---- 리뷰 상태 변경 ----####
                     review_id = request.GET.get('review_id')
                     Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
-                    review_first = print_review(start, end, category_product)
+                    review_first = print_review(assignment_num, category_product)
 
                     ######---- 자동 라벨링 ----#####
                     # 자동라벨링 - 저장
@@ -204,8 +222,7 @@ def labeling_work(request):
                     context['category_detail'] = category_detail
                     context['category_product'] = category_product
                     context['review_first'] = review_first
-                    context['start'] = start
-                    context['end'] = end
+                    context['assignment_num'] = assignment_num
                     context['status_result'] = status_result
 
                 return render(request, 'labelingapp/labeling_work.html', context)
