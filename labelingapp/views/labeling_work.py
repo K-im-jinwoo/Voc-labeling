@@ -1,8 +1,8 @@
-'''from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from mainapp.models import Category, Review, FirstLabeledData, WebStatus
+from mainapp.models import Category, Review, FirstLabeledData#, WebStatus
 
 
 def print_review(category_product, request):
@@ -31,8 +31,8 @@ def labeling_work(request):
     try:
         context = dict()
         context['product_names'] = Category.objects.all().values('category_product').distinct()
-        auto_assignment_value = WebStatus.objects.get(status_name='auto_assignment_value').status_value
-        auto_assignment_status = WebStatus.objects.get(status_name='auto_assignment_status').status_value
+        #auto_assignment_value = WebStatus.objects.get(status_name='auto_assignment_value').status_value
+        #auto_assignment_status = WebStatus.objects.get(status_name='auto_assignment_status').status_value
 
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET:
@@ -45,7 +45,7 @@ def labeling_work(request):
                 category_detail = Category.objects.filter(category_product=category_product)
 
                 ##### ----- 라벨링 페이지 켜면 자동할당됨(자동 할당 상태일 경우) ----- #####
-                if auto_assignment_status == "True" \
+                '''if auto_assignment_status == "True" \
                         and len(Review.objects.filter(category_product=category_product, first_status=0, second_status=0,
                                               dummy_status=0, first_assign_user=request.user.pk)) == 0:
                     review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
@@ -53,9 +53,9 @@ def labeling_work(request):
                                                               first_assign_user=0).values('pk')[:int(auto_assignment_value)]
                     review_assignment = Review.objects.filter(pk__in=review_assignment)
                     review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
-
+'''
                 ##### ----- 개수 선택하면 할당됨(자동 할당 상태일 아닐 경우) ----- #####
-                if auto_assignment_status == "False" \
+                '''if auto_assignment_status == "False" \
                         and len(Review.objects.filter(category_product=category_product, first_status=0, second_status=0,
                                               dummy_status=0, first_assign_user=request.user.pk)) == 0 and 'assignment_count' in request.GET:
                     review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
@@ -63,7 +63,7 @@ def labeling_work(request):
                                                               first_assign_user=0).values('pk')[:int(request.GET.get('assignment_count'))]
                     review_assignment = Review.objects.filter(pk__in=review_assignment)
                     review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
-
+'''
                 if request.GET.get("form-type") == 'DummyForm':
                     review_id = request.GET.get('review_id')
                     Review.objects.filter(pk=review_id).update(first_status=False, dummy_status=True,
@@ -242,4 +242,3 @@ def labeling_work(request):
         context['product_names'] = Category.objects.all().values('category_product').distinct()
 
         return render(request, 'labelingapp/labeling_work.html', context)
-'''
