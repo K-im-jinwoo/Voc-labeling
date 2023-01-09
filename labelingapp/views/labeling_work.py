@@ -212,5 +212,7 @@ def labeling_work(request):
     # 예외처리
     except Exception as identifier:
         print(identifier)
+        context = dict()
+        context['product_names'] = Category.objects.all().values('category_product').distinct()
 
-    return render(request, 'labelingapp/labeling_work.html')
+        return render(request, 'labelingapp/labeling_work.html', context)
