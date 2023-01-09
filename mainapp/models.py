@@ -20,6 +20,7 @@ class Category(models.Model):
 
 
 class Review(models.Model):
+    sf25h = models.CharField(max_length=120, default="0")
     review_id = models.AutoField(primary_key=True)
     category_product = models.CharField(max_length=256, null=False)
     review_number = models.IntegerField(null=False)
@@ -29,7 +30,6 @@ class Review(models.Model):
     dummy_status = models.BooleanField(default=False)
     labeled_user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     first_assign_user = models.TextField(default="0")
-    sdklfj = models.CharField(max_length=100, default="0")
 
     def __str__(self):
         return str(self.review_id) + ' - ' + str(self.category_product)
