@@ -1,8 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <button name="assignment" value="50">할당하기</button>
-    </form>
+    <div style="text-align: center">
+        <br><br><br>
+        <h2>유저별 작업 할당하기</h2>
+        <form method="post">
+            {% csrf_token %}
+            <select name="assignment_user">
+                <option value='all'>전체 유저(삭제만 가능함)</option>
+                {% for user in users %}
+                    <option value='{{ user.pk }}'>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+            <select name="category_product">
+                <option value='all'>전체 카테고리(삭제만 가능함)</option>
+                {% for category_product in category_products %}
+                    <option value='{{ category_product.category_product }}'>{{ category_product.category_product }}</option>
+                {% endfor %}
+            </select>
+            <button name="assignment_status" value="assignment">할당하기</button>
+            <button name="assignment_status" value="assignment_delete">삭제하기</button>
+        </form>
+
+        <br><br><br>
+
+        {% if auto_assignment_status == "True" %}
+            <h2>{{ auto_assignment_value }}개 자동 할당 활성화 상태</h2>
+        {% elif auto_assignment_status == "False" %}
+            <h2>자동 할당 비활성화 상태</h2>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="number" name="auto_assignment_value" value="">
+            <input type="submit" value="자동할당 활성화">
+            <button name="auto_assignment_value" value="0">자동할당 비활성화</button>
+        </form>
+    </div>
 {% endblock %}

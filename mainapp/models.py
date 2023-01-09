@@ -67,3 +67,9 @@ class Result(models.Model):
     result_emotion = models.CharField(max_length=256)
     result_target = models.CharField(max_length=256)
     result_expression = models.CharField(max_length=256)
+
+
+class WebStatus(models.Model):
+    status_id = models.AutoField(primary_key=True)
+    status_name = models.TextField(default="")
+    status_value = models.TextField(default="")

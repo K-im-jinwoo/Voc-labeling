@@ -2,13 +2,14 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from mainapp.models import Category, Review, FirstLabeledData
+from mainapp.models import Category, Review, FirstLabeledData, WebStatus
 
 
 def print_review(category_product, request):
     review = Review.objects.filter(category_product=category_product, first_status=0, second_status=0, dummy_status=0,
                                    first_assign_user=request.user.pk).order_by('review_number')[:1]
     return review
+
 
 @csrf_exempt
 def reset(request):
@@ -30,6 +31,9 @@ def labeling_work(request):
     try:
         context = dict()
         context['product_names'] = Category.objects.all().values('category_product').distinct()
+        auto_assignment_value = WebStatus.objects.get(status_name='auto_assignment_value').status_value
+        auto_assignment_status = WebStatus.objects.get(status_name='auto_assignment_status').status_value
+
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET:
 
@@ -39,6 +43,16 @@ def labeling_work(request):
                 #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
+
+                ##### ----- 라벨링 페이지 켜면 5개 자동할당됨 ----- #####
+                if auto_assignment_status == "True" \
+                        and len(Review.objects.filter(category_product=category_product, first_status=0, second_status=0,
+                                              dummy_status=0, first_assign_user=request.user.pk)) == 0:
+                    review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
+                                                              second_status=0, dummy_status=0,
+                                                              first_assign_user=0).values('pk')[:int(auto_assignment_value)]
+                    review_assignment = Review.objects.filter(pk__in=review_assignment)
+                    review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
 
                 if request.GET.get("form-type") == 'DummyForm':
                     review_id = request.GET.get('review_id')

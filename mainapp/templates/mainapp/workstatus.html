@@ -254,7 +254,10 @@
         </div>
     </div>
     <div style="text-align: right; width: 95%; font-size: small" class="korean">
-        <a href="{% url 'mainapp:workstatus_count' %}">작업자별 진행 현황</a>
+        <a href="{% url 'mainapp:workstatus_count' %}" style="display: block">작업자별 진행 현황</a>
+        {% if request.user.is_staff == 1 %}
+            <a href="{% url 'mainapp:assignment'%}" style="display: block">작업 할당하기</a>
+        {% endif %}
     </div>
 
 {% endblock %}
