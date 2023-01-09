@@ -4,7 +4,6 @@
 
         <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem; text-align: center">
 
-
             {% if target_user.profile %}
                 <div style="margin-top: 12rem;">
                     <img src="{{ target_user.profile.image.url }}" alt=""
@@ -47,11 +46,10 @@
                     </p>
                 </a>
             {% endif %}
-            {#            <div style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">#}
-            {#            {{ target_user }}#}
-            {#            </div>#}
-
+            <a href="{% url 'mainapp:admin_secret_key' %}">admin으로 등록하기</a>
         </div>
+
     </div>
+
 
 {% endblock %}

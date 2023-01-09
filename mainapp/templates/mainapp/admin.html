@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="text-align: center;">
+        <br><br>
+        <h4>secret key를 입력해서 어드민 계정으로 등록하기</h4>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="admin_secret_key" placeholder="secret key를 입력하세요">
+            <input type="submit" value="등록하기">
+            <h4>{{ message }}</h4>
+        </form>
+    </div>
+{% endblock %}

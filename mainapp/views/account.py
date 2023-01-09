@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
@@ -34,6 +35,7 @@ class AccountDetailView(DetailView):
         else:
             return HttpResponseForbidden()
 
+
 class AccountUpdateView(UpdateView):
     model = User
     context_object_name = 'target_user'
@@ -41,11 +43,13 @@ class AccountUpdateView(UpdateView):
     success_url = reverse_lazy('mainapp:main')
     template_name = 'mainapp/update.html'
 
+
 class AccountDeleteView(DeleteView):
     model = User
     context_object_name = 'target_user'
     success_url = reverse_lazy('mainapp:main')
     template_name = 'mainapp/delete.html'
+
 
 class ProfileCreateView(CreateView):
     model = Profile
@@ -75,3 +79,15 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('mainapp:account', kwargs={'pk': self.object.user.pk})
+
+
+def admin_secret_key(request):
+    if request.method == "POST" and 'admin_secret_key' in request.POST:
+        admin_secret_key = request.POST.get('admin_secret_key')
+        admin_secret_key_original = "lglabelingsecret"
+        if admin_secret_key == admin_secret_key_original:
+            User.objects.filter(pk=request.user.pk).update(is_staff=1)
+        else:
+            return render(request, 'mainapp/admin.html', {'message': '비밀번호가 틀렸습니다.'})
+        return render(request, 'mainapp/admin.html', {'message': 'admin계정으로 등록되었습니다.'})
+    return render(request, 'mainapp/admin.html')
