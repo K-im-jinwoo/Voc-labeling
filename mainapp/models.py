@@ -20,7 +20,6 @@ class Category(models.Model):
 
 
 class Review(models.Model):
-    hhbchr = models.CharField(max_length=110, default="0")
     review_id = models.AutoField(primary_key=True)
     category_product = models.CharField(max_length=256, null=False)
     review_number = models.IntegerField(null=False)
