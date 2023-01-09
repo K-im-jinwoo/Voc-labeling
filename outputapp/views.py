@@ -1,14 +1,9 @@
 from datetime import datetime
 from io import BytesIO
-
 import pandas as pd
 from django.http import HttpResponse
 import csv
 from django.shortcuts import render
-
-# Create your views here.
-from django.urls import reverse
-from openpyxl import load_workbook
 
 from mainapp.models import Category, Review, FirstLabeledData
 
@@ -66,9 +61,38 @@ def output(request):
                                                                     first_labeled_emotion=emotion).values_list(
                                 'first_labeled_target', 'first_labeled_expression').distinct().order_by(
                                 '-first_labeled_target', '-first_labeled_expression'))
-                            for i in range(len(temp_keyword)):
-                                temp_keyword[i] = list(temp_keyword[i])[0] + ' AND ' + list(temp_keyword[i])[1]
 
+                            #### 같은 대상(target)을 딕셔너리 키로 묶기 ####
+                            temp_dict = dict()
+                            for i in range(len(temp_keyword)):
+                                target = list(temp_keyword[i])[0]
+                                expression = list(temp_keyword[i])[1]
+                                print(target, expression)
+                                if target not in temp_dict:
+                                    temp_dict[target] = list()
+                                temp_dict[target].append(expression)
+
+                            #### 같은 대상 중 중복된 것이 있으면 삭제하기 ####
+                            delete_list = list()
+                            temp_keyword = list()
+                            for k in temp_dict.keys():
+                                delete_list = list()
+                                for i in temp_dict[k]:
+                                    for q in temp_dict[k]:
+                                        if i == q:
+                                            continue
+                                        if i.__contains__(q) and i not in delete_list:
+                                            delete_list.append(i)
+                                        if q.__contains__(i) and q not in delete_list:
+                                            delete_list.append(q)
+
+                                for d in delete_list:
+                                    temp_dict[k].remove(d)
+
+                                for t in temp_dict[k]:
+                                    temp_keyword.append(k + " AND " + t)
+
+                            #### csv파일 만들기 부분 ####
                             counts[emotion + '_keyword'] = len(temp_keyword)
                             keywords[emotion + '_keyword'] = temp_keyword
                             product_group = [request.POST['product']] * max(counts.values())

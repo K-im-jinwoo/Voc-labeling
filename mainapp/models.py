@@ -28,6 +28,8 @@ class Review(models.Model):
     second_status = models.BooleanField(default=False)
     dummy_status = models.BooleanField(default=False)
     labeled_user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    first_assignment = models.BooleanField(default=False)
+    second_assignment = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.review_id) + ' - ' + str(self.category_product)

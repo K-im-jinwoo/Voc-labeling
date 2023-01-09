@@ -6,27 +6,50 @@
 
 
             {% if target_user.profile %}
-            <div style="margin-top: 12rem;">
-                <img src="{{ target_user.profile.image.url }}" alt=""
-                     style="width: 12rem; border-radius: 8rem; margin-bottom: 1rem;">
-                <div style="font-family: 'Josefin Sans', sans-serif; font-weight: 400;">
-                    <h5 style="margin-bottom: 1rem"> {{ target_user.profile.name }}</h5>
+                <div style="margin-top: 12rem;">
+                    <img src="{{ target_user.profile.image.url }}" alt=""
+                         style="width: 12rem; border-radius: 8rem; margin-bottom: 1rem;">
+                    <div style="font-family: 'Josefin Sans', sans-serif; font-weight: 400;">
+                        <h5 style="margin-bottom: 1rem"> {{ target_user.profile.name }}</h5>
+                    </div>
                 </div>
-            </div>
-            {{ diary.image.url }}
+                {% if target_user == user %}
+                    <div style="height: auto; padding: 0.3rem 0.3rem 0.3rem 0.3rem;">
+                        <a href="{% url 'mainapp:update_profile' pk=target_user.profile.pk %}">
+                            프로필 편집
+                        </a>
+                    </div>
+                {% endif %}
             {% else %}
-                <a href="{% url 'mainapp:account_profile' %}" style="display: inline-block; margin-top: 15rem;">
-                    <p class="btn"
-                       style="width: 10rem; height: auto; padding: 0.3rem 0.3rem 0.3rem 0.3rem; border-radius: 0.5rem;
+                {% if target_user == user %}
+                    <a href="{% url 'mainapp:account_profile' %}" style="display: inline-block; margin-top: 15rem;">
+                        <p class="btn"
+                           style="width: 10rem; height: auto; padding: 0.3rem 0.3rem 0.3rem 0.3rem; border-radius: 0.5rem;
                               background-color: #eeeeee; display: block; font-family: 'Nanum Gothic Coding', monospace;">
-                        프로필 생성하기</p>
+                            프로필 생성하기</p>
 
+                    </a>
+                {% else %}
+                    <h2>
+                        닉네임 미설정
+                    </h2>
+                {% endif %}
+            {% endif %}
+            {% if target_user == user %}
+                <a href="{% url 'mainapp:update' pk=user.pk %}">
+                    <p>
+                        개인정보 수정
+                    </p>
+                </a>
+                <a href="{% url 'mainapp:delete' pk=user.pk %}">
+                    <p>
+                        계정 삭제
+                    </p>
                 </a>
             {% endif %}
-
-            <div style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
-            {{ target_user }}
-            </div>
+            {#            <div style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">#}
+            {#            {{ target_user }}#}
+            {#            </div>#}
 
         </div>
     </div>
