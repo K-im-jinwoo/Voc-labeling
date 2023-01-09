@@ -44,13 +44,23 @@ def labeling_work(request):
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
 
-                ##### ----- 라벨링 페이지 켜면 5개 자동할당됨 ----- #####
+                ##### ----- 라벨링 페이지 켜면 자동할당됨(자동 할당 상태일 경우) ----- #####
                 if auto_assignment_status == "True" \
                         and len(Review.objects.filter(category_product=category_product, first_status=0, second_status=0,
                                               dummy_status=0, first_assign_user=request.user.pk)) == 0:
                     review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
                                                               second_status=0, dummy_status=0,
                                                               first_assign_user=0).values('pk')[:int(auto_assignment_value)]
+                    review_assignment = Review.objects.filter(pk__in=review_assignment)
+                    review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
+
+                ##### ----- 개수 선택하면 할당됨(자동 할당 상태일 아닐 경우) ----- #####
+                if auto_assignment_status == "False" \
+                        and len(Review.objects.filter(category_product=category_product, first_status=0, second_status=0,
+                                              dummy_status=0, first_assign_user=request.user.pk)) == 0 and 'assignment_count' in request.GET:
+                    review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
+                                                              second_status=0, dummy_status=0,
+                                                              first_assign_user=0).values('pk')[:int(request.GET.get('assignment_count'))]
                     review_assignment = Review.objects.filter(pk__in=review_assignment)
                     review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
 
@@ -120,6 +130,8 @@ def labeling_work(request):
                 # labeling_work.html에 보낼 context 데이터
                 context['category_detail'] = category_detail
                 context['category_product'] = category_product
+                assignment_count = Review.objects.filter(category_product=category_product, first_status=0, second_status=0, dummy_status=0,
+                                   first_assign_user=request.user.pk).order_by('review_number').count()
                 context['review_first'] = review_first
                 context['status_result'] = status_result
 
