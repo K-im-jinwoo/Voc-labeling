@@ -3,7 +3,6 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 import pandas as pd
-import boto3
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
@@ -16,7 +15,7 @@ from mainapp.models import Review, Category
 
 def cleansing(csv_file):
     '''전처리 시작'''
-    raw_data = pd.read_csv("." + csv_file, encoding='cp949')
+    raw_data = pd.read_csv("." + csv_file, encoding='utf-8')
     print(raw_data)
     data = raw_data.filter(['Original Comment'])
 
@@ -126,15 +125,6 @@ def upload_main(request):
                 category.save()
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
-            if request.POST.get('session_product'):
-                print("제품삭제 뷰")
-                session_product = request.POST.get('session_product')
-                print(session_product)
-                product_review = Review.objects.filter(category_product=session_product).delete()
-                product_category = Category.objects.filter(category_product=session_product).delete()
-                print(product_category)
-                return HttpResponseRedirect(reverse('uploadapp:upload'))
-
             if request.POST.get("form-type") == 'formOne':
                 category = Category()
                 category.category_product = request.session['category_product']
@@ -142,6 +132,15 @@ def upload_main(request):
                 temp_color = str(request.POST.get('category_color', '')) + "50"
                 category.category_color = temp_color
                 category.save()
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
+
+            if request.POST.get('session_product'):
+                print("제품삭제 뷰")
+                session_product = request.POST.get('session_product')
+                print(session_product)
+                product_review = Review.objects.filter(category_product=session_product).delete()
+                product_category = Category.objects.filter(category_product=session_product).delete()
+                print(product_category)
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
             elif request.POST.get("form-type") == 'formTwo':
@@ -163,10 +162,12 @@ def upload_main(request):
                     fs.delete(str(BASE_DIR) + upload_file_url)
 
                     # 중복 제거하기
-                    dbreviews = Review.objects.filter(category_product=request.POST.get('category_product')).values_list('review_content', flat=True)
-                    dbreviews = pd.DataFrame({"Original Comment" : dbreviews})
+                    dbreviews = Review.objects.filter(
+                        category_product=request.POST.get('category_product')).values_list('review_content', flat=True)
+                    dbreviews = pd.DataFrame({"Original Comment": dbreviews})
 
-                    dbframe = pd.merge(dbreviews, dbframe, how='outer', indicator=True).query('_merge == "right_only"').drop(columns=['_merge'])
+                    dbframe = pd.merge(dbreviews, dbframe, how='outer', indicator=True).query(
+                        '_merge == "right_only"').drop(columns=['_merge'])
                     print(dbframe)
                     # 현재 model의 category_product별로 최대값을 기준으로 review_number을 갱신하기 위한 변수 category_max_num
                     category_max_num = Review.objects.filter(
@@ -176,7 +177,7 @@ def upload_main(request):
                         category_max_num = 0
                     dbframe.reset_index(inplace=True)
                     dbframe['index'] = dbframe['index'] + int(category_max_num) + 1
-   
+
                     # 저장 부분
                     review_obj = [Review(review_content=row['Original Comment'],
                                          category_product=request.POST.get('category_product'),
