@@ -1,4 +1,4 @@
-'''from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -69,4 +69,3 @@ def assignment(request):
         return HttpResponseRedirect('/assignment/')
 
     return render(request, 'mainapp/assignment.html', context)
-'''
