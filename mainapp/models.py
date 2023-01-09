@@ -65,5 +65,3 @@ class Result(models.Model):
     result_emotion = models.CharField(max_length=256)
     result_target = models.CharField(max_length=256)
     result_expression = models.CharField(max_length=256)
-
-

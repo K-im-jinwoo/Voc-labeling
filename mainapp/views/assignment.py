@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+'''from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -67,5 +67,6 @@ def assignment(request):
         WebStatus.objects.filter(status_name='auto_assignment_value').update(status_value=auto_assignment_value)
         WebStatus.objects.filter(status_name='auto_assignment_status').update(status_value=auto_assignment_status)
         return HttpResponseRedirect('/assignment/')
-        
+
     return render(request, 'mainapp/assignment.html', context)
+'''

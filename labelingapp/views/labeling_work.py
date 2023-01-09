@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, JsonResponse
+'''from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -242,3 +242,4 @@ def labeling_work(request):
         context['product_names'] = Category.objects.all().values('category_product').distinct()
 
         return render(request, 'labelingapp/labeling_work.html', context)
+'''
