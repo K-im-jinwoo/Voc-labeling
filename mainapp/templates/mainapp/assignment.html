@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <button name="assignment" value="50">할당하기</button>
+    </form>
+{% endblock %}

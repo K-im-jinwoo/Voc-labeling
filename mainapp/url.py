@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.views.generic import TemplateView
 
-from mainapp.urls import account, workstatus_review, workstatus_worker
+from mainapp.urls import account, workstatus_review, workstatus_worker, assignment
 from mainapp.views.workstatus_worker import server
 
 app_name = 'mainapp'
@@ -14,3 +14,4 @@ urlpatterns = [
 urlpatterns += account.patterns
 urlpatterns += workstatus_review.patterns
 urlpatterns += workstatus_worker.patterns
+urlpatterns += assignment.patterns

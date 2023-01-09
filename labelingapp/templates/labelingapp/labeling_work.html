@@ -52,33 +52,6 @@
                     </div>
                 </div>
 
-                <!--데이터 할당량 개수 지정(기존-번호로 영역선택)-->
-                <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
-        font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 작업량선택
-                </div>
-<!--                <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace;, monospace; font-weight: 200; margin-left: 0.3rem;">-->
-<!--                    <input style="width: 7rem" type="number" name="start" placeholder="ex)1" min="1"-->
-<!--                           value="{{ start }}">-->
-<!--                    <div style="display: inline-block">~</div>-->
-<!--                    <input style="width: 7rem" type="number" name="end" placeholder="ex)10000" value="{{ end }}">-->
-<!--                </div>-->
-<!--                <div style="font-size: 1rem; display: inline-block" class="subject">-->
-<!--                    <input class="btn btn-outline-dark btn-sm" type="submit" value="적용"-->
-<!--                           style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">-->
-<!--                </div>-->
-
-                <!--데이터 할당량 개수 지정(수정-라디오버튼으로 데이터 개수 지정)-->
-                <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace;, monospace; font-weight: 200; margin-left: 0.3rem;">
-                    <input type="radio" id="NumberChoice1"
-                           name="assignment" value="ten">
-                    <label for="NumberChoice1">10개</label>
-                    <input type="radio" id="NumberChoice2"
-                           name="assignment" value="fifty">
-                    <label for="NumberChoice2">50개</label>
-                    <input type="radio" id="NumberChoice3"
-                           name="assignment" value="hundred">
-                    <label for="NumberChoice3">100개</label>
-                </div>
                 <div style="font-size: 1rem; display: inline-block" class="subject">
                     <input class="btn btn-outline-dark btn-sm" type="submit" value="적용"
                            style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
@@ -222,7 +195,8 @@
             <input type="hidden" name="form-type" value="DummyForm">
             <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
             <input type="hidden" name="category_product" value="{{ category_product }}">
-            <input type="hidden" name="assignment" value="{{ assignment }}">
+            <input type="hidden" name="start" value="{{ start }}">
+            <input type="hidden" name="end" value="{{ end }}">
             <input class="btn btn-outline-danger btn-sm" type="submit" value="버리기"
                    style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
         </form>
@@ -241,7 +215,8 @@
             <input type="hidden" name="form-type" value="NextForm">
             <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
             <input type="hidden" name="category_product" value="{{ category_product }}">
-            <input type="hidden" name="assignment" value="{{ assignment }}">
+            <input type="hidden" name="start" value="{{ start }}">
+            <input type="hidden" name="end" value="{{ end }}">
             <input class="btn btn-outline-dark btn-sm" type="submit" value="다음"
                    style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-right: 3.2rem; font-size: 1rem">
         </form>
