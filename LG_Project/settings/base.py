@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'outputapp',
     'bootstrap4',
     'storages',
-    'rest_framework'
+    'rest_framework',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,6 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
+SCHEDULER_DEFAULT = True

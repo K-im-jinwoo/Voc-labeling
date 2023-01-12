@@ -44,7 +44,7 @@ def assignment(request):
         # 유저별 1000개씩 할당하기
         if assignment_status == 'assignment' and category_product != "all" and user != 'all':
             review = Review.objects.filter(category_product=category_product, first_status=0, second_status=0,
-                                           dummy_status=0, first_assign_user=0).values('pk')[:5]
+                                           dummy_status=0, first_assign_user=0).values('pk')[:1000]
             review = Review.objects.filter(pk__in=review)
             review.update(first_assign_user=user)
             return HttpResponseRedirect('/assignment/')
@@ -56,7 +56,7 @@ def assignment(request):
                     'category_product'), first_status=0, second_status=0,
                 dummy_status=0, first_assign_user__in=[user] if user != 'all' else users).values('pk')
             review = Review.objects.filter(pk__in=review)
-            review.delete()
+            review.update(first_assign_user=0)
             return HttpResponseRedirect('/assignment/')
 
     #### ---- 자동 할당 상태 활성화 or 비활성화 ---- ####
