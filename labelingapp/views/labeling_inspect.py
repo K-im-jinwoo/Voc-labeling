@@ -73,8 +73,8 @@ def labeling_inspect(request):
                 review_data_couple = []
                 for review_assignment_num in review_assignment:
                     print(review_assignment_num.pk)
-                    data = FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values(
-                        'first_labeled_target', 'first_labeled_expression', 'first_labeled_emotion')
+                    data = list(FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values_list(
+                        'first_labeled_target', 'first_labeled_expression', 'first_labeled_emotion'))
                     review_data_couple.append(data)
                 print(review_data_couple)
 
@@ -86,19 +86,14 @@ def labeling_inspect(request):
                 print("할당됐던 데이터 출력 성공")
                 review_assignment = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
 
-                # review_data_couple_list =[]
-                # for review_assignment_num in review_assignment:
-                #     data = list(FirstLabeledData.objects.filter(review_id=review_assignment_num.pk))
-                #     print(data)
-                #     review_data_couple_list.append([review_assignment_num,data])
-                # print(review_data_couple_list)
-
                 review_data_couple = []
                 for review_assignment_num in review_assignment:
                     print(review_assignment_num.pk)
-                    data = FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values('first_labeled_target','first_labeled_expression','first_labeled_emotion')
+                    data = list(FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values_list('first_labeled_target','first_labeled_expression','first_labeled_emotion'))
                     review_data_couple.append(data)
-                print(type(review_data_couple[0]))
+                print(review_data_couple)
+
+
 
             review_full_data = zip(review_assignment,review_data_couple)
 
