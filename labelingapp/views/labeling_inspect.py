@@ -69,6 +69,15 @@ def labeling_inspect(request):
                 review_assignment.update(second_assign_user=request.user.pk)
                 review_assignment = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
 
+                print(review_assignment)
+                review_data_couple = []
+                for review_assignment_num in review_assignment:
+                    print(review_assignment_num.pk)
+                    data = FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values(
+                        'first_labeled_target', 'first_labeled_expression', 'first_labeled_emotion')
+                    review_data_couple.append(data)
+                print(review_data_couple)
+
                 if len(review_assignment)==0:
                     print("작업된 데이터가 없습니다.")
 
@@ -76,9 +85,28 @@ def labeling_inspect(request):
             else:
                 print("할당됐던 데이터 출력 성공")
                 review_assignment = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
-                print(review_assignment)
+
+                # review_data_couple_list =[]
+                # for review_assignment_num in review_assignment:
+                #     data = list(FirstLabeledData.objects.filter(review_id=review_assignment_num.pk))
+                #     print(data)
+                #     review_data_couple_list.append([review_assignment_num,data])
+                # print(review_data_couple_list)
+
+                review_data_couple = []
+                for review_assignment_num in review_assignment:
+                    print(review_assignment_num.pk)
+                    data = FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values('first_labeled_target','first_labeled_expression','first_labeled_emotion')
+                    review_data_couple.append(data)
+                print(type(review_data_couple[0]))
+
+            review_full_data = zip(review_assignment,review_data_couple)
+
+
 
             # labeling_inspect.html에 보낼 context 데이터
+            context['review_full_data'] = review_full_data
+            context['review_data_couple'] = review_data_couple
             context['review_assignment'] = review_assignment
             context['category_detail'] = category_detail
             context['category_product'] = category_product

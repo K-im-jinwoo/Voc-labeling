@@ -147,18 +147,24 @@
     <form action="{% url 'labelingapp:inspect' %}" method="post" id="SuccessForm">
         {% csrf_token %}
         {% if review_assignment %}
-        <div style="border: 1px solid #bcbcbc; width: 70rem; height: 30rem;
-        margin: 0.5rem auto; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; overflow: scroll; padding: 0.3rem">
-            {% for review_assignment in review_assignment %}
-            <p style="text-align: left">
-    <!--            나중에 review_id를 review_number로 바꿀예정-->
-                <input type="hidden" name="full_review" value="{{ review_assignment.review_id }}">
-                <input type="checkbox" name="check_review" value="{{ review_assignment.review_id }}" checked>
-                {{ review_assignment.review_id }}.
-                {{ review_assignment.review_content }}<hr>
+        <div style="display: inline-block; border: 1px solid #bcbcbc; width: 70rem; height: 30rem;
+        margin: 0.5rem auto; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; overflow-y: scroll; padding: 0.3rem">
+            {% for review_assignment,review_data_couple in review_full_data %}
+            <p style="height: auto; text-align: left;">
+                <div style=" border-bottom:1px solid black; width: 99%; height: auto; margin: auto">
+                    <div style="display: inline-block; width: 100%;text-align: left">
+                        <input type="hidden" name="full_review" value="{{ review_assignment.review_id }}">
+                        <input type="checkbox" name="check_review" value="{{ review_assignment.review_id }}" checked>
+                        {{ review_assignment.review_id }}.
+                        {{ review_assignment.review_content }}<br>
+                        {{ review_data_couple }}
+                    </div>
+                </div>
             </p>
             {% endfor %}
         </div>
+
+
 
         <!-- 검수완료 버튼 -->
         <div style="width: 70rem; margin: 0.5rem auto;">
