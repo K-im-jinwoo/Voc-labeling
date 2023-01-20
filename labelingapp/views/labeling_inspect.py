@@ -69,40 +69,31 @@ def labeling_inspect(request):
                 review_assignment.update(second_assign_user=request.user.pk)
                 review_assignment = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
 
-                print(review_assignment)
-                review_data_couple = []
-                for review_assignment_num in review_assignment:
-                    print(review_assignment_num.pk)
-                    data = list(FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values_list(
-                        'first_labeled_target', 'first_labeled_expression', 'first_labeled_emotion'))
-                    review_data_couple.append(data)
-                print(review_data_couple)
+                review_assignment_list = []
 
-                if len(review_assignment)==0:
+                for review_assignment in review_assignment:
+                    review_assignment2 = Review.objects.get(pk=review_assignment.pk)
+                    print(review_assignment2.firstlabeleddata_set.all())
+                    review_assignment_list.append(review_assignment2)
+
+                if len(review_assignment_list)==0:
                     print("작업된 데이터가 없습니다.")
 
             ####----할당된 데이터가 있는경우----####
             else:
                 print("할당됐던 데이터 출력 성공")
                 review_assignment = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
+                review_assignment_list = []
 
-                review_data_couple = []
-                for review_assignment_num in review_assignment:
-                    print(review_assignment_num.pk)
-                    data = list(FirstLabeledData.objects.filter(review_id=review_assignment_num.pk).values_list('first_labeled_target','first_labeled_expression','first_labeled_emotion'))
-                    review_data_couple.append(data)
-                print(review_data_couple)
-
-
-
-            review_full_data = zip(review_assignment,review_data_couple)
+                for review_assignment in review_assignment:
+                    review_assignment2 = Review.objects.get(pk=review_assignment.pk)
+                    print(review_assignment2.firstlabeleddata_set.all())
+                    review_assignment_list.append(review_assignment2)
 
 
 
             # labeling_inspect.html에 보낼 context 데이터
-            context['review_full_data'] = review_full_data
-            context['review_data_couple'] = review_data_couple
-            context['review_assignment'] = review_assignment
+            context['review_assignment_list'] = review_assignment_list
             context['category_detail'] = category_detail
             context['category_product'] = category_product
             return render(request, 'labelingapp/labeling_inspect.html', context)

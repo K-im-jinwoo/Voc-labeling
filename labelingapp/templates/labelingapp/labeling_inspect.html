@@ -146,18 +146,18 @@
     <!-- 작업필드 -->
     <form action="{% url 'labelingapp:inspect' %}" method="post" id="SuccessForm">
         {% csrf_token %}
-        {% if review_assignment %}
+        {% if review_assignment_list %}
         <div style="display: inline-block; border: 1px solid #bcbcbc; width: 70rem; height: 30rem;
         margin: 0.5rem auto; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; overflow-y: scroll; padding: 0.3rem">
-            {% for review_assignment,review_data_couple in review_full_data %}
+            {% for review_assignment_list in review_assignment_list %}
             <p style="height: auto; text-align: left;">
                 <div style=" border-bottom:1px solid black; width: 99%; height: auto; margin: auto">
                     <div style="display: inline-block; width: 100%;text-align: left">
-                        <input type="hidden" name="full_review" value="{{ review_assignment.review_id }}">
-                        <input type="checkbox" name="check_review" value="{{ review_assignment.review_id }}" checked>
-                        {{ review_assignment.review_id }}.
-                        {{ review_assignment.review_content }}<br>
-                        {{ review_data_couple }}
+                        <input type="hidden" name="full_review" value="{{ review_assignment_list.review_id }}">
+                        <input type="checkbox" name="check_review" value="{{ review_assignment_list.review_id }}" checked>
+                        {{ review_assignment_list.review_id }}.
+                        {{ review_assignment_list.review_content }}<br>
+                        {{ review_assignment_list.firstlabeleddata_set.all }}
                     </div>
                 </div>
             </p>
