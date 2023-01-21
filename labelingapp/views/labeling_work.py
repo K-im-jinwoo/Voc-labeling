@@ -7,7 +7,7 @@ from mainapp.models import Category, Review, FirstLabeledData, WebStatus
 
 def print_review(category_product, request):
     review = Review.objects.filter(category_product=category_product, first_status=0, second_status=0, dummy_status=0,
-                                   first_assign_user=request.user.pk).order_by('review_id')[:1]
+                                   first_assign_user=request.user.pk).order_by('review_number')[:1]
     return review
 
 
