@@ -86,7 +86,7 @@ def labeling_inspect(request):
             ####----할당된 데이터가 있는경우----####
             else:
                 print("할당됐던 데이터 출력 성공")
-                inspect_review_list = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
+                inspect_review_list = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False).order_by('review_number')
                 inspect_label_list = list()
                 for inspect_review in inspect_review_list:
                     labels = FirstLabeledData.objects.filter(review_id=inspect_review.pk).values('category_id__category_middle', 'category_id__category_color', 'first_labeled_emotion', 'first_labeled_target', 'first_labeled_expression')
