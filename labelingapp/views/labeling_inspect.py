@@ -83,12 +83,11 @@ def labeling_inspect(request):
             else:
                 print("할당됐던 데이터 출력 성공")
                 inspect_review_list = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
-
                 inspect_label_list = list()
                 for inspect_review in inspect_review_list:
-                    labels = FirstLabeledData.objects.filter(review_id=inspect_review.pk)
+                    labels = FirstLabeledData.objects.filter(review_id=inspect_review.pk).values('category_id__category_middle', 'category_id__category_color', 'first_labeled_emotion', 'first_labeled_target', 'first_labeled_expression')
+                    print(labels)
                     inspect_label_list.append(labels)
-
                 reviews = zip(inspect_review_list, inspect_label_list)
 
                 # labeling_inspect.html에 보낼 context 데이터

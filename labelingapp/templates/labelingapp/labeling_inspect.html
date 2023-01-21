@@ -190,6 +190,8 @@
                         {{ review.review_content }}<br>
                         {% if labels|length > 0 %}
                             {% for label in labels %}
+                                {{ label.category_id__category_middle }}
+                                {{ label.category_id__category_color }}
                                 {{ label.first_labeled_emotion }}
                                 {{ label.first_labeled_target }}
                                 {{ label.first_labeled_expression }}
