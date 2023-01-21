@@ -156,11 +156,11 @@
                         <input type="hidden" name="full_review" value="{{ review.review_id }}">
                         <input type="checkbox" name="check_review" value="{{ review.review_id }}" checked>
                         {{ review.review_number }}.
-                        <span class="current_target">{{ review.review_content }}</span>
+                        <span class="current_target{{ review.review_id }}">{{ review.review_content }}</span>
                         <script>
                             {% if labels|length > 0 %}
                             {% for label in labels %}
-                            $('.current_target').each(function () {
+                            $('.current_target{{ review.review_id }}').each(function () {
                                 $(this).html($(this).html().replace("{{label.first_labeled_target}}", '<span style="background-color:{{ label.category_id__category_color }}">{{label.first_labeled_target}}</span>'));
                                 $(this).html($(this).html().replace("{{label.first_labeled_expression}}", '<span style="background-color:{{ label.category_id__category_color }}">{{label.first_labeled_expression}}</span>'));
                             });
