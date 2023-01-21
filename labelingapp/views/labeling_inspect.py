@@ -82,20 +82,20 @@ def labeling_inspect(request):
             ####----할당된 데이터가 있는경우----####
             else:
                 print("할당됐던 데이터 출력 성공")
-                review_assignment = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
-                review_assignment_list = []
+                inspect_review_list = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
 
-                for review_assignment in review_assignment:
-                    review_assignment2 = Review.objects.get(pk=review_assignment.pk)
-                    print(review_assignment2.firstlabeleddata_set.all())
-                    review_assignment_list.append(review_assignment2)
+                inspect_label_list = list()
+                for inspect_review in inspect_review_list:
+                    labels = FirstLabeledData.objects.filter(review_id=inspect_review.pk)
+                    inspect_label_list.append(labels)
 
+                reviews = zip(inspect_review_list, inspect_label_list)
 
-
-            # labeling_inspect.html에 보낼 context 데이터
-            context['review_assignment_list'] = review_assignment_list
-            context['category_detail'] = category_detail
-            context['category_product'] = category_product
+                # labeling_inspect.html에 보낼 context 데이터
+                context['reviews'] = reviews
+                context['review_assignment_list'] = inspect_review_list
+                context['category_detail'] = category_detail
+                context['category_product'] = category_product
             return render(request, 'labelingapp/labeling_inspect.html', context)
 
         ####----검수완료버튼 클릭----####
