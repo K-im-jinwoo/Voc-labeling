@@ -143,37 +143,6 @@
         </p>
     </div>
 
-{% comment %}    <!-- 작업필드 -->
-    <form action="{% url 'labelingapp:inspect' %}" method="post" id="SuccessForm">
-        {% csrf_token %}
-        {% if review_assignment_list %}
-        <div style="display: inline-block; border: 1px solid #bcbcbc; width: 70rem; height: 30rem;
-        margin: 0.5rem auto; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; overflow-y: scroll; padding: 0.3rem">
-            {% for a in review_assignment_list %}
-            <p style="height: auto; text-align: left;">
-                <div style=" border-bottom:1px solid black; width: 99%; height: auto; margin: auto">
-                    <div style="display: inline-block; width: 100%;text-align: left">
-                        <input type="hidden" name="full_review" value="{{ a.review_id }}">
-                        <input type="checkbox" name="check_review" value="{{ a.review_id }}" checked>
-                        {{ a.review_id }}.
-                        {{ a.review_content }}<br>
-                        {{ a.firstlabeleddata_set.all }}
-                    </div>
-                </div>
-            </p>
-            {% endfor %}
-        </div>
-
-
-
-        <!-- 검수완료 버튼 -->
-        <div style="width: 70rem; margin: 0.5rem auto;">
-            <input type="hidden" name="form-type" value="SuccessForm">
-            <input type="hidden" name="category_product" value="{{ category_product }}">
-            <input class="btn btn-outline-dark btn-sm" type="submit" value="검수완료" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; float: right">
-        </div>
-        {% endif %}
-    </form>{% endcomment %}
 <!-- 작업필드 -->
     <form action="{% url 'labelingapp:inspect' %}" method="post" id="SuccessForm">
         {% csrf_token %}
