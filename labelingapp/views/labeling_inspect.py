@@ -63,10 +63,10 @@ def labeling_inspect(request):
                 else:
                     print('할당 실패')
 
-                # print("할당 개수", assignment)
+                print("할당 개수", assignment)
                 review_assignment = Review.objects.filter(category_product=category_product,first_status=True,second_status=False,second_assign_user=0).values('pk')[:assignment]
                 review_assignment = Review.objects.filter(pk__in=review_assignment)
-                review_assignment.update(second_assign_user=request.user.pk)
+                review_assignment.update(second_assign_user=request.user.pk if request.user.pk != None else "0")
                 inspect_review_list = Review.objects.filter(category_product=category_product, second_assign_user=request.user.pk, second_status=False)
 
                 inspect_label_list = list()

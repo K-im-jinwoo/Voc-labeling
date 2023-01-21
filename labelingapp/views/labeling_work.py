@@ -7,7 +7,7 @@ from mainapp.models import Category, Review, FirstLabeledData, WebStatus
 
 def print_review(category_product, request):
     review = Review.objects.filter(category_product=category_product, first_status=0, second_status=0, dummy_status=0,
-                                   first_assign_user=request.user.pk).order_by('review_number')[:1]
+                                   first_assign_user=request.user.pk).order_by('review_id')[:1]
     return review
 
 
@@ -60,8 +60,10 @@ def labeling_work(request):
                                               dummy_status=0, first_assign_user=request.user.pk)) == 0 and 'assignment_count' in request.GET:
                     review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
                                                               second_status=0, dummy_status=0,
-                                                              first_assign_user=0).values('pk')[:int(request.GET.get('assignment_count'))]
+                                                              first_assign_user=0, second_assign_user=0).values('pk')[:int(request.GET.get('assignment_count'))]
+                    print("1",len(review_assignment))
                     review_assignment = Review.objects.filter(pk__in=review_assignment)
+                    print("2",len(review_assignment))
                     review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
 
                 if request.GET.get("form-type") == 'DummyForm':
