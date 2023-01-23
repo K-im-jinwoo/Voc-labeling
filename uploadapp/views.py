@@ -133,8 +133,9 @@ def upload_main(request):
                 category.category_color = temp_color
                 category.save()
 
-                respons_url = "/upload/?category_product=" + request.session['category_product']
-                return HttpResponseRedirect(reverse(respons_url))
+                upload_url = "/upload/?category_product=" + request.session['category_product']
+                print("upload_url:", upload_url)
+                return HttpResponseRedirect(upload_url)
 
             if request.POST.get('session_product'):
                 print("제품삭제 뷰")
