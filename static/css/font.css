@@ -1,0 +1,30 @@
+@font-face {
+    font-family: 'lg_smartlight';
+    src: url('lg_smart_light-webfont.woff2') format('woff2'),
+         url('lg_smart_light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'lg_smartregular';
+    src: url('lg_smart_regular-webfont.woff2') format('woff2'),
+         url('lg_smart_regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'lg_smartsemibold';
+    src: url('lg_smart_semibold-webfont.woff2') format('woff2'),
+         url('lg_smart_semibold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;

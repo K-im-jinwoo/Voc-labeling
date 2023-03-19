@@ -1,0 +1,113 @@
+@font-face {
+    font-family: 'lg_smartlight';
+    src: url('../font/lg_smart_light-webfont.woff2') format('woff2'),
+         url('../font/lg_smart_light-webfont.woff') format('woff');
+    font-weight: 400;
+
+}
+
+@font-face {
+    font-family: 'lg_smartregular';
+    src: url('../font/lg_smart_regular-webfont.woff2') format('woff2'),
+         url('../font/lg_smart_regular-webfont.woff') format('woff');
+    font-weight: 500;
+
+}
+
+@font-face {
+    font-family: 'lg_smartsemibold';
+    src: url('../font/lg_smart_semibold-webfont.woff2') format('woff2'),
+         url('../font/lg_smart_semibold-webfont.woff') format('woff');
+    font-weight: 600;
+}
+
+/* Font size */
+body {
+  font-family: 'lg_smartlight', 'lg_smartregular','lg_smartsemibold';
+}
+
+.fs-tiny {
+  font-size: 12px;
+  line-height: 24px;
+}
+
+.fs-small {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.fs-base {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.fs-medium {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.fs-large {
+  font-size: 24px;
+  line-height: 24px;
+}
+
+/* Font Weight */
+
+.fw-regular,
+.fw-400 {
+  font-weight: 400;
+}
+
+.fw-medium,
+.fw-400 {
+  font-weight: 400;
+}
+
+.fw-semi-bold,
+.fw-600 {
+  font-weight: 600;
+} 
+
+/* gray color */
+
+.gray-100 {
+  color:#333333;
+}
+.gray-200 {
+  color:#585757;
+}
+.gray-300 {
+  color:#969696;
+}
+.gray-350 {
+  color:#D4D4D4;
+}
+.gray-400 {
+  color:#E8E8E8;
+}
+
+/* bg color */
+
+.primary-bg {
+  background: #ffffff;
+}
+.secondary-bg {
+  background: #F2F2F2;
+}
+.menu-bg {
+  background: #313238;
+}
+.dark-bg {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* LG-color */
+.lg-red {
+  background: #A50034;
+}
+.lg-gray {
+  background: #6B6B6B;
+}
+.lg-white {
+  background: #FFFFFF;
+}
