@@ -29,6 +29,7 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
+  background: #F5F5F5;
 	line-height: 1;
   box-sizing :border-box;
 }
@@ -49,8 +50,20 @@ table {
 }
 
 a {color: #fff; text-decoration: none; outline: none}
-a:hover, a:active {text-decoration: none; color:#fff; background-color:#f59000;}
+a:hover, a:active {text-decoration: none;}
 
 button {
   border: 0;
+}
+
+/* sr */
+.sr-only {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    clip: rect(0,0,0,0);
 }

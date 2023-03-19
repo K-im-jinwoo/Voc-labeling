@@ -1,47 +1,17 @@
 {% load static %}
 
+<div id="header">
+  <header class="header-title primary-bg">
+    <h1 class="header-title-name">
+      <a href="{% url 'mainapp:main' %}" class="fs-large gray-200">
+        <span class="fw-600">
+          LG
+        </span>
+        Review Labeling
+      </a>
+    </h1>
+  </header>
+</div>
 
 
-<header class="header-title primary-bg">
-  <h1 class="fs-large gray-200">
-    <span class="fw-600">
-      LG 
-    </span>
-    Review Labeling
-  </h1>
-</header>
 
-<Nav class="nav-relative">
-  <h1>메뉴</h1>
-  <div class="nav-wrap menu-bg">
-    {% if user.is_authenticated %} <!--로그인 한 상태-->
-    <div class="user-profile-login">
-      <img src="{{ user.profile.image.url }}" class="profile-img">
-      <strong class="fw-600 fs-medium user-profile-name">
-        {{ user.username }}
-      </strong>
-    </div>
-    
-    <!-- <div>
-      
-      <a href="{% url 'mainapp:account' pk=user.pk %}">MyPage</a>
-    </div> -->
-    
-    {% else %} <!--로그인 안한 상태-->
-    <a href="{% url 'mainapp:login' %}?next={{ request.path }}">Login</a>
-    <a href="{% url 'mainapp:signup' %}?next={{ request.path }}">SignUp</a>
-  
-    {% endif %}
-    <ul class="fw-400 fs-small">
-      <li class="menu-pd">
-        Data Upload
-      </li>
-      <li class="menu-pd">Data Labeling</li>
-      <li class="menu-pd">Work Status</li>
-      <li class="menu-pd">Data Export</li>
-      <button class="logout-btn lg-gray">
-        <a href="{% url 'mainapp:logout' %}" >Logout</a>
-      </button>
-    </ul>
-  </div>
-</Nav>
