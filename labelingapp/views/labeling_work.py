@@ -36,12 +36,13 @@ def labeling_work(request):
 
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET:
-
+            print(request.GET)
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET.get('category_product'):
 
                 #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET['category_product']
+                print(category_product)
                 category_detail = Category.objects.filter(category_product=category_product)
 
                 ##### ----- 라벨링 페이지 켜면 자동할당됨(자동 할당 상태일 경우) ----- #####

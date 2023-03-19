@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 
@@ -28,8 +29,8 @@ class Review(models.Model):
     second_status = models.BooleanField(default=False)
     dummy_status = models.BooleanField(default=False)
     labeled_user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    first_assign_user = models.TextField(default="0")
-    second_assign_user = models.TextField(default="0")
+    first_assign_user = models.TextField(default="0", null=True)
+    second_assign_user = models.TextField(default="0", null=True)
 
     def __str__(self):
         return str(self.review_id) + ' - ' + str(self.category_product)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
 from django.http import HttpResponseRedirect
@@ -17,87 +18,87 @@ def cleansing(csv_file):
     '''전처리 시작'''
     raw_data = pd.read_csv("." + csv_file, encoding='utf-8')
     print(raw_data)
-    data = raw_data.filter(['Original Comment'])
+    data = raw_data.filter(['Original Comments'])
 
     '''중복 제거(1)'''
-    data = data.drop_duplicates(['Original Comment'])
+    data = data.drop_duplicates(['Original Comments'])
 
     '''불필요한 문자열 제거'''
     # html태그 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'<[^>]*>', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'<[^>]*>', repl=r'', regex=True)
 
     # email 주소 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(
+    data['Original Comments'] = data['Original Comments'].str.replace(
         pat=r'(\[a-zA-Z0-9\_.+-\]+@\[a-zA-Z0-9-\]+.\[a-zA-Z0-9-.\]+)',
         repl=r'', regex=True)
     # _제거
-    data['Original Comment'] = data['Original Comment'].str.replace('_', '')
+    data['Original Comments'] = data['Original Comments'].str.replace('_', '')
 
     # \r, \n 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'[\r|\n]', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'[\r|\n]', repl=r'', regex=True)
 
     # url 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(
+    data['Original Comments'] = data['Original Comments'].str.replace(
         pat=r'''(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))''',
         repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(
+    data['Original Comments'] = data['Original Comments'].str.replace(
         pat=r'((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*',
         repl=r'', regex=True)
 
     # 자음, 모음 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'([ㄱ-ㅎㅏ-ㅣ]+)', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'([ㄱ-ㅎㅏ-ㅣ]+)', repl=r'', regex=True)
 
     # 특수 기호 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'[^\w\s]', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace('1n', '')
-    data['Original Comment'] = data['Original Comment'].str.replace('_', '')
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'[^\w\s]', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace('1n', '')
+    data['Original Comments'] = data['Original Comments'].str.replace('_', '')
 
     # 모두 영어인 행 공백으로 대체
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'^[a-zA-Z\s]+$', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'^[a-zA-Z\s]+$', repl=r'', regex=True)
 
     # 모두 숫자인 행 공백으로 대체
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'^[0-9\s]+$', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'^[0-9\s]+$', repl=r'', regex=True)
 
     # 좌우 공백 제거
-    data['Original Comment'] = data['Original Comment'].str.strip()
+    data['Original Comments'] = data['Original Comments'].str.strip()
 
     # 아이디 관련 단어 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'ID\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'ID\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'아이디\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'아이디\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'id\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'id\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'ID[a-zA-Z0-9]+', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'아이디[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'ID[a-zA-Z0-9]+', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'아이디[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'id[a-zA-Z0-9]+', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'ID\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'아이디\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'id\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'id[a-zA-Z0-9]+', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'ID\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'아이디\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'id\s', repl=r'', regex=True)
 
     # 주문번호 관련 단어 제거
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'주문번호\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'주문번호\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'결제번호\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'결제번호\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'구매번호\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'구매번호\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'주문\s번호\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'주문\s번호\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'결제\s번호\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'결제\s번호\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'구매\s번호\s[a-zA-Z0-9]+', repl=r'',
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'구매\s번호\s[a-zA-Z0-9]+', repl=r'',
                                                                     regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'주문번호\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'결제번호\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'구매번호\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'주문\s번호\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'결제\s번호\s', repl=r'', regex=True)
-    data['Original Comment'] = data['Original Comment'].str.replace(pat=r'구매\s번호\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'주문번호\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'결제번호\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'구매번호\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'주문\s번호\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'결제\s번호\s', repl=r'', regex=True)
+    data['Original Comments'] = data['Original Comments'].str.replace(pat=r'구매\s번호\s', repl=r'', regex=True)
 
     '''중복 제거(2)'''
-    data['temp'] = data['Original Comment']
+    data['temp'] = data['Original Comments']
     data['temp'] = data['temp'].str.replace(' ', '')
     data = data.drop_duplicates(['temp'], ignore_index=True)
     data = data.drop(['temp'], axis=1)
@@ -164,7 +165,7 @@ def upload_main(request):
                     # 중복 제거하기
                     dbreviews = Review.objects.filter(
                         category_product=request.POST.get('category_product')).values_list('review_content', flat=True)
-                    dbreviews = pd.DataFrame({"Original Comment": dbreviews})
+                    dbreviews = pd.DataFrame({"Original Comments": dbreviews})
 
                     dbframe = pd.merge(dbreviews, dbframe, how='outer', indicator=True).query(
                         '_merge == "right_only"').drop(columns=['_merge'])
@@ -179,7 +180,7 @@ def upload_main(request):
                     dbframe['index'] = dbframe['index'] + int(category_max_num) + 1
 
                     # 저장 부분
-                    review_obj = [Review(review_content=row['Original Comment'],
+                    review_obj = [Review(review_content=row['Original Comments'],
                                          category_product=request.POST.get('category_product'),
                                          review_number=row['index']) for _, row in dbframe.iterrows()]
                     Review.objects.bulk_create(review_obj)
