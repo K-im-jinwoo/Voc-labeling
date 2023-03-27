@@ -1,75 +1,95 @@
 {% extends 'base.html' %}
+{% load static %}
+<!-- style -->
+{% block style %}
+<link rel="stylesheet" href="{% static 'outputapp/css/output.css' %}">
+{% endblock %}
+
+<!-- content title 부분 -->
+{% block content-title %}
+<h2 class="content-title fs-large fw-600 gray-200">
+  Data Export
+</h2>
+{% endblock %}
 
 {% block content %}
-<style>
-    .subject {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
 
-    .dbcolor {
-        border-color: darkblue;
-    }
-
-</style>
-
-
-<div style="width: 100%; text-align: center; margin-top: 3rem;">
-    <div style="width: 50rem; height: 30rem; margin: 3rem 3rem 3rem 3rem; display: inline-block; margin-top: 0rem">
-        <div style="text-align: left; width: 13rem;">
-            <p
-                style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.3rem">
-                Data Export
-            </p>
-        </div>
-        <!-- 제품군 선택-->
-        <form action="" method="get">
-            {% csrf_token%}
-            <div style="text-align: left ">
-                <p style="font-family: 'Nanum Gothic Coding', monospace; font-size: 1.1rem;
-                font-weight: 200; display: inline-block; margin-top: 0rem; margin-bottom: 0rem;" class="subject">제품 선택</p>
-                <select name='category_product' style="margin-left: 0.5rem; display: inline-block; width: 8rem; height: 1.9rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-                    {% for product_name in product_names %}
-                        <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
-                        {{ product_name.category_product }}
-                    {% endfor %}
-                </select>
-                <input class="btn btn-outline-dark btn-sm" type="submit" value="완료" style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
+<!-- 사용 설명 기재 란(추후 수정 필요) -->
+<div class="first-desc primary-bg gray-100">
+  <div class="first-desc-wrap">
+    <!-- 제품군 선택-->
+    <form action="" method="get">
+      <div class="form-flex-wrap">
+        {% csrf_token%}
+        <h3 class="output-title fw-400 fs-base gray-100">제품 선택</h3>
+        <select name='category_product' onchange="this.form.submit()" class="category_product gray-100 primary-bg">
+          <option value="--제품을 선택하세요--">--제품을 선택하세요--</option>
+          {% for product_name in product_names %}
+          <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+          {{ product_name.category_product }}
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+    <span class="category_product_under"></span>
+    <div class="category_product-wrap">
+      <div>
+        {% if request.session.category_product %}
+        <h3 class="gray-100">
+          <strong class="fs-base fw-medium category_product_tit">선택한 제품 :</strong> 
+          <span class="category_dropdown primary-bg">
+            {{ request.session.category_product }}
+          </span>
+        </h3>
+        <p>
+          <div class="all_total_wrap fs-small fw-regular">
+            <span class="all_total fs-small fw-regular">
+              총 개수
+            </span> 
+            <span>
+              {{ alltotal }}
+            </span>
+          </div>
+          <div class="complate_wrap fs-small fw-regular">
+            <div class="first_num_wrap">
+              <span class="first_num">
+                작업완료
+              </span>
+              {{ first_num }}
             </div>
-        </form>
-
-        <!--{{ request.session.category_product }}-->
-
-        <hr>
-        <!-- 카테고리 보기 및 생성-->
-        <!-- method 설정 필요합니다. -->
-        <div style="display: inline-block; width: 100%; height: 13rem; background-color: #eeeeee; border-radius: 1rem; padding: 1rem 1rem 1rem 1rem">
-            <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; text-align: left; margin-bottom: 0.5rem" class="subject">
-            {% if request.session.category_product %}
-                <strong>선택한 제품 : {{ request.session.category_product }}</strong>
-                <p><br>총 개수: {{ alltotal }}<br>작업 완료: {{ first_num }}<br>검수 완료: {{ second_num }}<br>삭제: {{ dummy_num }}</p>
-            {% else %}
-                선택한 제품 :
-            {% endif %}
+            <div class="second_num_wrap">
+              <span class="second_num">
+                검수완료
+              </span>
+              {{ second_num }}
             </div>
-        </div>
-        <div style="text-align: right; margin-top:1rem;">* .xlsx 파일로 뽑아내는 데이터는 작업 완료된 데이터 입니다.</div>
-
-        <hr>
-        <p style="text-align: left; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 1.1rem;" class="subject">내보내기</p>
-        <!--엑셀 파일 csv로 내보내기 => 엑셀 파일 필요시, 주피터로 중복 전처리 후, 엑셀로 뽑아내야함-->
-        <div style="margin-top: 1rem; width: 100%; height: 3.5rem; padding: 0rem 0.8rem 0.8rem 0.8rem; text-align: center; border-radius: 0.8rem; ">
-            <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input class="btn btn-outline-dark btn-sm" style="width: 200px; margin: 0 auto 30px; margin-right: 3rem; padding: 10px 25px; font-size: 1.4rem;
-                border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" name="export" value=".xlsx export">
-                <input class="btn btn-outline-dark btn-sm" style="width: 200px; margin: 0 auto 30px; padding: 10px 25px; font-size: 1.4rem;
-                border-radius: 0.9rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300;" type="submit" name="export" value=".data analysis">
-                <input type="hidden" name="product" value="{{ request.session.category_product }}">
-
-            </form>
-        </div>
-
+            <div class="dummy_num_wrap">
+              <span class="dummy_num">
+                삭제
+              </span>
+              {{ dummy_num }}
+            </div>
+          </div>
+        </p>
+        {% else %}
+        선택한 제품 :
+        {% endif %}
+      </div>
     </div>
+    <span class="category_product_under"></span>
+    <div class="subject_wrap gray-100">
+        <p class="subject fs-base">내보내기</p>
+          <span class="fs-small">* .xlsx 파일로 뽑아내는 데이터는 작업 완료된 데이터 입니다.</span>
+        <!--엑셀 파일 csv로 내보내기 => 엑셀 파일 필요시, 주피터로 중복 전처리 후, 엑셀로 뽑아내야함-->
+        <div class="export_form_wrap">
+          <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="submit" name="export" value=".xlsx export" class="export">
+            <input type="submit" name="export" value=".data analysis" class="analysis">
+            <input type="hidden" name="product" value="{{ request.session.category_product }}">
+          </form>
+        </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
