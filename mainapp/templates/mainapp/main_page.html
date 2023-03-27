@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 
+<!-- content title 부분 -->
+{% block content-title %}
+<h2 class="content-title fs-large fw-600 gray-200">
+    Main Page
+</h2>    
+{% endblock %}
+
 {% block content %}
 
     <!-- 사용 설명 기재 란(추후 수정 필요) -->
-    <div style="text-align: center; width: 100%;">
-        <div style="display: inline-block; background-color: #eeeeee; width: 50rem; height: 22rem; margin-top: 6rem;">
-            <p style="font-size: 2rem; font-family: 'Josefin Sans', sans-serif; font-weight: 300; margin-top: .5rem">
+    <div class="first-desc primary-bg gray-100">
+        <div class="first-desc-wrap">
+            <p>
                 User's Guide
             </p>
-            <p style="text-align: left; font-family: 'Nanum Gothic Coding', monospace; margin-top: 1rem; margin-left: 1rem; line-height: 2rem;">
+            <p>
                 1. 회원가입 및 로그인을 한다.<br>
                 2. Data Upload 클릭 후 제품, 카테고리, 파일을 선택한다.<br>
                 3. Data Labeling 클릭 후 작업할 데이터 번호를 지정한 후 불러온다.<br>

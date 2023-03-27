@@ -1,0 +1,52 @@
+p{
+    display: inline;
+}
+
+.container{
+    width: 1121px;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    background: #FFFFFF;
+    margin-left: 58px;
+}
+
+div{
+    display: inline;
+}
+
+.product{
+    margin-top: 43px;
+    margin-left: 55px;
+}
+
+.tool_box{
+    
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.show_container{
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+    margin-left: 45px;
+    margin-top: 115px;
+    width: 1031px;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    background: #F8F8F8;
+}
+
+.category{
+    display: flex;
+}
+
+.c_text{
+    display: inline-block;
+    width: 80px;
+}
+
+.c_content{
+    display: block;
+}
