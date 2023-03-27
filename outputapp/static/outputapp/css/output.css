@@ -1,0 +1,138 @@
+.form-flex-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.output-title {
+  margin-right: 25px;
+}
+
+.category_product {
+  border: 0.5px solid #D4D4D4;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.category_product_under {
+  content: '';
+  display: block;
+  margin-top: 19px;
+  border: 1px solid #F2F2F2;
+  width: 1054px;
+  height: 0;
+}
+
+.category_product-wrap {
+  padding: 21px 22px;
+  margin-top: 19px;
+  border: 1px solid #E8E8E8;
+  border-radius: 10px;
+  background: #F8F8F8;
+}
+
+.category_product_tit {
+  margin-right: 14px;
+}
+
+.category_dropdown {
+  padding: 2.5px 10px;
+  border: 0.5px solid #585757;
+  border-radius: 5px;
+}
+
+.all_total_wrap {
+  margin-top: 30px; 
+  color: #464646;
+}
+
+.all_total {
+  display: inline-block;
+  padding: 0 8px;
+  margin-right: 6px;
+  border-radius: 12px;
+  background: #e6e6e6;
+  text-align: center;
+}
+
+.complate_wrap {
+  margin-top: 22px;
+}
+
+.complate_wrap > div, .complate_wrap > div >span  {
+  display: inline-block;
+}
+
+.first_num_wrap {
+  color:#15476D;
+  margin-right: 44px;
+}
+
+.first_num {
+  padding: 0 8px;
+  margin-right: 6px;
+  border-radius: 12px;
+  background: #EBF6FF;
+}
+
+.second_num_wrap {
+  margin-right: 40px;
+  color: #158212;
+}
+
+.second_num {
+  padding: 0 8px;
+  margin-right: 6px;
+  border-radius: 12px;
+  background: #F6FFF6;
+}
+
+.dummy_num_wrap {
+  color: #6E1B20;
+}
+
+.dummy_num {
+  padding: 0 8px;
+  margin-right: 6px;
+  border-radius: 12px;
+  background: #FFEEEF;
+}
+
+.subject_wrap {
+  margin-top: 8px;
+}
+
+.subject {
+  display: inline;
+  margin-left: 67px;
+  margin-right: 34px;
+}
+
+.export_form_wrap {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.export, .analysis {
+  display: inline-block;
+  border: 1px solid #D4D4D4;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.export {
+  padding: 12px 59px 12px 104px;
+  margin-right: 40px;
+  background-image : url('../images/xlsx.svg');
+  background-repeat : no-repeat;
+  background-position: 67px;
+  background-size : 22px;
+}
+
+.analysis {
+  padding: 12px 59px 12px 92px;
+  background-image : url('../images/download.svg');
+  background-repeat : no-repeat;
+  background-position: 61.5px;
+  background-size : 15px;
+}
