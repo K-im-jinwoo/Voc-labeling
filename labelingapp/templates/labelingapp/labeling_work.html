@@ -72,12 +72,123 @@
                 
                 
             </div>
-            <div class="result_container">
+            {% for review_first in review_first %}
+                <div class="result_container">
+                
+                    <div class="result_main">
+                        <p>
+                        <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
+                            {{ review_first.review_number }}.
+                            <span class="current_target">{{ review_first.review_content }}</span>
+                            <script>
+                                {% for status_result in status_result %}
+                                $('.current_target').each(function () {
+                                    $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
+                                    $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
+                                });
+                                {% endfor %}
+                            </script>
 
-            </div>
-            <div class="bottom">
+                            <div class="work_result">
+                                {% for status_result in status_result %}
+                                    {% if status_result.first_labeled_emotion == 'neutral' %}
+                                        <div style="color: gray">
+                                            {{ status_result.category_id.category_middle }} -
+                                            {{ status_result.first_labeled_target }} -
+                                            {{ status_result.first_labeled_expression }}
 
-            </div>
+                                            {# 라벨링 하고 옆에 뜨는 x표시 체크하는 부분 새로고침을 눌러야 현재 적용 #}
+                                            <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                                        </div>
+
+                                    {% elif status_result.first_labeled_emotion == 'positive' %}
+                                        <div style="color: blue">
+                                            {{ status_result.category_id.category_middle }} -
+                                            {{ status_result.first_labeled_target }} -
+                                            {{ status_result.first_labeled_expression }}
+                                            <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                                        </div>
+                                    {% elif status_result.first_labeled_emotion == 'negative' %}
+                                        <div style="color: red">
+                                            {{ status_result.category_id.category_middle }} -
+                                            {{ status_result.first_labeled_target }} -
+                                            {{ status_result.first_labeled_expression }}
+                                            <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </p>
+
+                        <p>
+                            <form class="select_box" action="" method="post">
+                                {% csrf_token %}
+                                <div>
+                                    <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
+                                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                                        {% for category_detail in category_detail %}
+                                        <option value='{{ category_detail.category_id }}'>
+                                            {{ category_detail.category_middle }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text" name="labeled_target" placeholder="키워드">
+                                    <input type="text" name="labeled_expression" placeholder="현상">
+                                    <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
+                                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; ">
+                                        <option value="positive">긍정</option>
+                                        <option value="negative">부정</option>
+                                        <option value="neutral">중립</option>
+                                    </select>
+                                    <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
+                                    <input class="btn btn-outline-success btn-sm" type="submit" value="저장"
+                                        onClick="window.location.reload()"
+                                        style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
+                                </div>
+                            </form>
+                        </p>
+                    </div>
+                </div>
+                <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
+                    <div class="bottom">
+                        <div >
+                            <form action="{% url 'labelingapp:work' %}" method="get" id="DummyForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="form-type" value="DummyForm">
+                                <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
+                                <input type="hidden" name="category_product" value="{{ category_product }}">
+                                <input type="hidden" name="start" value="{{ start }}">
+                                <input type="hidden" name="end" value="{{ end }}">
+                                <input class="btn btn-outline-danger btn-sm" type="submit" value="버리기"
+                                    style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">
+                            </form>
+                        </div>
+    
+    
+                        <div class="bet">
+                            <div >
+                                <button class="btn btn-outline-dark btn-sm" onclick="reset(`{{ review_first.review_id }}`)"
+                                        style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">초기화
+                                </button>
+                            </div>
+        
+                            <div >
+                                <form action="{% url 'labelingapp:work' %}" method="get" id="NextForm">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form-type" value="NextForm">
+                                    <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
+                                    <input type="hidden" name="category_product" value="{{ category_product }}">
+                                    <input type="hidden" name="start" value="{{ start }}">
+                                    <input type="hidden" name="end" value="{{ end }}">
+                                    <input class="btn btn-outline-dark btn-sm" type="submit" value="다음"
+                                        style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+            
+            
         </div>
     </div>    
 
