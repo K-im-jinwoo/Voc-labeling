@@ -29,8 +29,8 @@
                     </div>
                     <div class="work_count">
                         <p>작업 개수</p>
-                        <input type="text" name="assignment_count" value="50" placeholder="작업할 리뷰 개수 설정">
-                        <input class="btn btn-outline-dark btn-sm" type="submit" value="확인">
+                        <input class="input" type="text" name="assignment_count" value="50" placeholder="작업할 리뷰 개수 설정">
+                        <input class="asdf btn btn-outline-dark btn-sm" type="submit" value="확인">
                         
                     </div>
                 </div>
@@ -41,10 +41,9 @@
                     <div class="c_content">
                         {% if category_detail %}
                             {% for category_detail in category_detail %}
-                                <div style="background-color: {{ category_detail.category_color }}; padding:.2rem.3rem.2rem.3rem;
-                                                    display: inline-block; opacity: 1;
-                                                    margin-bottom:.5rem">
-                                    {{ category_detail.category_middle }}
+                                <div class="category_value" style="background-color: {{ category_detail.category_color }};
+                                         opacity: 1; margin-bottom:.5rem">
+                                    <p>{{ category_detail.category_middle }}</p>
                                 </div>
                             {% endfor %}
                         {% endif %}
