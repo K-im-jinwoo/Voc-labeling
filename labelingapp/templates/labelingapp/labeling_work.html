@@ -105,7 +105,7 @@
                                             bubble.style.flex_direction = "row";
                                             bubble.style.align_items = "flex-start";
                                             bubble.style.padding = "3px";
-                                            bubble.style.top = (y + 40) + 'px';
+                                            bubble.style.top = (y - 50) + 'px';
                                             bubble.style.left = (x - 25) + 'px';
                                             setTimeout(function() {
                                                 bubble.style.display = 'none';
@@ -157,18 +157,42 @@
                             {{ review_first.review_number }}.
                             <span class="current_target dragg">{{ review_first.review_content }}</span>
                             <script>
-                                {% for status_result in status_result %}
+                                function select_result(target,expression){
+                                    const view = document.querySelectorAll('.view');
+                                    view.forEach(view => {
+                                        view.style.backgroundColor = "white"
+                                    });
+                                    const s_view = document.getElementById(target+expression);
+                                    s_view.style.background = "#F2F2F2";
+                                    const work_result = document.querySelectorAll('#s');
+                                    work_result.forEach(work_result => {
+                                        if(work_result != null){
+                                            work_result.style.backgroundColor = "white";
+                                        }
+                                    });
+                                    {% for status_result in status_result %}
+                                        if(target == "{{status_result.first_labeled_target}}"){
+                                            $('.current_target').each(function () {
+                                                $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span id="s" style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
+                                                $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span id="s" style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
+                                            });
+                                        }  
+                                    {% endfor %}
+                                }
+                                
+                                {% comment %} {% for status_result in status_result %}
                                 $('.current_target').each(function () {
                                     $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
                                     $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
                                 });
-                                {% endfor %}
+                                {% endfor %} {% endcomment %}
                             </script>
 
                             <div class="work_result">
+                                
                                 {% for status_result in status_result %}
                                     {% if status_result.first_labeled_emotion == 'neutral' %}
-                                        <div class="view" style="color: gray">
+                                        <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: gray" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
                                             {{ status_result.category_id.category_middle }} -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
@@ -178,14 +202,15 @@
                                         </div>
 
                                     {% elif status_result.first_labeled_emotion == 'positive' %}
-                                        <div class="view" style="color: blue">
+                                        <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: blue" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
                                             {{ status_result.category_id.category_middle }} -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
                                             <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
                                         </div>
                                     {% elif status_result.first_labeled_emotion == 'negative' %}
-                                        <div class="view" style="color: red">
+                                    {% csrf_token %}
+                                        <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: red" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
                                             {{ status_result.category_id.category_middle }} -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}

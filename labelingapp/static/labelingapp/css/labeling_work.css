@@ -206,3 +206,7 @@ div{
     display: inline-block;
     /* background: ; */
 }
+
+.current_target{
+    line-height: 1.5;
+}
