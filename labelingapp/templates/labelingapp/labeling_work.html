@@ -4,7 +4,30 @@
 {% block style %}
     <link rel="stylesheet" href="{% static "labelingapp/css/labeling_work.css" %}">
 {% endblock %}
+<style>
+    .drag {
+      cursor: move;
+    }
+    .bubble {
+      position: absolute;
+      background-color: #ffffff;
+      border: 1px solid #000000;
+      padding: 10px;
+      border-radius: 5px;
+    }
+</style>
+<script>
+    function phenomenon(){
+        const phenomenon = document.querySelector('#phenomenon');
+        phenomenon.style.border = "1px solid #585757";
 
+        
+    }
+
+    function target(){
+
+    }
+</script>
 <!-- content title 부분 -->
 {% block content-title %}
     <h2 class="content-title fs-large fw-600 gray-200">
@@ -75,10 +98,57 @@
                 <div class="result_container">
                 
                     <div class="result_main">
+                        <script>
+                            window.addEventListener('DOMContentLoaded', function() {
+                                let selection = '';
+                                document.addEventListener('mouseup', function(event) {
+                                    if (event.target.classList.contains('dragg')) {
+                                        selection = window.getSelection().toString();
+                                        console.log('Selected text:', selection);
+                                        if (selection !== '') {
+                                            const x = event.clientX;
+                                            const y = event.clientY;
+                                            console.log('Mouse up at:', x, y);
+                                            console.log(selection);
+                                            const bubble = document.getElementById("bubble");
+                                            bubble.style.display = "flex";
+                                            bubble.style.flex_direction = "row";
+                                            bubble.style.align_items = "flex-start";
+                                            bubble.style.padding = "3px";
+                                            bubble.style.top = (y + 75) + 'px';
+                                            bubble.style.left = (x - 40) + 'px';
+                                            {% comment %} const bubble = document.createElement('div');
+                                            bubble.classList.add('bubble');
+                                            bubble.textContent = selection;
+                                            bubble.style.width = '86px';
+                                            bubble.style.height = "36px";
+                                            bubble.style.background = 'blue';
+                                            bubble.style.top = (y + 145) + 'px';
+                                            bubble.style.left = (x - 50) + 'px';
+                                            document.body.appendChild(bubble); 
+                                            setTimeout(function() {
+                                                bubble.remove();
+                                            }, 3000);{% endcomment %}
+                                            selection = '';
+                                        }
+                                    }
+                                });
+                            });
+                          </script>
+                        <div id="bubble">
+                            <div id="target" style="border-right:1px solid rgba(102, 102, 102, 0.4)"
+                                onclick='target()'
+                            >
+                                대상
+                            </div>
+                            <div id="phenomenon" onclick="phenomenon()">
+                                현상
+                            </div>
+                        </div>
                         <p>
                         <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
                             {{ review_first.review_number }}.
-                            <span class="current_target">{{ review_first.review_content }}</span>
+                            <span class="current_target dragg">{{ review_first.review_content }}</span>
                             <script>
                                 {% for status_result in status_result %}
                                 $('.current_target').each(function () {
@@ -190,7 +260,7 @@
             
         </div>
     </div>    
-
+    
     <script>
         function delete_label(label_number) {
             console.log(label_number)

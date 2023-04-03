@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load static %} {% block link %}
+{% extends 'base.html' %} {% load static %} {% block style %}
 <link rel="stylesheet" href="{% static 'mainapp/css/workStatus.css' %}?after" />
 {% endblock %} {% block content-title %}
 <h2 class="content-title fs-large fw-600 gray-200">Data Status</h2>
@@ -28,7 +28,57 @@
       <div class="right_top top3">검수완료 {{ second_num }}</div>
       <div class="right_top top4">삭제 {{ dummy_num }}</div>
     </div>
+
+    <div class="workStatus_now">
+      <a href="{% url 'mainapp:workstatus_count' %}" style="display: block"
+        >작업자별 진행 현황</a
+      >
+    </div>
+    <div class="category_wrap">
+      <div class="category category_1">
+        <div class="category_column">
+          <div class="data_label" style="width: 99px">카테고리↓</div>
+          <div class="data_label">
+            <a href="#" onclick="return chk_form('positive_sort')">긍정↓</a>
+            <form method="post" class="sort">
+              {% csrf_token %}
+              <input type="hidden" name="sort" value="positive" />
+            </form>
+          </div>
+          <div class="data_label">
+            <a href="#" onclick="return chk_form('negative_sort')">부정↑</a>
+            <form method="post" class="sort" id="negative_sort">
+              {% csrf_token %}
+              <input type="hidden" name="sort" value="negative" />
+            </form>
+          </div>
+          <div class="data_label">
+            <a href="#" onclick="return chk_form('neutral_sort')">중립↓</a>
+            <form method="post" class="sort" id="neutral_sort">
+              {% csrf_token %}
+              <input type="hidden" name="sort" value="neutral" />
+            </form>
+          </div>
+          <div class="data_label">
+            <a href="#" onclick="return chk_form('everything_sort')">총개수↓</a>
+            <form method="post" class="sort" id="everything_sort">
+              {% csrf_token %}
+              <input type="hidden" name="sort" value="everything" />
+            </form>
+          </div>
+        </div>
+        <div class="data_space">
+          {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
+          <div class="date_space_cut" style="width: 28%">
+            <p>{{ category_detail_list }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="category category_2"></div>
+
+      <div class="category category_3"></div>
+    </div>
   </div>
 </div>
-
 {% endblock %}
