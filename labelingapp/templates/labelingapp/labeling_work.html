@@ -96,8 +96,8 @@
                                         localStorage.setItem('selection', JSON.stringify(selection));
                                         console.log('Selected text:', selection);
                                         if (selection !== '') {
-                                            const x = event.clientX;
-                                            const y = event.clientY;
+                                            const x = event.clientX + window.scrollX;
+                                            const y = event.clientY + window.scrollY;
                                             console.log('Mouse up at:', x, y);
                                             console.log(selection);
                                             const bubble = document.getElementById("bubble");
@@ -106,7 +106,7 @@
                                             bubble.style.flex_direction = "row";
                                             bubble.style.align_items = "flex-start";
                                             bubble.style.padding = "3px";
-                                            bubble.style.top = (y + 35) + 'px';
+                                            bubble.style.top = (y - 65) + 'px';
                                             bubble.style.left = (x - 25) + 'px';
                                             setTimeout(function() {
                                                 bubble.style.display = 'none';
