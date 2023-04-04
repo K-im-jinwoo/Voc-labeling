@@ -194,7 +194,8 @@
                                 {% for status_result in status_result %}
                                     {% if status_result.first_labeled_emotion == 'neutral' %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: gray" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            {{ status_result.category_id.category_middle }} -
+                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                             - 
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
 
@@ -204,7 +205,8 @@
 
                                     {% elif status_result.first_labeled_emotion == 'positive' %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: blue" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            {{ status_result.category_id.category_middle }} -
+                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                             -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
                                             <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
@@ -212,7 +214,8 @@
                                     {% elif status_result.first_labeled_emotion == 'negative' %}
                                     {% csrf_token %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: red" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            {{ status_result.category_id.category_middle }} -
+                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                             -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
                                             <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
@@ -226,7 +229,7 @@
                             <form class="select_box" action="" method="post">
                                 {% csrf_token %}
                                 <div>
-                                    <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
+                                    <select class="category_id" name='category_id' style="display: inline-block;
                                                     font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                                         {% for category_detail in category_detail %}
                                         <option value='{{ category_detail.category_id }}'>
@@ -236,7 +239,7 @@
                                     </select>
                                     <input id="in_target" type="text" name="labeled_target" placeholder="키워드">
                                     <input id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
-                                    <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
+                                    <select class="labeled_emotion" name="labeled_emotion" style="display: inline-block;
                                                     font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; ">
                                         <option value="positive">긍정</option>
                                         <option value="negative">부정</option>
