@@ -122,7 +122,11 @@ div{
     text-align: center;
 }
 
-
+.s_box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 #bubble{
     display: none;
@@ -268,5 +272,18 @@ div{
     height: 34px;
     background: #FFFFFF;
     border: 0.5px solid #D5D5D5;
+    border-radius: 5px;
+}
+
+.submit_btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 15px;
+    gap: 15px;
+    width: 56px;
+    height: 34px;
+    background: #585757;
     border-radius: 5px;
 }

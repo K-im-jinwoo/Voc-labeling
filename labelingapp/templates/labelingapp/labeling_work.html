@@ -228,8 +228,8 @@
                         <p>
                             <form class="select_box" action="" method="post">
                                 {% csrf_token %}
-                                <div>
-                                    <select class="category_id" name='category_id' style="display: inline-block;
+                                <div class="s_box"> 
+                                    <select class="category_id" name='category_id' style="display: inline-block; margin-left: 20px;
                                                     font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                                         {% for category_detail in category_detail %}
                                         <option value='{{ category_detail.category_id }}'>
@@ -237,18 +237,17 @@
                                         </option>
                                         {% endfor %}
                                     </select>
-                                    <input id="in_target" type="text" name="labeled_target" placeholder="키워드">
-                                    <input id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
-                                    <select class="labeled_emotion" name="labeled_emotion" style="display: inline-block;
+                                    <input style="margin-left: 20px;" id="in_target" type="text" name="labeled_target" placeholder="키워드">
+                                    <input style="margin-left: 20px;" id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
+                                    <select class="labeled_emotion" name="labeled_emotion" style="display: inline-block; margin-left: 20px;
                                                     font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; ">
                                         <option value="positive">긍정</option>
                                         <option value="negative">부정</option>
                                         <option value="neutral">중립</option>
                                     </select>
                                     <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                                    <input class="btn btn-outline-success btn-sm" type="submit" value="저장"
-                                        onClick="window.location.reload()"
-                                        style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
+                                    <input style="margin-left: 20px;" class="submit_btn" type="submit" value="저장"
+                                        onClick="window.location.reload()">
                                 </div>
                             </form>
                         </p>
