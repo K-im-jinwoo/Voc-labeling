@@ -104,13 +104,23 @@ p {
     margin-right:7px;
 }
 
+.add{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .category_plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     height: 34px;
     width: 56px;
     left: 1277px;
     top: 507px;
     border-radius: 5px;
-    padding: 5px 15px 5px 15px;
+
 }
 
 .fileload {
