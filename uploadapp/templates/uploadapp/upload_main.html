@@ -91,16 +91,31 @@
                 <label for="file">
                     <div class="btn-upload fs-small">파일 선택</div>
                 </label>
-                    <input class="file_choice" type="file" name="upload_file" id="file">
+                    <input class="file_choice sr-only" type="file" name="upload_file" id="file">
                     <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
 
                 <label for="file">
-                    <div class="file_name fs-small">파일 선택</div>
+                    <div class="file_name fs-small">선택된 파일 없음.</div>
                 </label>
+                <script>
+                    window.onload=function(){
+                        target=document.getElementById('file'); // file 아이디 선언
+                        target.addEventListener('change',function(){ // change 함수
+                            
+                            if(target.value.length){ // 파일 첨부인 상태일경우 파일명 출력
+                                $('.file_name').html(target.files[0].name);
+                            }else{ //버튼 클릭후 취소(파일 첨부 없을 경우)할때 파일명값 안보이게
+                                $('.file_name').html("");
+                            }
+                            
+                        });
+                    }
+                </script>
+                
     
                     <!--카테고리 선택 시에만 파일 업로드 가능-->
                     {% if request.session.category_product is not null %}
-                        <input type="submit" >
+                        <input class="send_btn fs-small" type="submit" value="제출">
                     {% else %}
                         <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                     {% endif %}

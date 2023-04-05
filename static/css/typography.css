@@ -23,7 +23,7 @@
 
 /* Font size */
 body {
-  font-family: 'lg_smartlight', 'lg_smartregular','lg_smartsemibold';
+  font-family: 'lg_smartlight', 'lg_smartregular','lg_smartsemibold' !important;
 }
 
 .fs-tiny {
