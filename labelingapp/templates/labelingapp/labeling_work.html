@@ -63,19 +63,19 @@
                 </div>
                 <div class="feel">
                      <p>
-                        <div style="border-radius: 5px; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-left: 0.2rem; font-size: 1rem">
+                        <div style="border-radius: 5px; display: inline-block; font-weight: 300; margin-left: 0.2rem; font-size: 1rem">
                             감정
                         </div>
                         <div style="border-radius: 5px; border: 0.5px solid #0038FF; display: inline-block; height: 34px; width: 55px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: blue; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                                padding:0.3rem; color: blue; text-align: center; font-weight: 200;">
                             긍정
                         </div>
                         <div style="border-radius: 5px; border: 0.5px solid #FF0000; display: inline-block; height: 34px; width: 55px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: red; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                                padding:0.3rem; color: red; text-align: center; font-weight: 200;">
                             부정
                         </div>
                         <div style="border-radius: 5px; border: 0.5px solid #585757; display: inline-block; height: 34px; width: 55px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: gray; text-align: center; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                                padding:0.3rem; color: gray; text-align: center; font-weight: 200;">
                             중립
                         </div>
                     </p>
@@ -230,7 +230,7 @@
                                 {% csrf_token %}
                                 <div class="s_box"> 
                                     <select class="category_id" name='category_id' style="display: inline-block; margin-left: 20px;
-                                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
+                                                     monospace; font-weight: 200;">
                                         {% for category_detail in category_detail %}
                                         <option value='{{ category_detail.category_id }}'>
                                             {{ category_detail.category_middle }}
@@ -240,7 +240,7 @@
                                     <input style="margin-left: 20px;" id="in_target" type="text" name="labeled_target" placeholder="키워드">
                                     <input style="margin-left: 20px;" id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
                                     <select class="labeled_emotion" name="labeled_emotion" style="display: inline-block; margin-left: 20px;
-                                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; ">
+                                                     font-weight: 200; ">
                                         <option value="positive">긍정</option>
                                         <option value="negative">부정</option>
                                         <option value="neutral">중립</option>
@@ -276,7 +276,7 @@
                         <div class="bet">
                             <div >
                                 <button class="btn btn-sm" onclick="reset(`{{ review_first.review_id }}`)"
-                                        style="background: #F2F2F2; color: #313238; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">
+                                        style="background: #F2F2F2; color: #313238; font-weight: 300; font-size: 1rem;">
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9.76672 2.23329C8.68005 1.14662 7.14005 0.519954 5.44672 0.693287C3.00005 0.939954 0.986722 2.92662 0.713388 5.37329C0.346722 8.60662 2.84672 11.3333 6.00005 11.3333C8.12672 11.3333 9.95339 10.0866 10.8067 8.29329C11.0201 7.84662 10.7001 7.33329 10.2067 7.33329C9.96005 7.33329 9.72672 7.46662 9.62005 7.68662C8.86672 9.30662 7.06005 10.3333 5.08672 9.89329C3.60672 9.56662 2.41339 8.35995 2.10005 6.87995C1.54005 4.29329 3.50672 1.99995 6.00005 1.99995C7.10672 1.99995 8.09339 2.45995 8.81339 3.18662L7.80672 4.19329C7.38672 4.61329 7.68005 5.33329 8.27339 5.33329H10.6667C11.0334 5.33329 11.3334 5.03329 11.3334 4.66662V2.27329C11.3334 1.67995 10.6134 1.37995 10.1934 1.79995L9.76672 2.23329Z" fill="#313238"/>
                                         </svg>
@@ -293,7 +293,7 @@
                                     <input type="hidden" name="start" value="{{ start }}">
                                     <input type="hidden" name="end" value="{{ end }}">
                                     <button class="btn btn-sm" type="submit" value="다음"
-                                        style="background: #E8E8E8; color:#585757 ; font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
+                                        style="background: #E8E8E8; color:#585757 ;  font-weight: 300; font-size: 1rem">
                                         다음
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M1.33327 6.66665H8.77993L5.5266 9.91998C5.2666 10.18 5.2666 10.6066 5.5266 10.8666C5.7866 11.1266 6.2066 11.1266 6.4666 10.8666L10.8599 6.47331C11.1199 6.21331 11.1199 5.79331 10.8599 5.53331L6.4666 1.13998C6.2066 0.879978 5.7866 0.879978 5.5266 1.13998C5.2666 1.39998 5.2666 1.81998 5.5266 2.07998L8.77993 5.33331H1.33327C0.966599 5.33331 0.666599 5.63331 0.666599 5.99998C0.666599 6.36665 0.966599 6.66665 1.33327 6.66665Z" fill="#585757"/>
