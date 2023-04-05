@@ -124,7 +124,7 @@ div{
 .s_box{
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;    
 }
 
 #bubble{
@@ -285,4 +285,13 @@ div{
     height: 34px;
     background: #585757;
     border-radius: 5px;
+}
+
+#trash{
+    background: #FFF4F7;
+    color:#A50034;
+}
+
+#trash > div{
+    margin-top: 5px;
 }
