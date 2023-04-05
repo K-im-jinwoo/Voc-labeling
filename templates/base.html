@@ -1,23 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
+  {% include 'head.html' %} {% block style %} {% endblock %}
+  <body>
+    {% include 'nav.html' %} {% include 'header.html' %}
 
-    {% include 'head.html' %}
-    {% block style %}
-    {% endblock %}
-
-    <body>
-        {% include 'nav.html' %}
-        {% include 'header.html' %}
-
-        <div class="content-wrap">
-            {% block content-title %}
-            {% endblock %}
-            <!--페이지 이동에 따라 block content 사용-->
-            {% block content %}
-            {% endblock %}
-        </div>
-
-    </body>
-
-
+    <div class="content-wrap">
+      {% block content-title %} {% endblock %}
+      <!--페이지 이동에 따라 block content 사용-->
+      {% block content %} {% endblock %}
+    </div>
+  </body>
 </html>
