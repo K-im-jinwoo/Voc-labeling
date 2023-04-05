@@ -96,8 +96,8 @@
                                         localStorage.setItem('selection', JSON.stringify(selection));
                                         console.log('Selected text:', selection);
                                         if (selection !== '') {
-                                            const x = event.clientX;
-                                            const y = event.clientY;
+                                            const x = event.clientX + window.scrollX;
+                                            const y = event.clientY + window.scrollY;
                                             console.log('Mouse up at:', x, y);
                                             console.log(selection);
                                             const bubble = document.getElementById("bubble");
@@ -106,7 +106,7 @@
                                             bubble.style.flex_direction = "row";
                                             bubble.style.align_items = "flex-start";
                                             bubble.style.padding = "3px";
-                                            bubble.style.top = (y + 35) + 'px';
+                                            bubble.style.top = (y - 65) + 'px';
                                             bubble.style.left = (x - 25) + 'px';
                                             setTimeout(function() {
                                                 bubble.style.display = 'none';
@@ -194,7 +194,8 @@
                                 {% for status_result in status_result %}
                                     {% if status_result.first_labeled_emotion == 'neutral' %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: gray" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            {{ status_result.category_id.category_middle }} -
+                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                             - 
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
 
@@ -204,7 +205,8 @@
 
                                     {% elif status_result.first_labeled_emotion == 'positive' %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: blue" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            {{ status_result.category_id.category_middle }} -
+                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                             -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
                                             <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
@@ -212,7 +214,8 @@
                                     {% elif status_result.first_labeled_emotion == 'negative' %}
                                     {% csrf_token %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: red" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            {{ status_result.category_id.category_middle }} -
+                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                             -
                                             {{ status_result.first_labeled_target }} -
                                             {{ status_result.first_labeled_expression }}
                                             <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
@@ -225,8 +228,8 @@
                         <p>
                             <form class="select_box" action="" method="post">
                                 {% csrf_token %}
-                                <div>
-                                    <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
+                                <div class="s_box"> 
+                                    <select class="category_id" name='category_id' style="display: inline-block; margin-left: 20px;
                                                     font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
                                         {% for category_detail in category_detail %}
                                         <option value='{{ category_detail.category_id }}'>
@@ -234,18 +237,17 @@
                                         </option>
                                         {% endfor %}
                                     </select>
-                                    <input id="in_target" type="text" name="labeled_target" placeholder="키워드">
-                                    <input id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
-                                    <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
+                                    <input style="margin-left: 20px;" id="in_target" type="text" name="labeled_target" placeholder="키워드">
+                                    <input style="margin-left: 20px;" id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
+                                    <select class="labeled_emotion" name="labeled_emotion" style="display: inline-block; margin-left: 20px;
                                                     font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; ">
                                         <option value="positive">긍정</option>
                                         <option value="negative">부정</option>
                                         <option value="neutral">중립</option>
                                     </select>
                                     <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                                    <input class="btn btn-outline-success btn-sm" type="submit" value="저장"
-                                        onClick="window.location.reload()"
-                                        style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
+                                    <input style="margin-left: 20px;" class="submit_btn" type="submit" value="저장"
+                                        onClick="window.location.reload()">
                                 </div>
                             </form>
                         </p>

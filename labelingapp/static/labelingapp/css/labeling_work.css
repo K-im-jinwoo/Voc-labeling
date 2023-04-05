@@ -50,7 +50,6 @@ div{
     padding-top: 43px;  
     display: flex;
     flex-direction: column;
-    
 }
 
 .show_container{
@@ -61,6 +60,7 @@ div{
     margin-right: 45px;
     margin-top: 38px;
     margin-left: 45px;
+    margin-bottom: 20px;
     border: 1px solid #E8E8E8;
     border-radius: 10px;
     background: #F8F8F8;
@@ -121,7 +121,11 @@ div{
     text-align: center;
 }
 
-
+.s_box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 #bubble{
     display: none;
@@ -209,4 +213,76 @@ div{
 
 .current_target{
     line-height: 1.5;
+}
+
+.cate{
+    padding: 2px 10px;
+    gap: 15px;
+
+    width: 58px;
+    height: 28px;
+    border-radius: 5px;
+}
+
+#s{
+    border-radius: 5px;
+    width: 37px;
+    height: 25px;
+}
+
+.category_id{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 15px;
+    width: 87px;
+    height: 34px;
+    background: #FFFFFF;
+    border: 0.5px solid #D5D5D5;
+    border-radius: 5px;
+}
+
+#in_target{
+    padding: 5px 10px;
+    gap: 10px;
+    width: 87px;
+    height: 34px;
+    background: #FFFFFF;
+    border: 0.5px solid #D5D5D5;
+    border-radius: 5px;
+}
+
+#in_phenomenon{
+    padding: 5px 10px;
+    gap: 10px;
+    width: 87px;
+    height: 34px;
+    background: #FFFFFF;
+    border: 0.5px solid #D5D5D5;
+    border-radius: 5px;
+}
+
+.labeled_emotion{
+    padding: 5px 10px;
+    gap: 10px;
+    width: 87px;
+    height: 34px;
+    background: #FFFFFF;
+    border: 0.5px solid #D5D5D5;
+    border-radius: 5px;
+}
+
+.submit_btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 15px;
+    gap: 15px;
+    width: 56px;
+    height: 34px;
+    background: #585757;
+    border-radius: 5px;
 }
