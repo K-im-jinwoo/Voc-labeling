@@ -16,7 +16,8 @@
                 {% csrf_token %}
                 <div class="product_choice">
                   <p class="subject fs-base">제품 선택</p>
-                  <select name='category_product' id="product_select">
+                  <select name='category_product' id="product_select" onchange="this.form.submit()">
+                    <option value="--제품을 선택하세요--">--제품을 선택하세요--</option>
                     {% for product_name in product_names %}
                     <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
                     {% endfor %}
@@ -24,14 +25,6 @@
                 </div>
               </form>
               
-              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-              <script>
-                $(document).ready(function() {
-                  $('#product_select').change(function() {
-                    $('form[name="afgsgd"]').submit();
-                  });
-                });
-              </script>
               
             <form action="" method="post" class= "second">
                 {% csrf_token %}
@@ -53,7 +46,7 @@
                 <div class="category_value">
                     {% if category_detail %}
                         {% for category_detail in category_detail %}
-                            <div class="c_content fs-base" style="background-color: {{ category_detail.category_color }}; opacity: 1;">
+                            <div class="c_content fs-base" style="background-color: {{ category_detail.category_color }};">
                                 {{ category_detail.category_middle }}</div>
                         {% endfor %}
                     {% endif %}
@@ -80,6 +73,7 @@
         <div class="fileload">
             <div class="upload_title">
                 <p class="subject fs-base">파일 업로드</p>
+                <p class="asd fs-tiny">* XXMB 이하의 .excel 파일 1개 업로드 가능합니다.</p>
                 <p style="float:right; margin: 0 0 0 0; display:inline-block; color: blue; font-weight: bold">{{ request.session.message }}</p>
             </div>
     
@@ -115,7 +109,7 @@
     
                     <!--카테고리 선택 시에만 파일 업로드 가능-->
                     {% if request.session.category_product is not null %}
-                        <input class="send_btn fs-small" type="submit" value="제출">
+                        <input class="send_btn fs-small" type="submit" value="제출" <img src="{% static 'uploadapp/img/submit.svg' %}">
                     {% else %}
                         <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                     {% endif %}

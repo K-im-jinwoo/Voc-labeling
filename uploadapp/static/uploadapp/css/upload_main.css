@@ -166,3 +166,17 @@ p {
     border-radius: 5px; 
     width: 324px;
   }
+
+  .send_btn {
+    height: 34px;
+    width: 77px;
+    left: 768px;
+    top: 626px;
+    border-radius: 5px;
+    padding: 5px 15px 5px 15px;
+    background: #6B6B6B;
+    /* Background/dark */
+
+    border: 0.5px solid rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+  }
