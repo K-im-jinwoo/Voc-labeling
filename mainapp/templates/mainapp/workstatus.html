@@ -3,24 +3,78 @@
 {% endblock %} {% block content-title %}
 <h2 class="content-title fs-large fw-600 gray-200">Data Status</h2>
 {% endblock %} {% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+  .popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  .popup-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+
+
 <div class="first-desc primary-bg gray-100">
   <div class="first-desc-wrap">
-    <form style="display: inline-block" action="" method="get">
-      {% csrf_token %}
+    
 
+    <form style="display: inline-block" action="" method="get" class="first" name="afgsgd">
+      {% csrf_token %}
       <p class="subject">제품 선택</p>
-      <select
-        name="category_product"
-        onchange="this.form.submit()"
-        class="subjectSelect"
-      >
+      <select name="category_product" id="product_select">
         {% for product_name in product_names %}
-        <option value="{{ product_name.category_product }}">
+    
+        <option value="{{ product_name.category_product }}"
+          {% if forloop.first %} selected {% endif %}>
           {{ product_name.category_product }}
         </option>
-        {% endfor %}
+          {% endfor %}
       </select>
     </form>
+    
+<script> // 제품 선택
+  document.addEventListener("DOMContentLoaded", function() {
+    var select = document.getElementById("product_select");
+    var storedValue = localStorage.getItem("product_select");
+    if (storedValue) {
+      select.value = storedValue;
+    }
+    select.addEventListener("change", function() {
+      localStorage.setItem("product_select", this.value);
+    });
+  });
+
+  $(document).ready(function() {
+    $('#product_select').change(function() {
+      $('form[name="afgsgd"]').submit();
+    });
+  });
+</script>
+
 
     <div class="totalBar">
       <div class="right_top top1">총 개수 {{ alltotal }}</div>
@@ -36,33 +90,33 @@
     </div>
     <div class="category_wrap">
       <div class="category category_1">
-        <div class="category_column">
+        <div class="category_column">  
           <table>
             <thead>
               <tr>
-                <th> <div class="data_label label1" >카테고리↓</div></th>
-                <th><div class="data_label">
+                <th> <div class="data_label label1"style="width:99px"  >카테고리↓</div></th>
+                <th><div class="data_label"style="width:71px">
                   <a href="#" onclick="return chk_form('positive_sort')">긍정↓</a>
                   <form method="post" class="sort">
                     {% csrf_token %}
                     <input type="hidden" name="sort" value="positive" />
                   </form>
                 </div></th>
-                <th><div class="data_label">
+                <th><div class="data_label"style="width:71px">
                   <a href="#" onclick="return chk_form('negative_sort')">부정↑</a>
                   <form method="post" class="sort" id="negative_sort">
                     {% csrf_token %}
                     <input type="hidden" name="sort" value="negative" />
                   </form>
                 </div></th>
-                <th><div class="data_label">
+                <th><div class="data_label"style="width:71px">
                   <a href="#" onclick="return chk_form('neutral_sort')">중립↓</a>
                   <form method="post" class="sort" id="neutral_sort">
                     {% csrf_token %}
                     <input type="hidden" name="sort" value="neutral" />
                   </form>
                 </div></th>
-                <th><div class="data_label">
+                <th><div class="data_label"style="width:71px">
                   <a href="#" onclick="return chk_form('everything_sort')">총개수↓</a>
                   <form method="post" class="sort" id="everything_sort">
                     {% csrf_token %}
@@ -71,79 +125,86 @@
                 </div></th>
               </tr>
             </thead>
-            <tbody>
-              {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
+              <tbody>
+                
+                {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
 
-              <tr>
-                <td><div class="date_space_cut cut1">
-                  <p>{{ category_detail_list }}</p>
-                </div>
-                </td>
-                <td><div class="date_space_cut" >
-                  <p>
-                    <a
-                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
-                      >{{ positive.count }}</a
-                    >
-                  </p>
-                </div>
-                </td>
-                <td><div class="date_space_cut" >
-                  <p>
-                    <a
-                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative"
-                      >{{ negative.count }}</a
-                    >
-                  </p>
-                </div>
-                </td>
-                <td> <!-- 중립 개수 -->
-                  <div class="date_space_cut" >
+                <tr>
+                  <td><div class="date_space_cut cut1"style="width:99px">
+                    <p>{{ category_detail_list }}</p>
+                  </div>
+                  </td>
+                  <td><div class="date_space_cut"style="width:71px" >
                     <p>
                       <a
-                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
-                        >{{ neutral.count }}</a
+                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
+                        >{{ positive.count }}</a
                       >
                     </p>
                   </div>
+                  </td>
+                  <td><div class="date_space_cut"style="width:71px" >
+                    <p>
+                      <a
+                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative"
+                        >{{ negative.count }}</a
+                      >
+                    </p>
+                  </div>
+                  </td>
+                  <td> <!-- 중립 개수 -->
+                    <div class="date_space_cut" style="width:71px">
+                      <p>
+                        <a
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
+                          >{{ neutral.count }}</a
+                        >
+                      </p>
+                    </div>
+                  </td>
+                  <td><div class="date_space_cut"style="width:71px" >
+                    <p>
+                      <a
+                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
+                        >{{ everything.count }}</a
+                      >
+                    </p>
+                  </div>       
                 </td>
-                <td><div class="date_space_cut" >
-                  <p>
-                    <a
-                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
-                      >{{ everything.count }}</a
-                    >
-                  </p>
-                </div>       
-              </td>
-              </tr>
-              {% endfor %}
-            </tbody>
+                </tr>
+                {% endfor %}
+            
+              </tbody>
           </table> 
+        
         </div>
       </div>
+     
+      
       <div class="category category_2">
         <div class="category_target">
           <table>
             <thead>
               <tr>
-                <th><div class="data_label">대상</div></th>
-                <th><div class="data_label">현상</div></th>
+                <th><div class="data_label"style="width:99px"               >대상</div></th>
+                <th><div class="data_label"style="width:99px">현상</div></th>
               </tr>
             </thead>
             <tbody>
               {% for word in labeled_word %}
               <tr>
-                <td><div class="date_space_cut" style="font-style: normal;
+                <td><div class="date_space_cut cut2" style="font-style: normal;
                   font-weight: 400;
                   font-size: 12px;
-                  line-height: 24px;">
+                  line-height: 24px;
+                  ">
                   {{ word.first_labeled_target }}
                 </div></td>
-                <td><div class="date_space_cut" style="font-style: normal;
+                <td><div class="date_space_cut cut2" style="font-style: normal;
                   font-weight: 400;
                   font-size: 12px;
-                  line-height: 24px;">
+                  line-height: 24px;
+                  ">
                   {{ word.first_labeled_expression }}
                 </div></td>
               {% endfor %}
@@ -156,29 +217,51 @@
           <table>
             <thead>
               <tr>
-                <th><div class="data_label" style="padding:auto">번호</div></th>
-                <th><div class="data_label"style="padding:auto">데이터</div></th>
+                <th><div class="data_label" style="
+                  width:67px">번호</div></th>
+                <th><div class="data_label"style="
+                  width:380px">데이터</div></th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 {% for review in labeled_review %}
               </tr>
-              <td class="date_space_cut">
+              <td class="date_space_cut" style="width:67px">
                 {{ review.review_number }}
               </td>
               <td class="date_space_cut" style="font-style: normal;
               font-weight: 400;
               font-size: 12px;
-              line-height: 24px;">
+              line-height: 24px;
+              width:380px">
                 {{ review.review_content }}
               </td>
               {% endfor %}
             </tbody>
-          </table>
+          </table>                
         </div>
       </div>
     </div>
+    <button id="myBtn">Open Popup</button>
+
+<div id="myModal" class="popup">
+  <div class="popup-content">
+    <span class="close">&times;</span>
+    <p>Popup content goes here.</p>
+  </div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $("#myBtn").click(function(){
+    $("#myModal").show();
+  });
+  $(".close").click(function(){
+    $("#myModal").hide();
+  });
+});
+</script>
   </div>
 </div>
 {% endblock %}

@@ -16,21 +16,20 @@
   text-align: left;
   
 }
-.subjectSelect {
+select {
   display: inline-block;
-  height: 34px;
-  margin-top: 36px;
-
-  padding: 5px 39px 5px 10px;
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
+  width: 125px;
+  height: 34px;
+  border-radius: 5px;
+  border: 0.5px solid #D5D5D5;
   
 }
 .totalBar {
   display: block;
   float: right;
-  margin-top: 41px;
   white-space: nowrap;
   margin-right: 27px;
   margin-left: auto;
@@ -76,6 +75,7 @@
   height: 34px;
   margin: 31px 27px 17px auto;
   background-color: #f2f2f2;
+  
 }
 .workStatus_now > a {
   color: #585757;
@@ -83,7 +83,7 @@
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
-  text-align: left;
+  text-align: center;
   padding: 5px 10px 5px 10px;
   
 }
@@ -105,16 +105,22 @@
   letter-spacing: 0em;
 }
 table {
-  width: 100%;
   text-align: center;
+  width: 100%;
+  
+  
+  
 }
 tr {
   border: 1px solid #E8E8E8;
   padding: 5px 16px;
-  
+
+}
+
+thead{
+  display: block;
 }
 .data_label {
-  width: 100%;
   background-color: #f2f2f2;
   text-align: center;
   padding: 10px;
@@ -125,12 +131,8 @@ tr {
   color: #1a1a1a;
 }
 
-
-.data_space1{
-  display: flex;  
-}
 .data_space_cut{
-  padding: 5px 16px;
+  padding: auto;
  
 
 }
@@ -147,6 +149,7 @@ tr {
   font-weight: 600;
   font-size: 14px;
   line-height: 24px;
+  
 }
 
 .category_2 {
@@ -155,6 +158,7 @@ tr {
   border: 1px solid #e4e4ef;
   border-radius: 6px;
   margin-right: 18px;
+  
 }
 .category_target{
   color: #1a1a1a;
@@ -162,6 +166,10 @@ tr {
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
+  
+}.cut2{
+  
+  width: 99px;
 }
 .category_3{
   width: 448px;
@@ -176,4 +184,24 @@ tr {
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
+}
+
+
+tbody::-webkit-scrollbar {
+  width: 5px;  /* 스크롤바의 너비 */
+  height: 150px;
+  background: #ffffff ;
+}
+
+tbody::-webkit-scrollbar-thumb {
+  
+  background: #D4D4D4 ;
+  border-radius: 5px;
+}
+tbody{
+  display: block;
+  overflow-y: scroll;
+  max-height: 590px;
+  width: 100%;
+  
 }

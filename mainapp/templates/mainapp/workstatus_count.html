@@ -1,19 +1,45 @@
-{% extends 'base.html' %}
-
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static 'mainapp/css/statusCount.css' %}?after" />
+{% endblock %}
 {% block content %}
 
-    <div style="text-align: center; margin-top: 3rem;">
-        <form method="get">
-        {% csrf_token %}
-            <select name='category_product' style="display: inline-block; width: 8rem; height: 1.9rem;
-                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
+    <div class="pop_main">
+        <div class="pop_top">
+
+            <form action="" method="get" class="first" name="afgsgd">
+                {% csrf_token %}
+                <p class="subject">제품 선택</p>
+                <select name='category_product' id="product_select">
                     <option value='cleaner'>청소기</option>
                     <option value='refrigerator'>냉장고</option>
                     <option value='dish_washer'>식기세척기</option>
             </select>
-            <input type="submit" value="확인">
-        </form>
-        <div>
+              </form>
+              {% for product_name in product_names %}
+              <div>1</div> 
+              {% endfor %} 
+
+
+          
+          <script> // 제품 선택 후 로컬에 저장
+            document.addEventListener("DOMContentLoaded", function() {
+              var select = document.getElementById("product_select");
+              var storedValue = localStorage.getItem("product_select");
+              if (storedValue) {
+                select.value = storedValue;
+              }
+              select.addEventListener("change", function() {
+                localStorage.setItem("product_select", this.value);
+              });
+            });
+          
+            $(document).ready(function() {
+              $('#product_select').change(function() {
+                $('form[name="afgsgd"]').submit();
+              });
+            });
+          </script>
+        
         <div style="margin-top: 4rem;">
         {% if category_product %}
                 <h4> "제품: {{ category_product }}" </h4>
@@ -27,6 +53,7 @@
         {% endif %}
         </div>
         </div>
+        
     </div>
 
 {% endblock %}

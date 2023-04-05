@@ -15,7 +15,7 @@
 
 /* Font size */
 body {
-  font-family: 'lg_smartlight';
+  font-family: 'lg_smartlight' !important;
 }
 
 .fs-tiny {
