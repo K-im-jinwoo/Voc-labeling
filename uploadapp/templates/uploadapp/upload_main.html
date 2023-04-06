@@ -4,11 +4,13 @@
     <link rel="stylesheet" href="{% static "uploadapp/css/upload_main.css" %}">
 {% endblock %}
 {% block content-title %}
+
 <h2 class="content-title fs-large fw-600 gray-200">
     Data Upload
 </h2>    
 {% endblock %}
 {% block content %}
+
 <div class="first-desc primary-bg gray-100">
     <div class="first-desc-wrap">
         <div class= "product">
@@ -16,15 +18,34 @@
                 {% csrf_token %}
                 <div class="product_choice">
                   <p class="subject fs-base">제품 선택</p>
-                  <select name='category_product' id="product_select" onchange="this.form.submit()">
-                    <option value="--제품을 선택하세요--">--제품을 선택하세요--</option>
+                  <select name='category_product' id="product_select" >
                     {% for product_name in product_names %}
-                    <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                            <option id="s"  value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
                     {% endfor %}
                   </select>
                 </div>
               </form>
-              
+              <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                  var select = document.getElementById("product_select");
+                  var storedValue = localStorage.getItem("product_select");
+                  if (storedValue) {
+                    select.value = storedValue;
+                  }
+                  select.addEventListener("change", function() {
+                    localStorage.setItem("product_select", this.value);
+                  });
+                });
+                </script>
+              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+              <script>
+                
+                 $(document).ready(function() {
+                  $('#product_select').change(function() {
+                    $('form[name="afgsgd"]').submit();
+                  });
+                });
+              </script>
               
             <form action="" method="post" class= "second">
                 {% csrf_token %}
@@ -37,8 +58,9 @@
         </div>
 
         <div class="category">
-            <div class="subject">
+            <div class="subject2">
                 <p>카테고리</p>
+                <button class="delete" type="submit">삭제</button>
             </div>
 
             <div class="show_container">
@@ -51,11 +73,10 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-    
-                <!-- 카테고리 생성 -->
+
                 <form class="category_add" action="{% url 'uploadapp:upload' %}" method="post" id="formOne">
                     {% csrf_token %}
-                    <div>
+                    <div class="add">
                         <input type="hidden" name="form-type" value="formOne">
                         <label for="category-label">
                             <input class="category_name fs-small" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
@@ -63,8 +84,8 @@
                         <label for="color-label">
                             <input class="category_color" type='color' name="category_color" id="color-label" value='#0000ff'>
                         </label>
-    
-                        <button class="category_plus fs-small" type="submit" name="category_submit" value="submit">추가</button>
+                
+                        <button class="category_plus" type="submit" name="category_submit" value="submit">추가</button>
                     </div>
                 </form>
             </div>
@@ -109,7 +130,10 @@
     
                     <!--카테고리 선택 시에만 파일 업로드 가능-->
                     {% if request.session.category_product is not null %}
-                        <input class="send_btn fs-small" type="submit" value="제출" <img src="{% static 'uploadapp/img/submit.svg' %}">
+                        <button class="send_btn fs-small" type="submit"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.33333 0.333336H2C1.26666 0.333336 0.673331 0.933336 0.673331 1.66667L0.666664 12.3333C0.666664 13.0667 1.26 13.6667 1.99333 13.6667H10C10.7333 13.6667 11.3333 13.0667 11.3333 12.3333V4.33334L7.33333 0.333336ZM10 12.3333H2V1.66667H6.66666V5H10V12.3333ZM3.33333 9.00667L4.27333 9.94667L5.33333 8.89334V11.6667H6.66666V8.89334L7.72666 9.95334L8.66666 9.00667L6.00666 6.33334L3.33333 9.00667Z" fill="white" fill-opacity="0.9"/>
+                            </svg>
+                            제출</button>
                     {% else %}
                         <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                     {% endif %}
