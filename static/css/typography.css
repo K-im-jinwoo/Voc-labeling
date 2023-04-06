@@ -1,29 +1,21 @@
 @font-face {
     font-family: 'lg_smartlight';
-    src: url('../font/lg_smart_light-webfont.woff2') format('woff2'),
-         url('../font/lg_smart_light-webfont.woff') format('woff');
-    font-weight: 400;
-
+    src: url('../font/LGSMHAL_V1.4.woff') format('woff');
 }
 
 @font-face {
     font-family: 'lg_smartregular';
-    src: url('../font/lg_smart_regular-webfont.woff2') format('woff2'),
-         url('../font/lg_smart_regular-webfont.woff') format('woff');
-    font-weight: 500;
-
+    src: url('../font/LGSMHAR_V1.4.woff') format('woff');
 }
 
 @font-face {
     font-family: 'lg_smartsemibold';
-    src: url('../font/lg_smart_semibold-webfont.woff2') format('woff2'),
-         url('../font/lg_smart_semibold-webfont.woff') format('woff');
-    font-weight: 600;
+    src: url('../font/LGSMHASB_V1.4.woff') format('woff');
 }
 
 /* Font size */
 body {
-  font-family: 'lg_smartlight', 'lg_smartregular','lg_smartsemibold' !important;
+  font-family: 'lg_smartlight' !important;
 }
 
 .fs-tiny {
@@ -53,18 +45,24 @@ body {
 
 /* Font Weight */
 
-.fw-regular,
-.fw-400 {
+.fw-regular {
+  font-family: lg_smartregular;
   font-weight: 400;
 }
 
-.fw-medium,
 .fw-400 {
+  font-family: lg_smartregular;
+  font-weight: 400;
+}
+
+.fw-medium {
+  font-family: lg_smartlight;
   font-weight: 400;
 }
 
 .fw-semi-bold,
 .fw-600 {
+  font-family: lg_smartsemibold;
   font-weight: 600;
 } 
 

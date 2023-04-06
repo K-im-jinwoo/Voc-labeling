@@ -20,7 +20,7 @@
                   <p class="subject fs-base">제품 선택</p>
                   <select name='category_product' id="product_select" >
                     {% for product_name in product_names %}
-                            <option id="s"  value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                            <option id= "s"  value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -59,9 +59,29 @@
 
         <div class="category">
             <div class="subject2">
-                <p>카테고리</p>
-                <button class="delete" type="submit">삭제</button>
+                <p class="c_title">카테고리</p>
+                <button class="delbtn fs-small" type="button" onclick="addDeleteButton()"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.66658 4V10.6667H2.33325V4H7.66658ZM6.66658 0H3.33325L2.66659 0.666667H0.333252V2H9.66658V0.666667H7.33325L6.66658 0ZM8.99992 2.66667H0.999919V10.6667C0.999919 11.4 1.59992 12 2.33325 12H7.66658C8.39992 12 8.99992 11.4 8.99992 10.6667V2.66667Z" fill="white"/>
+                    </svg>삭제
+                    </button>
             </div>
+
+            <script>
+                function addDeleteButton() {
+                    // 카테고리 리스트를 가져옵니다.
+                    const categoryList = document.querySelectorAll(".c_content");
+                    
+                    // 각 카테고리에 대해 버튼을 보이거나 숨깁니다.
+                    categoryList.forEach(function(category) {
+                        const deleteButton = category.querySelector(".xbtn");
+                        if (deleteButton.style.display === "none") {
+                            deleteButton.style.display = "inline-block";
+                        } else {
+                            deleteButton.style.display = "none";
+                        }
+                    });
+                }
+            </script>
 
             <div class="show_container">
                 <!-- 카테고리 리스트 -->
@@ -69,7 +89,13 @@
                     {% if category_detail %}
                         {% for category_detail in category_detail %}
                             <div class="c_content fs-base" style="background-color: {{ category_detail.category_color }};">
-                                {{ category_detail.category_middle }}</div>
+                                {{ category_detail.category_middle }}
+                                <button class="xbtn"><svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="8.5" cy="9" r="8.25" fill="#F2F2F2" stroke="#D5D5D5" stroke-width="0.5"/>
+                                    <path d="M11.714 6.21912C11.5283 6.03341 11.2283 6.03341 11.0426 6.21912L8.71399 8.54293L6.38542 6.21436C6.19971 6.02864 5.89971 6.02864 5.71399 6.21436C5.52828 6.40007 5.52828 6.70007 5.71399 6.88579L8.04256 9.21436L5.71399 11.5429C5.52828 11.7286 5.52828 12.0286 5.71399 12.2144C5.89971 12.4001 6.19971 12.4001 6.38542 12.2144L8.71399 9.88579L11.0426 12.2144C11.2283 12.4001 11.5283 12.4001 11.714 12.2144C11.8997 12.0286 11.8997 11.7286 11.714 11.5429L9.38542 9.21436L11.714 6.88579C11.8949 6.70484 11.8949 6.40007 11.714 6.21912Z" fill="#969696"/>
+                                    </svg>
+                                    </button>
+                            </div>
                         {% endfor %}
                     {% endif %}
                 </div>
@@ -77,17 +103,17 @@
                 <form class="category_add" action="{% url 'uploadapp:upload' %}" method="post" id="formOne">
                     {% csrf_token %}
                     <div class="add">
-                        <input type="hidden" name="form-type" value="formOne">
-                        <label for="category-label">
-                            <input class="category_name fs-small" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
-                        </label>
-                        <label for="color-label">
-                            <input class="category_color" type='color' name="category_color" id="color-label" value='#0000ff'>
-                        </label>
-                
-                        <button class="category_plus" type="submit" name="category_submit" value="submit">추가</button>
+                      <input type="hidden" name="form-type" value="formOne">
+                      <label for="category-label">
+                        <input class="category_name fs-small" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
+                      </label>
+                      <label for="color-label">
+                        <input class="category_color" type='color' name="category_color" id="color-label" value='#0000ff'>
+                      </label>
+                      <button class="category_plus" type="submit" name="category_submit" value="submit">추가</button>
                     </div>
-                </form>
+                  </form>
+                  
             </div>
         </div>
 

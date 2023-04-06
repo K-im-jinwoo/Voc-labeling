@@ -75,11 +75,37 @@ p {
     gap: 15px;
 }
 
+.c_title{
+    display: flex;
+    align-items: center;
+}
+.delbtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 5px;
+    background: #A50034;
+    border: none;
+    border-radius: 5px;
+    width: 67px;
+    height: 34px;
+}
+
 .c_content {
     left: 65px;
     top: 0px;
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
+    margin-right: 5px;
+}
+
+.xbtn {
+    display: none;
+    background: none;
+    border: none;
+    width: 20px;
 }
 
 .category_add {
