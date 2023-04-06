@@ -9,5 +9,4 @@ app_name = 'uploadapp'
 
 urlpatterns = [
     path('', views.upload_main, name="upload"),
-
 ]
