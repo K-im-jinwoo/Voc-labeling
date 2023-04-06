@@ -82,7 +82,29 @@
                     });
                 }
             </script>
-
+            <script>
+                function deleteCategory(category_middle) {
+                    fetch('delete-category/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
+                        },
+                        body: `category_middle=${encodeURIComponent(category_middle)}`
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                            // Category was deleted successfully, do something (e.g. refresh the page)
+                        } else {
+                            // Handle error response
+                        }
+                    })
+                    .catch(error => {
+                        // Handle fetch() error
+                    });
+                }
+            </script>
             <div class="show_container">
                 <!-- 카테고리 리스트 -->
                 <div class="category_value">
@@ -90,11 +112,13 @@
                         {% for category_detail in category_detail %}
                             <div class="c_content fs-base" style="background-color: {{ category_detail.category_color }};">
                                 {{ category_detail.category_middle }}
-                                <button class="xbtn"><svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="8.5" cy="9" r="8.25" fill="#F2F2F2" stroke="#D5D5D5" stroke-width="0.5"/>
-                                    <path d="M11.714 6.21912C11.5283 6.03341 11.2283 6.03341 11.0426 6.21912L8.71399 8.54293L6.38542 6.21436C6.19971 6.02864 5.89971 6.02864 5.71399 6.21436C5.52828 6.40007 5.52828 6.70007 5.71399 6.88579L8.04256 9.21436L5.71399 11.5429C5.52828 11.7286 5.52828 12.0286 5.71399 12.2144C5.89971 12.4001 6.19971 12.4001 6.38542 12.2144L8.71399 9.88579L11.0426 12.2144C11.2283 12.4001 11.5283 12.4001 11.714 12.2144C11.8997 12.0286 11.8997 11.7286 11.714 11.5429L9.38542 9.21436L11.714 6.88579C11.8949 6.70484 11.8949 6.40007 11.714 6.21912Z" fill="#969696"/>
+                                {% csrf_token %} 
+                                <button class="xbtn" onclick="deleteCategory(`{{ category_detail.category_middle }}`)">
+                                    <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="8.5" cy="9" r="8.25" fill="#F2F2F2" stroke="#D5D5D5" stroke-width="0.5"/>
+                                        <path d="M11.714 6.21912C11.5283 6.03341 11.2283 6.03341 11.0426 6.21912L8.71399 8.54293L6.38542 6.21436C6.19971 6.02864 5.89971 6.02864 5.71399 6.21436C5.52828 6.40007 5.52828 6.70007 5.71399 6.88579L8.04256 9.21436L5.71399 11.5429C5.52828 11.7286 5.52828 12.0286 5.71399 12.2144C5.89971 12.4001 6.19971 12.4001 6.38542 12.2144L8.71399 9.88579L11.0426 12.2144C11.2283 12.4001 11.5283 12.4001 11.714 12.2144C11.8997 12.0286 11.8997 11.7286 11.714 11.5429L9.38542 9.21436L11.714 6.88579C11.8949 6.70484 11.8949 6.40007 11.714 6.21912Z" fill="#969696"/>
                                     </svg>
-                                    </button>
+                                </button>
                             </div>
                         {% endfor %}
                     {% endif %}
