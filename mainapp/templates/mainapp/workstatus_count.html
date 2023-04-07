@@ -9,11 +9,11 @@
             <form action="" method="get" class="first" name="afgsgd">
                 {% csrf_token %}
                 <p class="subject">제품 선택</p>
-                <select name='category_product' id="product_select">
-                    <option value='cleaner'>청소기</option>
-                    <option value='refrigerator'>냉장고</option>
-                    <option value='dish_washer'>식기세척기</option>
-            </select>
+                  <select name='category_product'>
+                    {% for product_name in product_names %}
+                        <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                    {% endfor %}
+                  </select>
               </form>
               {% for product_name in product_names %}
               <div>1</div> 

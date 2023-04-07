@@ -145,9 +145,7 @@ def upload_main(request):
                 temp_color = str(request.POST.get('category_color', '')) + "50"
                 category.category_color = temp_color
                 category.save()
-                category_product = request.GET.get('category_product')
-                url = reverse('uploadapp:upload') + f'?category_product={category.category_product}'
-                return HttpResponseRedirect(url)
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
 
             if request.POST.get('session_product'):
                 print("제품삭제 뷰")
