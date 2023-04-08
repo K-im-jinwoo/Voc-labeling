@@ -6,18 +6,18 @@
     <div class="pop_main">
         <div class="pop_top">
 
-            <form action="" method="get" class="first" name="afgsgd">
-                {% csrf_token %}
-                <p class="subject">제품 선택</p>
-                  <select name='category_product'>
-                    {% for product_name in product_names %}
-                        <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
-                    {% endfor %}
-                  </select>
-              </form>
-              {% for product_name in product_names %}
-              <div>1</div> 
-              {% endfor %} 
+          <form style="display: inline-block" action="" method="get" class="first" name="afgsgd">
+            {% csrf_token %}
+            <p class="subject">제품 선택</p>
+            <select name="category_product" id="product_select">
+                {% for product_name in product_names %}
+                    <option value="{{ product_name }}"
+                        {% if category_product == product_name %} selected {% endif %}>
+                        {{ product_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
 
 
           
