@@ -3,21 +3,21 @@
 {% endblock %}
 {% block content %}
 
-    <div class="pop_main">
-        <div class="pop_top">
+    <div class="pop_main" id="pop_main">
+      <div class="pop_top">
 
-          <form style="display: inline-block" action="" method="get" class="first" name="afgsgd">
-            {% csrf_token %}
-            <p class="subject">제품 선택</p>
-            <select name="category_product" id="product_select">
-                {% for product_name in product_names %}
-                    <option value="{{ product_name }}"
-                        {% if category_product == product_name %} selected {% endif %}>
-                        {{ product_name }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
+        <form style="display: inline-block" action="" method="get" class="first" name="afgsgd">
+          {% csrf_token %}
+          <div class="subject">제품 선택</div>
+          <select name="category_product" id="product_select">
+              {% for product_name in product_names %}
+                  <option value="{{ product_name }}"
+                      {% if category_product == product_name %} selected {% endif %}>
+                      {{ product_name }}
+                  </option>
+              {% endfor %}
+          </select>
+      </form>
 
 
           
@@ -40,19 +40,34 @@
             });
           </script>
         
-        <div style="margin-top: 4rem;">
-        {% if category_product %}
-                <h4> "제품: {{ category_product }}" </h4>
-        {% endif %}
-        <div style="margin-top: 1rem;">
-        {% if result %}
-            {% for name, count in result %}
-                    <h5>- ID) {{ name }} : {{ count }}개</h5>
+       
+        <div class="count_table">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:223px">ID</th>
+                <th style="width:165px">개수</th>
+                <th style="width:144px">비고</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if result %}
+              {% for name, count in result %}
+              <tr>
+                <td style="width:223px">{{ name }} </td>
+                <td style="width:165px">{{ count }}</td>
+                <td style="width:144px">-</td>
+              </tr>
+              
+              {% endfor %}
+              {% endif %}
+            <tbody>
 
-            {% endfor %}
-        {% endif %}
+          </table>
+         
+        
         </div>
-        </div>
+      </div>
         
     </div>
 
