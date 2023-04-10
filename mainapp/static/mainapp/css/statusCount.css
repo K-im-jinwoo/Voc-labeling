@@ -3,7 +3,6 @@
     height: 529px; 
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
-    padding : 27.5px 33px 40px 33px
 }
 .subject {
     display: inline-block;
@@ -25,7 +24,21 @@
     height: 34px;
     border-radius: 5px;
     border: 0.5px solid #D5D5D5;
-    margin-bottom: 28.5px;
+    margin-bottom: 69px;
+    margin-right: 235px;
+  }
+  button{
+    width: 146px;
+    height: 34px;
+    margin: 31px 27px 17px auto;
+    background-color: #f2f2f2;
+    color: #585757;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;
+    padding: 5px 10px 5px 10px;
   }
   table {
     text-align: center;

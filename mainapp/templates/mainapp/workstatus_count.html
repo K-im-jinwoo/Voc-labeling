@@ -1,14 +1,24 @@
-{% extends 'base.html' %} {% load static %} {% block style %}
+
+
+{% extends 'base.html' %}
+ {% load static %} {% block style %}
 <link rel="stylesheet" href="{% static 'mainapp/css/statusCount.css' %}?after" />
 {% endblock %}
+{% block content-title %}
+<h2 class="content-title fs-large fw-600 gray-200">
+    Work Status
+</h2>    
+{% endblock %}
 {% block content %}
-
-    <div class="pop_main" id="pop_main">
+<div class="first-desc primary-bg gray-100">
+  <div class="first-desc-wrap">
+    
       <div class="pop_top">
 
         <form style="display: inline-block" action="" method="get" class="first" name="afgsgd">
           {% csrf_token %}
           <div class="subject">제품 선택</div>
+          
           <select name="category_product" id="product_select">
               {% for product_name in product_names %}
                   <option value="{{ product_name }}"
@@ -17,6 +27,7 @@
                   </option>
               {% endfor %}
           </select>
+          <button id="myBtn">작업자별 진행 현황</button>
       </form>
 
 
@@ -45,18 +56,18 @@
           <table>
             <thead>
               <tr>
-                <th style="width:223px">ID</th>
-                <th style="width:165px">개수</th>
-                <th style="width:144px">비고</th>
+                <th style="width:250px">ID</th>
+                <th style="width:190px">개수</th>
+                <th style="width:150px">비고</th>
               </tr>
             </thead>
             <tbody>
               {% if result %}
               {% for name, count in result %}
               <tr>
-                <td style="width:223px">{{ name }} </td>
-                <td style="width:165px">{{ count }}</td>
-                <td style="width:144px">-</td>
+                <td style="width:250px">{{ name }} </td>
+                <td style="width:190px">{{ count }}</td>
+                <td style="width:150px">-</td>
               </tr>
               
               {% endfor %}
@@ -66,9 +77,74 @@
           </table>
          
         
-        </div>
-      </div>
         
+      </div>
+    </div>  
     </div>
-
+  </div>
+  <!-- 팝업창을 위한 HTML 코드 -->
+  <div id="myModal" class="popup">
+    <div class="popup-content">
+      <span class="close">&times;</span>
+      
+      <div id="modal-content">
+  </div>
+  
+  <script>
+    $(document).ready(function(){
+      $("#myBtn").click(function(e){
+        e.preventDefault();
+        $("#myModal").show();
+      });
+      $(".close").click(function(){
+        $("#myModal").hide();
+      });
+    });
+  </script>
+    <style>
+      .popup {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-left: 546px;
+        padding-top : 147px
+        
+      }
+      .popup-content {
+        background-color: white;
+        padding : 27.5px 33px 40px 33px;
+        border: 1px solid #888;
+         width: 598px;
+        height: 529px; 
+        border-radius: 5px;
+      }
+    .pop_subject{
+      display: inline-block;
+        margin-right: 15px;
+        
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+    }
+    
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover, .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
 {% endblock %}
