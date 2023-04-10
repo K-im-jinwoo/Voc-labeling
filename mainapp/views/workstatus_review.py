@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
 
 from mainapp.models import Category, Review, FirstLabeledData
 
@@ -122,7 +123,8 @@ def workstatus_review(request):
                 return render(request, 'mainapp/workstatus.html', context=context)
             context = dict()
             context['product_names'] = Category.objects.all().values('category_product').distinct()
-            return render(request, 'mainapp/workstatus.html', context=context)
+            return render(request, 'mainapp/workstatus.html',
+                          context=context)
 
         else:
             context = {'message': '제품을 다시 선택해주세요.'}
