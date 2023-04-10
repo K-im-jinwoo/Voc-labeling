@@ -20,8 +20,12 @@ def workstatus_worker(request):
             result_name.append(i.username)
             result_count.append(temp_count)
         result = zip(result_name, result_count)
-        context = {'result': result, 'category_product': category_product}
+        result_list = list(result)
+        
+        context = {'result': result, 'category_product': category_product, 'result_list' : result_list}
+        
     # product_names 가져오기
+    
     product_names = Category.objects.all().values_list('category_product', flat=True).distinct()
     context['product_names'] = product_names
     return render(request, 'mainapp/workstatus_count.html', context=context)

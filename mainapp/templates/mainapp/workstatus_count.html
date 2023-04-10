@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-{% extends 'base.html' %} {% load static %} {% block style %}
-<link rel="stylesheet" href="{% static 'mainapp/statusCount.css' %}?after" />
-=======
 
 
 {% extends 'base.html' %}
  {% load static %} {% block style %}
 <link rel="stylesheet" href="{% static 'mainapp/css/statusCount.css' %}?after" />
->>>>>>> 405443a648f5d5c53299ab13536879fb3f041d16
 {% endblock %}
 {% block content-title %}
 <h2 class="content-title fs-large fw-600 gray-200">
@@ -67,8 +62,8 @@
               </tr>
             </thead>
             <tbody>
-              {% if result %}
-              {% for name, count in result %}
+              {% if result_list %}
+              {% for name, count in result_list %}
               <tr>
                 <td style="width:250px">{{ name }} </td>
                 <td style="width:190px">{{ count }}</td>
@@ -93,6 +88,29 @@
       <span class="close">&times;</span>
       
       <div id="modal-content">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:250px">ID</th>
+              <th style="width:190px">개수</th>
+              <th style="width:150px">비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if result_list %}
+            {% for name, count in result_list %}
+            <tr>
+              <td style="width:250px">{{ name }} </td>
+              <td style="width:190px">{{ count }}</td>
+              <td style="width:150px">-</td>
+            </tr>
+            
+            {% endfor %}
+            {% endif %}
+          <tbody>
+
+        </table>
+      </div>
   </div>
   
   <script>
