@@ -3,6 +3,9 @@ from django.shortcuts import render
 
 from mainapp.models import Category, Review
 
+from django.http import JsonResponse
+
+
 
 def workstatus_worker(request):
     temp_user = User.objects.all()
@@ -33,3 +36,4 @@ def server(request):
     print(review)
     print(review1)
     return render(request, 'mainapp/workstatus_count.html')
+
