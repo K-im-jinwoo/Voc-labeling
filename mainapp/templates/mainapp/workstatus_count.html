@@ -74,27 +74,55 @@
               {% endif %}
             <tbody>
 
-          </table>
-         
-        
-        
+          </table>    
       </div>
     </div>  
     </div>
   </div>
+ 
   <!-- 팝업창을 위한 HTML 코드 -->
   <div id="myModal" class="popup">
     <div class="popup-content">
       <span class="close">&times;</span>
+      {{ category_product }}
       
-      <div id="modal-content">
+      <div class="count_table">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:250px">ID</th>
+              <th style="width:190px">개수</th>
+              <th style="width:150px">비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if result %}
+            {{ result }}
+           
+            
+            {% for name, count in result %}
+            <tr>
+              <td style="width:250px">{{ name }} </td>
+              <td style="width:190px">{{ count }}</td>
+              <td style="width:150px">-</td>
+            </tr>
+            
+            {% endfor %}
+            {% endif %}
+          <tbody>
+
+        </table>    
+    </div>
   </div>
-  
+ 
+ 
+
   <script>
     $(document).ready(function(){
       $("#myBtn").click(function(e){
         e.preventDefault();
         $("#myModal").show();
+
       });
       $(".close").click(function(){
         $("#myModal").hide();
