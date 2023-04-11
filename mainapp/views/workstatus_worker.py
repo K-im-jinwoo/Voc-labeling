@@ -41,3 +41,16 @@ def server(request):
     print(review1)
     return render(request, 'mainapp/workstatus_count.html')
 
+
+
+def show_eng(request):
+    input_val = request.GET.get('input_val')
+    print(input_val)
+
+    if input_val=='사과':
+        eng = 'apple'
+    else :
+        eng = '과일이 아님'
+    context={'eng' : eng}
+    return JsonResponse(context)
+
