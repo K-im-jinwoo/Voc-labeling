@@ -19,7 +19,7 @@
 select {
   display: inline-block;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
   width: 125px;
   height: 34px;
@@ -41,9 +41,10 @@ select {
   height: 24px;
   text-align: center;
   border-radius: 12px;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 24px;
+  
   
 }
 .right_top.top1 {

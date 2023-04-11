@@ -17,23 +17,30 @@ def type_to_variable(what_type, positive, negative, neutral, everything):
     return variable
 
 
-# sort를 기준으로 정렬해주는 함수(삽입정렬)
+                
 def sorting(sort, category_detail_list, positive, negative, neutral, everything):
     standard = []
 
-    standard = type_to_variable(sort, positive, negative, neutral, everything)
+    # 정렬 기준을 standard 리스트에 추가
+    if sort == 'positive':
+        standard = [p.count() for p in positive]
+    elif sort == 'negative':
+        standard = [n.count() for n in negative]
+    elif sort == 'neutral':
+        standard = [neu.count() for neu in neutral]
+    elif sort == 'everything':
+        standard = [e.count() for e in everything]
 
-    # 오름차순 정렬
-    for i in range(1, len(standard)):
-        for j in range(i, 0, -1):
-            if standard[j - 1].count() < standard[j].count():
-                category_detail_list[j - 1], category_detail_list[j] = category_detail_list[j], category_detail_list[
-                    j - 1]
-                positive[j - 1], positive[j] = positive[j], positive[j - 1]
-                negative[j - 1], negative[j] = negative[j], negative[j - 1]
-                neutral[j - 1], neutral[j] = neutral[j], neutral[j - 1]
-                everything[j - 1], everything[j] = everything[j], everything[j - 1]
-
+    # 내림차순 정렬
+    for i in range(len(standard)-1):
+        for j in range(i+1, len(standard)):
+            if standard[i] < standard[j]:
+                category_detail_list[i], category_detail_list[j] = category_detail_list[j], category_detail_list[i]
+                positive[i], positive[j] = positive[j], positive[i]
+                negative[i], negative[j] = negative[j], negative[i]
+                neutral[i], neutral[j] = neutral[j], neutral[i]
+                everything[i], everything[j] = everything[j], everything[i]
+                standard[i], standard[j] = standard[j], standard[i]
 
 def workstatus_review(request):
     try:
