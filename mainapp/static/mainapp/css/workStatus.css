@@ -1,16 +1,13 @@
 .content-title {
   width: 135px;
   height: 24px;
-  font-weight: 600;
   font-style: normal;
 }
 
 .subject {
   display: inline-block;
   margin-right: 15px;
-  
   font-size: 16px;
-  font-weight: 400;
   line-height: 24px;
   letter-spacing: 0em;
   text-align: left;
@@ -18,7 +15,6 @@
 }
 select {
   display: inline-block;
-  font-weight: 400;
   font-size: 16px;
   line-height: 24px;
   width: 125px;
@@ -41,7 +37,6 @@ select {
   height: 24px;
   text-align: center;
   border-radius: 12px;
-  font-weight: 600;
   font-size: 14px;
   line-height: 24px;
   
@@ -72,20 +67,24 @@ select {
 }
 .workStatus_now {
   display: block;
-  width: 146px;
+  width: 158px;
   height: 34px;
   margin: 31px 27px 17px auto;
+  padding: 5px 10px 5px 12.7px;
   background-color: #f2f2f2;
   
 }
 .workStatus_now > a {
   color: #585757;
   font-size: 14px;
-  font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
   text-align: center;
-  padding: 5px 10px 5px 10px;
+  
+  
+}
+svg{
+  margin-right: 7.67px;
   
 }
 .category_wrap {
@@ -101,7 +100,6 @@ select {
 .category_column {
   color: #1a1a1a;
   font-size: 14px;
-  font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
 }
@@ -138,14 +136,12 @@ thead{
 .date_space_cut > p > a{
   color: #1A1A1A;
   font-style: normal;
-  font-weight: 400;
   font-size: 12px;
   line-height: 24px;
   
 }
 .cut1{
   font-style: normal;
-  font-weight: 600;
   font-size: 14px;
   line-height: 24px;
   
@@ -162,7 +158,6 @@ thead{
 .category_target{
   color: #1a1a1a;
   font-size: 14px;
-  font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
   
@@ -180,7 +175,6 @@ thead{
 .category_review{
   color: #1a1a1a;
   font-size: 14px;
-  font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
 }
