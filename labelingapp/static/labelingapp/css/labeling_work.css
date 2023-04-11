@@ -2,12 +2,12 @@ p{
     display: inline;
 }
 
-.container{
+.mcontainer{
     width: 1121px;
     border: 1px solid #E8E8E8;
     border-radius: 10px;
     background: #FFFFFF;
-    margin-left: 58px;
+    margin-left: 34px;
 }
 
 div{
@@ -52,8 +52,7 @@ div{
     flex-direction: column;
 }
 
-.show_container{
-    
+.show-container{
     display: flex;
     flex-direction: column;
     padding: 22px;
@@ -100,7 +99,7 @@ div{
     align-items: center;
 }
 
-.result_container{
+.result-container{
     margin-left: 45px;
     margin-right: 45px;
     background: #FFFFFF;
