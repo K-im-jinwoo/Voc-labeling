@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
 
-from mainapp.models import Review
+from mainapp.models import Category, Review
+
+from django.http import JsonResponse
+
 
 
 def workstatus_worker(request):
@@ -17,9 +20,16 @@ def workstatus_worker(request):
             result_name.append(i.username)
             result_count.append(temp_count)
         result = zip(result_name, result_count)
-        context = {'result': result, 'category_product': category_product}
-
+        result_list = list(result)
+        
+        context = {'result': result, 'category_product': category_product, 'result_list' : result_list}
+        
+    # product_names 가져오기
+    
+    product_names = Category.objects.all().values_list('category_product', flat=True).distinct()
+    context['product_names'] = product_names
     return render(request, 'mainapp/workstatus_count.html', context=context)
+
 
 def server(request):
     print("버튼 적용 성공")
@@ -30,3 +40,17 @@ def server(request):
     print(review)
     print(review1)
     return render(request, 'mainapp/workstatus_count.html')
+
+
+
+def show_eng(request):
+    input_val = request.GET.get('input_val')
+    print(input_val)
+
+    if input_val=='사과':
+        eng = 'apple'
+    else :
+        eng = '과일이 아님'
+    context={'eng' : eng}
+    return JsonResponse(context)
+

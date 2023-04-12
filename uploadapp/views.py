@@ -12,7 +12,19 @@ from numpy.ma.core import count
 
 from LG_Project.settings.base import BASE_DIR
 from mainapp.models import Review, Category
+from django.http import JsonResponse
 
+from django.http import JsonResponse
+
+from django.shortcuts import get_object_or_404, redirect
+
+def delete_category(request):
+    if request.method == 'POST':
+        category_middle = request.POST.get('category_middle')
+        category = Category.objects.filter(category_middle=category_middle)[0]
+        category.delete()
+        url = reverse('uploadapp:upload') + f'?category_product={category.category_product}'
+    return HttpResponseRedirect(url)
 
 def cleansing(csv_file):
     '''전처리 시작'''
@@ -133,7 +145,9 @@ def upload_main(request):
                 temp_color = str(request.POST.get('category_color', '')) + "50"
                 category.category_color = temp_color
                 category.save()
-                return HttpResponseRedirect(reverse('uploadapp:upload'))
+                category_product = request.GET.get('category_product')
+                url = reverse('uploadapp:upload') + f'?category_product={category.category_product}'
+                return HttpResponseRedirect(url)
 
             if request.POST.get('session_product'):
                 print("제품삭제 뷰")
