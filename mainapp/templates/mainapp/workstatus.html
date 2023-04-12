@@ -10,7 +10,7 @@
 
 <div class="first-desc primary-bg gray-100">
   <div class="first-desc-wrap">
-    <form style="display: inline-block" action="" method="get" class="first" name="afgsgd">
+    <form style="display: inline-block" action="" method="get" class="first fw-400" name="afgsgd">
       {% csrf_token %}
       <p class="subject">제품 선택</p>
       <select name="category_product" id="product_select">
@@ -44,52 +44,40 @@
 </script>
 
 
-    <div class="totalBar">
+    <div class="totalBar fw-400">
       <div class="right_top top1">총 개수 {{ alltotal }}</div>
       <div class="right_top top2">작업완료 {{ first_num }}</div>
       <div class="right_top top3">검수완료 {{ second_num }}</div>
       <div class="right_top top4">삭제 {{ dummy_num }}</div>
     </div>
 
-    <div class="workStatus_now">
-      <a href="{% url 'mainapp:workstatus_count' %}" style="display: block"
-        >작업자별 진행 현황</a
-      >
+    <div class="workStatus_now fw-600">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" >
+        <path d="M6.00002 6.00008C7.47335 6.00008 8.66669 4.80675 8.66669 3.33341C8.66669 1.86008 7.47335 0.666748 6.00002 0.666748C4.52669 0.666748 3.33335 1.86008 3.33335 3.33341C3.33335 4.80675 4.52669 6.00008 6.00002 6.00008ZM6.00002 7.33342C4.22002 7.33342 0.666687 8.22675 0.666687 10.0001V10.6667C0.666687 11.0334 0.966687 11.3334 1.33335 11.3334H10.6667C11.0334 11.3334 11.3334 11.0334 11.3334 10.6667V10.0001C11.3334 8.22675 7.78002 7.33342 6.00002 7.33342Z" fill="#585757"/>
+        </svg>
+      <a href="{% url 'mainapp:workstatus_count' %}" 
+        >작업자별 진행 현황 </a>
     </div>
     <div class="category_wrap">
       <div class="category category_1">
         <div class="category_column">  
-          <table>
-            <thead>
+          <table id='myTable'>
+            <thead class="thead fw-600">
               <tr>
-                <th> <div class="data_label label1"style="width:99px"  >카테고리↓</div></th>
+                <th> <div class="data_label label1"style="width:99px">카테고리</div></th>
                 <th><div class="data_label"style="width:71px">
-                  <a href="#" onclick="return chk_form('positive_sort')">긍정↓</a>
-                  <form method="post" class="sort">
-                    {% csrf_token %}
-                    <input type="hidden" name="sort" value="positive" />
-                  </form>
+                긍정</div></th>
+                <th><div class="data_label"style="width:71px">
+                  부정
+                  
                 </div></th>
                 <th><div class="data_label"style="width:71px">
-                  <a href="#" onclick="return chk_form('negative_sort')">부정↑</a>
-                  <form method="post" class="sort" id="negative_sort">
-                    {% csrf_token %}
-                    <input type="hidden" name="sort" value="negative" />
-                  </form>
+                  중립
+                  
                 </div></th>
                 <th><div class="data_label"style="width:71px">
-                  <a href="#" onclick="return chk_form('neutral_sort')">중립↓</a>
-                  <form method="post" class="sort" id="neutral_sort">
-                    {% csrf_token %}
-                    <input type="hidden" name="sort" value="neutral" />
-                  </form>
-                </div></th>
-                <th><div class="data_label"style="width:71px">
-                  <a href="#" onclick="return chk_form('everything_sort')">총개수↓</a>
-                  <form method="post" class="sort" id="everything_sort">
-                    {% csrf_token %}
-                    <input type="hidden" name="sort" value="everything" />
-                  </form>
+                  총개수
+                  
                 </div></th>
               </tr>
             </thead>
@@ -98,11 +86,11 @@
                 {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
 
                 <tr>
-                  <td><div class="date_space_cut cut1"style="width:99px">
+                  <td><div class="date_space_cut cut1 fw-600"style="width:99px">
                     <p>{{ category_detail_list }}</p>
                   </div>
                   </td>
-                  <td><div class="date_space_cut"style="width:71px" >
+                  <td><div class="date_space_cut fw-400"style="width:71px" >
                     <p>
                       <a
                         href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
@@ -111,7 +99,7 @@
                     </p>
                   </div>
                   </td>
-                  <td><div class="date_space_cut"style="width:71px" >
+                  <td><div class="date_space_cut fw-400"style="width:71px" >
                     <p>
                       <a
                         href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative"
@@ -121,7 +109,7 @@
                   </div>
                   </td>
                   <td> <!-- 중립 개수 -->
-                    <div class="date_space_cut" style="width:71px">
+                    <div class="date_space_cut fw-400" style="width:71px">
                       <p>
                         <a
                           href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
@@ -130,7 +118,7 @@
                       </p>
                     </div>
                   </td>
-                  <td><div class="date_space_cut"style="width:71px" >
+                  <td><div class="date_space_cut fw-400"style="width:71px" >
                     <p>
                       <a
                         href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
@@ -147,28 +135,61 @@
         
         </div>
       </div>
-     
-      
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+        $(document).ready(function() {
+          // 긍정/부정 클릭 시 정렬
+          $('th:nth-child(2)').click(function() { // 긍정 열
+            sortTable(1, 'desc');
+          });
+          $('th:nth-child(3)').click(function() { // 부정 열
+            sortTable(2, 'desc');
+          });
+          $('th:nth-child(4)').click(function() { // 중립 열
+            sortTable(3, 'desc');
+          });
+          $('th:nth-child(5)').click(function() { // 총개수 열
+            sortTable(4, 'desc');
+          });
+        
+          function sortTable(colNum, order) {
+            var tbody = $('#myTable tbody');
+            var rows = tbody.find('tr').get();
+            rows.sort(function(a, b) {
+              var aValue = $(a).find('td:eq(' + colNum + ') a').text();
+              var bValue = $(b).find('td:eq(' + colNum + ') a').text();
+              if (order === 'desc') {
+                return bValue - aValue;
+              } else {
+                return aValue - bValue;
+              }
+            });
+            $.each(rows, function(index, row) {
+              tbody.append(row);
+            });
+          }
+        });
+        </script>      
       <div class="category category_2">
         <div class="category_target">
           <table>
-            <thead>
+            <thead class="thead fw-600">
               <tr>
-                <th><div class="data_label"style="width:99px"               >대상</div></th>
+                <th><div class="data_label"style="width:99px">대상</div></th>
                 <th><div class="data_label"style="width:99px">현상</div></th>
               </tr>
             </thead>
             <tbody>
               {% for word in labeled_word %}
               <tr>
-                <td><div class="date_space_cut cut2" style="font-style: normal;
+                <td><div class="date_space_cut cut2 fw-400" style="font-style: normal;
                   font-weight: 400;
                   font-size: 12px;
                   line-height: 24px;
                   ">
                   {{ word.first_labeled_target }}
                 </div></td>
-                <td><div class="date_space_cut cut2" style="font-style: normal;
+                <td><div class="date_space_cut cut2 fw-400" style="font-style: normal;
                   font-weight: 400;
                   font-size: 12px;
                   line-height: 24px;
@@ -183,7 +204,7 @@
       <div class="category category_3">
         <div class="category_review">
           <table>
-            <thead>
+            <thead class="thead fw-600">
               <tr>
                 <th><div class="data_label" style="
                   width:67px">번호</div></th>
@@ -195,10 +216,10 @@
               <tr>
                 {% for review in labeled_review %}
               </tr>
-              <td class="date_space_cut" style="width:67px">
+              <td class="date_space_cut fw-600" style="width:67px">
                 {{ review.review_number }}
               </td>
-              <td class="date_space_cut" style="font-style: normal;
+              <td class="date_space_cut fw-400" style="font-style: normal;
               font-weight: 400;
               font-size: 12px;
               line-height: 24px;

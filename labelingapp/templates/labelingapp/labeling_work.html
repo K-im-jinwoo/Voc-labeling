@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static "labelingapp/css/labeling_work.css" %}">
+    <link rel="stylesheet" href="{% static 'labelingapp/css/labeling_work.css' %}">
 {% endblock %}
 <style>
     .drag {
@@ -26,7 +26,7 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="mc">
         <div class="tool_box">
             <form action="{% url 'labelingapp:work' %}" method="get">
                 {% csrf_token %}
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </form>
-            <div class="show_container">
+            <div class="show-container">
                 <div class="category">
                     <div class="c_text fw-400">카테고리</div>
                     <div class="c_content">
@@ -84,7 +84,7 @@
                 
             </div>
             {% for review_first in review_first %}
-                <div class="result_container">
+                <div class="result-container">
                 
                     <div class="result_main">
                         <script>
