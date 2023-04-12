@@ -26,13 +26,13 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="mc">
         <div class="tool_box">
             <form action="{% url 'labelingapp:work' %}" method="get">
                 {% csrf_token %}
                 <div class="product">
                     <div class="product_name">
-                        <p>제품명</p>
+                        <p class="fw-400">제품명</p>
                         <select name='category_product'>
                             {% for product_name in product_names %}
                                 <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
@@ -40,20 +40,20 @@
                         </select>
                     </div>
                     <div class="work_count">
-                        <p>작업 개수</p>
+                        <p class="fw-400">작업 개수</p>
                         <input class="input" type="text" name="assignment_count" value="50" placeholder="작업할 리뷰 개수 설정">
-                        <input class="asdf btn btn-outline-dark btn-sm" type="submit" value="확인">
+                        <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인">
                         
                     </div>
                 </div>
             </form>
-            <div class="show_container">
+            <div class="show-container">
                 <div class="category">
-                    <div class="c_text">카테고리</div>
+                    <div class="c_text fw-400">카테고리</div>
                     <div class="c_content">
                         {% if category_detail %}
                             {% for category_detail in category_detail %}
-                                <div class="category_value" style="background-color: {{ category_detail.category_color }};
+                                <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};
                                          opacity: 1; margin-bottom:.5rem">
                                     <p>{{ category_detail.category_middle }}</p>
                                 </div>
@@ -63,19 +63,19 @@
                 </div>
                 <div class="feel">
                      <p>
-                        <div style="border-radius: 5px; display: inline-block; font-weight: 300; margin-left: 0.2rem; font-size: 1rem">
+                        <div class="fw-400" style="border-radius: 5px; display: inline-block;  margin-left: 0.2rem; font-size: 1rem">
                             감정
                         </div>
                         <div style="border-radius: 5px; border: 0.5px solid #0038FF; display: inline-block; height: 34px; width: 55px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: blue; text-align: center; font-weight: 200;">
+                                padding:0.3rem; color: blue; text-align: center; font-weight: 400;">
                             긍정
                         </div>
                         <div style="border-radius: 5px; border: 0.5px solid #FF0000; display: inline-block; height: 34px; width: 55px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: red; text-align: center; font-weight: 200;">
+                                padding:0.3rem; color: red; text-align: center; font-weight: 400;">
                             부정
                         </div>
                         <div style="border-radius: 5px; border: 0.5px solid #585757; display: inline-block; height: 34px; width: 55px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: gray; text-align: center; font-weight: 200;">
+                                padding:0.3rem; color: gray; text-align: center; font-weight: 400;">
                             중립
                         </div>
                     </p>
@@ -84,7 +84,7 @@
                 
             </div>
             {% for review_first in review_first %}
-                <div class="result_container">
+                <div class="result-container">
                 
                     <div class="result_main">
                         <script>
@@ -119,12 +119,12 @@
                             
                         </script>
                         <div id="bubble">
-                            <div id="target" style="border-right:1px solid rgba(102, 102, 102, 0.4)"
+                            <div class="fw-400" id="target" style="border-right:1px solid rgba(102, 102, 102, 0.4)"
                                 onclick='target()'
                             >
                                 대상
                             </div>
-                            <div id="phenomenon" onclick="phenomenon()">
+                            <div class="fw-400" id="phenomenon" onclick="phenomenon()">
                                 현상
                             </div>
                             <script>
@@ -153,10 +153,10 @@
                                 }
                             </script>
                         </div>
-                        <p>
+                        <p fw-400>
                         <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
                             {{ review_first.review_number }}.
-                            <span class="current_target dragg">{{ review_first.review_content }}</span>
+                            <span class="current_target dragg fw-400">{{ review_first.review_content }}</span>
                             <script>
                                 function select_result(target,expression){
                                     const view = document.querySelectorAll('.view');
@@ -194,10 +194,10 @@
                                 {% for status_result in status_result %}
                                     {% if status_result.first_labeled_emotion == 'neutral' %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: gray" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                            <div class="cate fw-400" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
                                              - 
-                                            {{ status_result.first_labeled_target }} -
-                                            {{ status_result.first_labeled_expression }}
+                                            <div class="fw-400">{{ status_result.first_labeled_target }} - </div>
+                                            <div class="fw-400">{{ status_result.first_labeled_expression }}</div>
 
                                             {# 라벨링 하고 옆에 뜨는 x표시 체크하는 부분 새로고침을 눌러야 현재 적용 #}
                                             <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -208,10 +208,10 @@
 
                                     {% elif status_result.first_labeled_emotion == 'positive' %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: blue" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                            <div class="cate fw-400" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
                                              -
-                                            {{ status_result.first_labeled_target }} -
-                                            {{ status_result.first_labeled_expression }}
+                                             <div class="fw-400">{{ status_result.first_labeled_target }} - </div>
+                                             <div class="fw-400">{{ status_result.first_labeled_expression }}</div>
                                             <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
                                                 </svg>
@@ -220,10 +220,10 @@
                                     {% elif status_result.first_labeled_emotion == 'negative' %}
                                     {% csrf_token %}
                                         <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: red" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            <div class="cate" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
+                                            <div class="cate fw-400" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
                                              -
-                                            {{ status_result.first_labeled_target }} -
-                                            {{ status_result.first_labeled_expression }}
+                                             <div class="fw-400">{{ status_result.first_labeled_target }} - </div>
+                                             <div class="fw-400">{{ status_result.first_labeled_expression }}</div>
                                             <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
                                                 </svg>
@@ -238,8 +238,8 @@
                             <form class="select_box" action="" method="post">
                                 {% csrf_token %}
                                 <div class="s_box"> 
-                                    <select class="category_id" name='category_id' style="display: inline-block; margin-left: 20px;
-                                                     monospace; font-weight: 200;">
+                                    <select class="category_id fw-400" name='category_id' style="display: inline-block; margin-left: 20px;
+                                                      ">
                                         {% for category_detail in category_detail %}
                                         <option value='{{ category_detail.category_id }}'>
                                             {{ category_detail.category_middle }}
@@ -248,8 +248,8 @@
                                     </select>
                                     <input style="margin-left: 20px;" id="in_target" type="text" name="labeled_target" placeholder="키워드">
                                     <input style="margin-left: 20px;" id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
-                                    <select class="labeled_emotion" name="labeled_emotion" style="display: inline-block; margin-left: 20px;
-                                                     font-weight: 200; ">
+                                    <select class="labeled_emotion fw-400" name="labeled_emotion" style="display: inline-block; margin-left: 20px;
+                                                      ">
                                         <option value="positive">긍정</option>
                                         <option value="negative">부정</option>
                                         <option value="neutral">중립</option>
@@ -276,7 +276,7 @@
                                     <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.66658 4V10.6667H2.33325V4H7.66658ZM6.66658 0H3.33325L2.66659 0.666667H0.333252V2H9.66658V0.666667H7.33325L6.66658 0ZM8.99992 2.66667H0.999919V10.6667C0.999919 11.4 1.59992 12 2.33325 12H7.66658C8.39992 12 8.99992 11.4 8.99992 10.6667V2.66667Z" fill="#A50034"/>
                                         </svg>
-                                    <div>버리기</div>
+                                    <div class="fw-400">버리기</div>
                                 </button>
                             </form>
                         </div>
@@ -284,8 +284,8 @@
     
                         <div class="bet">
                             <div >
-                                <button class="btn btn-sm" onclick="reset(`{{ review_first.review_id }}`)"
-                                        style="background: #F2F2F2; color: #313238; font-weight: 300; font-size: 1rem;">
+                                <button class="btn btn-sm fw-400" onclick="reset(`{{ review_first.review_id }}`)"
+                                        style="background: #F2F2F2; color: #313238; font-size: 1rem;">
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9.76672 2.23329C8.68005 1.14662 7.14005 0.519954 5.44672 0.693287C3.00005 0.939954 0.986722 2.92662 0.713388 5.37329C0.346722 8.60662 2.84672 11.3333 6.00005 11.3333C8.12672 11.3333 9.95339 10.0866 10.8067 8.29329C11.0201 7.84662 10.7001 7.33329 10.2067 7.33329C9.96005 7.33329 9.72672 7.46662 9.62005 7.68662C8.86672 9.30662 7.06005 10.3333 5.08672 9.89329C3.60672 9.56662 2.41339 8.35995 2.10005 6.87995C1.54005 4.29329 3.50672 1.99995 6.00005 1.99995C7.10672 1.99995 8.09339 2.45995 8.81339 3.18662L7.80672 4.19329C7.38672 4.61329 7.68005 5.33329 8.27339 5.33329H10.6667C11.0334 5.33329 11.3334 5.03329 11.3334 4.66662V2.27329C11.3334 1.67995 10.6134 1.37995 10.1934 1.79995L9.76672 2.23329Z" fill="#313238"/>
                                         </svg>
@@ -301,8 +301,8 @@
                                     <input type="hidden" name="category_product" value="{{ category_product }}">
                                     <input type="hidden" name="start" value="{{ start }}">
                                     <input type="hidden" name="end" value="{{ end }}">
-                                    <button class="btn btn-sm" type="submit" value="다음"
-                                        style="background: #E8E8E8; color:#585757 ;  font-weight: 300; font-size: 1rem">
+                                    <button class="btn btn-sm fw-400" type="submit" value="다음"
+                                        style="background: #E8E8E8; color:#585757 ;  font-size: 1rem">
                                         다음
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M1.33327 6.66665H8.77993L5.5266 9.91998C5.2666 10.18 5.2666 10.6066 5.5266 10.8666C5.7866 11.1266 6.2066 11.1266 6.4666 10.8666L10.8599 6.47331C11.1199 6.21331 11.1199 5.79331 10.8599 5.53331L6.4666 1.13998C6.2066 0.879978 5.7866 0.879978 5.5266 1.13998C5.2666 1.39998 5.2666 1.81998 5.5266 2.07998L8.77993 5.33331H1.33327C0.966599 5.33331 0.666599 5.63331 0.666599 5.99998C0.666599 6.36665 0.966599 6.66665 1.33327 6.66665Z" fill="#585757"/>
