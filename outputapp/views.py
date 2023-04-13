@@ -58,6 +58,7 @@ def output(request):
                         counts = {}
                         for emotion in ['positive', 'negative', 'neutral']:
                             temp_keyword = list(all_keywords.filter(category_id__category_middle=category,
+                                                                    review_id__second_status=True,
                                                                     first_labeled_emotion=emotion).values_list(
                                 'first_labeled_target', 'first_labeled_expression').distinct().order_by(
                                 '-first_labeled_target', '-first_labeled_expression'))
@@ -124,10 +125,10 @@ def output(request):
                 ####---- csv 파일 만들기 ----####
                 writer = csv.writer(response)
                 reviews = list(
-                    Review.objects.filter(first_status=True, category_product=product).values_list('review_id',
+                    Review.objects.filter(first_status=True, category_product=product, second_status=True).values_list('review_id',
                                                                                                    flat=True))
                 review_contents = list(
-                    Review.objects.filter(first_status=True, category_product=product).values_list('review_content',
+                    Review.objects.filter(first_status=True, category_product=product, second_status=True).values_list('review_content',
                                                                                                    flat=True))
                 result = [['']] * len(reviews)
                 for i in range(len(reviews)):

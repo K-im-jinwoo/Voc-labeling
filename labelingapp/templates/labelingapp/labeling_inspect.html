@@ -54,31 +54,40 @@
                 </div>
 
 
-                <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;
-        font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택
-                </div>
+<!--                <div style="font-size: 1.1rem; display: inline-block; margin-left: 1.5rem;-->
+<!--        font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;" class="subject"> 데이터번호선택-->
+<!--                </div>-->
+<!--                <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace;, monospace; font-weight: 200; margin-left: 0.3rem;">-->
+<!--                    <input style="width: 7rem" type="number" name="start" placeholder="ex)1" min="1"-->
+<!--                           value="{{ start }}">-->
+<!--                    <div style="display: inline-block">~</div>-->
+<!--                    <input style="width: 7rem" type="number" name="end" placeholder="ex)10000" value="{{ end }}">-->
+<!--                </div>-->
+<!--                <div style="font-size: 1rem; display: inline-block" class="subject">-->
+<!--                    <input class="btn btn-outline-dark btn-sm" type="submit" value="적용"-->
+<!--                           style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">-->
+<!--                </div>-->
+
+                <!--데이터 할당량 개수 지정(수정-라디오버튼으로 데이터 개수 지정)-->
                 <div style="display: inline-block; font-family: 'Nanum Gothic Coding', monospace;, monospace; font-weight: 200; margin-left: 0.3rem;">
-                    <input style="width: 7rem" type="number" name="start" placeholder="ex)1" min="1"
-                           value="{{ start }}">
-                    <div style="display: inline-block">~</div>
-                    <input style="width: 7rem" type="number" name="end" placeholder="ex)10000" value="{{ end }}">
+                    <input type="radio" id="NumberChoice1"
+                           name="assignment" value="ten">
+                    <label for="NumberChoice1">10개</label>
+                    <input type="radio" id="NumberChoice2"
+                           name="assignment" value="twenty">
+                    <label for="NumberChoice2">20개</label>
+                    <input type="radio" id="NumberChoice3"
+                           name="assignment" value="thirty">
+                    <label for="NumberChoice3">30개</label>
                 </div>
                 <div style="font-size: 1rem; display: inline-block" class="subject">
                     <input class="btn btn-outline-dark btn-sm" type="submit" value="적용"
                            style="margin-left: 0.2rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; font-size: 0.9rem">
                 </div>
 
-                <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; margin-left: 15rem; margin-bottom: 0.5rem; display: inline-block;"
+                <div style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;font-size: 1.1rem; margin-left: 23rem; margin-bottom: 0.5rem; display: inline-block;"
                      class=subject">
-                    {% if category_product == "refrigerator" %}
-                    <strong>카테고리 : 냉장고</strong>
-                    {% elif category_product == "cleaner" %}
-                    <strong>카테고리 : 청소기</strong>
-                    {% elif category_product == "dish_washer" %}
-                    <strong>카테고리 : 식기세척기</strong>
-                    {% else %}
-                    카테고리
-                    {% endif %}
+                    <strong>카테고리 : {{ category_product }} </strong>
                 </div>
 
 
@@ -126,163 +135,76 @@
         </p>
     </div>
 
-    <!-- 작업필드 -->
-    {% for review_first in review_first %}
-    <div style="; border: 1px solid #bcbcbc; width: 70rem; height: auto; display: inline-block;
-        margin-top: 0.5rem; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200;">
-            <p style="margin-top: 3rem">
+<!-- 작업필드 -->
+    <form action="{% url 'labelingapp:inspect' %}" method="post" id="SuccessForm">
+        {% csrf_token %}
+        {% if review_assignment_list %}
+        <div style="display: inline-block; border: 1px solid #bcbcbc; width: 70rem; height: 30rem;
+        margin: 0.5rem auto; font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; overflow-y: scroll; padding: 0.3rem">
+            {% for review, labels in reviews %}
+            <p style="height: auto; text-align: left;">
+                <div style="border-bottom:1px solid black; width: 99%; height: auto; margin: auto">
+                    <div style="display: inline-block; width: 100%;text-align: left; margin-bottom: 1rem">
+                        <input type="hidden" name="full_review" value="{{ review.review_id }}">
+                        <input type="checkbox" name="check_review" value="{{ review.review_id }}" checked>
+                        {{ review.review_number }}.
+                        <span class="current_target{{ review.review_id }}">{{ review.review_content }}</span>
+                        <script>
+                            {% if labels|length > 0 %}
+                            {% for label in labels %}
+                            $('.current_target{{ review.review_id }}').each(function () {
+                                $(this).html($(this).html().replace("{{label.first_labeled_target}}", '<span style="background-color:{{ label.category_id__category_color }}">{{label.first_labeled_target}}</span>'));
+                                $(this).html($(this).html().replace("{{label.first_labeled_expression}}", '<span style="background-color:{{ label.category_id__category_color }}">{{label.first_labeled_expression}}</span>'));
+                            });
+                            {% endfor %}
+                            {% endif %}
+                        </script>
+                        <br>
+                        {% if labels|length > 0 %}
+                            {% for label in labels %}
+                                {% if label.first_labeled_emotion == 'neutral' %}
+                                <div style="color: gray;display: inline-block">
+                                    {{ label.category_id__category_middle }} -
+                                    {{ label.first_labeled_target }} -
+                                    {{ label.first_labeled_expression }},&nbsp
+                                </div>
 
-                <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
-                {{ review_first.review_number }}.
-                <span class="current_target">{{ review_first.review_content }}</span>
-                <script>
-                    {% for status_result in status_result %}
-                    $('.current_target').each(function () {
-                        $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
-                        $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
+                                {% elif label.first_labeled_emotion == 'positive' %}
+                                <div style="color: blue;display: inline-block">
+                                    {{ label.category_id__category_middle }} -
+                                    {{ label.first_labeled_target }} -
+                                    {{ label.first_labeled_expression }},&nbsp
+                                </div>
 
-                    });
-                    {% endfor %}
-                </script>
-                <script>
-                    {% for status_result2 in status_result2 %}
-                    $('.current_target').each(function () {
-                        $(this).html($(this).html().replace("{{status_result2.second_labeled_target}}", '<span style="background-color:{{ status_result2.category_id.category_color }}">{{status_result2.second_labeled_target}}</span>'));
-                        $(this).html($(this).html().replace("{{status_result2.second_labeled_expression}}", '<span style="background-color:{{ status_result2.category_id.category_color }}">{{status_result2.second_labeled_expression}}</span>'));
-
-                    });
-                    {% endfor %}
-                </script>
-
-
-        <div>
-            {% for status_result in status_result %}
-            {% if status_result.first_labeled_emotion == 'neutral' %}
-            <div style="color: gray">
-                {{ status_result.category_id.category_middle }} -
-                {{ status_result.first_labeled_target }} -
-                {{ status_result.first_labeled_expression }}
-
-                {# 라벨링 하고 옆에 뜨는 x표시 체크하는 부분 새로고침을 눌러야 현재 적용 #}
-                <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
-            </div>
-
-            {% elif status_result.first_labeled_emotion == 'positive' %}
-            <div style="color: blue">
-                {{ status_result.category_id.category_middle }} -
-                {{ status_result.first_labeled_target }} -
-                {{ status_result.first_labeled_expression }}
-                <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
-            </div>
-            {% elif status_result.first_labeled_emotion == 'negative' %}
-            <div style="color: red">
-                {{ status_result.category_id.category_middle }} -
-                {{ status_result.first_labeled_target }} -
-                {{ status_result.first_labeled_expression }}
-                <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_label(`{{ status_result.pk }}`)">x</button>
-            </div>
-            {% endif %}
+                                {% elif label.first_labeled_emotion == 'negative' %}
+                                <div style="color: red;display: inline-block">
+                                    {{ label.category_id__category_middle }} -
+                                    {{ label.first_labeled_target }} -
+                                    {{ label.first_labeled_expression }},&nbsp
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </p>
             {% endfor %}
         </div>
-        </p>
-        <p>
-        <div>
-            {% for status_result2 in status_result2 %}
-            {% if status_result2.second_labeled_emotion == 'neutral' %}
-            <div style="color: gray">
-                {{ status_result2.category_id.category_middle }}
-                {{ status_result2.second_labeled_target }}
-                {{ status_result2.second_labeled_expression }}
 
-                {# 라벨링 하고 옆에 뜨는 x표시 체크하는 부분 새로고침을 눌러야 현재 적용 #}
-                <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_inspect_label(`{{ status_result2.pk }}`)">x</button>
-            </div>
 
-            {% elif status_result2.second_labeled_emotion == 'positive' %}
-            <div style="color: blue">
-                {{ status_result2.category_id.category_middle }}
-                {{ status_result2.second_labeled_target }}
-                {{ status_result2.second_labeled_expression }}
-                <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_inspect_label(`{{ status_result2.pk }}`)">x</button>
-            </div>
-            {% elif status_result2.second_labeled_emotion == 'negative' %}
-            <div style="color: red">
-                {{ status_result2.category_id.category_middle }}
-                {{ status_result2.second_labeled_target }}
-                {{ status_result2.second_labeled_expression }}
-                <button style="outline: 0; border: 0;background-color:transparent;" onclick="delete_inspect_label(`{{ status_result2.pk }}`)">x</button>
-            </div>
-            {% endif %}
-            {% endfor %}
+
+        <!-- 검수완료 버튼 -->
+        <div style="width: 70rem; margin: 0.5rem auto;">
+            <input type="hidden" name="form-type" value="SuccessForm">
+            <input type="hidden" name="category_product" value="{{ category_product }}">
+            <input class="btn btn-outline-dark btn-sm" type="submit" value="검수완료" style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; float: right">
         </div>
-        </p>
-        <p>
-        <form action="" method="post">
-            {% csrf_token %}
-            <div style="margin-bottom: 3rem;">
-                <select name='category_id' style="display: inline-block; width: 8rem; height: 1.9rem;
-                                    font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                    {% for category_detail in category_detail %}
-                    <option value='{{ category_detail.category_id }}'>
-                        {{ category_detail.category_middle }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <input type="text" name="labeled_target" placeholder="키워드">
-                <input type="text" name="labeled_expression" placeholder="현상">
-                <select name="labeled_emotion" style="display: inline-block; width: 8rem; height: 1.9rem;
-                                        font-family: 'Nanum Gothic Coding', monospace; font-weight: 200; margin-left: 0.3rem;">
-                    <option value="positive">긍정</option>
-                    <option value="negative">부정</option>
-                    <option value="neutral">중립</option>
-                </select>
-                <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                <input class="btn btn-outline-success btn-sm" type="submit" value="저장"
-                       onClick="window.location.reload()"
-                       style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem">
-            </div>
-        </form>
-        </p>
-    </div>
-
-
-    <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
-    <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: left;">
-        <form action="{% url 'labelingapp:inspect' %}" method="get" id="DummyForm">
-            {% csrf_token %}
-            <input type="hidden" name="form-type" value="DummyForm">
-            <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-            <input type="hidden" name="category_product" value="{{ category_product }}">
-            <input type="hidden" name="start" value="{{ start }}">
-            <input type="hidden" name="end" value="{{ end }}">
-            <input class="btn btn-outline-danger btn-sm" type="submit" value="버리기"
-                   style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem; margin-left: 3.2rem">
-        </form>
-    </div>
-    <div style="background-color: white ;width: 35rem; height: 5rem; display: inline-block; margin-top: .5rem; text-align: right;">
-        <button class="btn btn-outline-dark btn-sm" onclick="inspect_reset(`{{ review_first.review_id }}`)"
-                style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; font-size: 1rem;">초기화
-        </button>
-    </div>
-
-
-    <div style="display: inline-block;">
-        <form action="{% url 'labelingapp:inspect' %}" method="get" id="NextForm">
-            {% csrf_token %}
-            <input type="hidden" name="form-type" value="NextForm">
-            <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-            <input type="hidden" name="category_product" value="{{ category_product }}">
-            <input type="hidden" name="start" value="{{ start }}">
-            <input type="hidden" name="end" value="{{ end }}">
-            <input class="btn btn-outline-dark btn-sm" type="submit" value="다음"
-                   style="font-family: 'Nanum Gothic Coding', monospace; font-weight: 300; margin-right: 3.2rem; font-size: 1rem">
-        </form>
-    </div>
+        {% endif %}
+    </form>
 
 
 </div>
 
-{% endfor %}
 
 <script>
     function delete_inspect_label(label_number) {

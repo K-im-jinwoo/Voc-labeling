@@ -51,8 +51,8 @@ def labeling_work(request):
                                               dummy_status=0, first_assign_user=request.user.pk)) == 0:
                     review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
                                                               second_status=0, dummy_status=0,
-                                                              first_assign_user=0).values('pk')[:int(auto_assignment_value)]
-                    review_assignment = Review.objects.filter(pk__in=review_assignment)
+                                                              first_assign_user=0).order_by('review_number').values('pk')[:int(auto_assignment_value)]
+                    review_assignment = Review.objects.filter(pk__in=review_assignment).order_by('review_number')
                     review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
 
                 ##### ----- 개수 선택하면 할당됨(자동 할당 상태일 아닐 경우) ----- #####
@@ -61,8 +61,10 @@ def labeling_work(request):
                                               dummy_status=0, first_assign_user=request.user.pk)) == 0 and 'assignment_count' in request.GET:
                     review_assignment = Review.objects.filter(category_product=category_product, first_status=0,
                                                               second_status=0, dummy_status=0,
-                                                              first_assign_user=0).values('pk')[:int(request.GET.get('assignment_count'))]
-                    review_assignment = Review.objects.filter(pk__in=review_assignment)
+                                                              first_assign_user=0, second_assign_user=0).order_by('review_number').values('pk')[:int(request.GET.get('assignment_count'))]
+                    print("1",len(review_assignment))
+                    review_assignment = Review.objects.filter(pk__in=review_assignment).order_by('review_number')
+                    print("2",len(review_assignment))
                     review_assignment.update(first_assign_user=request.user.pk if request.user.pk != None else "0")
 
                 if request.GET.get("form-type") == 'DummyForm':
