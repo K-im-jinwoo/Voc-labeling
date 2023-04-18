@@ -33,12 +33,24 @@
                 <div class="product">
                     <div class="product_name">
                         <p class="fw-400">제품명</p>
-                        <select name='category_product'>
+                        <select name='category_product' id="product_select">
                             {% for product_name in product_names %}
                                 <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
                             {% endfor %}
                         </select>
                     </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                          var select = document.getElementById("product_select");
+                          var storedValue = localStorage.getItem("product_select_labeling");
+                          if (storedValue) {
+                            select.value = storedValue;
+                          }
+                          select.addEventListener("change", function() {
+                            localStorage.setItem("product_select_labeling", this.value);
+                          });
+                        });
+                    </script>
                     <div class="work_count">
                         <p class="fw-400">작업 개수</p>
                         <input class="input" type="text" name="assignment_count" value="50" placeholder="작업할 리뷰 개수 설정">
@@ -58,7 +70,12 @@
                                     <p>{{ category_detail.category_middle }}</p>
                                 </div>
                             {% endfor %}
+                        {% else %}
+                            <script>
+                                alert('파일이 업로드 되지 않았습니다.');
+                            </script>
                         {% endif %}
+                        
                     </div>
                 </div>
                 <div class="feel">
