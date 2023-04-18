@@ -17,7 +17,7 @@
             <form action="" method="get" class="first" name="afgsgd">
                 {% csrf_token %}
                 <div class="product_choice">
-                  <p class="subject fs-base">제품 선택</p>
+                  <p class="subject fs-base fw-400">제품 선택</p>
                   <select name='category_product' id="product_select" >
                     <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
                     {% for product_name in product_names %}
@@ -51,9 +51,9 @@
             <form action="" method="post" class= "second">
                 {% csrf_token %}
                 <div class="product_add">
-                    <p class="subject fs-base">제품 추가</p>
+                    <p class="subject fs-base fw-400">제품 추가</p>
                     <input class="input" type="text" name="category_add">
-                    <input class="asdf btn btn-outline-dark btn-sm" type="submit" value="확인">
+                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
                 </div>
             </form>
         </div>
@@ -76,8 +76,8 @@
         </script>
         <div class="category">
             <div class="subject2">
-                <p class="c_title">카테고리</p>
-                <button class="delbtn fs-small" style ="color: white" type="button" onclick="addDeleteButton()"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <p class="c_title fw-400">카테고리</p>
+                <button class="delbtn fs-small fw-600" style ="color: white" type="button" onclick="addDeleteButton()"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7.66658 4V10.6667H2.33325V4H7.66658ZM6.66658 0H3.33325L2.66659 0.666667H0.333252V2H9.66658V0.666667H7.33325L6.66658 0ZM8.99992 2.66667H0.999919V10.6667C0.999919 11.4 1.59992 12 2.33325 12H7.66658C8.39992 12 8.99992 11.4 8.99992 10.6667V2.66667Z" fill="white"/>
                     </svg>삭제
                 </button>
@@ -131,12 +131,12 @@
                     <div class="add">
                       <input type="hidden" name="form-type" value="formOne">
                       <label for="category-label">
-                        <input class="category_name fs-small" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
+                        <input class="category_name fs-small fw-400" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
                       </label>
                       <label for="color-label">
                         <input class="category_color" type='color' name="category_color" id="color-label" value='#0000ff'>
                       </label>
-                      <button class="category_plus" type="submit" name="category_submit" value="submit">추가</button>
+                      <button class="category_plus fs-small fw-600" type="submit" name="category_submit" value="submit">추가</button>
                     </div>
                   </form>
                   
@@ -145,7 +145,7 @@
 
         <div class="fileload">
             <div class="upload_title">
-                <p class="subject fs-base">파일 업로드</p>
+                <p class="subject fs-base fw-400">파일 업로드</p>
                 <p class="asd fs-tiny">* XXMB 이하의 .excel 파일 1개 업로드 가능합니다.</p>
                 <p style="float:right; margin: 0 0 0 0; display:inline-block; color: blue; font-weight: bold">{{ request.session.message }}</p>
             </div>
@@ -156,13 +156,13 @@
                     {% csrf_token %}
                 <input type="hidden" name="form-type" value="formTwo">
                 <label for="file">
-                    <div class="btn-upload fs-small">파일 선택</div>
+                    <div class="btn-upload fs-small fw-600">파일 선택</div>
                 </label>
                     <input class="file_choice sr-only" type="file" name="upload_file" id="file">
                     <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
 
                 <label for="file">
-                    <div class="file_name fs-small">선택된 파일 없음.</div>
+                    <div class="file_name fs-small fw-600">선택된 파일 없음.</div>
                 </label>
                 <script>
                     window.onload=function(){
@@ -182,7 +182,7 @@
     
                     <!--카테고리 선택 시에만 파일 업로드 가능-->
                     {% if request.session.category_product is not null %}
-                        <button class="send_btn fs-small" type="submit"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button class="send_btn fs-small fw-600" type="submit" style="color:white;"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7.33333 0.333336H2C1.26666 0.333336 0.673331 0.933336 0.673331 1.66667L0.666664 12.3333C0.666664 13.0667 1.26 13.6667 1.99333 13.6667H10C10.7333 13.6667 11.3333 13.0667 11.3333 12.3333V4.33334L7.33333 0.333336ZM10 12.3333H2V1.66667H6.66666V5H10V12.3333ZM3.33333 9.00667L4.27333 9.94667L5.33333 8.89334V11.6667H6.66666V8.89334L7.72666 9.95334L8.66666 9.00667L6.00666 6.33334L3.33333 9.00667Z" fill="white" fill-opacity="0.9"/>
                             </svg>
                             제출</button>
