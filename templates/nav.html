@@ -4,6 +4,10 @@
   function labelingls(){
     localStorage.setItem("product_select_labeling", "");
   }
+
+  function uploadls(){
+    localStorage.setItem("product_select", "");
+  }
 </script>
 
 <div id="nav">
@@ -29,7 +33,7 @@
       <ul class="fw-400 fs-small">
         <li class="menu-pd">
           <img src="{% static 'images/upload.svg' %}" alt="upload" class="upload-img">
-          <a href="{% url 'uploadapp:upload' %}" class="menu-link">
+          <a href="{% url 'uploadapp:upload' %}" class="menu-link" onclick={uploadls()}>
             Data Upload
           </a>
         </li>

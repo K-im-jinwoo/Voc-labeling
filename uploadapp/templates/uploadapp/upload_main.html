@@ -33,7 +33,6 @@
                   if (storedValue) {
                     select.value = storedValue;
                   }
-                  localStorage.setItem("product_select", "--제품을 선택하세요--");
                   select.addEventListener("change", function() {
                     localStorage.setItem("product_select", this.value);
                   });
