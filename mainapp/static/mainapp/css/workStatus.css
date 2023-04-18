@@ -7,16 +7,13 @@ content-title {
 .subject {
   display: inline-block;
   margin-right: 15px;
-  font-size: 16px;
-  line-height: 24px;
+  
   letter-spacing: 0em;
   text-align: left;
   
 }
 select {
   display: inline-block;
-  font-size: 16px;
-  line-height: 24px;
   width: 125px;
   height: 34px;
   border-radius: 5px;
@@ -37,8 +34,6 @@ select {
   height: 24px;
   text-align: center;
   border-radius: 12px;
-  font-size: 14px;
-  line-height: 24px;
   
   
 }
@@ -76,8 +71,6 @@ select {
 }
 .workStatus_now > a {
   color: #585757;
-  font-size: 14px;
-  line-height: 24px;
   letter-spacing: 0em;
   text-align: center;
   
@@ -98,8 +91,7 @@ svg{
 }
 .category_column {
   color: #1a1a1a;
-  font-size: 14px;
-  line-height: 24px;
+  
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
@@ -139,29 +131,25 @@ thead{
 .date_space_cut > p > a{
   color: #1A1A1A;
   font-style: normal;
-  font-size: 12px;
-  line-height: 24px;
+  
   
 }
 .cut1{
   font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
+  
   
 }
 
 .category_2 {
-  width: 100%;
+  width: 196px;
   height: 100%;
-  border: 1px solid #e4e4ef;
-  border-radius: 6px;
+  
   margin-right: 18px;
   
 }
 .category_target{
   color: #1a1a1a;
-  font-size: 14px;
-  line-height: 24px;
+  
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
@@ -178,8 +166,7 @@ thead{
 }
 .category_review{
   color: #1a1a1a;
-  font-size: 14px;
-  line-height: 24px;
+  
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
