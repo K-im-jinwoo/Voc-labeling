@@ -34,6 +34,7 @@
                     <div class="product_name">
                         <p class="fw-400">제품명</p>
                         <select name='category_product' id="product_select">
+                            <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
                             {% for product_name in product_names %}
                                 <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
                             {% endfor %}
@@ -71,9 +72,10 @@
                                 </div>
                             {% endfor %}
                         {% else %}
-                            <script>
-                                alert('파일이 업로드 되지 않았습니다.');
-                            </script>
+                            <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};
+                            opacity: 1; margin-bottom:.5rem">
+                                <p>제품 데이터가 업로드 되지 않았습니다.</p>
+                            </div>
                         {% endif %}
                         
                     </div>

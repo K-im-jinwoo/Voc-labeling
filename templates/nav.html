@@ -1,5 +1,11 @@
 {% load static %}
 
+<script>
+  function labelingls(){
+    localStorage.setItem("product_select_labeling", "");
+  }
+</script>
+
 <div id="nav">
   <nav class="nav">
     <h1 class="sr-only">메뉴</h1>
@@ -29,7 +35,7 @@
         </li>
         <li class="menu-pd">
           <img src="{% static 'images/labeling.svg' %}" alt="labeling" class="labeling-img">
-          <a href="{% url 'labelingapp:work' %}" class="menu-link">
+          <a href="{% url 'labelingapp:work' %}" class="menu-link" onclick={labelingls()}>
             Data Labeling</a>
         </li>
         <li class="menu-pd">
