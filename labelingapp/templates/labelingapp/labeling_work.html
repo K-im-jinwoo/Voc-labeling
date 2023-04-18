@@ -32,7 +32,7 @@
                 {% csrf_token %}
                 <div class="product">
                     <div class="product_name">
-                        <p class="fw-400">제품명</p>
+                        <p class="fw-400" style="margin-right:15px">제품명</p>
                         <select name='category_product' id="product_select">
                             <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
                             {% for product_name in product_names %}
@@ -53,7 +53,7 @@
                         });
                     </script>
                     <div class="work_count">
-                        <p class="fw-400">작업 개수</p>
+                        <p class="fw-400" style="margin-right : 15px">작업 개수</p>
                         <input class="input" type="text" name="assignment_count" value="50" placeholder="작업할 리뷰 개수 설정">
                         <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인">
                         
