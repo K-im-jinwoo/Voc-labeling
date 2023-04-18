@@ -123,7 +123,7 @@ def upload_main(request):
         if request.method == "GET":
             context = dict()
             context['product_names'] = Category.objects.all().values('category_product').distinct()
-            request.session['category_product'] = 'cleaner'
+            request.session['category_product'] = '--제품을 선택하세요--'
             if request.GET.get('category_product'):
                 request.session['category_product'] = request.GET.get('category_product')
             context['category_detail'] = Category.objects.filter(category_product=request.session['category_product'])
@@ -195,12 +195,14 @@ def upload_main(request):
 
                     # 저장 부분
                     review_obj = [Review(review_content=row['Original Comments'],
-                                         category_product=request.POST.get('category_product'),
-                                         review_number=row['index']) for _, row in dbframe.iterrows()]
+                    category_product=request.POST.get('category_product'),
+                    review_number=row['index']) for _, row in dbframe.iterrows()]
                     Review.objects.bulk_create(review_obj)
                     request.session['message'] = '업로드가 완료되었습니다.'
                     request.session.set_expiry(3)
-                    return HttpResponseRedirect(reverse('uploadapp:upload'))
+                    url = reverse('uploadapp:upload') + f'?category_product={request.POST.get("category_product")}'
+                    return HttpResponseRedirect(url)
+
         return render(request, 'uploadapp/upload_main.html', {})
 
     # 예외 처리
