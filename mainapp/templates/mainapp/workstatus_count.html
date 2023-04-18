@@ -28,7 +28,8 @@
           {% csrf_token %}
           <div class="subject">제품 선택</div>
           
-          <select name="category_product" id="product_select">
+          <select name="category_product" id="product_select_status2">
+            <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
               {% for product_name in product_names %}
                   <option value="{{ product_name }}"
                       {% if category_product == product_name %} selected {% endif %}>
@@ -45,18 +46,18 @@
           
           <script> // 제품 선택 후 로컬에 저장
             document.addEventListener("DOMContentLoaded", function() {
-              var select = document.getElementById("product_select");
-              var storedValue = localStorage.getItem("product_select");
+              var select = document.getElementById("product_select_status2");
+              var storedValue = localStorage.getItem("product_select_status2");
               if (storedValue) {
                 select.value = storedValue;
               }
               select.addEventListener("change", function() {
-                localStorage.setItem("product_select", this.value);
+                localStorage.setItem("product_select_status2", this.value);
               });
             });
           
             $(document).ready(function() {
-              $('#product_select').change(function() {
+              $('#product_select_status2').change(function() {
                 $('form[name="afgsgd"]').submit();
               });
             });
