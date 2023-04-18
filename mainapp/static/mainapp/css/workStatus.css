@@ -103,6 +103,7 @@ svg{
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
+  overflow: hidden;
 }
 table {
   text-align: center;
@@ -164,7 +165,7 @@ thead{
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
-  
+  overflow: hidden;
 }.cut2{
   
   width: 99px;
@@ -198,7 +199,6 @@ tbody::-webkit-scrollbar-thumb {
   border-radius: 5px;
 }
 tbody{
-  
   overflow-y: scroll;
   max-height: 590px;
   width: 100%;
