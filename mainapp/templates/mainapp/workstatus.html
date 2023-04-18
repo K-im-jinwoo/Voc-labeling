@@ -71,7 +71,7 @@
           <table id='myTable'>
             <thead class="thead fw-600">
               <tr>
-                <th class ='gd'> <div class="data_label label1">카테고리</div></th>
+                <th> <div class="data_label label1">카테고리</div></th>
                 <th><div class="data_label">
                 긍정</div></th>
                 <th><div class="data_label">
@@ -88,56 +88,56 @@
                 </div></th>
               </tr>
             </thead>
-              <tbody>
-                
-                {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
+            <tbody>
+              
+              {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
 
-                <tr>
-                  <td><div class="date_space_cut cut1 fw-600">
-                    <p>{{ category_detail_list }}</p>
-                  </div>
-                  </td>
-                  <td><div class="date_space_cut fw-400" >
-                    <p>
-                      <a
-                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
-                        >{{ positive.count }}</a
-                      >
-                    </p>
-                  </div>
-                  </td>
-                  <td><div class="date_space_cut fw-400" >
-                    <p>
-                      <a
-                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative"
-                        >{{ negative.count }}</a
-                      >
-                    </p>
-                  </div>
-                  </td>
-                  <td> <!-- 중립 개수 -->
-                    <div class="date_space_cut fw-400">
-                      <p>
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
-                          >{{ neutral.count }}</a
-                        >
-                      </p>
-                    </div>
-                  </td>
-                  <td><div class="date_space_cut fw-400">
-                    <p>
-                      <a
-                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
-                        >{{ everything.count }}</a
-                      >
-                    </p>
-                  </div>       
+              <tr>
+                <td><div class="date_space_cut cut1 fw-600">
+                  <p>{{ category_detail_list }}</p>
+                </div>
                 </td>
-                </tr>
-                {% endfor %}
-            
-              </tbody>
+                <td><div class="date_space_cut fw-400" >
+                  <p>
+                    <a
+                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
+                      >{{ positive.count }}</a
+                    >
+                  </p>
+                </div>
+                </td>
+                <td><div class="date_space_cut fw-400" >
+                  <p>
+                    <a
+                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative"
+                      >{{ negative.count }}</a
+                    >
+                  </p>
+                </div>
+                </td>
+                <td> <!-- 중립 개수 -->
+                  <div class="date_space_cut fw-400">
+                    <p>
+                      <a
+                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
+                        >{{ neutral.count }}</a
+                      >
+                    </p>
+                  </div>
+                </td>
+                <td><div class="date_space_cut fw-400">
+                  <p>
+                    <a
+                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
+                      >{{ everything.count }}</a
+                    >
+                  </p>
+                </div>       
+              </td>
+              </tr>
+              {% endfor %}
+          
+            </tbody>
           </table> 
         
         </div>
