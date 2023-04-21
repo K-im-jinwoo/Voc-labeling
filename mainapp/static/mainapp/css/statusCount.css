@@ -59,21 +59,10 @@
     
   }
 
-  tbody::-webkit-scrollbar {
-    width: 5px;  /* 스크롤바의 너비 */
-    height: 75px;
-    background: #ffffff ;
-  }
   
-  tbody::-webkit-scrollbar-thumb {
-    
-    background: #D4D4D4 ;
-    border-radius: 5px;
-  }
   tbody{
     display: block;
-    overflow-y: scroll;
-    max-height: 373px;
+    
     width: 100%;
     
   }
@@ -81,3 +70,4 @@
     height: 150%;
 
   }
+  
