@@ -40,14 +40,30 @@
               </script>
               <script src="https://code.jquery.acom/jquery-3.6.0.min.js"></script>
               <script>
-                
                  $(document).ready(function() {
                   $('#product_select').change(function() {
                     $('form[name="afgsgd"]').submit();
                   });
                 });
               </script>
-              
+            <form action="" method="post" class="">
+                {% csrf_token %}
+                <div class="product_update">
+                    <p class="subject fs-base fw-400">제품명 변경</p>
+                    <input class="input" type="hidden" name="category_product" id="category_product_input">
+                    <input class="input" type="text" name="category_update">
+                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
+                </div>
+            </form>
+            <script>
+            $(document).ready(function() {
+                // localStorage에서 product_name 가져오기
+                const product_name = localStorage.getItem('product_select');
+
+                // 폼 필드에 product_name 값 적용
+                $('#category_product_input').val(product_name);
+            });
+            </script>
             <form action="" method="post" class= "second">
                 {% csrf_token %}
                 <div class="product_add">
