@@ -112,6 +112,18 @@ def workstatus_review(request):
                     # labeled_word에 대상 - 현상 키워드 쌍을 저장함
                     labeled_word = type_to_variable(showing_type, positive, negative, neutral, everything)
                     labeled_word = labeled_word[int(showing_index)]
+                    set_labeled_word = labeled_word
+                    laebled_box = []
+                    for obj in set_labeled_word:
+                        target = obj.first_labeled_target
+                        expression = obj.first_labeled_expression
+                        ssang = [target, expression]
+                        if(ssang not in laebled_box):
+                            laebled_box.append(ssang)
+                        
+                    # labeled_word = list(set(labeled_word))
+                    context['box'] = laebled_box
+                    # print('aAAAAAAAAAAAAAAA',labeled_word)
                     context['labeled_word'] = labeled_word
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                     labeled_review = labeled_word.values_list('review_id', flat=True)
