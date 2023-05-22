@@ -113,16 +113,32 @@ def workstatus_review(request):
                     labeled_word = type_to_variable(showing_type, positive, negative, neutral, everything)
                     labeled_word = labeled_word[int(showing_index)]
                     set_labeled_word = labeled_word
-                    laebled_box = []
+                    labeled_box = []
+                    box_counter = []
                     for obj in set_labeled_word:
                         target = obj.first_labeled_target
                         expression = obj.first_labeled_expression
                         ssang = [target, expression]
-                        if(ssang not in laebled_box):
-                            laebled_box.append(ssang)
-                        
+                        if(ssang not in labeled_box):
+                            labeled_box.append(ssang)
+                            ssang_name = target+expression
+                            box_counter.append({ssang_name : 1})
+                        else:
+                            key_to_find = ssang_name
+                            for dictionary in box_counter:
+                                if key_to_find in dictionary:
+                                    dictionary[ssang_name] += 1
+                    for box in labeled_box:
+                        sum = box[0] + box[1]
+                        for d in box_counter:
+                            a = d.keys()
+                            print("AAAAAAAAAAAa",next(iter(a)),sum)
+                            if next(iter(a)) == sum:
+                                box.append(next(iter(d.values())))
+                                  
                     # labeled_word = list(set(labeled_word))
-                    context['box'] = laebled_box
+                    context['box'] = labeled_box
+                    context['box_counter'] = box_counter
                     # print('aAAAAAAAAAAAAAAA',labeled_word)
                     context['labeled_word'] = labeled_word
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
