@@ -4,7 +4,16 @@ from django.contrib import admin
 
 from .models import Category, Review, FirstLabeledData, Result, SecondLabeledData
 
-admin.site.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['category_product', 'category_middle', 'category_color']
+
+    def delete_model(self, request, obj):
+        obj.category_product = None
+        obj.save()
+
+    actions = ['delete_selected']
+
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Review)
 admin.site.register(FirstLabeledData)
 admin.site.register(SecondLabeledData)

@@ -7,19 +7,12 @@
 .subject {
     display: inline-block;
     margin-right: 15px;
-    
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
     letter-spacing: 0em;
     text-align: left;
     
   }
   select {
     display: inline-block;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 24px;
     width: 125px;
     height: 34px;
     border-radius: 5px;
@@ -33,9 +26,6 @@
     margin: 31px 27px 17px auto;
     background-color: #f2f2f2;
     color: #585757;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 24px;
     letter-spacing: 0em;
     text-align: center;
     padding: 5px 10px 5px 10px;
@@ -58,38 +48,21 @@
     background-color: #f2f2f2;
     text-align: center;
     padding: 10px 16px;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
     letter-spacing: 0em;
   }
   td{
     height: 44px;
     color: #1A1A1A;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
     letter-spacing: 0em;
     text-align: center;
     padding: 5px 16px;
     
   }
 
-  tbody::-webkit-scrollbar {
-    width: 5px;  /* 스크롤바의 너비 */
-    height: 75px;
-    background: #ffffff ;
-  }
   
-  tbody::-webkit-scrollbar-thumb {
-    
-    background: #D4D4D4 ;
-    border-radius: 5px;
-  }
   tbody{
     display: block;
-    overflow-y: scroll;
-    max-height: 373px;
+    
     width: 100%;
     
   }
@@ -97,3 +70,4 @@
     height: 150%;
 
   }
+  
