@@ -31,8 +31,9 @@
       </div>
 
       {% else %} <!--로그인 안한 상태-->
-      <a href="{% url 'mainapp:login' %}?next={{ request.path }}">Login</a>
-      <a href="{% url 'mainapp:signup' %}?next={{ request.path }}">SignUp</a>
+        <a href="{% url 'mainapp:login' %}?next={{ request.path }}" class="login_btn">Login</a>
+        <a href="{% url 'mainapp:signup' %}?next={{ request.path }}" class="signup_btn">SignUp</a>
+      
 
       {% endif %}
       <ul class="fw-400 fs-small">
