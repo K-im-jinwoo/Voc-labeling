@@ -8,26 +8,38 @@
 
 .header-title-name {
   padding: 28px 0 28px 61px;
+  display: flex;
+  align-items: center; /* 요소들을 수직정렬 */
+  justify-content: space-between; /* 요소들을 좌우로 균등 분할 */
+  width: 100%; /* 너비를 최대로 설정 */
+  text-align: center;
 }
 
 .nav {
   float:left;
   position:relative;
 }
+
+.login_signup {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  padding: 20px;
+}
+
 .login_btn{
-  position: absolute;
-  left: 544%;
   color: black;
-  top: 2%;
-  border-right: 1px solid black;
-  padding-right: 5px;
+  padding: 12px;
 }
 
 .signup_btn {
-  position: absolute;
-  left: 563%;
   color: black;
-  top: 2%;
+  padding: 12px;
+}
+
+.logout_btn {
+  color: black;
+  padding: 12px;
 }
 
 .nav-wrap {
@@ -41,6 +53,14 @@
   align-items: center;
   height: 114px;
   padding: 40px 0 34px 20px;
+  text-align: center;
+}
+
+.loginplease{
+  display: flex;
+  padding: 40px 0 34px;
+  justify-content: center;
+  text-align: center;
 }
 
 .profile-img {
@@ -122,4 +142,8 @@
 .first-desc-wrap {
   width: 100%;
   padding: 48px 45px 22px
+}
+
+.form-group {
+  padding: 5px 0;
 }
