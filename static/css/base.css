@@ -3,7 +3,7 @@
   display: flex;
   flex-grow: 1;
   height: 80px;
-  border-bottom: 1px solid #D4D4D4;
+  border-bottom: 1px solid #d4d4d4;
 }
 
 .header-title-name {
@@ -11,15 +11,15 @@
 }
 
 .nav {
-  float:left;
-  position:relative;
+  float: left;
+  position: relative;
 }
 
 .nav-wrap {
   width: 250px;
   height: 1024px;
   color: rgba(255, 255, 255, 0.9);
-  background: #3E3E3E;
+  background: #3e3e3e;
 }
 .user-profile-login {
   display: flex;
@@ -35,28 +35,33 @@
 }
 
 .user-profile-name {
-  padding-left:10px;
+  padding-left: 10px;
 }
 .mypage-img {
-  display:inline-block;
-  margin-left:auto;
-  margin-right:44.9px;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: 44.9px;
 }
-
 
 .menu-pd {
-  position:relative;
+  position: relative;
   padding: 10px 0 10px 61px;
+  margin-top: 10px;
 }
-.upload-img,.labeling-img,.list-img,.download-img,.logout-img {
-    position: absolute;
-    left: 32px;
-    top: 15px;
+.upload-img,
+.labeling-img,
+.list-img,
+.download-img,
+.logout-img {
+  position: absolute;
+  left: 32px;
+  top: 15px;
 }
 .menu-pd:hover {
-  border-right: 4px solid #A50034;
+  border-right: 4px solid #a50034;
 }
-.menu-pd:hover, .logout-btn:hover {
+.menu-pd:hover,
+.logout-btn:hover {
   background: #333333;
 }
 .menu-link {
@@ -65,7 +70,7 @@
 }
 
 .logout-btn {
-  position:absolute;
+  position: absolute;
   bottom: 41px;
   width: 200px;
   height: 42px;
@@ -74,7 +79,7 @@
   border-radius: 7px;
 }
 .logout-btn > a {
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -83,7 +88,7 @@
 
 /* main page */
 .content-wrap {
-  display:flex;
+  display: flex;
   flex-direction: column;
 }
 
@@ -94,10 +99,10 @@
 }
 
 .first-desc {
-  display:flex;
+  display: flex;
   flex-grow: 1;
   width: auto;
-  border: 1px solid #D5D5D5;
+  border: 1px solid #d5d5d5;
   border-radius: 10px;
   margin-right: 75px;
   margin-left: 34px;
@@ -105,5 +110,9 @@
 
 .first-desc-wrap {
   width: 100%;
-  padding: 48px 45px 22px
+  padding: 48px 45px 22px;
+}
+
+.form-group {
+  padding: 5px 0;
 }
