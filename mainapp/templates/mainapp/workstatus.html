@@ -187,18 +187,19 @@
               </tr>
             </thead>
             <tbody>
-              {% for word in labeled_word %}
+
+              {% for word in box %}
               <tr>
                 <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
                   
                   ">
-                  {{ word.first_labeled_target }}
+                  {{ word.0 }}({{word.2}})
                 </div></td>
                 <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
                   font-weight: 400;
           
                   ">
-                  {{ word.first_labeled_expression }}
+                  {{ word.1}}
                 </div></td>
               {% endfor %}
             </tbody>
@@ -216,6 +217,7 @@
                   >데이터</div></th>
               </tr>
             </thead>
+            <div>
             <tbody>
               <tr>
                 {% for review in labeled_review %}
@@ -230,6 +232,7 @@
               </td>
               {% endfor %}
             </tbody>
+          </div>
           </table>                
         </div>
       </div>

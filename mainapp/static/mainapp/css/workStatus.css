@@ -85,33 +85,19 @@ svg{
 }
 .category_1 {
   width: 100%;
-  height: 100%;
-  
   margin-right: 18px;
 }
 .category_column {
   color: #1a1a1a;
-  
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
-  overflow: hidden;
-}
-table {
-  text-align: center;
-  width: 100%;
-  border-collapse: collapse;
-  
-}
-tr {
-  border: 1px solid #E8E8E8;
-  padding: 5px 16px;
-
+  max-height: 646px;
+  overflow-y: auto;
 }
 
-thead{
- 
-}
+
+
 .data_label {
   background-color: #f2f2f2;
   text-align: center;
@@ -141,53 +127,73 @@ thead{
 }
 
 .category_2 {
-  width: 196px;
-  height: 100%;
-  
+  width: 196px; 
   margin-right: 18px;
   
 }
 .category_target{
-  color: #1a1a1a;
+  color: #1a1a1a; 
   
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
-  overflow: hidden;
+  overflow-x: hidden;
+  max-height: 646px;
+  overflow-y: auto;
+ 
 }.cut2{
   
   width: 99px;
 }
 .category_3{
   width: 100%;
-  height: 100%;
- 
   margin-right: 27px;
 }
 .category_review{
   color: #1a1a1a;
-  
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
-  overflow: hidden;
-}
-
-
-tbody::-webkit-scrollbar {
-  width: 5px;  /* 스크롤바의 너비 */
-  height: 150px;
-  background: #ffffff ;
-}
-
-tbody::-webkit-scrollbar-thumb {
+  max-height: 646px;
+  overflow-y: auto ;
   
-  background: #D4D4D4 ;
+}
+table {
+  text-align: center;
+  width: 100%;
+  border-collapse: collapse;
+  
+}
+tr {
+  border: 1px solid #E8E8E8;
+  padding: 5px 16px;
+
+}
+
+
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* 스크롤바의 배경색을 지정 */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* 스크롤바 위쪽의 화살표를 지정 */
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+  height: 0;
+}
+
+/* 스크롤바 색상을 지정 */
+::-webkit-scrollbar-thumb {
+  background-color: #888;
   border-radius: 5px;
 }
-tbody{
-  overflow-y: scroll;
-  max-height: 590px;
-  width: 100%;
-  
+
+/* 스크롤바 위쪽의 공간을 지정 */
+::-webkit-scrollbar-track-piece {
+  margin-top: 5px;
 }
