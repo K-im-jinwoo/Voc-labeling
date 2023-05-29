@@ -40,14 +40,30 @@
               </script>
               <script src="https://code.jquery.acom/jquery-3.6.0.min.js"></script>
               <script>
-                
                  $(document).ready(function() {
                   $('#product_select').change(function() {
                     $('form[name="afgsgd"]').submit();
                   });
                 });
               </script>
-              
+            <form action="" method="post" class="">
+                {% csrf_token %}
+                <div class="product_add">
+                    <p class="subject fs-base fw-400">제품명 변경</p>
+                    <input class="input" type="hidden" name="category_product" id="category_product_input">
+                    <input class="input" type="text" name="category_update">
+                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
+                </div>
+            </form>
+            <script>
+            $(document).ready(function() {
+                // localStorage에서 product_name 가져오기
+                const product_name = localStorage.getItem('product_select');
+
+                // 폼 필드에 product_name 값 적용
+                $('#category_product_input').val(product_name);
+            });
+            </script>
             <form action="" method="post" class= "second">
                 {% csrf_token %}
                 <div class="product_add">
@@ -181,7 +197,7 @@
                 
     
                     <!--카테고리 선택 시에만 파일 업로드 가능-->
-                    {% if request.session.category_product is not null %}
+                    {% if request.session.category_product is not None %}
                         <button class="send_btn fs-small fw-600" type="submit" style="color:white;"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7.33333 0.333336H2C1.26666 0.333336 0.673331 0.933336 0.673331 1.66667L0.666664 12.3333C0.666664 13.0667 1.26 13.6667 1.99333 13.6667H10C10.7333 13.6667 11.3333 13.0667 11.3333 12.3333V4.33334L7.33333 0.333336ZM10 12.3333H2V1.66667H6.66666V5H10V12.3333ZM3.33333 9.00667L4.27333 9.94667L5.33333 8.89334V11.6667H6.66666V8.89334L7.72666 9.95334L8.66666 9.00667L6.00666 6.33334L3.33333 9.00667Z" fill="white" fill-opacity="0.9"/>
                             </svg>
@@ -189,6 +205,7 @@
                     {% else %}
                         <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                     {% endif %}
+
                 </form>
             </div>
         </div>

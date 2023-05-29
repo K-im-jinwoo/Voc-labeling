@@ -15,54 +15,74 @@
   }
 </script>
 
+
 <div id="nav">
   <nav class="nav">
     <h1 class="sr-only">메뉴</h1>
     <div class="nav-wrap">
-      {% if user.is_authenticated %} <!--로그인 한 상태-->
-      <div class="user-profile-login">
-        <img src="{{ user.profile.image.url }}" class="profile-img">
-        <strong class="fw-600 fs-medium user-profile-name">
-          {{ user.username }}
-        </strong>
-        <a href="{% url 'mainapp:account' pk=user.pk %}" class="mypage-img">
-          <img src="{% static 'images/setting.svg' %}" alt="Mypage" >
-        </a>
+
+      {% if user.is_authenticated %}
+        <div class="user-profile-login">
+          <img src="{{ user.profile.image.url }}" class="profile-img">
+          <strong class="fw-600 fs-medium user-profile-name">
+              {{ user.username }}
+          </strong>
+          <a href="{% url 'mainapp:account' user.pk %}" class="mypage-img">
+              <img src="{% static 'images/setting.svg' %}" alt="Mypage" >
+          </a>
+        </div>
+        <ul class="fw-400 fs-small">
+          <li class="menu-pd">
+            <img src="{% static 'images/upload.svg' %}" alt="upload" class="upload-img">
+            <a href="{% url 'uploadapp:upload' %}" class="menu-link" onclick={uploadls()}>
+              Data Upload
+            </a>
+          </li>
+          <li class="menu-pd">
+            <img src="{% static 'images/labeling.svg' %}" alt="labeling" class="labeling-img">
+            <a href="{% url 'labelingapp:work' %}" class="menu-link" onclick={labelingls()}>
+              Data Labeling</a>
+          </li>
+          <li class="menu-pd">
+            <img src="{% static 'images/list.svg' %}" alt="list" class="list-img">
+            <a href="{% url 'mainapp:workstatus' %}" class="menu-link" onclick={statusls()}>
+              Work Status</a>
+          </li>
+          <li class="menu-pd">
+            <img src="{% static 'images/download.svg' %}" alt="download" class="download-img">
+            <a href="{% url 'outputapp:output' %}" class="menu-link">
+              Data Export</a>
+          </li>
+        </ul>
+      {% else %}
+      <div class="user-profile-login fw-600 fs-medium loginplease">
+        <a href="{% url 'mainapp:login' %}?next={{ request.path }}">로그인 해주세요</a>
       </div>
-
-      {% else %} <!--로그인 안한 상태-->
-      <a href="{% url 'mainapp:login' %}?next={{ request.path }}">Login</a>
-      <a href="{% url 'mainapp:signup' %}?next={{ request.path }}">SignUp</a>
-
-      {% endif %}
       <ul class="fw-400 fs-small">
         <li class="menu-pd">
           <img src="{% static 'images/upload.svg' %}" alt="upload" class="upload-img">
-          <a href="{% url 'uploadapp:upload' %}" class="menu-link" onclick={uploadls()}>
+          <a href="{% url 'mainapp:login' %}?next={{ request.path }}" onclick={uploadls()}>
             Data Upload
           </a>
         </li>
         <li class="menu-pd">
           <img src="{% static 'images/labeling.svg' %}" alt="labeling" class="labeling-img">
-          <a href="{% url 'labelingapp:work' %}" class="menu-link" onclick={labelingls()}>
+          <a href="{% url 'mainapp:login' %}?next={{ request.path }}" onclick={labelingls()}>
             Data Labeling</a>
         </li>
         <li class="menu-pd">
           <img src="{% static 'images/list.svg' %}" alt="list" class="list-img">
-          <a href="{% url 'mainapp:workstatus' %}" class="menu-link" onclick={statusls()}>
+          <a href="{% url 'mainapp:login' %}?next={{ request.path }}" onclick={statusls()}>
             Work Status</a>
         </li>
         <li class="menu-pd">
           <img src="{% static 'images/download.svg' %}" alt="download" class="download-img">
-          <a href="{% url 'outputapp:output' %}" class="menu-link">
+          <a href="{% url 'mainapp:login' %}?next={{ request.path }}">
             Data Export</a>
         </li>
-        <button class="logout-btn lg-gray">
-          <img src="{% static 'images/logout.svg' %}" alt="logout" class="logout-img">
-          <a href="{% url 'mainapp:logout' %}" class="menu-link">
-            Logout</a>
-        </button>
       </ul>
+
+      {% endif %}
     </div>
   </nav>
 </div>
