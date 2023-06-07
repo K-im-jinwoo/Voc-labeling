@@ -241,7 +241,7 @@ def upload_main(request):
                     model_code=row['Model Code']) for _, row in dbframe.iterrows()]
                     Review.objects.bulk_create(review_obj)
                     request.session['message'] = '업로드가 완료되었습니다.'
-                    request.session.set_expiry(3)
+                    # request.session.set_expiry(3)
                     url = reverse('uploadapp:upload') + f'?category_product={request.POST.get("category_product")}'
                     return HttpResponseRedirect(url)
 

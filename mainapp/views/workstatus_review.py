@@ -53,7 +53,6 @@ def workstatus_review(request):
 
                 if 'sort' not in request.session:
                     request.session['sort'] = 'positive'
-
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
@@ -133,7 +132,6 @@ def workstatus_review(request):
                         sum = box[0] + box[1]
                         for d in box_counter:
                             a = d.keys()
-                            print("AAAAAAAAAAAa",next(iter(a)),sum)
                             if next(iter(a)) == sum:
                                 box.append(next(iter(d.values())))
                                   
@@ -156,6 +154,14 @@ def workstatus_review(request):
                 context['dummy_num'] = dummy_num
                 context['second_num'] = second_num
                 context['product_names'] = Category.objects.all().values('category_product').distinct()
+
+
+                my_model_list = Review.objects.filter(category_product=category_product).values('model_name').distinct()
+                context['model_names'] = my_model_list
+                my_code_list = Review.objects.filter(category_product=category_product).values('model_code').distinct()
+                context['model_codes'] = my_code_list
+
+                    
                 return render(request, 'mainapp/workstatus.html', context=context)
             context = dict()
             context['product_names'] = Category.objects.all().values('category_product').distinct()
@@ -165,10 +171,7 @@ def workstatus_review(request):
         else:
             context = {'message': '제품을 다시 선택해주세요.'}
             context['product_names'] = Category.objects.all().values('category_product').distinct()
-            model_names = Review.objects.values_list('model_name', flat=True).distinct()
-            context['model_names'] = model_names
-            model_codes = Review.objects.values_list('model_code', flat=True).distinct()
-            context['model_codes'] = model_codes
+            
             return render(request, 'mainapp/workstatus.html', context=context)
 
      
@@ -176,9 +179,4 @@ def workstatus_review(request):
     except Exception as identifier:
         print(identifier)
     
-    context = {}
-    model_names = Review.objects.values_list('model_name', flat=True).distinct()
-    context['model_names'] = model_names
-    model_codes = Review.objects.values_list('model_code', flat=True).distinct()
-    context['model_codes'] = model_codes  
     return render(request, 'mainapp/workstatus.html',context=context)
