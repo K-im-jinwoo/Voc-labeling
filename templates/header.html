@@ -4,9 +4,22 @@
   <header class="header-title primary-bg">
     <h1 class="header-title-name">
       <a href="{% url 'mainapp:main' %}" class="fs-large gray-200">
-        <span class="fw-600"> LG </span>
+        <span class="fw-600">
+          LG
+        </span>
         Review Labeling
       </a>
     </h1>
+    <div class="login_signup">
+      {% if user.is_authenticated %} <!--로그인 한 상태-->
+          <a href="{% url 'mainapp:logout' %}" class="logout_btn">Logout</a>
+        {% else %} <!--로그인 안한 상태-->
+        <a href="{% url 'mainapp:login' %}?next={{ request.path }}" class="login_btn">Login</a>
+        <a href="{% url 'mainapp:signup' %}?next={{ request.path }}" class="signup_btn">SignUp</a>
+      {% endif %}
+    </div>
   </header>
 </div>
+
+
+
