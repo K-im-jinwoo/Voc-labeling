@@ -1,89 +1,165 @@
-{% extends 'base.html' %} {% load static %} {% block style %} <link
-rel="stylesheet" href="{% static "uploadapp/css/upload_main.css" %}"> {%
-endblock %} {% block content-title %}
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static "uploadapp/css/upload_main.css" %}">
+{% endblock %}
+{% block content-title %}
 
-<h2 class="content-title fs-large fw-600 gray-200">Data Upload</h2>
-{% endblock %} {% block content %}
+<h2 class="content-title fs-large fw-600 gray-200">
+    Data Upload
+</h2>    
+{% endblock %}
+{% block content %}
 
 <div class="first-desc primary-bg gray-100">
-  <div class="first-desc-wrap">
-    <div class="product">
-      <form action="" method="get" class="first" name="afgsgd">
-        {% csrf_token %}
-        <div class="product_choice">
-          <p class="subject fs-base fw-400">제품 선택</p>
-          <select name="category_product" id="product_select">
-            <option value="--제품을 선택하세요--" selected>
-              --제품을 선택하세요--
-            </option>
-            {% for product_name in product_names %}
-            <option id="s" value="{{ product_name.category_product }}">
-              {{ product_name.category_product }}
-            </option>
-            {% endfor %}
-          </select>
-        </div>
-      </form>
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          var select = document.getElementById("product_select");
-          var storedValue = localStorage.getItem("product_select");
-          if (storedValue) {
-            select.value = storedValue;
-          }
-          select.addEventListener("change", function () {
-            localStorage.setItem("product_select", this.value);
-          });
-        });
-      </script>
-      <script src="https://code.jquery.acom/jquery-3.6.0.min.js"></script>
-      <script>
-        $(document).ready(function () {
-          $("#product_select").change(function () {
-            $('form[name="afgsgd"]').submit();
-          });
-        });
-      </script>
-      <form action="" method="post" class="">
-        {% csrf_token %}
-        <div class="product_add">
-          <p class="subject fs-base fw-400">제품명 변경</p>
-          <input
-            class="input"
-            type="hidden"
-            name="category_product"
-            id="category_product_input"
-          />
-          <input class="input" type="text" name="category_update" />
-          <input
-            class="asdf btn btn-outline-dark btn-sm fs-small fw-600"
-            type="submit"
-            value="확인"
-          />
-        </div>
-      </form>
-      <script>
-        $(document).ready(function () {
-          // localStorage에서 product_name 가져오기
-          const product_name = localStorage.getItem("product_select");
+    <div class="first-desc-wrap">
+        <div class= "product">
+            <form action="" method="get" class="first" name="afgsgd">
+                {% csrf_token %}
+                <div class="product_choice">
+                  <p class="subject fs-base fw-400">제품 선택</p>
+                  <select name='category_product' id="product_select" >
+                    <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
+                    {% for product_name in product_names %}
+                            <option id= "s"  value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </form>
+              <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                  var select = document.getElementById("product_select");
+                  var storedValue = localStorage.getItem("product_select");
+                  if (storedValue) {
+                    select.value = storedValue;
+                  }
+                  select.addEventListener("change", function() {
+                    localStorage.setItem("product_select", this.value);
+                  });
+                });
+              </script>
+              <script src="https://code.jquery.acom/jquery-3.6.0.min.js"></script>
+              <script>
+                 $(document).ready(function() {
+                  $('#product_select').change(function() {
+                    $('form[name="afgsgd"]').submit();
+                  });
+                });
+              </script>
+            <form action="" method="post" class="">
+                {% csrf_token %}
+                <div class="product_add">
+                    <p class="subject fs-base fw-400">제품명 변경</p>
+                    <input class="input" type="hidden" name="category_product" id="category_product_input">
+                    <input class="input" type="text" name="category_update">
+                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
+                </div>
+            </form>
+            <script>
+            $(document).ready(function() {
+                // localStorage에서 product_name 가져오기
+                const product_name = localStorage.getItem('product_select');
 
-<<<<<<< HEAD
-          // 폼 필드에 product_name 값 적용
-          $("#category_product_input").val(product_name);
-        });
-      </script>
-      <form action="" method="post" class="second">
-        {% csrf_token %}
-        <div class="product_add">
-          <p class="subject fs-base fw-400">제품 추가</p>
-          <input class="input" type="text" name="category_add" />
-          <input
-            class="asdf btn btn-outline-dark btn-sm fs-small fw-600"
-            type="submit"
-            value="확인"
-          />
-=======
-        <div id="uploadbox" class="fileload">
+                // 폼 필드에 product_name 값 적용
+                $('#category_product_input').val(product_name);
+            });
+            </script>
+            <form action="" method="post" class= "second">
+                {% csrf_token %}
+                <div class="product_add">
+                    <p class="subject fs-base fw-400">제품 추가</p>
+                    <input class="input" type="text" name="category_add">
+                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
+                </div>
+            </form>
+        </div>
+        <script>
+            function addDeleteButton() {
+                
+                // 카테고리 리스트를 가져옵니다.
+                const categoryList = document.querySelectorAll(".c_content");
+                
+                // 각 카테고리에 대해 버튼을 보이거나 숨깁니다.
+                categoryList.forEach(function(category) {
+                    const deleteButton = category.querySelector(".xbtn");
+                    if (deleteButton.style.display === "none") {
+                        deleteButton.style.display = "inline";
+                    } else {
+                        deleteButton.style.display = "none";
+                    }
+                });
+            }
+        </script>
+        <div class="category">
+            <div class="subject2">
+                <p class="c_title fw-400">카테고리</p>
+                <button class="delbtn fs-small fw-600" style ="color: white" type="button" onclick="addDeleteButton()"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.66658 4V10.6667H2.33325V4H7.66658ZM6.66658 0H3.33325L2.66659 0.666667H0.333252V2H9.66658V0.666667H7.33325L6.66658 0ZM8.99992 2.66667H0.999919V10.6667C0.999919 11.4 1.59992 12 2.33325 12H7.66658C8.39992 12 8.99992 11.4 8.99992 10.6667V2.66667Z" fill="white"/>
+                    </svg>삭제
+                </button>
+            </div>
+
+            
+            <script>
+                function deleteCategory(category_middle) {
+                    fetch('delete-category/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
+                        },
+                        body: `category_middle=${encodeURIComponent(category_middle)}`
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                            // Category was deleted successfully, do something (e.g. refresh the page)
+                        } else {
+                            // Handle error response
+                        }
+                    })
+                    .catch(error => {
+                        // Handle fetch() error
+                    });
+                }
+            </script>
+            <div class="show_container">
+                <!-- 카테고리 리스트 -->
+                <div class="category_value">
+                    {% if category_detail %}
+                        {% for category_detail in category_detail %}
+                            <div class="c_content fs-base" style="background-color: {{ category_detail.category_color }};">
+                                {{ category_detail.category_middle }}
+                                {% csrf_token %} 
+                                <button class="xbtn" style="display:none;" onclick="deleteCategory(`{{ category_detail.category_middle }}`)">
+                                    <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="8.5" cy="9" r="8.25" fill="#F2F2F2" stroke="#D5D5D5" stroke-width="0.5"/>
+                                        <path d="M11.714 6.21912C11.5283 6.03341 11.2283 6.03341 11.0426 6.21912L8.71399 8.54293L6.38542 6.21436C6.19971 6.02864 5.89971 6.02864 5.71399 6.21436C5.52828 6.40007 5.52828 6.70007 5.71399 6.88579L8.04256 9.21436L5.71399 11.5429C5.52828 11.7286 5.52828 12.0286 5.71399 12.2144C5.89971 12.4001 6.19971 12.4001 6.38542 12.2144L8.71399 9.88579L11.0426 12.2144C11.2283 12.4001 11.5283 12.4001 11.714 12.2144C11.8997 12.0286 11.8997 11.7286 11.714 11.5429L9.38542 9.21436L11.714 6.88579C11.8949 6.70484 11.8949 6.40007 11.714 6.21912Z" fill="#969696"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <form class="category_add" action="{% url 'uploadapp:upload' %}" method="post" id="formOne">
+                    {% csrf_token %}
+                    <div class="add">
+                      <input type="hidden" name="form-type" value="formOne">
+                      <label for="category-label">
+                        <input class="category_name fs-small fw-400" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
+                      </label>
+                      <label for="color-label">
+                        <input class="category_color" type='color' name="category_color" id="color-label" value='#0000ff'>
+                      </label>
+                      <button class="category_plus fs-small fw-600" type="submit" name="category_submit" value="submit">추가</button>
+                    </div>
+                  </form>
+                  
+            </div>
+        </div>
+
+        <div class="fileload">
             <div class="upload_title">
                 <p class="subject fs-base fw-400">파일 업로드</p>
                 <p class="asd fs-tiny">* XXMB 이하의 .excel 파일 1개 업로드 가능합니다.</p>
@@ -95,53 +171,28 @@ endblock %} {% block content-title %}
                 <form name="form2" action="{% url 'uploadapp:upload' %}" method="post" id="formTwo" enctype="multipart/form-data">
                     {% csrf_token %}
                 <input type="hidden" name="form-type" value="formTwo">
-
                 <label for="file">
                     <div class="btn-upload fs-small fw-600">파일 선택</div>
                 </label>
-                <input class="file_choice sr-only" type="file" name="upload_file" id="file">
-                <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
+                    <input class="file_choice sr-only" type="file" name="upload_file" id="file">
+                    <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
 
                 <label for="file">
                     <div class="file_name fs-small fw-600">선택된 파일 없음.</div>
                 </label>
-
                 <script>
-                    window.onload = function() {
-                        const target = document.getElementById('file'); // file 아이디 선언
-                        const fileInput = document.querySelector('.file_choice'); //파일 input 
-                        target.addEventListener('change', function() {
-                            if (target.value.length) {
-                                document.querySelector('.file_name').textContent = target.files[0].name;
-                                fileInput.files = target.files; // 파일 입력(input) 요소에 파일 할당
-                            } else {
-                                document.querySelector('.file_name').textContent = "선택된 파일 없음.";
-                                fileInput.files = null; // 파일 입력(input) 요소 초기화
+                    window.onload=function(){
+                        target=document.getElementById('file'); // file 아이디 선언
+                        target.addEventListener('change',function(){ // change 함수
+                            
+                            if(target.value.length){ // 파일 첨부인 상태일경우 파일명 출력
+                                $('.file_name').html(target.files[0].name);
+                            }else{ //버튼 클릭후 취소(파일 첨부 없을 경우)할때 파일명값 안보이게
+                                $('.file_name').html("");
                             }
+                            
                         });
-
-                        const uploadbox = document.querySelector('#uploadbox');
-                        uploadbox.addEventListener('dragenter', function(e) {
-                            e.preventDefault();
-                        });
-
-                        uploadbox.addEventListener('dragover', function(e) {
-                            e.preventDefault();
-                        });
-
-                        uploadbox.addEventListener('dragleave', function(e) {
-                            e.preventDefault();
-                        });
-
-                        uploadbox.addEventListener('drop', function(e) {
-                            e.preventDefault();
-                            const files = e.dataTransfer.files;
-                            if (files.length > 0) {
-                                document.querySelector('.file_name').textContent = files[0].name;
-                                fileInput.files = files;
-                            }
-                        });
-                    };
+                    }
                 </script>
                 
     
@@ -157,257 +208,7 @@ endblock %} {% block content-title %}
 
                 </form>
             </div>
->>>>>>> 5fe55577d8344f5ff484be322a9b3ac8a84b5597
         </div>
-      </form>
     </div>
-    <script>
-      function addDeleteButton() {
-        // 카테고리 리스트를 가져옵니다.
-        const categoryList = document.querySelectorAll(".c_content");
-
-        // 각 카테고리에 대해 버튼을 보이거나 숨깁니다.
-        categoryList.forEach(function (category) {
-          const deleteButton = category.querySelector(".xbtn");
-          if (deleteButton.style.display === "none") {
-            deleteButton.style.display = "inline";
-          } else {
-            deleteButton.style.display = "none";
-          }
-        });
-      }
-    </script>
-    <div class="category">
-      <div class="subject2">
-        <p class="c_title fw-400">카테고리</p>
-        <button
-          class="delbtn fs-small fw-600"
-          style="color: white"
-          type="button"
-          onclick="addDeleteButton()"
-        >
-          <svg
-            width="10"
-            height="12"
-            viewBox="0 0 10 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.66658 4V10.6667H2.33325V4H7.66658ZM6.66658 0H3.33325L2.66659 0.666667H0.333252V2H9.66658V0.666667H7.33325L6.66658 0ZM8.99992 2.66667H0.999919V10.6667C0.999919 11.4 1.59992 12 2.33325 12H7.66658C8.39992 12 8.99992 11.4 8.99992 10.6667V2.66667Z"
-              fill="white"
-            /></svg
-          >삭제
-        </button>
-      </div>
-
-      <script>
-        function deleteCategory(category_middle) {
-          fetch("delete-category/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "X-CSRFToken": document.querySelector(
-                "input[name=csrfmiddlewaretoken]"
-              ).value,
-            },
-            body: `category_middle=${encodeURIComponent(category_middle)}`,
-          })
-            .then((response) => {
-              if (response.ok) {
-                location.reload();
-                // Category was deleted successfully, do something (e.g. refresh the page)
-              } else {
-                // Handle error response
-              }
-            })
-            .catch((error) => {
-              // Handle fetch() error
-            });
-        }
-      </script>
-      <div class="show_container">
-        <!-- 카테고리 리스트 -->
-        <div class="category_value">
-          {% if category_detail %} {% for category_detail in category_detail %}
-          <div
-            class="c_content fs-base"
-            style="background-color: {{ category_detail.category_color }};"
-          >
-            {{ category_detail.category_middle }} {% csrf_token %}
-            <button
-              class="xbtn"
-              style="display: none"
-              onclick="deleteCategory(`{{ category_detail.category_middle }}`)"
-            >
-              <svg
-                width="17"
-                height="18"
-                viewBox="0 0 17 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="8.5"
-                  cy="9"
-                  r="8.25"
-                  fill="#F2F2F2"
-                  stroke="#D5D5D5"
-                  stroke-width="0.5"
-                />
-                <path
-                  d="M11.714 6.21912C11.5283 6.03341 11.2283 6.03341 11.0426 6.21912L8.71399 8.54293L6.38542 6.21436C6.19971 6.02864 5.89971 6.02864 5.71399 6.21436C5.52828 6.40007 5.52828 6.70007 5.71399 6.88579L8.04256 9.21436L5.71399 11.5429C5.52828 11.7286 5.52828 12.0286 5.71399 12.2144C5.89971 12.4001 6.19971 12.4001 6.38542 12.2144L8.71399 9.88579L11.0426 12.2144C11.2283 12.4001 11.5283 12.4001 11.714 12.2144C11.8997 12.0286 11.8997 11.7286 11.714 11.5429L9.38542 9.21436L11.714 6.88579C11.8949 6.70484 11.8949 6.40007 11.714 6.21912Z"
-                  fill="#969696"
-                />
-              </svg>
-            </button>
-          </div>
-          {% endfor %} {% endif %}
-        </div>
-
-        <form
-          class="category_add"
-          action="{% url 'uploadapp:upload' %}"
-          method="post"
-          id="formOne"
-        >
-          {% csrf_token %}
-          <div class="add">
-            <input type="hidden" name="form-type" value="formOne" />
-            <label for="category-label">
-              <input
-                class="category_name fs-small fw-400"
-                type="text"
-                name="category_middle"
-                id="category-label"
-                placeholder="카테고리명을 입력해주세요"
-              />
-            </label>
-            <label for="color-label">
-              <input
-                class="category_color"
-                type="color"
-                name="category_color"
-                id="color-label"
-                value="#0000ff"
-              />
-            </label>
-            <button
-              class="category_plus fs-small fw-600"
-              type="submit"
-              name="category_submit"
-              value="submit"
-            >
-              추가
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="fileload">
-      <div class="upload_title">
-        <p class="subject fs-base fw-400">파일 업로드</p>
-        <p class="asd fs-tiny">
-          * XXMB 이하의 .excel 파일 1개 업로드 가능합니다.
-        </p>
-        <p
-          style="
-            float: right;
-            margin: 0 0 0 0;
-            display: inline-block;
-            color: blue;
-            font-weight: bold;
-          "
-        >
-          {{ request.session.message }}
-        </p>
-      </div>
-
-      <!--엑셀 파일 업로드하기-->
-      <div class="file_upload">
-        <form
-          name="form2"
-          action="{% url 'uploadapp:upload' %}"
-          method="post"
-          id="formTwo"
-          enctype="multipart/form-data"
-        >
-          {% csrf_token %}
-          <input type="hidden" name="form-type" value="formTwo" />
-          <label for="file">
-            <div class="btn-upload fs-small fw-600">파일 선택</div>
-          </label>
-          <input
-            class="file_choice sr-only"
-            type="file"
-            name="upload_file"
-            id="file"
-          />
-          <input
-            type="hidden"
-            value="{{ request.session.category_product }}"
-            name="category_product"
-          />
-
-          <label for="file">
-            <div class="file_name fs-small fw-600">선택된 파일 없음.</div>
-          </label>
-          <script>
-            window.onload = function () {
-              target = document.getElementById("file"); // file 아이디 선언
-              target.addEventListener("change", function () {
-                // change 함수
-
-                if (target.value.length) {
-                  // 파일 첨부인 상태일경우 파일명 출력
-                  $(".file_name").html(target.files[0].name);
-                } else {
-                  //버튼 클릭후 취소(파일 첨부 없을 경우)할때 파일명값 안보이게
-                  $(".file_name").html("");
-                }
-              });
-            };
-          </script>
-
-          <!--카테고리 선택 시에만 파일 업로드 가능-->
-          {% if request.session.category_product is not null %}
-          <button
-            class="send_btn fs-small fw-600"
-            type="submit"
-            style="color: white"
-          >
-            <svg
-              width="12"
-              height="14"
-              viewBox="0 0 12 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.33333 0.333336H2C1.26666 0.333336 0.673331 0.933336 0.673331 1.66667L0.666664 12.3333C0.666664 13.0667 1.26 13.6667 1.99333 13.6667H10C10.7333 13.6667 11.3333 13.0667 11.3333 12.3333V4.33334L7.33333 0.333336ZM10 12.3333H2V1.66667H6.66666V5H10V12.3333ZM3.33333 9.00667L4.27333 9.94667L5.33333 8.89334V11.6667H6.66666V8.89334L7.72666 9.95334L8.66666 9.00667L6.00666 6.33334L3.33333 9.00667Z"
-                fill="white"
-                fill-opacity="0.9"
-              />
-            </svg>
-            제출
-          </button>
-          {% else %}
-          <p
-            style="
-              float: right;
-              display: inline-block;
-              font-family: 'Nanum Gothic Coding', monospace;
-              font-weight: 570;
-              color: saddlebrown;
-            "
-          >
-            카테고리를 선택해주시기 바랍니다.
-          </p>
-          {% endif %}
-        </form>
-      </div>
-    </div>
-  </div>
 </div>
 {% endblock %}

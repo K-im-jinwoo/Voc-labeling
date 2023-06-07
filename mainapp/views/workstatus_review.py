@@ -42,9 +42,10 @@ def sorting(sort, category_detail_list, positive, negative, neutral, everything)
                 everything[i], everything[j] = everything[j], everything[i]
                 standard[i], standard[j] = standard[j], standard[i]
 
+
 def workstatus_review(request):
     try:
-
+        
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET:
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
@@ -164,10 +165,20 @@ def workstatus_review(request):
         else:
             context = {'message': '제품을 다시 선택해주세요.'}
             context['product_names'] = Category.objects.all().values('category_product').distinct()
-            return render(request, 'mainapp/workstatus.html', context)
+            model_names = Review.objects.values_list('model_name', flat=True).distinct()
+            context['model_names'] = model_names
+            model_codes = Review.objects.values_list('model_code', flat=True).distinct()
+            context['model_codes'] = model_codes
+            return render(request, 'mainapp/workstatus.html', context=context)
 
+     
     # 예외처리
     except Exception as identifier:
         print(identifier)
-
-    return render(request, 'mainapp/workstatus.html')
+    
+    context = {}
+    model_names = Review.objects.values_list('model_name', flat=True).distinct()
+    context['model_names'] = model_names
+    model_codes = Review.objects.values_list('model_code', flat=True).distinct()
+    context['model_codes'] = model_codes  
+    return render(request, 'mainapp/workstatus.html',context=context)
