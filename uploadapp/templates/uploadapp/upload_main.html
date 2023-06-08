@@ -167,7 +167,7 @@
             </div>
     
             <!--엑셀 파일 업로드하기-->
-            <div class="file_upload">
+            <div id="uploadbox" class="file_upload">
                 <form name="form2" action="{% url 'uploadapp:upload' %}" method="post" id="formTwo" enctype="multipart/form-data">
                     {% csrf_token %}
                 <input type="hidden" name="form-type" value="formTwo">
@@ -181,17 +181,40 @@
                     <div class="file_name fs-small fw-600">선택된 파일 없음.</div>
                 </label>
                 <script>
-                    window.onload=function(){
-                        target=document.getElementById('file'); // file 아이디 선언
-                        target.addEventListener('change',function(){ // change 함수
-                            
-                            if(target.value.length){ // 파일 첨부인 상태일경우 파일명 출력
-                                $('.file_name').html(target.files[0].name);
-                            }else{ //버튼 클릭후 취소(파일 첨부 없을 경우)할때 파일명값 안보이게
-                                $('.file_name').html("");
+                    window.onload = function() {
+                        const target = document.getElementById('file'); // file 아이디 선언
+                        const fileInput = document.querySelector('.file_choice'); //파일 input 
+                        target.addEventListener('change', function() {
+                            if (target.value.length) {
+                                document.querySelector('.file_name').textContent = target.files[0].name;
+                                fileInput.files = target.files; // 파일 입력(input) 요소에 파일 할당
+                            } else {
+                                document.querySelector('.file_name').textContent = "선택된 파일 없음.";
+                                fileInput.files = null; // 파일 입력(input) 요소 초기화
                             }
-                            
+                        })
+
+                        const uploadbox = document.querySelector('#uploadbox');
+                        uploadbox.addEventListener('dragenter', function(e) {
+                            e.preventDefault();
                         });
+
+                        uploadbox.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                        });
+
+                        uploadbox.addEventListener('dragleave', function(e) {
+                            e.preventDefault();
+                        });
+
+                        uploadbox.addEventListener('drop', function(e) {
+                            e.preventDefault();
+                            const files = e.dataTransfer.files;
+                            if (files.length > 0) {
+                                document.querySelector('.file_name').textContent = files[0].name;
+                                fileInput.files = files;
+                            }
+                        })
                     }
                 </script>
                 

@@ -163,6 +163,7 @@ def upload_main(request):
             if request.GET.get('category_product'):
                 request.session['category_product'] = request.GET.get('category_product')
             context['category_detail'] = Category.objects.filter(category_product=request.session['category_product'])
+            category_product = request.POST.get('category_product')
             return render(request, 'uploadapp/upload_main.html', context)
 
         elif request.method == "POST":
@@ -172,6 +173,15 @@ def upload_main(request):
                 category.category_middle = '기타'
                 category.category_color = '#c8c8c850'
                 category.save()
+                return HttpResponseRedirect(reverse('uploadapp:upload'))
+            
+            if request.POST.get('category_update'):
+                category_product = request.POST.get('category_product')
+                category_update = request.POST.get('category_update')
+                category = Category.objects.get(category_product=category_product)
+                category.category_product = category_update
+                category.save()
+
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
             if request.POST.get("form-type") == 'formOne':
@@ -241,6 +251,7 @@ def upload_main(request):
                     model_code=row['Model Code']) for _, row in dbframe.iterrows()]
                     Review.objects.bulk_create(review_obj)
                     request.session['message'] = '업로드가 완료되었습니다.'
+                    # request.session.set_expiry(3)
                     url = reverse('uploadapp:upload') + f'?category_product={request.POST.get("category_product")}'
                     return HttpResponseRedirect(url)
 

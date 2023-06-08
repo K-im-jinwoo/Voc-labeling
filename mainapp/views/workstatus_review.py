@@ -42,9 +42,10 @@ def sorting(sort, category_detail_list, positive, negative, neutral, everything)
                 everything[i], everything[j] = everything[j], everything[i]
                 standard[i], standard[j] = standard[j], standard[i]
 
+
 def workstatus_review(request):
     try:
-
+        
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
         if 'category_product' in request.GET:
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
@@ -52,7 +53,6 @@ def workstatus_review(request):
 
                 if 'sort' not in request.session:
                     request.session['sort'] = 'positive'
-
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET['category_product']
                 category_detail = Category.objects.filter(category_product=category_product)
@@ -132,7 +132,6 @@ def workstatus_review(request):
                         sum = box[0] + box[1]
                         for d in box_counter:
                             a = d.keys()
-                            print("AAAAAAAAAAAa",next(iter(a)),sum)
                             if next(iter(a)) == sum:
                                 box.append(next(iter(d.values())))
                                   
@@ -155,6 +154,14 @@ def workstatus_review(request):
                 context['dummy_num'] = dummy_num
                 context['second_num'] = second_num
                 context['product_names'] = Category.objects.all().values('category_product').distinct()
+
+
+                my_model_list = Review.objects.filter(category_product=category_product).values('model_name').distinct()
+                context['model_names'] = my_model_list
+                my_code_list = Review.objects.filter(category_product=category_product).values('model_code').distinct()
+                context['model_codes'] = my_code_list
+
+                    
                 return render(request, 'mainapp/workstatus.html', context=context)
             context = dict()
             context['product_names'] = Category.objects.all().values('category_product').distinct()
@@ -164,10 +171,12 @@ def workstatus_review(request):
         else:
             context = {'message': '제품을 다시 선택해주세요.'}
             context['product_names'] = Category.objects.all().values('category_product').distinct()
-            return render(request, 'mainapp/workstatus.html', context)
+            
+            return render(request, 'mainapp/workstatus.html', context=context)
 
+     
     # 예외처리
     except Exception as identifier:
         print(identifier)
-
-    return render(request, 'mainapp/workstatus.html')
+    
+    return render(request, 'mainapp/workstatus.html',context=context)
