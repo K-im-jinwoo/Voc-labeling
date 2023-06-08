@@ -161,8 +161,10 @@ def workstatus_review(request):
             my_model_list = Review.objects.filter(category_product=category_product).values('model_name').distinct()
             context['model_names'] = my_model_list
             context['selected_name'] = category_model_name
+            context['selected'] = category_product
             my_code_list = Review.objects.filter(category_product=category_product, model_name=category_model_name).values('model_code').distinct()
             context['model_codes'] = my_code_list
+            context['selected_code'] = category_model_code
             
             return render(request, 'mainapp/workstatus.html', context=context)
         elif 'category_model_name' in request.GET:
