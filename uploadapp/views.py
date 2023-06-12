@@ -178,9 +178,14 @@ def upload_main(request):
             if request.POST.get('category_update'):
                 category_product = request.POST.get('category_product')
                 category_update = request.POST.get('category_update')
-                category = Category.objects.get(category_product=category_product)
-                category.category_product = category_update
-                category.save()
+
+                # 중복된 값을 가진 모든 객체 가져오기
+                duplicate_categories = Category.objects.filter(category_product=category_product)
+
+                # 중복된 객체들에 대해 업데이트 수행
+                for category in duplicate_categories:
+                    category.category_product = category_update
+                    category.save()
 
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
