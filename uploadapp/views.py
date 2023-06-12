@@ -186,6 +186,7 @@ def upload_main(request):
                 for category in duplicate_categories:
                     category.category_product = category_update
                     category.save()
+                    
 
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
