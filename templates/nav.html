@@ -23,7 +23,7 @@
 
       {% if user.is_authenticated %}
         <div class="user-profile-login">
-          <img src="{{ user.profile.image.url }}" class="profile-img">
+          <img src="{% url "pydenticon_image" user.username  %}" class="profile-img">
           <strong class="fw-600 fs-medium user-profile-name">
               {{ user.username }}
           </strong>

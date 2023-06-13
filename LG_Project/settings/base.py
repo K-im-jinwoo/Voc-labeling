@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'storages',
     'rest_framework',
     'django_apscheduler',
+    "django_pydenticon",
 ]
 
 MIDDLEWARE = [
