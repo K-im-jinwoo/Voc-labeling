@@ -4,7 +4,7 @@ import environ
 
 ALLOWED_HOSTS = ['43.200.38.56']
 STATIC_ROOT = BASE_DIR / 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 DEBUG = True
 
 env = environ.Env()

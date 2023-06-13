@@ -187,6 +187,13 @@ def upload_main(request):
                     category.category_product = category_update
                     category.save()
                     
+                    # Review 모델에서 해당 카테고리의 모든 객체 가져오기
+                reviews = Review.objects.filter(category_product=category_product)
+
+                # 가져온 Review 객체들을 반복하며 제품명 변경 후 저장
+                for review in reviews:
+                    review.category_product = category_update
+                    review.save()
 
                 return HttpResponseRedirect(reverse('uploadapp:upload'))
 
