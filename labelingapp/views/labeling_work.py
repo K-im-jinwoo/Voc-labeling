@@ -100,6 +100,8 @@ def labeling_work(request):
                         auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
                         auto.review_id = Review.objects.get(pk=review_first[0].pk)
                         auto.category_id = data.category_id
+                        auto.model_name = Review.objects.get(pk=review_first[0].pk).model_name
+                        auto.model_code = Review.objects.get(pk=review_first[0].pk).model_code
                         auto.save()
 
                 elif request.session['auto_labeling_status'] != review_first[0].review_id:
@@ -122,6 +124,8 @@ def labeling_work(request):
                         auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
                         auto.review_id = Review.objects.get(pk=review_first[0].pk)
                         auto.category_id = data.category_id
+                        auto.model_name = Review.objects.get(pk=review_first[0].pk).model_name
+                        auto.model_code = Review.objects.get(pk=review_first[0].pk).model_code
                         auto.save()
                     request.session['auto_labeling_status'] = review_first[0].review_id
 
@@ -159,6 +163,9 @@ def labeling_work(request):
                         first_labeled_data.first_labeled_expression = expression  # 현상 저장
                         first_labeled_data.review_id = Review.objects.get(pk=review_id)
                         first_labeled_data.category_id = Category.objects.get(pk=category_id)
+                        first_labeled_data.model_code = Review.objects.get(pk=review_id).model_code
+                        first_labeled_data.model_name = Review.objects.get(pk=review_id).model_name
+
                         first_labeled_data.save()
 
                     wpp = '/labeling/work/?' + 'category_product=' + category_product
@@ -196,6 +203,8 @@ def labeling_work(request):
                             auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
                             auto.review_id = Review.objects.get(pk=review_first[0].pk)
                             auto.category_id = data.category_id
+                            auto.model_name = Review.objects.get(pk=review_first[0].pk).model_name
+                            auto.model_code = Review.objects.get(pk=review_first[0].pk).model_code
                             auto.save()
                         request.session['auto_labeling_status'] = review_first[0].review_id
                     elif 'auto_labeling_status' not in request.session:
@@ -219,6 +228,8 @@ def labeling_work(request):
                             auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
                             auto.review_id = Review.objects.get(pk=review_first[0].pk)
                             auto.category_id = data.category_id
+                            auto.model_name = Review.objects.get(pk=review_first[0].pk).model_name
+                            auto.model_code = Review.objects.get(pk=review_first[0].pk).model_code
                             auto.save()
                         request.session['auto_labeling_status'] = review_first[0].review_id
                     status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
