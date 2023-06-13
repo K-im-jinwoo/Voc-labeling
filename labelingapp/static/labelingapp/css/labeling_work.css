@@ -24,7 +24,6 @@ div{
 }
 
 .product_name > select{
-    width: 125px;
     height: 34px;
     border-radius: 5px;
     border: 0.5px solid #D5D5D5;

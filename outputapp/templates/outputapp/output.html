@@ -23,7 +23,7 @@
         {% csrf_token%}
         <h3 class="output-title fw-400 fs-base gray-100">제품 선택</h3>
         <select name='category_product' onchange="this.form.submit()" class="category_product gray-100 primary-bg">
-          <option value="--제품을 선택하세요--">--제품을 선택하세요--</option>
+          <option value="--제품을 선택하세요--">제품을 선택하세요</option>
           {% for product_name in product_names %}
           <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
           {{ product_name.category_product }}
