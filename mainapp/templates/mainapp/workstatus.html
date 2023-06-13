@@ -98,7 +98,6 @@
   });
 </script>
 
-
     <div class="totalBar fw-400 fs-small">
       <div class="right_top top1">총 개수 {{ alltotal }}</div>
       <div class="right_top top2">작업완료 {{ first_num }}</div>
@@ -181,10 +180,23 @@
                 </td>
                 <td><div class="date_space_cut fw-400 fs-tiny">
                   <p>
-                    <a
-                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
-                      >{{ everything.count }}</a
-                    >
+                    {% if selected_code %}
+                      <a
+                        href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                        >{{ everything.count }}</a
+                      >
+                    {% elif selected_name %}
+                      <a
+                        href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                        >{{ everything.count }}</a
+                      >
+                    {% else %}
+                      <a
+                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                        >{{ everything.count }}</a
+                      >
+                    {% endif %}
+                    
                   </p>
                 </div>       
               </td>

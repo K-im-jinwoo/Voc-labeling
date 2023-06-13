@@ -321,13 +321,13 @@ def workstatus_review(request):
                 everything.append(everything_temp)
                 order.append(i)
                 i += 1
-
+            print("d1111111111111111111111111111")
             # 정렬 요청 들어오면 session에 정렬 요구 상태 저장
             if request.method == "POST" and "sort" in request.POST:
                 sort = request.POST.get("sort")
                 request.session["sort"] = sort
             print(request.session["sort"])
-
+            print("22222222222222222222222222222")
             # session에 저장한 요구 상태를 읽어 정렬 수행
 
             if request.session["sort"] != "sort":
@@ -352,6 +352,7 @@ def workstatus_review(request):
 
             # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
             if request.method == "GET" and "showing_index" in request.GET:
+                print("333333333333333333333333333")
                 # 번호의 위치(showing_index)와 번호의 긍부정 여부(showing_type)을 가져옴
                 showing_index = request.GET.get("showing_index")
                 showing_type = request.GET.get("showing_type")
@@ -361,6 +362,7 @@ def workstatus_review(request):
                     showing_type, positive, negative, neutral, everything
                 )
                 labeled_word = labeled_word[int(showing_index)]
+
                 set_labeled_word = labeled_word
                 labeled_box = []
                 box_counter = []
