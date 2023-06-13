@@ -24,12 +24,12 @@
     
       <div class="pop_top">
 
-        <form style="display: inline-block" action="" method="get" class="first fw-400 " name="afgsgd">
+        <form style="display: inline-block" action="" method="get"  name="afgsgd">
           {% csrf_token %}
-          <div class="subject fs-base">제품 선택</div>
+          <div class="subject first fw-400">제품 선택</div>
           
-          <select class ="select  fs-small"name="category_product" id="product_select_status2">
-            <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
+          <select class ="select"name="category_product" id="product_select_status2">
+            <option value="--제품을 선택하세요--" selected>제품명을 선택하세요</option>
               {% for product_name in product_names %}
                   <option value="{{ product_name }}"
                       {% if category_product == product_name %} selected {% endif %}>
@@ -37,10 +37,13 @@
                   </option>
               {% endfor %}
           </select>
+        </form>
+      
+        
           <button class ="button fw-600 fs-small"id="myBtn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" >
             <path d="M6.00002 6.00008C7.47335 6.00008 8.66669 4.80675 8.66669 3.33341C8.66669 1.86008 7.47335 0.666748 6.00002 0.666748C4.52669 0.666748 3.33335 1.86008 3.33335 3.33341C3.33335 4.80675 4.52669 6.00008 6.00002 6.00008ZM6.00002 7.33342C4.22002 7.33342 0.666687 8.22675 0.666687 10.0001V10.6667C0.666687 11.0334 0.966687 11.3334 1.33335 11.3334H10.6667C11.0334 11.3334 11.3334 11.0334 11.3334 10.6667V10.0001C11.3334 8.22675 7.78002 7.33342 6.00002 7.33342Z" fill="#585757"/>
             </svg> 작업자별 진행 현황</button>
-      </form>
+      
 
 
           

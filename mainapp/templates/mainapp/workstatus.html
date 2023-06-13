@@ -10,14 +10,14 @@
 
 <div class="first-desc primary-bg gray-100">
   <div class="first-desc-wrap">
-    <form style="display: inline-block" action="" method="get" class="first fw-400 fs-small" name="category_product">
+    <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
       <p class="subject fw-400 fs-base">제품 선택</p>
       <select name="category_product" id="product_select_status">
         {% if selected %}
           <option value="{{ selected }}" selected>{{ selected }}</option>
         {% else %}
-          <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
+          <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
         {% endif %}
           {% for product_name in product_names %}
             <option value="{{ product_name.category_product }}"
@@ -29,13 +29,13 @@
       </select>
     </form>
     
-    <form style="display: inline-block" action="" method="get" class="first fw-400 fs-small" name="category_model_name">
+    <form style="display: inline-block" action="" method="get"  name="category_model_name">
       {% csrf_token %}
       <select name="category_model_name" id="model_name_select_status">
         {% if selected_name %}
           <option value="{{ selected_name }}" selected>{{ selected_name }}</option>
         {% else %}
-          <option value="--모델명을 선택하세요--" selected>모델이름 선택</option>
+          <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
         {% endif %}
         {% for model_name in model_names %}
     
@@ -50,13 +50,13 @@
       </select>
     </form>
 
-    <form style="display: inline-block" action="" method="get" class="first fw-400 fs-small" name="category_model_code">
+    <form style="display: inline-block" action="" method="get" name="category_model_code">
       {% csrf_token %}
       <select name="category_model_code" id="model_code_select_status">
         {% if selected_code %}
           <option value="{{ selected_code }}" selected>{{ selected_code }}</option>
         {% else %}
-          <option value="--모델명을 선택하세요--" selected>모델이름 선택</option>
+          <option value="--모델명을 선택하세요--" selected>모델코드를 선택하세요</option>
         {% endif %}
         {% for model_code in model_codes %}
     
