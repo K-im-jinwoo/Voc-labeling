@@ -128,7 +128,7 @@
                 <div class="category_value">
                     {% if category_detail %}
                         {% for category_detail in category_detail %}
-                            <div class="c_content fs-base" style="background-color: {{ category_detail.category_color }};">
+                            <div class="c_content fs-base fw-400" style="background-color: {{ category_detail.category_color }};">
                                 {{ category_detail.category_middle }}
                                 {% csrf_token %} 
                                 <button class="xbtn" style="display:none;" onclick="deleteCategory(`{{ category_detail.category_middle }}`)">
@@ -172,13 +172,13 @@
                     {% csrf_token %}
                 <input type="hidden" name="form-type" value="formTwo">
                 <label for="file">
-                    <div class="btn-upload fs-small fw-600">파일 선택</div>
+                    <div class="btn-upload fs-small fw-400">파일 선택</div>
                 </label>
                     <input class="file_choice sr-only" type="file" name="upload_file" id="file">
                     <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
 
                 <label for="file">
-                    <div class="file_name fs-small fw-600">선택된 파일 없음.</div>
+                    <div class="file_name fs-small fw-400">선택된 파일 없음.</div>
                 </label>
                 <script>
                     window.onload = function() {
@@ -221,14 +221,13 @@
     
                     <!--카테고리 선택 시에만 파일 업로드 가능-->
                     {% if request.session.category_product is not None %}
-                        <button class="send_btn fs-small fw-600" type="submit" style="color:white;"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button class="send_btn fs-small fw-400" type="submit" style="color:white;"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7.33333 0.333336H2C1.26666 0.333336 0.673331 0.933336 0.673331 1.66667L0.666664 12.3333C0.666664 13.0667 1.26 13.6667 1.99333 13.6667H10C10.7333 13.6667 11.3333 13.0667 11.3333 12.3333V4.33334L7.33333 0.333336ZM10 12.3333H2V1.66667H6.66666V5H10V12.3333ZM3.33333 9.00667L4.27333 9.94667L5.33333 8.89334V11.6667H6.66666V8.89334L7.72666 9.95334L8.66666 9.00667L6.00666 6.33334L3.33333 9.00667Z" fill="white" fill-opacity="0.9"/>
                             </svg>
                             제출</button>
                     {% else %}
                         <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                     {% endif %}
-
                 </form>
             </div>
         </div>
