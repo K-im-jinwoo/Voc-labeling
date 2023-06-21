@@ -23,7 +23,7 @@
         {% csrf_token%}
         <h3 class="output-title fw-400 fs-base gray-100">제품 선택</h3>
         <select name='category_product' onchange="this.form.submit()" class="category_product gray-100 primary-bg">
-          <option value="--제품을 선택하세요--">제품을 선택하세요</option>
+          <option class="fs-medium" value="--제품을 선택하세요--">제품을 선택하세요</option>
           {% for product_name in product_names %}
           <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
           {{ product_name.category_product }}
@@ -36,17 +36,17 @@
       <div>
         {% if request.session.category_product %}
         <h3 class="gray-100">
-          <strong class="fs-base fw-medium category_product_tit">선택한 제품 :</strong> 
-          <span class="category_dropdown primary-bg">
+          <strong class="fs-base category_product_tit fw-400">선택한 제품 :</strong> 
+          <span class="category_dropdown primary-bg fw-medium">
             {{ request.session.category_product }}
           </span>
         </h3>
         <p>
-          <div class="all_total_wrap fs-small fw-regular">
-            <span class="all_total fs-small fw-regular">
+          <div class="all_total_wrap fs-small fw-400">
+            <span class="all_total fs-small fw-400">
               총 개수
             </span> 
-            <span>
+            <span class="fw-medium">
               {{ alltotal }}
             </span>
           </div>
@@ -55,19 +55,25 @@
               <span class="first_num">
                 작업완료
               </span>
-              {{ first_num }}
+              <span class="fw-medium">
+                {{ first_num }}
+              </span>
             </div>
             <div class="second_num_wrap">
               <span class="second_num">
                 검수완료
               </span>
-              {{ second_num }}
+              <span class="fw-medium">
+                {{ second_num }}
+              </span>
             </div>
             <div class="dummy_num_wrap">
               <span class="dummy_num">
                 삭제
               </span>
-              {{ dummy_num }}
+              <span class="fw-medium">
+                {{ dummy_num }}
+              </span>
             </div>
           </div>
         </p>
@@ -78,14 +84,14 @@
     </div>
     <span class="category_product_under"></span>
     <div class="subject_wrap gray-100">
-        <p class="subject fs-base">내보내기</p>
+        <p class="subject fs-base fw-400">내보내기</p>
           <span class="fs-small">* .xlsx 파일로 뽑아내는 데이터는 작업 완료된 데이터 입니다.</span>
         <!--엑셀 파일 csv로 내보내기 => 엑셀 파일 필요시, 주피터로 중복 전처리 후, 엑셀로 뽑아내야함-->
         <div class="export_form_wrap">
           <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="submit" name="export" value=".xlsx export" class="export">
-            <input type="submit" name="export" value=".csv export" class="analysis">
+            <input type="submit" name="export" value=".xlsx export" class="export fw-400">
+            <input type="submit" name="export" value=".csv export" class="analysis fw-400">
             <input type="hidden" name="product" value="{{ request.session.category_product }}">
           </form>
         </div>

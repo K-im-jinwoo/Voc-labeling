@@ -120,24 +120,23 @@
     </div>
     <div class="category_wrap">
       <div class="category category_1">
-        <div class="category_column  fw-600 fs-small">  
+        <div class="category_column  fw-400 fs-small">  
           <table id='myTable'>
             <thead>
               <tr>
-                <th> <div class="data_label label1">카테고리</div></th>
-                <th><div class="data_label">
+                <th> <div class="data_label label1 fw-400">카테고리</div></th>
+                <th><div class="data_label fw-400">
                 긍정</div></th>
-                <th><div class="data_label">
+                <th><div class="data_label fw-400">
                   부정
                   
                 </div></th>
-                <th><div class="data_label">
+                <th><div class="data_label fw-400">
                   중립
                   
                 </div></th>
-                <th><div class="data_label">
+                <th><div class="data_label fw-400">
                   총개수
-                  
                 </div></th>
               </tr>
             </thead>
@@ -146,7 +145,7 @@
               {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
 
               <tr>
-                <td><div class="date_space_cut cut1 fw-600 fs-small">
+                <td><div class="date_space_cut cut1 fw-400 fs-small">
                   <p>{{ category_detail_list }}</p>
                 </div>
                 </td>
@@ -283,25 +282,20 @@
       <div class="category category_2">
         <div class="category_target">
           <table>
-            <thead class="thead fw-600 fs-small">
+            <thead class="thead fw-400 fs-small">
               <tr>
-                <th><div class="data_label" style="width: 99px;">대상</div></th>
-                <th><div class="data_label" style="width: 99px;">현상</div></th>
+                <th><div class="data_label fw-400" style="width: 99px;">대상</div></th>
+                <th><div class="data_label fw-400" style="width: 99px;">현상</div></th>
               </tr>
             </thead>
             <tbody>
 
               {% for word in box %}
               <tr>
-                <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
-                  
-                  ">
+                <td><div class="date_space_cut cut2 fw-400 fs-tiny">
                   {{ word.0 }}({{word.2}})
                 </div></td>
-                <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
-                  font-weight: 400;
-          
-                  ">
+                <td><div class="date_space_cut cut2 fw-400 fs-tiny">
                   {{ word.1}}
                 </div></td>
               {% endfor %}
@@ -312,11 +306,11 @@
       <div class="category category_3">
         <div class="category_review">
           <table>
-            <thead class="thead fw-600 fs-small">
+            <thead class="thead fw-400 fs-small">
               <tr>
-                <th><div class="data_label"
+                <th><div class="data_label fw-400"
                   >번호</div></th>
-                <th><div class="data_label"
+                <th><div class="data_label fw-400"
                   >데이터</div></th>
               </tr>
             </thead>
@@ -325,7 +319,7 @@
               <tr>
                 {% for review in labeled_review %}
               </tr>
-              <td class="date_space_cut fw-600 fs-small" style="width:67px; padding: 16.5px">
+              <td class="date_space_cut fw-400 fs-small" style="width:67px; padding: 16.5px">
                 {{ review.review_number }}
               </td>
               <td class="date_space_cut fw-400 fs-tiny" style="font-style: normal;
