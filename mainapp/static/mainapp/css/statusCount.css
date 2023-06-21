@@ -13,13 +13,30 @@
   }
   select {
     display: inline-block;
-    width: 125px;
-    height: 34px;
-    border-radius: 5px;
+    padding: 0px 10px;  
+    text-align: left;
+    line-height: 1.5;
     border: 0.5px solid #D5D5D5;
-    margin-bottom: 69px;
-    margin-right: 235px;
+    border-radius: 5px;
+    background-color: #fff;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
+  
+  select option {
+    padding: 10px;
+  }
+  
+  select::-ms-expand {
+    display: none;
+  }
+  
+  select:focus {
+    outline: none;
+  }
+  
+
   button{
     width: 146px;
     height: 34px;
