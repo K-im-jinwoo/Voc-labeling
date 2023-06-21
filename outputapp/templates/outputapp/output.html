@@ -85,7 +85,7 @@
           <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="submit" name="export" value=".xlsx export" class="export">
-            <input type="submit" name="export" value=".data analysis" class="analysis">
+            <input type="submit" name="export" value=".csv export" class="analysis">
             <input type="hidden" name="product" value="{{ request.session.category_product }}">
           </form>
         </div>
