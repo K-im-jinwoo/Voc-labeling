@@ -51,8 +51,6 @@
 .user-profile-login {
   display: flex;
   align-items: center;
-  height: 114px;
-  padding: 40px 0 34px 20px;
   text-align: center;
 }
 
@@ -70,12 +68,10 @@
 }
 
 .user-profile-name {
-  padding-left:10px;
+  
 }
+
 .mypage-img {
-  display:inline-block;
-  margin-left:auto;
-  margin-right:44.9px;
 }
 
 

@@ -19,7 +19,7 @@
                 <div class="product_choice">
                   <p class="subject fs-base fw-400">제품 선택</p>
                   <select name='category_product' id="product_select" >
-                    <option value="--제품을 선택하세요--" selected>--제품을 선택하세요--</option>
+                    <option value="--제품을 선택하세요--" selected>제품명을 선택하세요</option>
                     {% for product_name in product_names %}
                             <option id= "s"  value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
                     {% endfor %}

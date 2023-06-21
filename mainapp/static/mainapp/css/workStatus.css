@@ -14,8 +14,6 @@ content-title {
 }
 select {
   display: inline-block;
-  width: 170px;
-  
   height: 34px;
   border-radius: 5px;
   border: 0.5px solid #D5D5D5;
