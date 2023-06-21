@@ -14,6 +14,7 @@ content-title {
 }
 select {
   display: inline-block;
+  width: 170px;
   height: 34px;
   border-radius: 5px;
   border: 0.5px solid #D5D5D5;
@@ -132,7 +133,6 @@ svg{
 }
 .category_target{
   color: #1a1a1a; 
-  
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
@@ -140,21 +140,26 @@ svg{
   max-height: 646px;
   overflow-y: auto;
  
-}.cut2{
+}
+
+.cut2{
   
   width: 99px;
 }
 .category_3{
   width: 100%;
   margin-right: 27px;
+  max-height: 646px;
+  overflow-y: auto ;
+  
 }
 .category_review{
   color: #1a1a1a;
   letter-spacing: 0em;
   border: 1px solid #e4e4ef;
   border-radius: 6px;
-  max-height: 646px;
-  overflow-y: auto ;
+  
+  
   
 }
 table {
@@ -188,7 +193,7 @@ tr {
 
 /* 스크롤바 색상을 지정 */
 ::-webkit-scrollbar-thumb {
-  background-color: #888;
+  background-color:  #888888;
   border-radius: 5px;
 }
 
