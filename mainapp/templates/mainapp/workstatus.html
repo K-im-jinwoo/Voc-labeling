@@ -98,6 +98,7 @@
   });
 </script>
 
+
     <div class="totalBar fw-400 fs-small">
       <div class="right_top top1">총 개수 {{ alltotal }}</div>
       <div class="right_top top2">작업완료 {{ first_num }}</div>
@@ -120,23 +121,24 @@
     </div>
     <div class="category_wrap">
       <div class="category category_1">
-        <div class="category_column  fw-400 fs-small">  
+        <div class="category_column  fw-600 fs-small">  
           <table id='myTable'>
             <thead>
               <tr>
-                <th> <div class="data_label label1 fw-400">카테고리</div></th>
-                <th><div class="data_label fw-400">
+                <th> <div class="data_label label1">카테고리</div></th>
+                <th><div class="data_label">
                 긍정</div></th>
-                <th><div class="data_label fw-400">
+                <th><div class="data_label">
                   부정
                   
                 </div></th>
-                <th><div class="data_label fw-400">
+                <th><div class="data_label">
                   중립
                   
                 </div></th>
-                <th><div class="data_label fw-400">
+                <th><div class="data_label">
                   총개수
+                  
                 </div></th>
               </tr>
             </thead>
@@ -145,94 +147,44 @@
               {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
 
               <tr>
-                <td><div class="date_space_cut cut1 fw-400 fs-small">
+                <td><div class="date_space_cut cut1 fw-600 fs-small">
                   <p>{{ category_detail_list }}</p>
                 </div>
                 </td>
                 <td><div class="date_space_cut fw-400 fs-tiny" >
                   <p>
-                    {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ positive.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ positive.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
-                          >{{ positive.count }}</a
-                        >
-                      {% endif %}
+                    <a
+                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
+                      >{{ positive.count }}</a
+                    >
                   </p>
                 </div>
                 </td>
                 <td><div class="date_space_cut fw-400 fs-tiny" >
                   <p>
-                    {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ negative.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ negative.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
-                          >{{ negative.count }}</a
-                        >
-                      {% endif %}
-                  
+                    <a
+                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative"
+                      >{{ negative.count }}</a
+                    >
                   </p>
                 </div>
                 </td>
                 <td> <!-- 중립 개수 -->
                   <div class="date_space_cut fw-400 fs-tiny">
                     <p>
-                      {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ neutral.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ neutral.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
-                          >{{ neutral.count }}</a
-                        >
-                      {% endif %}
+                      <a
+                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
+                        >{{ neutral.count }}</a
+                      >
                     </p>
                   </div>
                 </td>
                 <td><div class="date_space_cut fw-400 fs-tiny">
                   <p>
-                    {% if selected_code %}
-                      <a
-                        href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
-                        >{{ everything.count }}</a
-                      >
-                    {% elif selected_name %}
-                      <a
-                        href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
-                        >{{ everything.count }}</a
-                      >
-                    {% else %}
-                      <a
-                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
-                        >{{ everything.count }}</a
-                      >
-                    {% endif %}
-                    
+                    <a
+                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
+                      >{{ everything.count }}</a
+                    >
                   </p>
                 </div>       
               </td>
@@ -282,20 +234,25 @@
       <div class="category category_2">
         <div class="category_target">
           <table>
-            <thead class="thead fw-400 fs-small">
+            <thead class="thead fw-600 fs-small">
               <tr>
-                <th><div class="data_label fw-400" style="width: 99px;">대상</div></th>
-                <th><div class="data_label fw-400" style="width: 99px;">현상</div></th>
+                <th><div class="data_label" style="width: 99px;">대상</div></th>
+                <th><div class="data_label" style="width: 99px;">현상</div></th>
               </tr>
             </thead>
             <tbody>
 
               {% for word in box %}
               <tr>
-                <td><div class="date_space_cut cut2 fw-400 fs-tiny">
+                <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
+                  
+                  ">
                   {{ word.0 }}({{word.2}})
                 </div></td>
-                <td><div class="date_space_cut cut2 fw-400 fs-tiny">
+                <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
+                  font-weight: 400;
+          
+                  ">
                   {{ word.1}}
                 </div></td>
               {% endfor %}
@@ -306,11 +263,11 @@
       <div class="category category_3">
         <div class="category_review">
           <table>
-            <thead class="thead fw-400 fs-small">
+            <thead class="thead fw-600 fs-small">
               <tr>
-                <th><div class="data_label fw-400"
+                <th><div class="data_label"
                   >번호</div></th>
-                <th><div class="data_label fw-400"
+                <th><div class="data_label"
                   >데이터</div></th>
               </tr>
             </thead>
@@ -319,7 +276,7 @@
               <tr>
                 {% for review in labeled_review %}
               </tr>
-              <td class="date_space_cut fw-400 fs-small" style="width:67px; padding: 16.5px">
+              <td class="date_space_cut fw-600 fs-small" style="width:67px; padding: 16.5px">
                 {{ review.review_number }}
               </td>
               <td class="date_space_cut fw-400 fs-tiny" style="font-style: normal;

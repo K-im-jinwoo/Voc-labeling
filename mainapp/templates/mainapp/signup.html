@@ -4,23 +4,17 @@
 {% include 'head.html' %}
 
 <body>
-  {% load static %} {% load bootstrap4 %}
-  <div style="text-align: center; width: 100%; margin: 8rem 5rem 3rem 0rem">
-    <h4 style="
-          display: inline-block;
-          font-weight: 300;
-          font-size: 1.6rem;
-        ">
-      Review Labeling
-    </h4>
-    <br />
-    <br />
-    <div style="
-          font-weight: 200;
-          width: 27rem;
-          display: inline-block;
-          text-align: left;
-        ">
+  {% load static %} {% block style %}
+    <link rel="stylesheet" href="{% static 'mainapp/css/signup.css' %}" />
+  {% endblock %}
+  <div class="signup_containor">
+    <a href="{% url 'mainapp:main' %}" class="fs-large">
+      <h4 class="fw-600 fs-large" style="color:black">
+        Review Labeling
+      </h4>
+    </a>
+
+    <div class = "signup_main fs-base">
       <form action="" method="post">
         {% csrf_token %}
         <div class="form-group">
