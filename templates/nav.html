@@ -22,7 +22,14 @@
     <div class="nav-wrap">
 
       {% if user.is_authenticated %}
-        
+        <h1 class="header-title-name">
+          <a href="{% url 'mainapp:main' %}" class="fs-large">
+            <span class="fw-600">
+              LG
+            </span>
+            Review Labeling
+          </a>
+        </h1>
         <ul class="fw-400 fs-small">
           <li class="menu-pd">
             <img src="{% static 'images/upload.svg' %}" alt="upload" class="upload-img">

@@ -2,19 +2,11 @@
 
 <div id="header">
   <header class="header-title primary-bg">
-    <h1 class="header-title-name">
-      <a href="{% url 'mainapp:main' %}" class="fs-large gray-200">
-        <span class="fw-600">
-          LG
-        </span>
-        Review Labeling
-      </a>
-    </h1>
     <div class="login_signup">
       {% if user.is_authenticated %} <!--로그인 한 상태-->
         <div class="user-profile-login">
           {% comment %} <img src="{% url "pydenticon_image" user.username  %}" class="profile-img"> {% endcomment %}
-          <strong class="fw-600 fs-medium user-profile-name">
+          <strong class="user-profile-name">
               {{ user.username }}
           </strong>
           {% comment %} <a href="{% url 'mainapp:account' user.pk %}" class="mypage-img">
