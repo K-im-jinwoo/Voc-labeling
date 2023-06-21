@@ -22,15 +22,14 @@
     <div class="nav-wrap">
 
       {% if user.is_authenticated %}
-        <div class="user-profile-login">
-          <img src="{% url "pydenticon_image" user.username  %}" class="profile-img">
-          <strong class="fw-600 fs-medium user-profile-name">
-              {{ user.username }}
-          </strong>
-          <a href="{% url 'mainapp:account' user.pk %}" class="mypage-img">
-              <img src="{% static 'images/setting.svg' %}" alt="Mypage" >
+        <h1 class="header-title-name">
+          <a href="{% url 'mainapp:main' %}" class="fs-large">
+            <span class="fw-600">
+              LG
+            </span>
+            Review Labeling
           </a>
-        </div>
+        </h1>
         <ul class="fw-400 fs-small">
           <li class="menu-pd">
             <img src="{% static 'images/upload.svg' %}" alt="upload" class="upload-img">

@@ -19,7 +19,7 @@
           <a href="{% url 'mainapp:account' user.pk %}" class="mypage-img">
               <img src="{% static 'images/setting.svg' %}" alt="Mypage" >
           </a>
-        </div>
+
           <a href="{% url 'mainapp:logout' %}" class="logout_btn">Logout</a>
         {% else %} <!--로그인 안한 상태-->
         <a href="{% url 'mainapp:login' %}?next={{ request.path }}" class="login_btn">Login</a>
