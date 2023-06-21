@@ -6,26 +6,26 @@ content-title {
 
 .subject {
   display: inline-block;
-  margin-right: 15px;
-  
-  letter-spacing: 0em;
-  text-align: left;
+  margin-right: 10px
   
 }
+
 select {
   display: inline-block;
-  width: 170px;
   height: 34px;
   border-radius: 5px;
   border: 0.5px solid #D5D5D5;
-  
+}
+
+
+
+
+.test{
+  display: flex;
+  margin-top: 31px;
 }
 .totalBar {
-  display: block;
-  float: right;
   white-space: nowrap;
-  margin-right: 27px;
-  margin-left: auto;
   
 }
 .right_top {
@@ -64,7 +64,7 @@ select {
   display: block;
   width: 158px;
   height: 34px;
-  margin: 31px 27px 17px auto;
+  margin: 0px 27px 17px auto;
   padding: 5px 10px 5px 12.7px;
   background-color: #f2f2f2;
   
@@ -111,8 +111,6 @@ svg{
 
 .data_space_cut{
   padding: auto;
- 
-
 }
 .date_space_cut > p > a{
   color: #1A1A1A;
@@ -201,3 +199,5 @@ tr {
 ::-webkit-scrollbar-track-piece {
   margin-top: 5px;
 }
+
+

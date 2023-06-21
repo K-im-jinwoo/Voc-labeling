@@ -227,6 +227,7 @@ def workstatus_review(request):
             context["first_num"] = first_num
             context["dummy_num"] = dummy_num
             context["second_num"] = second_num
+            context["left"] = alltotal - first_num
             context["product_names"] = (
                 Category.objects.all().values("category_product").distinct()
             )
@@ -406,6 +407,7 @@ def workstatus_review(request):
             context["first_num"] = first_num
             context["dummy_num"] = dummy_num
             context["second_num"] = second_num
+            context["left"] = alltotal - first_num
             context["product_names"] = (
                 Category.objects.all().values("category_product").distinct()
             )
@@ -577,6 +579,7 @@ def workstatus_review(request):
                 context["first_num"] = first_num
                 context["dummy_num"] = dummy_num
                 context["second_num"] = second_num
+                context["left"] = alltotal - first_num
                 context["product_names"] = (
                     Category.objects.all().values("category_product").distinct()
                 )
