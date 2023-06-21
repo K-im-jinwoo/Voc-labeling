@@ -221,6 +221,7 @@ def upload_main(request):
                     upload_file_url = fs.url(filename)
                     dbframe = cleansing(upload_file_url)
                     fs.delete(str(BASE_DIR) + upload_file_url)
+                    
             
                     # 중복 제거하기
                     dbreviews = Review.objects.filter(
