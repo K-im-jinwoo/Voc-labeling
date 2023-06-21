@@ -23,45 +23,17 @@ div{
     margin-left: 46px;
 }
 
+.product_name > select{
+    height: 34px;
+    border-radius: 5px;
+    border: 0.5px solid #D5D5D5;
+}
 
-.product_name > select {
-    display: inline-block;
-    padding: 0px 10px;  
-    text-align: left;
-    line-height: 1.5;
-    border: 0.5px solid #D5D5D5;
-    border-radius: 5px;
-    background-color: #fff;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-  
-  .product_name > select option {
-    padding: 10px;
-  }
-  
-  .product_name > select::-ms-expand {
-    display: none;
-  }
-  
-  .product_name > select:focus {
-    outline: none;
-  }
 .work_count > .input{
-    
-    display: inline-block;
-    width: 85px;
-    padding: 0px 10px;  
-    text-align: left;
-    line-height: 1.5;
-    border: 0.5px solid #D5D5D5;
+    width: 83px;
+    height: 34px;
     border-radius: 5px;
-    background-color: #fff;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-     
+    border: 0.5px solid #D5D5D5;
 }
 
 .work_count > .asdf{

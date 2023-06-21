@@ -8,29 +8,10 @@
   margin-right: 25px;
 }
 
-select {
-  display: inline-block;
-  padding: 0px 10px;  
-  text-align: left;
-  line-height: 1.5;
-  border: 0.5px solid #D5D5D5;
+.category_product {
+  border: 0.5px solid #D4D4D4;
   border-radius: 5px;
-  background-color: #fff;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-select option {
-  padding: 10px;
-}
-
-select::-ms-expand {
-  display: none;
-}
-
-select:focus {
-  outline: none;
+  padding: 5px 10px;
 }
 
 .category_product_under {

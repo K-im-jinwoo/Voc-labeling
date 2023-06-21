@@ -14,30 +14,11 @@ p {
     justify-content: space-between;
 }
 
-select {
-    display: inline-block;
-    padding: 0px 10px;  
-    text-align: left;
-    line-height: 1.5;
-    border: 0.5px solid #D5D5D5;
+.product_choice > select{
+    height: 34px;
     border-radius: 5px;
-    background-color: #fff;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-  
-  select option {
-    padding: 10px;
-  }
-  
-  select::-ms-expand {
-    display: none;
-  }
-  
-  select:focus {
-    outline: none;
-  }
+    border: 0.5px solid #D5D5D5;
+}
 
 .product_add > .input{
     width: 125px;
