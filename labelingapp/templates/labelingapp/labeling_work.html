@@ -66,14 +66,12 @@
                     <div class="c_content">
                         {% if category_detail %}
                             {% for category_detail in category_detail %}
-                                <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};
-                                         opacity: 1; margin-bottom:.5rem">
+                                <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};">
                                     <p>{{ category_detail.category_middle }}</p>
                                 </div>
                             {% endfor %}
                         {% else %}
-                            <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};
-                            opacity: 1; margin-bottom:.5rem">
+                            <div class="category_value fw-medium" style="background-color: {{ category_detail.category_color }};">
                                 <p>제품 데이터가 업로드 되지 않았습니다.</p>
                             </div>
                         {% endif %}
@@ -174,7 +172,9 @@
                         </div>
                         <p fw-400>
                         <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
-                            {{ review_first.review_number }}.
+                            <span class="fw-400">
+                                {{ review_first.review_number }}.
+                            </span>
                             <span class="current_target dragg fw-400">{{ review_first.review_content }}</span>
                             <script>
                                 function select_result(target,expression){

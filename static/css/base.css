@@ -1,17 +1,16 @@
 /* header */
 .header-title {
   display: flex;
+  justify-content: right;
   flex-grow: 1;
-  height: 80px;
+  height: 60px;
   border-bottom: 1px solid #D4D4D4;
 }
 
 .header-title-name {
-  padding: 28px 0 28px 61px;
   display: flex;
-  align-items: center; /* 요소들을 수직정렬 */
-  justify-content: space-between; /* 요소들을 좌우로 균등 분할 */
-  width: 100%; /* 너비를 최대로 설정 */
+  padding: 40px 0 34px;
+  justify-content: center;
   text-align: center;
 }
 
@@ -24,7 +23,8 @@
   display: flex;
   flex-direction: row;
   justify-content: right;
-  padding: 20px;
+  align-items: center;
+  text-align: center;
 }
 
 .login_btn{
@@ -51,8 +51,6 @@
 .user-profile-login {
   display: flex;
   align-items: center;
-  height: 114px;
-  padding: 40px 0 34px 20px;
   text-align: center;
 }
 
@@ -70,12 +68,10 @@
 }
 
 .user-profile-name {
-  padding-left:10px;
+
 }
+
 .mypage-img {
-  display:inline-block;
-  margin-left:auto;
-  margin-right:44.9px;
 }
 
 
@@ -147,3 +143,36 @@
 .form-group {
   padding: 5px 0;
 }
+  /* 
+  .user-profile-name{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.5px solid black;
+    padding: 5px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+  } */
+
+  .user-profile-name{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .my_profile_modal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: white;
+    right: 30px;
+    margin-top: 30px;
+    position: absolute;
+    width: 300px;
+    height: 500px;
+    border: 1px solid black;
+    border-radius: 10px;
+    scale: 0;
+    transition: 0.5s;
+  }

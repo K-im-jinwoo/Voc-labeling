@@ -44,19 +44,14 @@ body {
 }
 
 /* Font Weight */
-
-.fw-regular {
-  font-family: lg_smartregular;
-  font-weight: 400;
-}
-
-.fw-400 {
-  font-family: lg_smartregular;
-  font-weight: 400;
-}
-
 .fw-medium {
   font-family: lg_smartlight;
+  font-weight: 400;
+}
+
+.fw-regular,
+.fw-400  {
+  font-family: lg_smartregular;
   font-weight: 400;
 }
 

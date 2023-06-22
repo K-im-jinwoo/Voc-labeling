@@ -79,6 +79,8 @@ fabric.properties
 __pycache__/
 media/
 
+.python-version
+
 *.pyc
 
 labelingapp/__pycache__
