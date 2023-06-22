@@ -157,17 +157,17 @@
                   <p>
                     {% if selected_code %}
                         <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=positive"
                           >{{ positive.count }}</a
                         >
                       {% elif selected_name %}
                         <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=positive"
                           >{{ positive.count }}</a
                         >
                       {% else %}
                         <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive&asdfasdf=dkfj"
                           >{{ positive.count }}</a
                         >
                       {% endif %}
@@ -178,17 +178,17 @@
                   <p>
                     {% if selected_code %}
                         <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=negative"
                           >{{ negative.count }}</a
                         >
                       {% elif selected_name %}
                         <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=negative"
                           >{{ negative.count }}</a
                         >
                       {% else %}
                         <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative&asdfasdf=dkfj"
                           >{{ negative.count }}</a
                         >
                       {% endif %}
@@ -200,17 +200,17 @@
                     <p>
                       {% if selected_code %}
                         <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=neutral"
                           >{{ neutral.count }}</a
                         >
                       {% elif selected_name %}
                         <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=neutral"
                           >{{ neutral.count }}</a
                         >
                       {% else %}
                         <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral&asdfasdf=dkfj"
                           >{{ neutral.count }}</a
                         >
                       {% endif %}
