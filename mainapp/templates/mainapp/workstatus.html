@@ -155,10 +155,22 @@
                 </td>
                 <td><div class="date_space_cut fw-400 fs-tiny" >
                   <p>
-                    <a
-                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive"
-                      >{{ positive.count }}</a
-                    >
+                    {% if selected_code %}
+                        <a
+                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                          >{{ positive.count }}</a
+                        >
+                      {% elif selected_name %}
+                        <a
+                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                          >{{ positive.count }}</a
+                        >
+                      {% else %}
+                        <a
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                          >{{ positive.count }}</a
+                        >
+                      {% endif %}
                   </p>
                 </div>
                 </td>
@@ -174,19 +186,43 @@
                 <td> <!-- 중립 개수 -->
                   <div class="date_space_cut fw-400 fs-tiny">
                     <p>
-                      <a
-                        href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral"
-                        >{{ neutral.count }}</a
-                      >
+                      {% if selected_code %}
+                        <a
+                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                          >{{ negative.count }}</a
+                        >
+                      {% elif selected_name %}
+                        <a
+                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                          >{{ negative.count }}</a
+                        >
+                      {% else %}
+                        <a
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                          >{{ negative.count }}</a
+                        >
+                      {% endif %}
                     </p>
                   </div>
                 </td>
                 <td><div class="date_space_cut fw-400 fs-tiny">
                   <p>
-                    <a
-                      href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything"
-                      >{{ everything.count }}</a
-                    >
+                    {% if selected_code %}
+                        <a
+                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
+                          >{{ neutral.count }}</a
+                        >
+                      {% elif selected_name %}
+                        <a
+                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
+                          >{{ neutral.count }}</a
+                        >
+                      {% else %}
+                        <a
+                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
+                          >{{ neutral.count }}</a
+                        >
+                      {% endif %}
                   </p>
                 </div>       
               </td>
