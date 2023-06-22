@@ -100,28 +100,6 @@
   });
 </script>
 
-<<<<<<< HEAD
-
-    <div class="totalBar fw-400 fs-small">
-      <div class="right_top top1">총 개수 {{ alltotal }}</div>
-      <div class="right_top top2">작업완료 {{ first_num }}</div>
-      <div class="right_top top3">검수완료 {{ second_num }}</div>
-      <div class="right_top top4">삭제 {{ dummy_num }}</div>
-    </div>
-
-    <div class="workStatus_now fw-600 fs-small">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" >
-        <path d="M6.00002 6.00008C7.47335 6.00008 8.66669 4.80675 8.66669 3.33341C8.66669 1.86008 7.47335 0.666748 6.00002 0.666748C4.52669 0.666748 3.33335 1.86008 3.33335 3.33341C3.33335 4.80675 4.52669 6.00008 6.00002 6.00008ZM6.00002 7.33342C4.22002 7.33342 0.666687 8.22675 0.666687 10.0001V10.6667C0.666687 11.0334 0.966687 11.3334 1.33335 11.3334H10.6667C11.0334 11.3334 11.3334 11.0334 11.3334 10.6667V10.0001C11.3334 8.22675 7.78002 7.33342 6.00002 7.33342Z" fill="#585757"/>
-        </svg>
-      <a href="{% url 'mainapp:workstatus_count' %}" 
-        onclick={statusls2()}>작업자별 진행 현황 </a>
-        <script>
-          function statusls2(){
-            var workStatus = localStorage.getItem("product_select_status2");
-            localStorage.setItem("product_select_status2", "--제품을 선택하세요--");
-          }
-        </script>
-=======
     
     <div class="test">
       <div class="totalBar fw-400 fs-small">
@@ -143,7 +121,6 @@
             }
           </script>
       </div>
->>>>>>> 86d587852daf2f5be30316c455beabec016b73dc
     </div>
     <div class="category_wrap">
       <div class="category category_1">
