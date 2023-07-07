@@ -21,11 +21,11 @@ from django_pydenticon.views import image as pydenticon_image
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('mainapp.url')),
-    path('identicon/image/<path:data>', pydenticon_image, name='pydenticon_image'),
-    path('upload/', include('uploadapp.urls')),
-    path('labeling/', include('labelingapp.url')),
-    path('output/', include('outputapp.urls')),
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    path("admin/", admin.site.urls),
+    path("", include("mainapp.url")),
+    path("identicon/image/<path:data>", pydenticon_image, name="pydenticon_image"),
+    path("upload/", include("uploadapp.urls")),
+    path("labeling/", include("labelingapp.url")),
+    path("dashboard/", include("dashboard.urls.dashboard")),
+    path("output/", include("outputapp.urls")),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
