@@ -1,0 +1,125 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static 'mainapp/css/dashboard.css' %}?after" />
+{% endblock %} {% block content-title %}
+{% endblock %} {% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+  <div class="first-desc-wrap">
+    <form style="display: inline-block" action="" method="get" name="category_product">
+      {% csrf_token %}
+      <p class="subject fw-400 fs-base">제품 선택</p>
+      <select name="category_product" id="product_select_status">
+        {% if selected %}
+          <option value="{{ selected }}" selected>{{ selected }}</option>
+        {% else %}
+          <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
+        {% endif %}
+          {% for product_name in product_names %}
+            <option value="{{ product_name.category_product }}"
+              {% if forloop.first %} selected {% endif %}>
+              {{ product_name.category_product }}
+            </option>
+          {% endfor %}
+        
+      </select>
+    </form>
+    
+    <form style="display: inline-block" action="" method="get"  name="category_model_name">
+      {% csrf_token %}
+      <select name="category_model_name" id="model_name_select_status">
+        {% if selected_name %}
+          <option value="{{ selected_name }}" selected>{{ selected_name }}</option>
+        {% else %}
+          <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
+        {% endif %}
+        {% for model_name in model_names %}
+    
+        {% if model_name.model_name %}
+          {% if model_name.model_name != "nan" %}
+            <option value={"{{ model_name.model_name }},{{selected}}"}>
+              {{ model_name.model_name }}
+            </option>
+          {% endif %}
+        {% endif %}
+          {% endfor %}
+      </select>
+    </form>
+
+    <form style="display: inline-block" action="" method="get" name="category_model_code">
+      {% csrf_token %}
+      <select name="category_model_code" id="model_code_select_status">
+        {% if selected_code %}
+          <option value="{{ selected_code }}" selected>{{ selected_code }}</option>
+        {% else %}
+          <option value="--모델명을 선택하세요--" selected>모델코드를 선택하세요</option>
+        {% endif %}
+        {% for model_code in model_codes %}
+    
+        {% if model_code.model_code %}
+          {% if model_code.model_code != "nan" %}
+            <option value={"{{ model_code.model_code }},{{selected}},{{selected_name}}"}>
+              {{ model_code.model_code }}
+            </option>
+          {% endif %}
+        {% endif %}
+          {% endfor %}
+      </select>
+    </form>
+    <div class="dashboard wrap1">
+      <div class = "category_apply">
+      </div>
+      <div class= "isNagative">
+      </div>
+      <div class ="rawdata">
+      </div>
+    </div>
+    <div class="dashboard wrap2">
+      <div class="frequency">
+      </div>
+      <div class="rank">
+      </div>
+    </div>
+    <div class="dashboard wrap3">
+      <div class="category_ratio">
+      </div>
+      <div class="ratio">
+      </div>
+    </div>
+    
+
+    
+    
+
+  </div>
+
+{% endblock %}
+
+<script> // 제품 선택
+  document.addEventListener("DOMContentLoaded", function() {
+    var select = document.getElementById("product_select_status");
+    var storedValue = localStorage.getItem("product_select_status");
+    if (storedValue) {
+      select.value = storedValue;
+    }
+    select.addEventListener("change", function() {
+      localStorage.setItem("product_select_status", this.value);
+    });
+  });
+
+  
+  $(document).ready(function() {
+    $('#product_select_status').change(function() {
+      $('form[name="category_product"]').submit();
+    });
+    $('#model_name_select_status').change(function() {
+      $('form[name="category_model_name"]').submit();
+    });
+    $('#model_code_select_status').change(function() {
+      $('form[name="category_model_code"]').submit();
+    });
+  });
+</script>

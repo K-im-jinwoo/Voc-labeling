@@ -47,6 +47,12 @@
             <a href="{% url 'mainapp:workstatus' %}" class="menu-link" onclick={statusls()}>
               Work Status</a>
           </li>
+          
+          <li class="menu-pd">
+            <img src="{% static 'images/list.svg' %}" alt="list" class="list-img">
+            <a href="{% url 'dashboard:dashboard' %}" class="menu-link">
+              Dash Board</a>
+          </li>
           <li class="menu-pd">
             <img src="{% static 'images/download.svg' %}" alt="download" class="download-img">
             <a href="{% url 'outputapp:output' %}" class="menu-link">
@@ -74,6 +80,12 @@
           <a href="{% url 'mainapp:login' %}?next={{ request.path }}" onclick={statusls()}>
             Work Status</a>
         </li>
+        <li class="menu-pd">
+          <img src="{% static 'images/list.svg' %}" alt="list" class="list-img">
+          <a href="{% url 'mainapp:login' %}?next={{ request.path }}">
+            Dash Board</a>
+        </li>
+       
         <li class="menu-pd">
           <img src="{% static 'images/download.svg' %}" alt="download" class="download-img">
           <a href="{% url 'mainapp:login' %}?next={{ request.path }}">
