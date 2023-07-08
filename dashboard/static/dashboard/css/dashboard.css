@@ -24,6 +24,7 @@
     border: 1px solid lightgray;
     width: 272px;
     height: 392px;
+    padding: 10px;
   }
   .isNagative{
     background-color: white;
@@ -67,3 +68,12 @@
     width: 360px;
     height: 392px;
   }
+ 
+  .apply_box{
+    display: flex;
+    flex-direction: column;
+  }
+.category_item{
+    display: flex;
+    flex-direction: row;
+}

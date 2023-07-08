@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% load static %} {% block style %}
-<link rel="stylesheet" href="{% static 'mainapp/css/dashboard.css' %}?after" />
+<link rel="stylesheet" href="{% static '../static/dashboard/css/dashboard.css' %}?after" />
 {% endblock %} {% block content-title %}
 {% endblock %} {% block content %}
 
@@ -71,6 +71,20 @@
     </form>
     <div class="dashboard wrap1">
       <div class = "category_apply">
+        <h3 class="apply_text">카테고리</h3>
+        <div class="apply_box">
+          {% for category_detail_list, positive, negative, neutral, everything,order in data %}
+          <div class="category_item">
+              <div class="apply_on">
+                  x
+              </div>
+              <div class="apply_main">
+                  <div>{{ category_detail_list }}</div>
+              </div>
+          </div>
+          {% endfor %}
+        </div>
+        <button>적용하기<button>
       </div>
       <div class= "isNagative">
       </div>
