@@ -4,7 +4,8 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 import pandas as pd
-
+import io
+import sys
 # Create your views here.
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView
@@ -12,9 +13,7 @@ from numpy.ma.core import count
 
 from LG_Project.settings.base import BASE_DIR
 from mainapp.models import Review, Category
-from django.http import JsonResponse
-
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 from django.shortcuts import get_object_or_404, redirect
 
@@ -26,22 +25,32 @@ def delete_category(request):
         url = reverse('uploadapp:upload') + f'?category_product={category.category_product}'
     return HttpResponseRedirect(url)
 
-def cleansing(csv_file):
+
+def cleansing(csv_file, is_csv=True):
+    print("Inside cleansing")
     '''전처리 시작'''
-    raw_data = pd.read_csv("." + csv_file, encoding='utf-8')
-    # print(raw_data)
+    if is_csv:
+        raw_data = pd.read_csv("." + csv_file, encoding='utf-8')
+    else :
+        print("raw_data before")
+        raw_data = csv_file
+        print("raw_data after")
+
+        # print(raw_data)
+        # print("데이터 제거 전 1",data.shape,model_name.shape)
+        '''중복 제거(1)'''
+        #중복이 확인되어 제거될 데이터의 인덱스번호 추출
+        # removed_index = list(set(data.index) - set(data.drop_duplicates(['Original Comments']).index))
+        # removed_index.sort(reverse=True)
+        #data(댓글)에서 제거된 인덱스에 맞추어 model_name(모델명) 데이터 제거
+        # for index_to_drop in removed_index:
+        #      model_name = model_name.drop(index_to_drop)
+        
+        # print("데이터 제거 후 1",data.shape,model_name.shape)
     data = raw_data.filter(['Original Comments', 'Model Name', 'Model Code'])
-    # print("데이터 제거 전 1",data.shape,model_name.shape)
-    '''중복 제거(1)'''
-    #중복이 확인되어 제거될 데이터의 인덱스번호 추출
-    # removed_index = list(set(data.index) - set(data.drop_duplicates(['Original Comments']).index))
-    # removed_index.sort(reverse=True)
-    #data(댓글)에서 제거된 인덱스에 맞추어 model_name(모델명) 데이터 제거
-    # for index_to_drop in removed_index:
-    #      model_name = model_name.drop(index_to_drop)
-    
+    print("1. data:", data)
+    data = data[['Original Comments', 'Model Name', 'Model Code']]
     data = data.drop_duplicates(['Original Comments'])
-    # print("데이터 제거 후 1",data.shape,model_name.shape)
 
     '''불필요한 문자열 제거'''
     # html태그 제거
@@ -81,6 +90,7 @@ def cleansing(csv_file):
 
     # 좌우 공백 제거
     data['Original Comments'] = data['Original Comments'].str.strip()
+    print("2. data:", data)  # 추가된 출력 코드
 
     # 아이디 관련 단어 제거
     data['Original Comments'] = data['Original Comments'].str.replace(pat=r'ID\s[a-zA-Z0-9]+', repl=r'',
@@ -129,6 +139,7 @@ def cleansing(csv_file):
 
     # 중복 제거
     data = data.drop_duplicates(['temp'])
+    print("3. data:", data)  # 추가된 출력 코드
     data = data.drop(['temp'], axis=1)
     
 
@@ -232,7 +243,7 @@ def upload_main(request):
                     fs = FileSystemStorage()
                     filename = fs.save(upload_file.name, upload_file)
                     upload_file_url = fs.url(filename)
-                    dbframe = cleansing(upload_file_url)
+                    dbframe = cleansing(upload_file_url ,is_csv=True)
                     fs.delete(str(BASE_DIR) + upload_file_url)
                     
             
@@ -267,7 +278,45 @@ def upload_main(request):
                     # request.session.set_expiry(3)
                     url = reverse('uploadapp:upload') + f'?category_product={request.POST.get("category_product")}'
                     return HttpResponseRedirect(url)
+                
+            elif request.POST.get("form-type") == 'formThree':
+                try:
+                    textarea_value = request.POST.get('textarea', None)
+                    if textarea_value is not None and textarea_value != "":
+                        input_text = textarea_value
+                        dbframe = pd.read_csv(io.StringIO(input_text), sep='\t')
+                        print(dbframe)
+                        print("Before cleansing")
+                        inputdata = cleansing(dbframe, is_csv=False)
+                        print("After cleansing")
+                        dbreviews = Review.objects.filter(
+                            category_product=request.POST.get('category_product')).values_list('review_content', flat=True)
+                        dbreviews = pd.DataFrame({"Original Comments": dbreviews})
+                        inputdata = pd.merge(dbreviews, inputdata, how='outer', indicator=True).query('_merge == "right_only"').drop(columns=['_merge'])
 
+                        category_max_num = Review.objects.filter(
+                            category_product=request.POST.get('category_product')).aggregate(temp=Max('review_number')).get('temp', None)
+                        if category_max_num == None:
+                            category_max_num = 0
+                        inputdata.reset_index(inplace=True)
+                        inputdata['index'] = inputdata['index'] + int(category_max_num) + 1
+                        print(inputdata.columns)
+                        review_obj = [Review(review_content=row['Original Comments'],
+                                            category_product=request.POST.get('category_product'),
+                                            review_number=row['index'],
+                                            model_name=row['Model Name'],
+                                            model_code=row['Model Code']) for _, row in inputdata.iterrows()] 
+                        Review.objects.bulk_create(review_obj)
+                        request.session['message'] = '업로드가 완료되었습니다.'
+                        url = reverse('uploadapp:upload') + f'?category_product={request.POST.get("category_product")}'
+                        return HttpResponseRedirect(url)
+                    else:
+                        request.session['message'] = '<<Error>> 업로드 하려는 파일의 내용을 붙여넣은 후 업로드 해주세요.'
+                        request.session.set_expiry(3)
+                        return HttpResponseRedirect(reverse('uploadapp:upload'))
+                except Exception as e:
+                    print(f"Error at line {sys.exc_info()[-1].tb_lineno}: {e}")  # 추가한 라인; 발생하는 오류와 몇 번째 줄에서 발생하는지 출력합니다.
+                    raise e
         return render(request, 'uploadapp/upload_main.html', {})
 
     # 예외 처리

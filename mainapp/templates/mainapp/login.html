@@ -4,31 +4,35 @@
   {% include 'head.html' %}
 
   <body>
-    {% load static %} {% load bootstrap4 %}
-    <div style="text-align: center; width: 100%; margin: 10rem 5rem 3rem 0rem">
-      <h1
-        style="
-          display: inline-block;
-          font-family: 'Josefin Sans', sans-serif;
-          font-weight: 300;
-          font-size: 1.6rem;
-        "
-      >
-        Review Labeling
-      </h1>
-      <br />
-      <br />
-      <div
-        style="
-          font-family: 'Nanum Gothic Coding', monospace;
-          font-weight: 200;
-          width: 25rem;
-          display: inline-block;
-          text-align: left;
-        "
-      >
+    {% load static %} {% block style %}
+    <link rel="stylesheet" href="{% static 'mainapp/css/login.css' %}" />
+    {% endblock %}
+    <div class="login_containor">
+      <a href="{% url 'mainapp:main' %}" class="fs-large">
+        <h4 class="fw-600 fs-large" style="color:black">
+          Review Labeling
+        </h4>
+      </a>
+
+      <div class="login_main fs-base">
         <form action="" method="post">
-          {% csrf_token %} {% bootstrap_form form %}
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">사용자이름</label>
+            {{ form.username }}
+            {% if form.non_field_errors %}
+              <p class="error">올바른 아이디를 입력해주시기 바랍니다.</p>
+            {% endif %}          
+          </div>
+          <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">비밀번호</label>
+            {{ form.password }}
+            {% if form.non_field_errors %}
+              <p class="error">올바른 비밀번호를 입력해주시기 바랍니다.</p>
+            {% endif %}
+
+          </div>
+
           <input
             type="submit"
             class="btn btn-info rounded-pill"
