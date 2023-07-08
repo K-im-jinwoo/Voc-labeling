@@ -1,0 +1,69 @@
+.subject {
+    display: inline-block;
+    margin-right: 10px
+    
+  }
+  
+  select {
+    display: inline-block;
+    height: 34px;
+    border-radius: 5px;
+    border: 0.5px solid #D5D5D5;
+  }
+  
+  .dashboard {
+    display: flex;
+    flex-direction: row;
+    
+    margin-top: 20px;
+    margin-right: 75px;
+  }
+  .category_apply {
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 272px;
+    height: 392px;
+  }
+  .isNagative{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 448px;
+    height: 392px;
+  }
+  .rawdata{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 360px;
+    height: 392px;
+  }
+  .frequency{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 730px;
+    height: 392px;
+  }
+  .rank{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 360px;
+    height: 392px;
+  }
+  .category_ratio{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 730px;
+    height: 392px;
+  }
+  .ratio{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    width: 360px;
+    height: 392px;
+  }
