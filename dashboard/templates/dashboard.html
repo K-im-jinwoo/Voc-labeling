@@ -1,0 +1,204 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static '../static/dashboard/css/dashboard.css' %}?after" />
+{% endblock %} {% block content-title %}
+{% endblock %} {% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+  <div class="first-desc-wrap">
+    <form style="display: inline-block" action="" method="get" name="category_product">
+      {% csrf_token %}
+      <p class="subject fw-400 fs-base">제품 선택</p>
+      <select name="category_product" id="product_select_status">
+        {% if selected %}
+          <option value="{{ selected }}" selected>{{ selected }}</option>
+        {% else %}
+          <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
+        {% endif %}
+          {% for product_name in product_names %}
+            <option value="{{ product_name.category_product }}"
+              {% if forloop.first %} selected {% endif %}>
+              {{ product_name.category_product }}
+            </option>
+          {% endfor %}
+        
+      </select>
+    </form>
+    
+    <form style="display: inline-block" action="" method="get"  name="category_model_name">
+      {% csrf_token %}
+      <select name="category_model_name" id="model_name_select_status">
+        {% if selected_name %}
+          <option value="{{ selected_name }}" selected>{{ selected_name }}</option>
+        {% else %}
+          <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
+        {% endif %}
+        {% for model_name in model_names %}
+    
+        {% if model_name.model_name %}
+          {% if model_name.model_name != "nan" %}
+            <option value={"{{ model_name.model_name }},{{selected}}"}>
+              {{ model_name.model_name }}
+            </option>
+          {% endif %}
+        {% endif %}
+          {% endfor %}
+      </select>
+    </form>
+
+    <form style="display: inline-block" action="" method="get" name="category_model_code">
+      {% csrf_token %}
+      <select name="category_model_code" id="model_code_select_status">
+        {% if selected_code %}
+          <option value="{{ selected_code }}" selected>{{ selected_code }}</option>
+        {% else %}
+          <option value="--모델명을 선택하세요--" selected>모델코드를 선택하세요</option>
+        {% endif %}
+        {% for model_code in model_codes %}
+    
+        {% if model_code.model_code %}
+          {% if model_code.model_code != "nan" %}
+            <option value={"{{ model_code.model_code }},{{selected}},{{selected_name}}"}>
+              {{ model_code.model_code }}
+            </option>
+          {% endif %}
+        {% endif %}
+          {% endfor %}
+      </select>
+    </form>
+    <script> // 제품 선택
+      document.addEventListener("DOMContentLoaded", function() {
+        var select = document.getElementById("product_select_status");
+        var storedValue = localStorage.getItem("product_select_status");
+        if (storedValue) {
+          select.value = storedValue;
+        }
+        select.addEventListener("change", function() {
+          localStorage.setItem("product_select_status", this.value);
+        });
+      });
+    
+      
+      $(document).ready(function() {
+        $('#product_select_status').change(function() {
+          $('form[name="category_product"]').submit();
+        });
+        $('#model_name_select_status').change(function() {
+          $('form[name="category_model_name"]').submit();
+        });
+        $('#model_code_select_status').change(function() {
+          $('form[name="category_model_code"]').submit();
+        });
+      });
+    </script>
+    <div class="dashboard wrap1">
+      <div class = "category_apply">
+        <h3 class="apply_text">카테고리</h3>
+        <div class="apply_box">
+          {% for category_detail_list, positive, negative, neutral, everything,order in data %}
+          <div class="category_item">
+            <button class="apply_button">off</button>
+            <div class="apply_main">
+              <div class="category-name">{{ category_detail_list }}</div>
+            </div>
+          </div>
+          <div>{{ positive.count }}</div>
+          <div>{{ negative.count }}</div>
+          <div>{{ neutral.count }}</div>
+          
+        {% endfor %}
+        </div>
+        <button>적용하기<button>
+      </div>
+      <div class= "isNagative">
+      </div>
+      <div class ="rawdata">
+      </div>
+    </div>
+    <div class="dashboard wrap2">
+      <div class="frequency">
+      </div>
+      <div class="rank">
+      </div>
+    </div>
+    <div class="dashboard wrap3">
+      <div class="category_ratio">
+        <h3 class="category_ratio_text">카테고리별 긍정/부정</h3>
+        <div class="category_ratio_box">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+      <div class="ratio">
+        <ul id="category-detail-list">
+          <!-- JavaScript에서 이 부분이 동적으로 채워짐 -->
+        </ul>
+        
+      </div>
+    </div>
+    <script>
+      $(document).ready(function() {
+  
+        // 필터링 버튼 클릭 시
+        $('.apply_button').click(function(e) {
+          e.preventDefault();
+          
+          // 버튼 on/off 토글
+          $(this).toggleClass('on');
+          if ($(this).hasClass('on')) {
+            $(this).text('on');
+          } else {
+            $(this).text('off');
+          }
+        });
+      });
+      
+      const category_detail_list = {{ category_detail_list|safe }};
+
+      const results_positive = {{ results_positive|safe }};
+      const results_negative = {{ results_negative|safe }};
+      const results_neutral = {{ results_neutral|safe }};
+      
+      let stackedDataset = [
+        {
+          label: 'Positive',
+          data: results_positive,
+          backgroundColor: '#1f77b4'
+        },
+        {
+          label: 'Negative',
+          data: results_negative,
+          backgroundColor: '#d62728'
+        },
+        {
+          label: 'Neutral',
+          data: results_neutral,
+          backgroundColor: '#7f7f7f'
+        }
+      ];
+      
+      new Chart(document.getElementById("myChart"), {
+        type: 'bar',
+        data: {
+          labels: category_detail_list,
+          datasets: stackedDataset
+        },
+        options: {
+          scales: {
+            xAxes: [{
+              stacked: true
+            }],
+            yAxes: [{
+              stacked: true
+            }]
+          }
+        }
+      });
+
+    </script>
+  </div>
+  
+  
+
+{% endblock %}
+

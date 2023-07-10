@@ -35,6 +35,7 @@
 .signup_btn {
   color: black;
   padding: 12px;
+  margin-right: 10px;
 }
 
 .logout_btn {

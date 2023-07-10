@@ -10,12 +10,19 @@ from mainapp.decorators import profile_ownership_required
 from mainapp.forms import ProfileCreationForm, AccountUpdateForm
 from mainapp.models import Profile
 
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
+
 
 class AccountCreateView(CreateView):
     model = User
     form_class = UserCreationForm  # 기본적인 userform을 제공해준다.
     success_url = reverse_lazy('mainapp:login')  # reverse는 함수형, reverse_lazy는 class에서 사욯한다.
     template_name = 'mainapp/signup.html'
+
+class AccountLoginView(LoginView):
+    form_class = AuthenticationForm
+    template_name = 'mainapp/login.html'
 
 
 class AccountDetailView(DetailView):

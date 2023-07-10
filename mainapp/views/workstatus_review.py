@@ -97,6 +97,9 @@ def workstatus_review(request):
                 .filter(model_code=category_model_code)
                 .count()
             )
+            left = (
+                alltotal - first_num
+            )
 
             """카테고리별 긍정 부정 개수"""
             context = {}
