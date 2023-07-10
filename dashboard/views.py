@@ -235,6 +235,41 @@ def dashboard(request):
                 category_detail_list, positive, negative, neutral, everything, order
             )
             data_list = list(data1)
+            category_detail_list = [item[0] for item in data_list]
+            positive = [item[1] for item in data_list]
+            negative = [item[2] for item in data_list]
+            neutral = [item[3] for item in data_list]
+
+            # positive 변수 출력
+            context = {
+                # 다른 데이터도 추가할 수 있음
+                "negative": negative,
+                "neutral": neutral,
+                "everything": everything,
+                "order": order,
+            }
+            results_positive = []
+            results_negative = []
+            results_neutral = []
+
+            for queryset in positive:
+                result = queryset.filter(first_labeled_emotion="positive").count()
+                results_positive.append(result if result else 0)
+
+            for queryset in negative:
+                result = queryset.filter(first_labeled_emotion="negative").count()
+                results_negative.append(result if result else 0)
+
+            for queryset in neutral:
+                result = queryset.filter(first_labeled_emotion="neutral").count()
+                results_neutral.append(result if result else 0)
+
+            context = {
+                "category_detail_list": category_detail_list,
+                "results_positive": results_positive,
+                "results_negative": results_negative,
+                "results_neutral": results_neutral,
+            }
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
@@ -418,8 +453,42 @@ def dashboard(request):
                 category_detail_list, positive, negative, neutral, everything, order
             )
             data_list = list(data1)
-            print("gd")
-            context["data_list"] = data_list
+
+            category_detail_list = [item[0] for item in data_list]
+            positive = [item[1] for item in data_list]
+            negative = [item[2] for item in data_list]
+            neutral = [item[3] for item in data_list]
+
+            # positive 변수 출력
+            context = {
+                # 다른 데이터도 추가할 수 있음
+                "negative": negative,
+                "neutral": neutral,
+                "everything": everything,
+                "order": order,
+            }
+            results_positive = []
+            results_negative = []
+            results_neutral = []
+
+            for queryset in positive:
+                result = queryset.filter(first_labeled_emotion="positive").count()
+                results_positive.append(result if result else 0)
+
+            for queryset in negative:
+                result = queryset.filter(first_labeled_emotion="negative").count()
+                results_negative.append(result if result else 0)
+
+            for queryset in neutral:
+                result = queryset.filter(first_labeled_emotion="neutral").count()
+                results_neutral.append(result if result else 0)
+
+            context = {
+                "category_detail_list": category_detail_list,
+                "results_positive": results_positive,
+                "results_negative": results_negative,
+                "results_neutral": results_neutral,
+            }
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
