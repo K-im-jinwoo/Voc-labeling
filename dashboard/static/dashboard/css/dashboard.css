@@ -25,6 +25,7 @@
     width: 272px;
     height: 392px;
     padding: 10px;
+    overflow: auto;
   }
   .isNagative{
     background-color: white;
@@ -55,6 +56,7 @@
     height: 392px;
   }
   .category_ratio{
+    padding: 15px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid lightgray;
@@ -69,11 +71,28 @@
     height: 392px;
   }
  
-  .apply_box{
+.apply_box{
     display: flex;
     flex-direction: column;
-  }
+    
+}
 .category_item{
     display: flex;
     flex-direction: row;
+}
+.apply_button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #000;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.apply_button.on {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+.category_ratio_text{
+  margin-bottom: 15px;
 }
