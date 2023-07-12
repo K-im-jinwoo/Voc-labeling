@@ -42,6 +42,7 @@
     height: 392px;
   }
   .frequency{
+    padding: 15px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid lightgray;
@@ -57,13 +58,15 @@
   }
   .category_ratio{
     padding: 15px;
+    padding-bottom: 30px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid lightgray;
     width: 730px;
     height: 392px;
   }
-  .ratio{
+  .ratio1{
+    padding: 15px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid lightgray;
@@ -95,4 +98,8 @@
 
 .category_ratio_text{
   margin-bottom: 15px;
+}
+.ratio1_text{
+  margin-bottom: 15px;
+  
 }

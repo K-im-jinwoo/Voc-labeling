@@ -6,6 +6,13 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script src="https://d3js.org/d3.v6.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-format@2.2.3"></script>
+
+<style>
+  
+</style>
   <div class="first-desc-wrap">
     <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
@@ -95,21 +102,26 @@
     <div class="dashboard wrap1">
       <div class = "category_apply">
         <h3 class="apply_text">카테고리</h3>
-        <div class="apply_box">
-          {% for category_detail_list, positive, negative, neutral, everything,order in data %}
-          <div class="category_item">
-            <button class="apply_button">off</button>
-            <div class="apply_main">
-              <div class="category-name">{{ category_detail_list }}</div>
-            </div>
+        <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post">
+          {% csrf_token %}
+          <div class="apply_box">
+              {% for category_detail_list, positive, negative, neutral, everything,order in data %}
+              <div class="category_item">
+                  <div class="apply_on">
+                      <label class="switch">
+                          <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}">
+                          <input type="hidden" name="showing_index" value="{{ order }}" >
+                          <span class="slider round"></span>
+                      </label>
+                  </div>
+                  <div class="apply_main">
+                      <div>{{ category_detail_list }}</div>
+                  </div>
+              </div>
+              {% endfor %}
           </div>
-          <div>{{ positive.count }}</div>
-          <div>{{ negative.count }}</div>
-          <div>{{ neutral.count }}</div>
-          
-        {% endfor %}
-        </div>
-        <button>적용하기<button>
+          <button type="submit">적용하기</button>
+        </form>
       </div>
       <div class= "isNagative">
       </div>
@@ -118,6 +130,12 @@
     </div>
     <div class="dashboard wrap2">
       <div class="frequency">
+        <h3 class ="frequency_text">카테고리별 빈도</h3>
+        <div class="frequency_box width="500px height="230px">
+          
+          <div id="treemap" width="500px"height="230px"></div>
+          
+        </div>
       </div>
       <div class="rank">
       </div>
@@ -126,39 +144,30 @@
       <div class="category_ratio">
         <h3 class="category_ratio_text">카테고리별 긍정/부정</h3>
         <div class="category_ratio_box">
-          <canvas id="myChart"></canvas>
+          <canvas id="ratio_category" width="500px"height="230px"></canvas>
         </div>
       </div>
-      <div class="ratio">
-        <ul id="category-detail-list">
-          <!-- JavaScript에서 이 부분이 동적으로 채워짐 -->
-        </ul>
-        
+      <div class="ratio1">
+        <h3 class="ratio1_text">긍/부정 비율</h3>
+        <div class="ratio1_box">
+          <div class="canvas-container">
+            <canvas id="ratio" height="230px"></canvas>
+          </div>
+        </div>
       </div>
     </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
     <script>
-      $(document).ready(function() {
-  
-        // 필터링 버튼 클릭 시
-        $('.apply_button').click(function(e) {
-          e.preventDefault();
-          
-          // 버튼 on/off 토글
-          $(this).toggleClass('on');
-          if ($(this).hasClass('on')) {
-            $(this).text('on');
-          } else {
-            $(this).text('off');
-          }
-        });
-      });
-      
-      const category_detail_list = {{ category_detail_list|safe }};
 
+     
+
+      //  누적막대그래프
+      const category_detail_list = {{ category_detail_list|safe }};
       const results_positive = {{ results_positive|safe }};
       const results_negative = {{ results_negative|safe }};
       const results_neutral = {{ results_neutral|safe }};
-      
+
       let stackedDataset = [
         {
           label: 'Positive',
@@ -176,8 +185,9 @@
           backgroundColor: '#7f7f7f'
         }
       ];
+            
       
-      new Chart(document.getElementById("myChart"), {
+      new Chart(document.getElementById("ratio_category"), {
         type: 'bar',
         data: {
           labels: category_detail_list,
@@ -185,20 +195,47 @@
         },
         options: {
           scales: {
-            xAxes: [{
+            x: {
               stacked: true
-            }],
-            yAxes: [{
+            },
+            y: {
               stacked: true
-            }]
+            }
           }
         }
       });
 
+      //도넛형 그래프
+      
+      let positiveSum = results_positive.reduce((a, b) => a + b, 0);
+      let negativeSum = results_negative.reduce((a, b) => a + b, 0);
+      let neutralSum = results_neutral.reduce((a, b) => a + b, 0);
+      
+      
+      let ctx = document.getElementById("ratio").getContext("2d");
+      let pieChart = new Chart(ctx, {
+        type: "doughnut", 
+
+        data: {
+          labels: ["Positive", "Negative", "Neutral"],
+          datasets: [
+            {
+              data: [positiveSum, negativeSum, neutralSum],
+              backgroundColor: ["#1f77b4", "#d62728", "#7f7f7f"],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          },
+          plugins: {
+            legend: false
+          }
+        }
+      });
     </script>
   </div>
-  
-  
-
 {% endblock %}
-
