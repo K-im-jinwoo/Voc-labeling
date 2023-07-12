@@ -1,16 +1,24 @@
 from django.shortcuts import render
+from django.db.models import Count
 
 # Create your views here.
 
 
-def dashboard(request):
-    return render(request, "dashboard.html")
-
-
 from django.shortcuts import render
 from django.contrib.auth.models import User
-
+from django.http import JsonResponse
 from mainapp.models import Category, Review, FirstLabeledData
+import json
+
+
+# def dashboard_check(request):
+#     if request.method == "POST":
+#         checked_data = request.POST.getlist("checked_data[]")
+#         print(checked_data)
+
+    
+
+#     return render(request, "dashboard.html")
 
 
 def type_to_variable(what_type, positive, negative, neutral, everything):
@@ -220,7 +228,7 @@ def dashboard(request):
                 # labeled_word = list(set(labeled_word))
                 context["box"] = labeled_box
                 context["box_counter"] = box_counter
-                # print('aAAAAAAAAAAAAAAA',labeled_word)
+
                 context["labeled_word"] = labeled_word
                 # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                 labeled_review = labeled_word.values_list("review_id", flat=True)
@@ -230,7 +238,45 @@ def dashboard(request):
             data = zip(
                 category_detail_list, positive, negative, neutral, everything, order
             )
+            data1 = zip(
+                category_detail_list, positive, negative, neutral, everything, order
+            )
+            data_list = list(data1)
+            category_detail_list = [item[0] for item in data_list]
+            positive = [item[1] for item in data_list]
+            negative = [item[2] for item in data_list]
+            neutral = [item[3] for item in data_list]
 
+            # positive 변수 출력
+            context = {
+                # 다른 데이터도 추가할 수 있음
+                "negative": negative,
+                "neutral": neutral,
+                "everything": everything,
+                "order": order,
+            }
+            results_positive = []
+            results_negative = []
+            results_neutral = []
+
+            for queryset in positive:
+                result = queryset.filter(first_labeled_emotion="positive").count()
+                results_positive.append(result if result else 0)
+
+            for queryset in negative:
+                result = queryset.filter(first_labeled_emotion="negative").count()
+                results_negative.append(result if result else 0)
+
+            for queryset in neutral:
+                result = queryset.filter(first_labeled_emotion="neutral").count()
+                results_neutral.append(result if result else 0)
+
+            context = {
+                "category_detail_list": category_detail_list,
+                "results_positive": results_positive,
+                "results_negative": results_negative,
+                "results_neutral": results_neutral,
+            }
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
@@ -339,6 +385,7 @@ def dashboard(request):
                 request.session["sort"] = sort
             print(request.session["sort"])
             print("22222222222222222222222222222")
+            print(showing_index)
             # session에 저장한 요구 상태를 읽어 정렬 수행
 
             if request.session["sort"] != "sort":
@@ -410,7 +457,46 @@ def dashboard(request):
             data = zip(
                 category_detail_list, positive, negative, neutral, everything, order
             )
+            data1 = zip(
+                category_detail_list, positive, negative, neutral, everything, order
+            )
+            data_list = list(data1)
 
+            category_detail_list = [item[0] for item in data_list]
+            positive = [item[1] for item in data_list]
+            negative = [item[2] for item in data_list]
+            neutral = [item[3] for item in data_list]
+
+            # positive 변수 출력
+            context = {
+                # 다른 데이터도 추가할 수 있음
+                "negative": negative,
+                "neutral": neutral,
+                "everything": everything,
+                "order": order,
+            }
+            results_positive = []
+            results_negative = []
+            results_neutral = []
+
+            for queryset in positive:
+                result = queryset.filter(first_labeled_emotion="positive").count()
+                results_positive.append(result if result else 0)
+
+            for queryset in negative:
+                result = queryset.filter(first_labeled_emotion="negative").count()
+                results_negative.append(result if result else 0)
+
+            for queryset in neutral:
+                result = queryset.filter(first_labeled_emotion="neutral").count()
+                results_neutral.append(result if result else 0)
+
+            context = {
+                "category_detail_list": category_detail_list,
+                "results_positive": results_positive,
+                "results_negative": results_negative,
+                "results_neutral": results_neutral,
+            }
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
@@ -447,6 +533,10 @@ def dashboard(request):
             # 청소기, 냉장고, 식기세척기 제품군 선택 시에만 수행
             if request.GET.get("category_product"):
                 category_product = request.GET["category_product"]
+
+                global cp
+                cp = category_product
+                
 
                 if "sort" not in request.session:
                     request.session["sort"] = "positive"
@@ -582,7 +672,51 @@ def dashboard(request):
                 data = zip(
                     category_detail_list, positive, negative, neutral, everything, order
                 )
+                data1 = zip(
+                    category_detail_list, positive, negative, neutral, everything, order
+                )
+                data_list = list(data1)
 
+                # 리스트 안에 있는 정보들 전부 다담기
+                category_detail_list = [item[0] for item in data_list]
+                positive = [item[1] for item in data_list]
+                negative = [item[2] for item in data_list]
+                neutral = [item[3] for item in data_list]
+
+                # positive 변수 출력
+                context = {
+                    # 다른 데이터도 추가할 수 있음
+                    "negative": negative,
+                    "neutral": neutral,
+                    "everything": everything,
+                    "order": order,
+                }
+                results_positive = []
+                results_negative = []
+                results_neutral = []
+                # print하면 쿼리셋으로 나오는데 쿼리셋에 나오는 positive 갯수 list에 다 담았음
+                for queryset in positive:
+                    result = queryset.filter(first_labeled_emotion="positive").count()
+                    results_positive.append(result if result else 0)
+
+                for queryset in negative:
+                    result = queryset.filter(first_labeled_emotion="negative").count()
+                    results_negative.append(result if result else 0)
+
+                for queryset in neutral:
+                    result = queryset.filter(first_labeled_emotion="neutral").count()
+                    results_neutral.append(result if result else 0)
+
+                context = {
+                    "category_detail_list": category_detail_list,
+                    "results_positive": results_positive,
+                    "results_negative": results_negative,
+                    "results_neutral": results_neutral,
+                }
+                print(category_detail_list)
+                print(results_positive)
+                global state
+                state = context
                 context["data"] = data
                 context["category_product"] = category_product
                 context["alltotal"] = alltotal
@@ -608,13 +742,62 @@ def dashboard(request):
                 Category.objects.all().values("category_product").distinct()
             )
             return render(request, "dashboard.html", context=context)
+        
+        elif request.method == "POST":
+
+            #선택한 카테고리
+            checked_data = request.POST.getlist("checked_data[]")
+            common_indices = [state['category_detail_list'].index(category) for category in checked_data if category in state['category_detail_list']]
+            # print("Common Indices:", common_indices)
+            print("start")
+
+            # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
+            select_category = Review.objects.filter(category_product=cp, firstlabeleddata__isnull=False).values('firstlabeleddata').distinct()
+            print(select_category)
+
+            # 추출된 리뷰의 모든 firstlabeleddata 값을 추출하여 리스트로 변환
+            first_values = [category['firstlabeleddata'] for category in select_category]
+            # print(first_values)
+
+            # 모든 first_values에 해당하는 FirstLabeledData를 추출
+            # 이 때 distinct()를 사용하여 중복된 데이터를 제거하고, values() 메서드를 사용하여 first_labeled_target 값만 추출
+            first_targets = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).distinct().values('first_labeled_target')
+            first_expression = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).values('first_labeled_expression')
+            first_emotion = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).values('first_labeled_emotion')
+            categoryId = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).values('category_id')
+            a = Category.objects.filter(category_id__in=categoryId).values('category_middle')
+
+            print(first_targets)
+            print(first_expression)
+            print(first_emotion)
+            print(categoryId)
+            print('########')
+            print(a)
+
+            context = dict()
+            context["select_category"] = select_category
+
+            for key, value in state.items():
+                if isinstance(value, list): # value가 리스트인 키들만 추출합니다.
+                    # 해당하는 키의 인덱스 번호들만 추출합니다.
+                    indices = [i for i, x in enumerate(value) if i in common_indices]
+                    # 추출한 인덱스 번호들에 해당하는 데이터들을 출력합니다.
+                    selected_data = [value[i] for i in indices]
+                    print(selected_data)
+                # 데이터를 각각의 리스트에 저장합니다.
+
+            return render(request, "dashboard.html" ,context=context)
 
         else:
             context = {"message": "제품을 다시 선택해주세요."}
             context["product_names"] = (
                 Category.objects.all().values("category_product").distinct()
             )
-            return render(request, "dashboard.html", context=context)
+            return render(
+                request,
+                "dashboard.html",
+                context=context,
+            )
 
     # 예외처리
     except Exception as identifier:
