@@ -96,3 +96,78 @@
 .category_ratio_text{
   margin-bottom: 15px;
 }
+
+
+/* 워드클라우드 스위치*/
+.element-to-hide {
+}
+.switch_label {
+  display: inline-block;
+  width: 150px;
+  height: 35px;
+  background: #F0F2F5;
+  border: 1px solid #F0F2F5;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+.target_btn:hover ,.expression_btn:hover {
+  cursor: pointer;
+}
+.target_btn, .expression_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 31px;
+  text-align: center;
+  color: #00000080;
+}
+
+.onf_btn {
+  background-color: #FFFFFF;
+  color: #A50034;
+  border: 1px solid #F0F2F5;
+  border-radius: 10px;
+}
+
+#cloud {
+    width: 388px;
+    height: 142px;
+    margin: 63px 30px 0 30px;
+    position: relative;
+    padding: 0;
+}   
+
+#cloud svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#cloud text {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.select_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 85px;
+}
+.select_pos , .select_neg, .select_neu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 38px;
+  margin-right: 15px;
+  border: 1px solid #E0E0E0;
+  border-radius: 20px;
+}
+.select_pos > label , .select_neg > label, .select_neu > label {
+  cursor: pointer;
+}
+.select_neu {
+  margin-right: 0;
+}
