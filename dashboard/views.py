@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.db.models import Count
+import numpy as np
 from django.db.models import Count, Q
 
 # Create your views here.
@@ -11,13 +13,11 @@ from mainapp.models import Category, Review, FirstLabeledData
 import json
 
 
-
 # def dashboard_check(request):
 #     if request.method == "POST":
 #         checked_data = request.POST.getlist("checked_data[]")
 #         print(checked_data)
 
-    
 
 #     return render(request, "dashboard.html")
 
@@ -278,6 +278,9 @@ def dashboard(request):
                 "results_negative": results_negative,
                 "results_neutral": results_neutral,
             }
+
+            print(category_detail_list)
+            print(results_positive)
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
@@ -386,7 +389,49 @@ def dashboard(request):
                 request.session["sort"] = sort
             print(request.session["sort"])
             print("22222222222222222222222222222")
-            print(showing_index)
+            data1 = zip(
+                category_detail_list, positive, negative, neutral, everything, order
+            )
+            data_list = list(data1)
+
+            category_detail_list = [item[0] for item in data_list]
+            positive = [item[1] for item in data_list]
+            negative = [item[2] for item in data_list]
+            neutral = [item[3] for item in data_list]
+
+            # positive 변수 출력
+            context = {
+                # 다른 데이터도 추가할 수 있음
+                "negative": negative,
+                "neutral": neutral,
+                "everything": everything,
+                "order": order,
+            }
+            results_positive = []
+            results_negative = []
+            results_neutral = []
+
+            for queryset in positive:
+                result = queryset.filter(first_labeled_emotion="positive").count()
+                results_positive.append(result if result else 0)
+
+            for queryset in negative:
+                result = queryset.filter(first_labeled_emotion="negative").count()
+                results_negative.append(result if result else 0)
+
+            for queryset in neutral:
+                result = queryset.filter(first_labeled_emotion="neutral").count()
+                results_neutral.append(result if result else 0)
+
+            context = {
+                "category_detail_list": category_detail_list,
+                "results_positive": results_positive,
+                "results_negative": results_negative,
+                "results_neutral": results_neutral,
+            }
+            print(category_detail_list)
+            print(results_positive)
+
             # session에 저장한 요구 상태를 읽어 정렬 수행
 
             if request.session["sort"] != "sort":
@@ -458,46 +503,7 @@ def dashboard(request):
             data = zip(
                 category_detail_list, positive, negative, neutral, everything, order
             )
-            data1 = zip(
-                category_detail_list, positive, negative, neutral, everything, order
-            )
-            data_list = list(data1)
 
-            category_detail_list = [item[0] for item in data_list]
-            positive = [item[1] for item in data_list]
-            negative = [item[2] for item in data_list]
-            neutral = [item[3] for item in data_list]
-
-            # positive 변수 출력
-            context = {
-                # 다른 데이터도 추가할 수 있음
-                "negative": negative,
-                "neutral": neutral,
-                "everything": everything,
-                "order": order,
-            }
-            results_positive = []
-            results_negative = []
-            results_neutral = []
-
-            for queryset in positive:
-                result = queryset.filter(first_labeled_emotion="positive").count()
-                results_positive.append(result if result else 0)
-
-            for queryset in negative:
-                result = queryset.filter(first_labeled_emotion="negative").count()
-                results_negative.append(result if result else 0)
-
-            for queryset in neutral:
-                result = queryset.filter(first_labeled_emotion="neutral").count()
-                results_neutral.append(result if result else 0)
-
-            context = {
-                "category_detail_list": category_detail_list,
-                "results_positive": results_positive,
-                "results_negative": results_negative,
-                "results_neutral": results_neutral,
-            }
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
@@ -537,7 +543,6 @@ def dashboard(request):
 
                 global cp
                 cp = category_product
-                
 
                 if "sort" not in request.session:
                     request.session["sort"] = "positive"
@@ -714,8 +719,6 @@ def dashboard(request):
                     "results_negative": results_negative,
                     "results_neutral": results_neutral,
                 }
-                print(category_detail_list)
-                print(results_positive)
                 global state
                 state = context
                 context["data"] = data
@@ -743,75 +746,146 @@ def dashboard(request):
                 Category.objects.all().values("category_product").distinct()
             )
             return render(request, "dashboard.html", context=context)
-        
+
         elif request.method == "POST":
-
-            #선택한 카테고리
+            # 선택한 카테고리
             checked_data = request.POST.getlist("checked_data[]")
-            common_indices = [state['category_detail_list'].index(category) for category in checked_data if category in state['category_detail_list']]
-            # print("Common Indices:", common_indices)
-            print("start")
-            print(checked_data)
+            common_indices = [
+                state["category_detail_list"].index(category)
+                for category in checked_data
+                if category in state["category_detail_list"]
+            ]
+            print("Common Indices:", common_indices)
 
-            # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 
-            select_category = Review.objects.filter(category_product=cp, firstlabeleddata__isnull=False).values('firstlabeleddata').distinct()
-            print(select_category)
-
-            # category_middle과 checked_data를 비교해서 q에 담기, 
+            # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
+            select_category = (
+                Review.objects.filter(
+                    category_product=cp, firstlabeleddata__isnull=False
+                )
+                .values("firstlabeleddata")
+                .distinct()
+            )
             q = Q()
             for category in checked_data:
                 q |= Q(category_middle=category)
             # Category모델에서 category_product와 우리가 선택한 product와 비교해 해당 카테고리 들고오기, 그 중에서 q로 필터링하기, value로 해당하는 category_id 들고옴
-            select_categorys = Category.objects.filter(category_product=cp).filter(q).values('category_id')
+            select_categorys = (
+                Category.objects.filter(category_product=cp)
+                .filter(q)
+                .values("category_id")
+            )
 
             # 선택한 카테고리의 리뷰 id
-            select_ids = FirstLabeledData.objects.filter(category_id__in=select_categorys).values('review_id')
+            select_ids = FirstLabeledData.objects.filter(
+                category_id__in=select_categorys
+            ).values("review_id")
             # 선택한 카테고리의 리뷰id 활용해서 해당 contents만 뽑기
-            select_reviews = Review.objects.filter(category_product=cp).filter(review_id__in=select_ids).values('review_content')
-            # 선택한 카테고리의 대상 
-            select_targets = FirstLabeledData.objects.filter(category_id__in=select_categorys).values('first_labeled_target')
+            select_reviews_list = list(
+                Review.objects.filter(category_product=cp)
+                .filter(review_id__in=select_ids)
+                .values_list("review_content", flat=True)
+            )
+            # 선택한 카테고리의 대상
+            select_targets_list = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys
+                ).values_list("first_labeled_target", flat=True)
+            )
             # 선택한 카테고리의 현상
-            select_expression = FirstLabeledData.objects.filter(category_id__in=select_categorys).values('first_labeled_expression')
+            select_expression_list = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys
+                ).values_list("first_labeled_expression", flat=True)
+            )
 
-
-
-            # 아래 부분은 라벨링 된 데이터들 필터링 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # 추출된 리뷰의 모든 firstlabeleddata 값을 추출하여 리스트로 변환
-            first_values = [category['firstlabeleddata'] for category in select_category]
-            # print(first_values)
+            first_values = [
+                category["firstlabeleddata"] for category in select_category
+            ]
+            print(first_values)
 
             # 모든 first_values에 해당하는 FirstLabeledData를 추출
             # 이 때 distinct()를 사용하여 중복된 데이터를 제거하고, values() 메서드를 사용하여 first_labeled_target 값만 추출
-            first_targets = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).distinct().values('first_labeled_target')
-            first_expression = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).values('first_labeled_expression')
-            first_emotion = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).values('first_labeled_emotion')
-            categoryId = FirstLabeledData.objects.filter(first_labeled_id__in=first_values).values('category_id')
-            a = Category.objects.filter(category_middle=categoryId).values('category_middle')
+            first_targets = (
+                FirstLabeledData.objects.filter(first_labeled_id__in=first_values)
+                .distinct()
+                .values("first_labeled_target")
+            )
+            first_expression = FirstLabeledData.objects.filter(
+                first_labeled_id__in=first_values
+            ).values("first_labeled_expression")
+            first_emotion = FirstLabeledData.objects.filter(
+                first_labeled_id__in=first_values
+            ).values("first_labeled_emotion")
+            categoryId = FirstLabeledData.objects.filter(
+                first_labeled_id__in=first_values
+            ).values("category_id")
+            # categoryMiddle = Category.objects.filter(categoty_id=categoryId).values("category_middle")
 
-            # print(first_targets)
-            # print(first_expression)
+            target_list = [query["first_labeled_target"] for query in first_targets]
+            expression_list = [
+                query["first_labeled_expression"] for query in first_expression
+            ]
+
+            # 어짜피 한 리스트로 쓸거라 두 배열을 합침
+            for target in select_targets_list:
+                select_expression_list.append(target)
             # print(first_emotion)
             # print(categoryId)
-            # print('########')
-            # print(a)
 
             context = dict()
-            context = {
-                    "select_reviews": select_reviews,
-                    "select_targets": select_targets,
-                    "select_expression": select_expression,
-            }
+
+            context["select_reviews"] = select_reviews_list
+
+            context["select_expression"] = select_expression_list
+
+            select_expression_dict = {}
+            for word in select_expression_list:
+                if word in select_expression_dict:
+                    select_expression_dict[word] += 1
+                else:
+                    select_expression_dict[word] = 1
+            context["select_expression_dict"] = select_expression_dict
+
+
+            context["select_targets"] = select_targets_list
+
+            select_targets_dict = {}
+            for word in select_targets_list:
+                if word in select_targets_dict:
+                    select_targets_dict[word] += 1
+                else:
+                    select_targets_dict[word] = 1
+            context["select_targets_dict"] = select_targets_dict
+
+            context["select_category"] = select_category
+
+            category_detail_list = []
+            results_positive = []
+            results_negative = []
+            results_neutral = []
 
             for key, value in state.items():
-                if isinstance(value, list): # value가 리스트인 키들만 추출합니다.
+                if isinstance(value, list):  # value가 리스트인 키들만 추출합니다.
                     # 해당하는 키의 인덱스 번호들만 추출합니다.
                     indices = [i for i, x in enumerate(value) if i in common_indices]
                     # 추출한 인덱스 번호들에 해당하는 데이터들을 출력합니다.
                     selected_data = [value[i] for i in indices]
                     print(selected_data)
-                # 데이터를 각각의 리스트에 저장합니다.
 
-            return render(request, "dashboard.html" ,context=context)
+                    if key == "category_detail_list":
+                        category_detail_list = selected_data
+                    elif key == "results_positive":
+                        results_positive = selected_data
+                    elif key == "results_negative":
+                        results_negative = selected_data
+                    elif key == "results_neutral":
+                        results_neutral = selected_data
+            context["category_detail_list"] = category_detail_list
+            context["results_positive"] = results_positive
+            context["results_negative"] = results_negative
+            context["results_neutral"] = results_neutral
+            return render(request, "dashboard.html", context=context)
 
         else:
             context = {"message": "제품을 다시 선택해주세요."}

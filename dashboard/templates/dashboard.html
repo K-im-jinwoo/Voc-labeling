@@ -6,6 +6,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script src="https://d3js.org/d3.v6.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-format@2.2.3"></script>
+
+<style>
+  .group {
+    background-color: #ccc;
+    border: 1px solid black;
+  }
+</style>
 <div class="first-desc-wrap">
   <form style="display: inline-block" action="" method="get" name="category_product">
     {% csrf_token %}
@@ -116,15 +126,152 @@
       </form>
     </div>
     <div class="isNagative">
-      {% for review in select_reviews %}
-      {{review}}
-      {% endfor %}
+      <div>
+        <span>긍/부정</span>
+        <input type="radio" name="te_radio" id="target_radio" class="element-to-hide">
+        <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
+        <div class="switch_label">
+          <label for="target_radio">
+            <span class="target_btn fs-small fw-600" onclick="targetWordCloud()">대상</span>
+          </label>
+          <label for="expression_radio">
+            <span class="expression_btn fs-small fw-600" onclick="expressionWordCloud()">현상</span>
+          </label>
+        </div>
+          <script>
+            const target_radio = document.getElementById("target_radio");
+            const expression_radio = document.getElementById("expression_radio");
+            const target_btn = document.querySelector(".target_btn");
+            const expression_btn = document.querySelector(".expression_btn");
+
+            function toggleOnfBtnClass() {
+              if (target_radio.checked) {
+                target_btn.classList.add("onf_btn");
+                expression_btn.classList.remove("onf_btn");
+              } else if (expression_radio.checked) {
+                target_btn.classList.remove("onf_btn");
+                expression_btn.classList.add("onf_btn");
+              }
+            }
+            function targetWordCloud(){ 
+              var words_dict = {{ select_targets_dict| safe }};
+
+              var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
+
+              var width = 388,
+                height = 142;
+
+              var svg = d3.select("#cloud")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+              var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+              var layout = d3.layout.cloud()
+                .size([width, height])
+                .words(words_dataset)
+                .rotate(0)
+                .padding(10)
+                .fontSize(function (d) { return d.size + 10; })
+                .spiral('archimedean')
+                .on("end", draw);
+
+              layout.start();
+
+              function draw(words) {
+                svg.selectAll("text")
+                  .data(words)
+                  .enter()
+                  .append("text")
+                  .style("font-size", function (d) { return d.size + 10 + "px"; })
+                  .style("fill", function (d, i) { return color(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; });
+              }
+            }
+
+            function expressionWordCloud() {
+                var words_dict = {{ select_expression_dict | safe}};
+
+              var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
+
+              var width = 388,
+                height = 142;
+
+              var svg = d3.select("#cloud")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+              var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+              var layout = d3.layout.cloud()
+                .size([width, height])
+                .words(words_dataset)
+                .rotate(0)
+                .padding(10)
+                .fontSize(function (d) { return d.size + 10; })
+                .spiral('archimedean')
+                .on("end", draw);
+
+              layout.start();
+
+              function draw(words) {
+                svg.selectAll("text")
+                  .data(words)
+                  .enter()
+                  .append("text")
+                  .style("font-size", function (d) { return d.size + 10 + "px"; })
+                  .style("fill", function (d, i) { return color(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; });
+              }
+            }
+            
+
+            target_radio.addEventListener("click", toggleOnfBtnClass);
+            expression_radio.addEventListener("click", toggleOnfBtnClass);
+          </script>
+        <div id="cloud"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
+        <script src="https://unpkg.com/d3-cloud"></script>
+        <script>
+          
+          </script>
+        <div class="select_btn">
+          <span class="select_pos">
+            <input type="checkbox" id="select_pos" name="positive">
+            <label for="select_pos">긍정</label>
+          </span>
+          <span class="select_neg">
+            <input type="checkbox" id="select_neg" name="negative">
+            <label for="select_neg">부정</label>
+          </span>
+          <span class="select_neu">
+            <input type="checkbox" id="select_neu" name="neutral">
+            <label for="select_neu">중립</label>
+          </span>
+        </div>
+      </div>
     </div>
     <div class="rawdata">
     </div>
   </div>
   <div class="dashboard wrap2">
     <div class="frequency">
+      <h3 class="frequency_text">카테고리별 빈도</h3>
+      <div class="frequency_box width=" 500px height="230px">
+
+        <div id="treemap" width="500px" height="230px"></div>
+
+      </div>
     </div>
     <div class="rank">
     </div>
@@ -133,20 +280,100 @@
     <div class="category_ratio">
       <h3 class="category_ratio_text">카테고리별 긍정/부정</h3>
       <div class="category_ratio_box">
-        <canvas id="myChart"></canvas>
+        <canvas id="ratio_category" width="500px" height="230px"></canvas>
       </div>
     </div>
-    <div class="ratio">
-      <ul id="category-detail-list">
-        <!-- JavaScript에서 이 부분이 동적으로 채워짐 -->
-      </ul>
-
+    <div class="ratio1">
+      <h3 class="ratio1_text">긍/부정 비율</h3>
+      <div class="ratio1_box">
+        <div class="canvas-container">
+          <canvas id="ratio" height="230px"></canvas>
+        </div>
+      </div>
     </div>
   </div>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
   <script>
 
-    const category_detail_list = {{ category_detail_list| safe }};
+    const expression_list = {{ select_expression| safe}}
 
+    var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+      width = 600 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#treemap")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+
+    const aggregatedData = expression_list.reduce((acc, item) => {
+      acc[item] = (acc[item] || 0) + 1;
+      return acc;
+    }, {});
+    // Read data
+    const data1 = [
+      { name: "Origin", parent: "", value: "" },
+      ...Object.entries(aggregatedData).map(([name, value]) => ({
+        name,
+        parent: "Origin",
+        value,
+      })),
+    ];
+
+    var root = d3.stratify()
+      .id(function (d) { return d.name; })   // Name of the entity (column name is name in csv)
+      .parentId(function (d) { return d.parent; })   // Name of the parent (column name is parent in csv)
+      (data1);
+    root.sum(function (d) { return +d.value })   // Compute the numeric value for each entity
+
+    // Then d3.treemap computes the position of each element of the hierarchy
+    // The coordinates are added to the root object above
+    d3.treemap()
+      .size([width, height])
+      .padding(4)
+      (root)
+
+    console.log(root.leaves())
+    // use this information to add rectangles:
+    svg
+      .selectAll("rect")
+      .data(root.leaves())
+      .enter()
+      .append("rect")
+      .attr('x', function (d) { return d.x0; })
+      .attr('y', function (d) { return d.y0; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
+      .attr('height', function (d) { return d.y1 - d.y0; })
+      .style("stroke", "black")
+      .style("fill", "#69b3a2");
+
+    // and to add the text labels
+    svg
+      .selectAll("text")
+      .data(root.leaves())
+      .enter()
+      .append("text")
+      .attr("x", function (d) {
+        return d.x0 + 5;
+      }) // +5 for padding
+      .attr("y", function (d) {
+        return d.y0 + 20;
+      }) // +20 to adjust the position
+      .text(function (d) {
+        return d.data.name;
+      })
+      .attr("font-size", "15px")
+      .attr("fill", "white");
+
+
+    //  누적막대그래프
+    const category_detail_list = {{ category_detail_list| safe }};
     const results_positive = {{ results_positive| safe }};
     const results_negative = {{ results_negative| safe }};
     const results_neutral = {{ results_neutral| safe }};
@@ -169,7 +396,8 @@
       }
     ];
 
-    new Chart(document.getElementById("myChart"), {
+
+    new Chart(document.getElementById("ratio_category"), {
       type: 'bar',
       data: {
         labels: category_detail_list,
@@ -177,16 +405,47 @@
       },
       options: {
         scales: {
-          xAxes: [{
+          x: {
             stacked: true
-          }],
-          yAxes: [{
+          },
+          y: {
             stacked: true
-          }]
+          }
         }
       }
     });
 
+    //도넛형 그래프
+
+    let positiveSum = results_positive.reduce((a, b) => a + b, 0);
+    let negativeSum = results_negative.reduce((a, b) => a + b, 0);
+    let neutralSum = results_neutral.reduce((a, b) => a + b, 0);
+
+
+    let ctx = document.getElementById("ratio").getContext("2d");
+    let pieChart = new Chart(ctx, {
+      type: "doughnut",
+
+      data: {
+        labels: ["Positive", "Negative", "Neutral"],
+        datasets: [
+          {
+            data: [positiveSum, negativeSum, neutralSum],
+            backgroundColor: ["#1f77b4", "#d62728", "#7f7f7f"],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        },
+        plugins: {
+          legend: false
+        }
+      }
+    });
   </script>
 </div>
 {% endblock %}
