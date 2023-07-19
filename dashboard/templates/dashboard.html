@@ -6,187 +6,306 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script src="https://d3js.org/d3.v6.min.js"></script>
-<div class="first-desc-wrap">
-  <form style="display: inline-block" action="" method="get" name="category_product">
-    {% csrf_token %}
-    <p class="subject fw-400 fs-base">제품 선택</p>
-    <select name="category_product" id="product_select_status">
-      {% if selected %}
-      <option value="{{ selected }}" selected>{{ selected }}</option>
-      {% else %}
-      <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
-      {% endif %}
-      {% for product_name in product_names %}
-      <option value="{{ product_name.category_product }}" {% if forloop.first %} selected {% endif %}>
-        {{ product_name.category_product }}
-      </option>
-      {% endfor %}
 
-    </select>
-  </form>
+<script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-format@2.2.3"></script>
 
-  <form style="display: inline-block" action="" method="get" name="category_model_name">
-    {% csrf_token %}
-    <select name="category_model_name" id="model_name_select_status">
-      {% if selected_name %}
-      <option value="{{ selected_name }}" selected>{{ selected_name }}</option>
-      {% else %}
-      <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
-      {% endif %}
-      {% for model_name in model_names %}
-
-      {% if model_name.model_name %}
-      {% if model_name.model_name != "nan" %}
-      <option value={"{{ model_name.model_name }},{{selected}}"}>
-        {{ model_name.model_name }}
-      </option>
-      {% endif %}
-      {% endif %}
-      {% endfor %}
-    </select>
-  </form>
-
-  <form style="display: inline-block" action="" method="get" name="category_model_code">
-    {% csrf_token %}
-    <select name="category_model_code" id="model_code_select_status">
-      {% if selected_code %}
-      <option value="{{ selected_code }}" selected>{{ selected_code }}</option>
-      {% else %}
-      <option value="--모델명을 선택하세요--" selected>모델코드를 선택하세요</option>
-      {% endif %}
-      {% for model_code in model_codes %}
-
-      {% if model_code.model_code %}
-      {% if model_code.model_code != "nan" %}
-      <option value={"{{ model_code.model_code }},{{selected}},{{selected_name}}"}>
-        {{ model_code.model_code }}
-      </option>
-      {% endif %}
-      {% endif %}
-      {% endfor %}
-    </select>
-  </form>
-  <script> // 제품 선택
-    document.addEventListener("DOMContentLoaded", function () {
-      var select = document.getElementById("product_select_status");
-      var storedValue = localStorage.getItem("product_select_status");
-      if (storedValue) {
-        select.value = storedValue;
-      }
-      select.addEventListener("change", function () {
-        localStorage.setItem("product_select_status", this.value);
-      });
-    });
-
-
-    $(document).ready(function () {
-      $('#product_select_status').change(function () {
-        $('form[name="category_product"]').submit();
-      });
-      $('#model_name_select_status').change(function () {
-        $('form[name="category_model_name"]').submit();
-      });
-      $('#model_code_select_status').change(function () {
-        $('form[name="category_model_code"]').submit();
-      });
-    });
-  </script>
-  <div class="dashboard wrap1">
-    <div class="category_apply">
-      <h3 class="apply_text">카테고리</h3>
-      <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post">
-        {% csrf_token %}
-        <div class="apply_box">
-          {% for category_detail_list, positive, negative, neutral, everything,order in data %}
-          <div class="category_item">
-            <div class="apply_on">
-              <label class="switch">
-                <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}">
-                <input type="hidden" name="showing_index" value="{{ order }}">
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div class="apply_main">
-              <div>{{ category_detail_list }}</div>
-            </div>
-          </div>
+<style>
+  .group {
+    background-color: #ccc;
+    border: 1px solid black;
+  }
+</style>
+  <div class="first-desc-wrap">
+    <form style="display: inline-block" action="" method="get" name="category_product">
+      {% csrf_token %}
+      <p class="subject fw-400 fs-base">제품 선택</p>
+      <select name="category_product" id="product_select_status">
+        {% if selected %}
+          <option value="{{ selected }}" selected>{{ selected }}</option>
+        {% else %}
+          <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
+        {% endif %}
+          {% for product_name in product_names %}
+            <option value="{{ product_name.category_product }}"
+              {% if forloop.first %} selected {% endif %}>
+              {{ product_name.category_product }}
+            </option>
           {% endfor %}
+        
+      </select>
+    </form>
+    
+    <form style="display: inline-block" action="" method="get"  name="category_model_name">
+      {% csrf_token %}
+      <select name="category_model_name" id="model_name_select_status">
+        {% if selected_name %}
+          <option value="{{ selected_name }}" selected>{{ selected_name }}</option>
+        {% else %}
+          <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
+        {% endif %}
+        {% for model_name in model_names %}
+    
+        {% if model_name.model_name %}
+          {% if model_name.model_name != "nan" %}
+            <option value={"{{ model_name.model_name }},{{selected}}"}>
+              {{ model_name.model_name }}
+            </option>
+          {% endif %}
+        {% endif %}
+          {% endfor %}
+      </select>
+    </form>
+
+    
+    <script> // 제품 선택
+      document.addEventListener("DOMContentLoaded", function() {
+        var select = document.getElementById("product_select_status");
+        var storedValue = localStorage.getItem("product_select_status");
+        if (storedValue) {
+          select.value = storedValue;
+        }
+        select.addEventListener("change", function() {
+          localStorage.setItem("product_select_status", this.value);
+        });
+      });
+    
+      
+      $(document).ready(function() {
+        $('#product_select_status').change(function() {
+          $('form[name="category_product"]').submit();
+        });
+        $('#model_name_select_status').change(function() {
+          $('form[name="category_model_name"]').submit();
+        });
+        
+      });
+    </script>
+    <div class="dashboard wrap1">
+      <div class = "category_apply">
+        <h3 class="apply_text fs-base fw-400" >카테고리</h3>
+        <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post" name="checked-data-form">
+          {% csrf_token %}
+          <div class="apply_box">
+              {% for category_detail_list in all_category_list %}
+              <div class="category_item">
+                  <div class="apply_on">
+                      <label class="switch">
+                          <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}">
+                          <input type="hidden" name="showing_index" value="{{ order }}" >
+                          <span class="slider round"></span>
+                      </label>
+                  </div>
+                  <div class="apply_main">
+                      <div>{{ category_detail_list }}</div>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+          <button type="submit">적용하기</button>
+          
+        </form>
+      </div>
+      <div class= "isNagative">
+      </div>
+      <div class ="rawdata fw-400 fs-base">
+        <h3 class = "rawdata_text">Raw Data</h3>
+        {% for review in select_reviews %}
+        <div class="rawdata_wrap">
+          <div class="rawdata_item fs-tiny fw-400">
+            {{ review }}
+          </div>
         </div>
-        <button type="submit">적용하기</button>
-      </form>
-    </div>
-    <div class="isNagative">
-      {% for review in select_reviews %}
-      {{review}}
-      {% endfor %}
-    </div>
-    <div class="rawdata">
-    </div>
-  </div>
-  <div class="dashboard wrap2">
-    <div class="frequency">
-    </div>
-    <div class="rank">
-    </div>
-  </div>
-  <div class="dashboard wrap3">
-    <div class="category_ratio">
-      <h3 class="category_ratio_text">카테고리별 긍정/부정</h3>
-      <div class="category_ratio_box">
-        <canvas id="myChart"></canvas>
+        {% endfor %}
       </div>
     </div>
-    <div class="ratio">
-      <ul id="category-detail-list">
-        <!-- JavaScript에서 이 부분이 동적으로 채워짐 -->
-      </ul>
-
+    <div class="dashboard wrap2">
+      <div class="frequency">
+        <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
+        <div class="frequency_box fs-small fw-400" width="500px height="230px">  
+          <div id="treemap" width="500px"height="230px"></div>  
+        </div>
+      </div>
+      <div class="rank">
+      </div>
     </div>
-  </div>
-  <script>
+    <div class="dashboard wrap3">
+      <div class="category_ratio">
+        <h3 class="category_ratio_text fw-400 fs-base">카테고리별 긍정/부정</h3>
+        <div class="category_ratio_box fs-small fw-400">
+          <canvas id="ratio_category" width="500px"height="230px"></canvas>
+        </div>
+      </div>
+      <div class="ratio1">
+        <h3 class="ratio1_text fw-400 fs-base">긍/부정 비율</h3>
+        <div class="ratio1_box">
+          <div class="canvas-container fs-small fw-400">
+            <canvas id="ratio" height="230px"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script>
 
-    const category_detail_list = {{ category_detail_list| safe }};
+      const expression_list = {{select_expression|safe}}
+      
+      var margin = {top: 10, right: 10, bottom: 10, left: 10},
+      width = 600 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
+    
+    // append the svg object to the body of the page
+    var svg = d3.select("#treemap")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+    
+    
+      const aggregatedData = expression_list.reduce((acc, item) => {
+        acc[item] = (acc[item] || 0) + 1;
+        return acc;
+      }, {});
+    // Read data
+    const data1 = [
+  { name: "Origin", parent: "", value: "" },
+  ...Object.entries(aggregatedData).map(([name, value]) => ({
+    name,
+    parent: "Origin",
+    value,
+  })),
+];
+    
+    var root = d3.stratify()
+        .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
+        .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
+        (data1);
+      root.sum(function(d) { return +d.value })   // Compute the numeric value for each entity
+    
+      // Then d3.treemap computes the position of each element of the hierarchy
+      // The coordinates are added to the root object above
+      d3.treemap()
+        .size([width, height])
+        .padding(4)
+        (root)
+    
+    
+      // use this information to add rectangles:
+      svg
+        .selectAll("rect")
+        .data(root.leaves())
+        .enter()
+        .append("rect")
+          .attr('x', function (d) { return d.x0; })
+          .attr('y', function (d) { return d.y0; })
+          .attr('width', function (d) { return d.x1 - d.x0; })
+          .attr('height', function (d) { return d.y1 - d.y0; })
+          .style("stroke", "black")
+          .style("fill", "#69b3a2");
+    
+      // and to add the text labels
+      svg
+        .selectAll("text")
+        .data(root.leaves())
+        .enter()
+        .append("text")
+        .attr("x", function (d) {
+          return d.x0 + 5;
+        }) // +5 for padding
+        .attr("y", function (d) {
+          return d.y0 + 20;
+        }) // +20 to adjust the position
+        .text(function (d) {
+          return d.data.name;
+        })
+        .attr("font-size", "15px")
+        .attr("fill", "white");
+        
 
-    const results_positive = {{ results_positive| safe }};
-    const results_negative = {{ results_negative| safe }};
-    const results_neutral = {{ results_neutral| safe }};
+      //  누적막대그래프
+      const category_detail_list = {{ category_detail_list|safe }};
+      const results_positive = {{ results_positive|safe }};
+      const results_negative = {{ results_negative|safe }};
+      const results_neutral = {{ results_neutral|safe }};
 
-    let stackedDataset = [
-      {
-        label: 'Positive',
-        data: results_positive,
-        backgroundColor: '#1f77b4'
-      },
-      {
-        label: 'Negative',
-        data: results_negative,
-        backgroundColor: '#d62728'
-      },
-      {
-        label: 'Neutral',
-        data: results_neutral,
-        backgroundColor: '#7f7f7f'
-      }
-    ];
-
-    new Chart(document.getElementById("myChart"), {
-      type: 'bar',
-      data: {
-        labels: category_detail_list,
-        datasets: stackedDataset
-      },
-      options: {
-        scales: {
-          xAxes: [{
-            stacked: true
-          }],
-          yAxes: [{
-            stacked: true
-          }]
+      let stackedDataset = [
+        {
+          label: 'Positive',
+          data: results_positive,
+          backgroundColor: '#1f77b4'
+        },
+        {
+          label: 'Negative',
+          data: results_negative,
+          backgroundColor: '#d62728'
+        },
+        {
+          label: 'Neutral',
+          data: results_neutral,
+          backgroundColor: '#7f7f7f'
         }
-      }
-    });
+      ];
+            
+      let numData = category_detail_list.length; // 데이터 개수
+      const barThickness = numData <= 3 ? 100 : 'flex';
 
-  </script>
-</div>
+      new Chart(document.getElementById("ratio_category"), {
+        type: 'bar',
+        data: {
+          labels: category_detail_list,
+            datasets: stackedDataset.map(dataset => ({
+      ...dataset,
+      barThickness
+    }))
+        },
+        
+        options: {
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          },
+          
+        }
+      });
+
+      //도넛형 그래프
+      
+      let positiveSum = results_positive.reduce((a, b) => a + b, 0);
+      let negativeSum = results_negative.reduce((a, b) => a + b, 0);
+      let neutralSum = results_neutral.reduce((a, b) => a + b, 0);
+      
+      
+      let ctx = document.getElementById("ratio").getContext("2d");
+      let pieChart = new Chart(ctx, {
+        type: "doughnut", 
+
+        data: {
+          labels: ["Positive", "Negative", "Neutral"],
+          datasets: [
+            {
+              data: [positiveSum, negativeSum, neutralSum],
+              backgroundColor: ["#1f77b4", "#d62728", "#7f7f7f"],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          },
+          plugins: {
+            legend: false
+          }
+        }
+      });
+    </script>
+  </div>
 {% endblock %}

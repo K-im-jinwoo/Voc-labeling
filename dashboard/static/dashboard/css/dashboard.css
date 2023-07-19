@@ -26,6 +26,7 @@
     height: 392px;
     padding: 10px;
     overflow: auto;
+    margin-right: 10px;
   }
   .isNagative{
     background-color: white;
@@ -33,13 +34,16 @@
     border: 1px solid lightgray;
     width: 448px;
     height: 392px;
+    margin-right: 10px;
   }
   .rawdata{
+    padding: 15px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid lightgray;
     width: 360px;
     height: 392px;
+    overflow-y : auto;
   }
   .frequency{
     padding: 15px;
@@ -48,6 +52,7 @@
     border: 1px solid lightgray;
     width: 730px;
     height: 392px;
+    margin-right: 10px;
   }
   .rank{
     background-color: white;
@@ -64,6 +69,7 @@
     border: 1px solid lightgray;
     width: 730px;
     height: 392px;
+    margin-right: 10px;
   }
   .ratio1{
     padding: 15px;
@@ -95,6 +101,16 @@
   background-color: #ff0000;
   color: #fff;
 }
+.rawdata_wrap{
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #F6F6F6;
+  background-color: #F6F6F6;
+  border-radius: 10px;
+}
+.rawdata_text{
+  margin-bottom: 10px;
+}
 
 .category_ratio_text{
   margin-bottom: 15px;
@@ -102,4 +118,32 @@
 .ratio1_text{
   margin-bottom: 15px;
   
+}
+
+
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* 스크롤바의 배경색을 지정 */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* 스크롤바 위쪽의 화살표를 지정 */
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+  height: 0;
+}
+
+/* 스크롤바 색상을 지정 */
+::-webkit-scrollbar-thumb {
+  background-color:  #888888;
+  border-radius: 5px;
+}
+
+/* 스크롤바 위쪽의 공간을 지정 */
+::-webkit-scrollbar-track-piece {
+  margin-top: 5px;
 }
