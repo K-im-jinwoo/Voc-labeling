@@ -154,6 +154,7 @@
               }
             }
             function targetWordCloud(){ 
+              clearWordCloud()
               var words_dict = {{ select_targets_dict| safe }};
 
               var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
@@ -195,6 +196,7 @@
             }
 
             function expressionWordCloud() {
+              clearWordCloud()
               var words_dict = {{ select_expression_dict | safe}};
 
               var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
@@ -233,6 +235,9 @@
                   .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
                   .text(function (d) { return d.text; });
               }
+              function clearWordCloud() {
+                d3.select("#cloud > svg").remove();
+              }
             }
             
 
@@ -247,16 +252,16 @@
           </script>
         <div class="select_btn">
           <span class="select_pos">
-            <input type="checkbox" id="select_pos" name="positive">
-            <label for="select_pos" onclick="positiveWordCloud()">긍정</label>
+            <input type="checkbox" id="select_pos" name="positive" onclick="checkedWordCloud(this,'select_pos')">
+            <label for="select_pos">긍정</label>
           </span>
           <span class="select_neg">
-            <input type="checkbox" id="select_neg" name="negative">
-            <label for="select_neg" onclick="negativeWordCloud()">부정</label>
+            <input type="checkbox" id="select_neg" name="negative" onclick="negativeWordCloud(this, 'select_neg')">
+            <label for="select_neg">부정</label>
           </span>
           <span class="select_neu">
-            <input type="checkbox" id="select_neu" name="neutral">
-            <label for="select_neu" onclick="neutralWordCloud()">중립</label>
+            <input type="checkbox" id="select_neu" name="neutral" onclick="neutralWordCloud(this, 'select_neu')">
+            <label for="select_neu">중립</label>
           </span>
         </div>
         <script>
@@ -341,6 +346,7 @@
                 .text(function (d) { return d.text; });
             }
           }
+
           function neutralWordCloud(){ 
             var neu_dict = {{ target_neutral_dict| safe }};
 
@@ -379,6 +385,17 @@
                 .attr("text-anchor", "middle")
                 .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
                 .text(function (d) { return d.text; });
+            }
+          }
+
+          function clearWordCloud() {
+            d3.select("#cloud > svg").remove();
+          }
+          function checkedWordCloud(checkbox) {
+            if(checkbox.checked) {
+              positiveWordCloud();
+            } else {
+              clearWordCloud();
             }
           }
         </script>
