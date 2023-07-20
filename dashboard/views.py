@@ -899,6 +899,9 @@ def dashboard(request):
             context["results_positive"] = results_positive
             context["results_negative"] = results_negative
             context["results_neutral"] = results_neutral
+            context["product_names"] = (
+                Category.objects.all().values("category_product").distinct()
+            )
             return render(request, "dashboard.html", context=context)
 
         else:

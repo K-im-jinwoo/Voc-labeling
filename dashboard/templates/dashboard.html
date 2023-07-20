@@ -16,6 +16,16 @@
     border: 1px solid black;
   }
 </style>
+<script>
+  const arr = [1, 2, 3, 4, 5];
+const str = JSON.stringify(arr);
+localStorage.setItem('myArray', str);
+
+const str = localStorage.getItem('myArray');
+const arr = JSON.parse(str);
+console.log(arr);  // [1, 2, 3, 4, 5]
+
+</script>
   <div class="first-desc-wrap">
     <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
@@ -80,11 +90,15 @@
         });
         
       });
+
+      document.getElementById("product_select_status").onchange = function() {
+        document.getElementById("selectedProduct").value = this.value;
+      };
     </script>
     <div class="dashboard wrap1">
       <div class = "category_apply">
         <h3 class="apply_text fs-base fw-400" >카테고리</h3>
-        <form id="checked-data-form" action="" method="post">
+        <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post">
           {% csrf_token %}
           <div class="apply_box">
               {% for category_detail_list in all_category_list %}
@@ -102,6 +116,7 @@
               </div>
               {% endfor %}
           </div>
+          <input type="hidden" name="selected" id="selectedProduct" value="{{ selected }}">
           <button type="submit">적용하기</button>
           
         </form>
