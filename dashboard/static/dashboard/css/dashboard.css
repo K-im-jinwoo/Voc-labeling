@@ -1,98 +1,109 @@
 .subject {
-    display: inline-block;
-    margin-right: 10px
-    
-  }
+  display: inline-block;
+  margin-right: 10px
   
-  select {
-    display: inline-block;
-    height: 34px;
-    border-radius: 5px;
-    border: 0.5px solid #D5D5D5;
-  }
+}
+
+select {
+  display: inline-block;
+  height: 34px;
+  border-radius: 5px;
+  border: 0.5px solid #D5D5D5;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: row;
   
-  .dashboard {
-    display: flex;
-    flex-direction: row;
-    
-    margin-top: 20px;
-    margin-right: 75px;
-  }
-  .category_apply {
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 272px;
-    height: 392px;
-    padding: 10px;
-    overflow: auto;
-  }
-  .isNagative{
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 448px;
-    height: 392px;
-  }
-  .rawdata{
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 360px;
-    height: 392px;
-  }
-  .frequency{
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 730px;
-    height: 392px;
-  }
-  .rank{
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 360px;
-    height: 392px;
-  }
-  .category_ratio{
-    padding: 15px;
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 730px;
-    height: 392px;
-  }
-  .ratio{
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid lightgray;
-    width: 360px;
-    height: 392px;
-  }
- 
+  margin-top: 20px;
+  margin-right: 75px;
+}
+.category_apply {
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 272px;
+  height: 392px;
+  padding: 10px;
+  overflow: auto;
+}
+.isNagative{
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 448px;
+  height: 392px;
+}
+.rawdata{
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 360px;
+  height: 392px;
+}
+.frequency{
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 730px;
+  height: 392px;
+}
+.rank{
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 360px;
+  height: 392px;
+}
+.category_ratio{
+  padding: 15px;
+  padding-bottom: 30px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 730px;
+  height: 392px;
+}
+.ratio1{
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  width: 360px;
+  height: 392px;
+}
+
 .apply_box{
-    display: flex;
-    flex-direction: column;
-    
+  display: flex;
+  flex-direction: column;
+  
 }
 .category_item{
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 .apply_button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  color: #000;
-  transition: background-color 0.2s, color 0.2s;
+padding: 5px 10px;
+border: 1px solid #ccc;
+background-color: #fff;
+color: #000;
+transition: background-color 0.2s, color 0.2s;
 }
 
 .apply_button.on {
-  background-color: #ff0000;
-  color: #fff;
+background-color: #ff0000;
+color: #fff;
 }
 
 .category_ratio_text{
-  margin-bottom: 15px;
+margin-bottom: 15px;
+}
+.ratio1_text{
+margin-bottom: 15px;
+
+}
+
+.hidden {
+  display: none;
 }

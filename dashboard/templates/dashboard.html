@@ -6,6 +6,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script src="https://d3js.org/d3.v6.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-format@2.2.3"></script>
+
+<style>
+  .group {
+    background-color: #ccc;
+    border: 1px solid black;
+  }
+</style>
   <div class="first-desc-wrap">
     <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
@@ -14,7 +24,7 @@
         {% if selected %}
           <option value="{{ selected }}" selected>{{ selected }}</option>
         {% else %}
-          <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
+          <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
         {% endif %}
           {% for product_name in product_names %}
             <option value="{{ product_name.category_product }}"
@@ -91,6 +101,10 @@
           $('form[name="category_model_code"]').submit();
         });
       });
+
+      document.getElementById("product_select_status").onchange = function() {
+        document.getElementById("selectedProduct").value = this.value;
+      };
     </script>
     <div class="dashboard wrap1">
       <div class = "category_apply">
@@ -113,20 +127,29 @@
               </div>
               {% endfor %}
           </div>
-          <button type="submit">적용하기</button>
+          <input type="hidden" name="selected" id="selectedProduct" value="{{ selected }}">
+          <button type="submit" id="click">적용하기</button>
         </form>
       </div>
       <div class= "isNagative">
-        dddddd
-        {% for review in select_category %}
-          {{review}}
-        {% endfor %}
+        aaa
       </div>
       <div class ="rawdata">
       </div>
     </div>
+    <!-- "category_product" 선택 변경시 호출되는 함수 -->
+    <script>
+      
+    </script>
+
     <div class="dashboard wrap2">
       <div class="frequency">
+        <h3 class ="frequency_text">카테고리별 빈도</h3>
+        <div class="frequency_box width="500px height="230px">
+          
+          <div id="treemap" width="500px"height="230px"></div>
+          
+        </div>
       </div>
       <div class="rank">
       </div>
@@ -135,24 +158,104 @@
       <div class="category_ratio">
         <h3 class="category_ratio_text">카테고리별 긍정/부정</h3>
         <div class="category_ratio_box">
-          <canvas id="myChart"></canvas>
+          <canvas id="ratio_category" width="500px"height="230px"></canvas>
         </div>
       </div>
-      <div class="ratio">
-        <ul id="category-detail-list">
-          <!-- JavaScript에서 이 부분이 동적으로 채워짐 -->
-        </ul>
-        
+      <div class="ratio1">
+        <h3 class="ratio1_text">긍/부정 비율</h3>
+        <div class="ratio1_box">
+          <div class="canvas-container">
+            <canvas id="ratio" height="230px"></canvas>
+          </div>
+        </div>
       </div>
     </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
     <script>
-      
-      const category_detail_list = {{ category_detail_list|safe }};
 
+      const expression_list = {{select_expression|safe}}
+      
+      var margin = {top: 10, right: 10, bottom: 10, left: 10},
+      width = 600 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
+    
+    // append the svg object to the body of the page
+    var svg = d3.select("#treemap")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+    
+    
+      const aggregatedData = expression_list.reduce((acc, item) => {
+        acc[item] = (acc[item] || 0) + 1;
+        return acc;
+      }, {});
+    // Read data
+    const data1 = [
+  { name: "Origin", parent: "", value: "" },
+  ...Object.entries(aggregatedData).map(([name, value]) => ({
+    name,
+    parent: "Origin",
+    value,
+  })),
+];
+    
+    var root = d3.stratify()
+        .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
+        .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
+        (data1);
+      root.sum(function(d) { return +d.value })   // Compute the numeric value for each entity
+    
+      // Then d3.treemap computes the position of each element of the hierarchy
+      // The coordinates are added to the root object above
+      d3.treemap()
+        .size([width, height])
+        .padding(4)
+        (root)
+    
+    console.log(root.leaves())
+      // use this information to add rectangles:
+      svg
+        .selectAll("rect")
+        .data(root.leaves())
+        .enter()
+        .append("rect")
+          .attr('x', function (d) { return d.x0; })
+          .attr('y', function (d) { return d.y0; })
+          .attr('width', function (d) { return d.x1 - d.x0; })
+          .attr('height', function (d) { return d.y1 - d.y0; })
+          .style("stroke", "black")
+          .style("fill", "#69b3a2");
+    
+      // and to add the text labels
+      svg
+        .selectAll("text")
+        .data(root.leaves())
+        .enter()
+        .append("text")
+        .attr("x", function (d) {
+          return d.x0 + 5;
+        }) // +5 for padding
+        .attr("y", function (d) {
+          return d.y0 + 20;
+        }) // +20 to adjust the position
+        .text(function (d) {
+          return d.data.name;
+        })
+        .attr("font-size", "15px")
+        .attr("fill", "white");
+        
+
+      //  누적막대그래프
+      const category_detail_list = {{ category_detail_list|safe }};
       const results_positive = {{ results_positive|safe }};
       const results_negative = {{ results_negative|safe }};
       const results_neutral = {{ results_neutral|safe }};
-      
+
       let stackedDataset = [
         {
           label: 'Positive',
@@ -170,8 +273,9 @@
           backgroundColor: '#7f7f7f'
         }
       ];
+            
       
-      new Chart(document.getElementById("myChart"), {
+      new Chart(document.getElementById("ratio_category"), {
         type: 'bar',
         data: {
           labels: category_detail_list,
@@ -179,16 +283,47 @@
         },
         options: {
           scales: {
-            xAxes: [{
+            x: {
               stacked: true
-            }],
-            yAxes: [{
+            },
+            y: {
               stacked: true
-            }]
+            }
           }
         }
       });
 
+      //도넛형 그래프
+      
+      let positiveSum = results_positive.reduce((a, b) => a + b, 0);
+      let negativeSum = results_negative.reduce((a, b) => a + b, 0);
+      let neutralSum = results_neutral.reduce((a, b) => a + b, 0);
+      
+      
+      let ctx = document.getElementById("ratio").getContext("2d");
+      let pieChart = new Chart(ctx, {
+        type: "doughnut", 
+
+        data: {
+          labels: ["Positive", "Negative", "Neutral"],
+          datasets: [
+            {
+              data: [positiveSum, negativeSum, neutralSum],
+              backgroundColor: ["#1f77b4", "#d62728", "#7f7f7f"],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          },
+          plugins: {
+            legend: false
+          }
+        }
+      });
     </script>
   </div>
 {% endblock %}

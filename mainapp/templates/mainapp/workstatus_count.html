@@ -150,10 +150,11 @@
                 const nameList = [];
                 const countList = [];
                 {% for name, count in result_list %}
-                    nameList.push("{{ name }}");
+                    nameList.push({{ name }});
                     countList.push({{ count }});
                 {% endfor %}
 
+                
                 // 2. 생성된 리스트를 JavaScript에서 이용할 수 있도록 JSON 형태로 바꿉니다.
                 const data = {
                     labels: nameList,
