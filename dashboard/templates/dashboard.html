@@ -84,7 +84,7 @@
     <div class="dashboard wrap1">
       <div class = "category_apply">
         <h3 class="apply_text fs-base fw-400" >카테고리</h3>
-        <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post" name="checked-data-form">
+        <form id="checked-data-form" action="" method="post">
           {% csrf_token %}
           <div class="apply_box">
               {% for category_detail_list in all_category_list %}
