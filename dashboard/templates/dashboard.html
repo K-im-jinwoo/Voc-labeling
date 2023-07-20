@@ -42,7 +42,6 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               {{ product_name.category_product }}
             </option>
           {% endfor %}
-        
       </select>
     </form>
     
@@ -121,7 +120,278 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           
         </form>
       </div>
-      <div class= "isNagative">
+      <div class="isNagative">
+        <div>
+          <span>긍/부정</span>
+          <input type="radio" name="te_radio" id="target_radio" class="element-to-hide">
+          <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
+          <div class="switch_label">
+            <label for="target_radio">
+              <span class="target_btn fs-small fw-600" onclick="targetWordCloud()">대상</span>
+            </label>
+            <label for="expression_radio">
+              <span class="expression_btn fs-small fw-600" onclick="expressionWordCloud()">현상</span>
+            </label>
+          </div>
+            <script>
+              const target_radio = document.getElementById("target_radio");
+              const expression_radio = document.getElementById("expression_radio");
+              const target_btn = document.querySelector(".target_btn");
+              const expression_btn = document.querySelector(".expression_btn");
+  
+              function toggleOnfBtnClass() {
+                if (target_radio.checked) {
+                  target_btn.classList.add("onf_btn");
+                  expression_btn.classList.remove("onf_btn");
+                } else if (expression_radio.checked) {
+                  target_btn.classList.remove("onf_btn");
+                  expression_btn.classList.add("onf_btn");
+                }
+              }
+              function targetWordCloud(){ 
+                clearWordCloud()
+                var words_dict = {{ select_targets_dict| safe }};
+  
+                var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
+  
+                var width = 388,
+                  height = 142;
+  
+                var svg = d3.select("#cloud")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height)
+                  .append("g")
+                  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  
+                var color = d3.scaleOrdinal(d3.schemeCategory10);
+  
+                var layout = d3.layout.cloud()
+                  .size([width, height])
+                  .words(words_dataset)
+                  .rotate(0)
+                  .padding(10)
+                  .fontSize(function (d) { return d.size + 10; })
+                  .spiral('archimedean')
+                  .on("end", draw);
+  
+                layout.start();
+  
+                function draw(words) {
+                  svg.selectAll("text")
+                    .data(words)
+                    .enter()
+                    .append("text")
+                    .style("font-size", function (d) { return d.size + 10 + "px"; })
+                    .style("fill", function (d, i) { return color(i); })
+                    .attr("text-anchor", "middle")
+                    .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                    .text(function (d) { return d.text; });
+                }
+              }
+  
+              function expressionWordCloud() {
+                clearWordCloud()
+                var words_dict = {{ select_expression_dict | safe}};
+  
+                var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
+  
+                var width = 388,
+                  height = 142;
+  
+                var svg = d3.select("#cloud")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height)
+                  .append("g")
+                  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  
+                var color = d3.scaleOrdinal(d3.schemeCategory10);
+  
+                var layout = d3.layout.cloud()
+                  .size([width, height])
+                  .words(words_dataset)
+                  .rotate(0)
+                  .padding(10)
+                  .fontSize(function (d) { return d.size + 10; })
+                  .spiral('archimedean')
+                  .on("end", draw);
+  
+                layout.start();
+  
+                function draw(words) {
+                  svg.selectAll("text")
+                    .data(words)
+                    .enter()
+                    .append("text")
+                    .style("font-size", function (d) { return d.size + 10 + "px"; })
+                    .style("fill", function (d, i) { return color(i); })
+                    .attr("text-anchor", "middle")
+                    .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                    .text(function (d) { return d.text; });
+                }
+                function clearWordCloud() {
+                  d3.select("#cloud > svg").remove();
+                }
+              }
+              
+  
+              target_radio.addEventListener("click", toggleOnfBtnClass);
+              expression_radio.addEventListener("click", toggleOnfBtnClass);
+            </script>
+          <div id="cloud"></div>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
+          <script src="https://unpkg.com/d3-cloud"></script>
+          <div class="select_btn">
+            <span class="select_pos">
+              <input type="checkbox" id="select_pos" name="positive" onclick="checkedWordCloud(this,'select_pos')">
+              <label for="select_pos">긍정</label>
+            </span>
+            <span class="select_neg">
+              <input type="checkbox" id="select_neg" name="negative" onclick="negativeWordCloud(this, 'select_neg')">
+              <label for="select_neg">부정</label>
+            </span>
+            <span class="select_neu">
+              <input type="checkbox" id="select_neu" name="neutral" onclick="neutralWordCloud(this, 'select_neu')">
+              <label for="select_neu">중립</label>
+            </span>
+          </div>
+          <script>
+            function positiveWordCloud(){ 
+              var pos_dict = {{ target_positive_dict| safe }};
+  
+              var pos_dataset = Object.entries(pos_dict).map(([key, value]) => ({ text: key, size: value }));
+  
+              var width = 388,
+                height = 142;
+  
+              var svg = d3.select("#cloud")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  
+              var color = d3.scaleOrdinal(d3.schemeCategory10);
+  
+              var layout = d3.layout.cloud()
+                .size([width, height])
+                .words(pos_dataset)
+                .rotate(0)
+                .padding(10)
+                .fontSize(function (d) { return d.size + 10; })
+                .spiral('archimedean')
+                .on("end", draw);
+  
+              layout.start();
+  
+              function draw(words) {
+                svg.selectAll("text")
+                  .data(words)
+                  .enter()
+                  .append("text")
+                  .style("font-size", function (d) { return d.size + 10 + "px"; })
+                  .style("fill", function (d, i) { return color(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; });
+              }
+            }
+  
+            function negativeWordCloud(){ 
+              var neg_dict = {{ target_negative_dict| safe }};
+  
+              var neg_dataset = Object.entries(neg_dict).map(([key, value]) => ({ text: key, size: value }));
+  
+              var width = 388,
+                height = 142;
+  
+              var svg = d3.select("#cloud")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  
+              var color = d3.scaleOrdinal(d3.schemeCategory10);
+  
+              var layout = d3.layout.cloud()
+                .size([width, height])
+                .words(neg_dataset)
+                .rotate(0)
+                .padding(10)
+                .fontSize(function (d) { return d.size + 10; })
+                .spiral('archimedean')
+                .on("end", draw);
+  
+              layout.start();
+  
+              function draw(words) {
+                svg.selectAll("text")
+                  .data(words)
+                  .enter()
+                  .append("text")
+                  .style("font-size", function (d) { return d.size + 10 + "px"; })
+                  .style("fill", function (d, i) { return color(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; });
+              }
+            }
+  
+            function neutralWordCloud(){ 
+              var neu_dict = {{ target_neutral_dict| safe }};
+  
+              var neu_dataset = Object.entries(neu_dict).map(([key, value]) => ({ text: key, size: value }));
+  
+              var width = 388,
+                height = 142;
+  
+              var svg = d3.select("#cloud")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  
+              var color = d3.scaleOrdinal(d3.schemeCategory10);
+  
+              var layout = d3.layout.cloud()
+                .size([width, height])
+                .words(neu_dataset)
+                .rotate(0)
+                .padding(10)
+                .fontSize(function (d) { return d.size + 10; })
+                .spiral('archimedean')
+                .on("end", draw);
+  
+              layout.start();
+  
+              function draw(words) {
+                svg.selectAll("text")
+                  .data(words)
+                  .enter()
+                  .append("text")
+                  .style("font-size", function (d) { return d.size + 10 + "px"; })
+                  .style("fill", function (d, i) { return color(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; });
+              }
+            }
+  
+            function clearWordCloud() {
+              d3.select("#cloud > svg").remove();
+            }
+            function checkedWordCloud(checkbox) {
+              if(checkbox.checked) {
+                positiveWordCloud();
+              } else {
+                clearWordCloud();
+              }
+            }
+          </script>
+        </div>
       </div>
       <div class ="rawdata fw-400 fs-base">
         <h3 class = "rawdata_text">Raw Data</h3>
@@ -137,7 +407,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <div class="dashboard wrap2">
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-        <div class="frequency_box fs-small fw-400" width="500px height="230px">  
+        <div class="frequency_box fs-small fw-400" width="500px" height="230px">  
           <div id="treemap" width="500px"height="230px"></div>  
         </div>
       </div>
@@ -170,43 +440,43 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       width = 600 - margin.left - margin.right,
       height = 300 - margin.top - margin.bottom;
     
-    // append the svg object to the body of the page
-    var svg = d3.select("#treemap")
-    .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-    
-    
-      const aggregatedData = expression_list.reduce((acc, item) => {
-        acc[item] = (acc[item] || 0) + 1;
-        return acc;
-      }, {});
-    // Read data
-    const data1 = [
-  { name: "Origin", parent: "", value: "" },
-  ...Object.entries(aggregatedData).map(([name, value]) => ({
-    name,
-    parent: "Origin",
-    value,
-  })),
-];
-    
-    var root = d3.stratify()
-        .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
-        .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
-        (data1);
-      root.sum(function(d) { return +d.value })   // Compute the numeric value for each entity
-    
-      // Then d3.treemap computes the position of each element of the hierarchy
-      // The coordinates are added to the root object above
-      d3.treemap()
-        .size([width, height])
-        .padding(4)
-        (root)
-    
+      // append the svg object to the body of the page
+      var svg = d3.select("#treemap")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+      
+      
+        const aggregatedData = expression_list.reduce((acc, item) => {
+          acc[item] = (acc[item] || 0) + 1;
+          return acc;
+        }, {});
+      // Read data
+      const data1 = [
+        { name: "Origin", parent: "", value: "" },
+        ...Object.entries(aggregatedData).map(([name, value]) => ({
+          name,
+          parent: "Origin",
+          value,
+        })),
+      ];
+      
+      var root = d3.stratify()
+          .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
+          .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
+          (data1);
+        root.sum(function(d) { return +d.value })   // Compute the numeric value for each entity
+      
+        // Then d3.treemap computes the position of each element of the hierarchy
+        // The coordinates are added to the root object above
+        d3.treemap()
+          .size([width, height])
+          .padding(4)
+          (root)
+      
     
       // use this information to add rectangles:
       svg
@@ -274,21 +544,21 @@ console.log(arr);  // [1, 2, 3, 4, 5]
             datasets: stackedDataset.map(dataset => ({
       ...dataset,
       barThickness
-    }))
-        },
-        
-        options: {
-          scales: {
-            x: {
-              stacked: true
-            },
-            y: {
-              stacked: true
-            }
+      }))
           },
           
-        }
-      });
+          options: {
+            scales: {
+              x: {
+                stacked: true
+              },
+              y: {
+                stacked: true
+              }
+            },
+            
+          }
+        });
 
       //도넛형 그래프
       
