@@ -195,7 +195,7 @@
             }
 
             function expressionWordCloud() {
-                var words_dict = {{ select_expression_dict | safe}};
+              var words_dict = {{ select_expression_dict | safe}};
 
               var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
 
@@ -248,17 +248,140 @@
         <div class="select_btn">
           <span class="select_pos">
             <input type="checkbox" id="select_pos" name="positive">
-            <label for="select_pos">긍정</label>
+            <label for="select_pos" onclick="positiveWordCloud()">긍정</label>
           </span>
           <span class="select_neg">
             <input type="checkbox" id="select_neg" name="negative">
-            <label for="select_neg">부정</label>
+            <label for="select_neg" onclick="negativeWordCloud()">부정</label>
           </span>
           <span class="select_neu">
             <input type="checkbox" id="select_neu" name="neutral">
-            <label for="select_neu">중립</label>
+            <label for="select_neu" onclick="neutralWordCloud()">중립</label>
           </span>
         </div>
+        <script>
+          function positiveWordCloud(){ 
+            var pos_dict = {{ target_positive_dict| safe }};
+
+            var pos_dataset = Object.entries(pos_dict).map(([key, value]) => ({ text: key, size: value }));
+
+            var width = 388,
+              height = 142;
+
+            var svg = d3.select("#cloud")
+              .append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .append("g")
+              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            var layout = d3.layout.cloud()
+              .size([width, height])
+              .words(pos_dataset)
+              .rotate(0)
+              .padding(10)
+              .fontSize(function (d) { return d.size + 10; })
+              .spiral('archimedean')
+              .on("end", draw);
+
+            layout.start();
+
+            function draw(words) {
+              svg.selectAll("text")
+                .data(words)
+                .enter()
+                .append("text")
+                .style("font-size", function (d) { return d.size + 10 + "px"; })
+                .style("fill", function (d, i) { return color(i); })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                .text(function (d) { return d.text; });
+            }
+          }
+
+          function negativeWordCloud(){ 
+            var neg_dict = {{ target_negative_dict| safe }};
+
+            var neg_dataset = Object.entries(neg_dict).map(([key, value]) => ({ text: key, size: value }));
+
+            var width = 388,
+              height = 142;
+
+            var svg = d3.select("#cloud")
+              .append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .append("g")
+              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            var layout = d3.layout.cloud()
+              .size([width, height])
+              .words(neg_dataset)
+              .rotate(0)
+              .padding(10)
+              .fontSize(function (d) { return d.size + 10; })
+              .spiral('archimedean')
+              .on("end", draw);
+
+            layout.start();
+
+            function draw(words) {
+              svg.selectAll("text")
+                .data(words)
+                .enter()
+                .append("text")
+                .style("font-size", function (d) { return d.size + 10 + "px"; })
+                .style("fill", function (d, i) { return color(i); })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                .text(function (d) { return d.text; });
+            }
+          }
+          function neutralWordCloud(){ 
+            var neu_dict = {{ target_neutral_dict| safe }};
+
+            var neu_dataset = Object.entries(neu_dict).map(([key, value]) => ({ text: key, size: value }));
+
+            var width = 388,
+              height = 142;
+
+            var svg = d3.select("#cloud")
+              .append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .append("g")
+              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            var layout = d3.layout.cloud()
+              .size([width, height])
+              .words(neu_dataset)
+              .rotate(0)
+              .padding(10)
+              .fontSize(function (d) { return d.size + 10; })
+              .spiral('archimedean')
+              .on("end", draw);
+
+            layout.start();
+
+            function draw(words) {
+              svg.selectAll("text")
+                .data(words)
+                .enter()
+                .append("text")
+                .style("font-size", function (d) { return d.size + 10 + "px"; })
+                .style("fill", function (d, i) { return color(i); })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                .text(function (d) { return d.text; });
+            }
+          }
+        </script>
       </div>
     </div>
     <div class="rawdata">

@@ -797,6 +797,47 @@ def dashboard(request):
                     category_id__in=select_categorys
                 ).values_list("first_labeled_expression", flat=True)
             )
+            # <-- 선택한 카테고리 target emotion
+            select_target_positive = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys,
+                    first_labeled_emotion='positive'
+                ).values_list("first_labeled_target", flat=True)
+            )
+            select_target_negative = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys,
+                    first_labeled_emotion='negative'
+                ).values_list("first_labeled_target", flat=True)
+            )
+            select_target_neutral = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys,
+                    first_labeled_emotion='neutral'
+                ).values_list("first_labeled_target", flat=True)
+            )
+            # --> 선택한 카테고리 target emotion
+
+            # <-- 선택한 카테고리 expression emotion
+            select_expression_positive = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys,
+                    first_labeled_emotion='positive'
+                ).values_list("first_labeled_expression", flat=True)
+            )
+            select_expression_negative = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys,
+                    first_labeled_emotion='negative'
+                ).values_list("first_labeled_expression", flat=True)
+            )
+            select_expression_neutral = list(
+                FirstLabeledData.objects.filter(
+                    category_id__in=select_categorys,
+                    first_labeled_emotion='neutral'
+                ).values_list("first_labeled_expression", flat=True)
+            )
+            # --> 선택한 카테고리 expression emotion
 
             # 추출된 리뷰의 모든 firstlabeleddata 값을 추출하여 리스트로 변환
             first_values = [
@@ -836,7 +877,7 @@ def dashboard(request):
             context = dict()
 
             context["select_reviews"] = select_reviews_list
-
+            # 선택한 카테고리의 현상
             context["select_expression"] = select_expression_list
 
             select_expression_dict = {}
@@ -847,7 +888,7 @@ def dashboard(request):
                     select_expression_dict[word] = 1
             context["select_expression_dict"] = select_expression_dict
 
-
+            # 선택한 카테고리의 대상
             context["select_targets"] = select_targets_list
 
             select_targets_dict = {}
@@ -857,6 +898,60 @@ def dashboard(request):
                 else:
                     select_targets_dict[word] = 1
             context["select_targets_dict"] = select_targets_dict
+
+            # 선택한 타겟 카테고리 긍정
+            target_positive_dict = {}
+            for word in select_target_positive:
+                if word in target_positive_dict:
+                    target_positive_dict[word] += 1
+                else:
+                    target_positive_dict[word] = 1
+            print("dict:",target_positive_dict)
+            context["target_positive_dict"] = target_positive_dict
+            # 선택한 카테고리 부정
+            target_negative_dict = {}
+            for word in select_target_negative:
+                if word in target_negative_dict:
+                    target_negative_dict[word] += 1
+                else:
+                    target_negative_dict[word] = 1
+            context["target_negative_dict"] = target_negative_dict
+            print("neg:",target_negative_dict)
+            # 선택한 카테고리 중립
+            target_neutral_dict = {}
+            for word in select_target_neutral:
+                if word in target_neutral_dict:
+                    target_neutral_dict[word] += 1
+                else:
+                    target_neutral_dict[word] = 1
+            context["target_neutral_dict"] = target_neutral_dict
+            print("t_neu:" , target_neutral_dict)
+
+            # 선택한 현상 카테고리 긍정
+            expression_positive_dict = {}
+            for word in select_expression_positive:
+                if word in expression_positive_dict:
+                    expression_positive_dict[word] += 1
+                else:
+                    expression_positive_dict[word] = 1
+            print("ex_dict:",expression_positive_dict)
+            context["expression_positive_dict"] = expression_positive_dict
+            # 선택한 현상 카테고리 부정
+            expression_negative_dict = {}
+            for word in select_expression_negative:
+                if word in expression_negative_dict:
+                    expression_negative_dict[word] += 1
+                else:
+                    expression_negative_dict[word] = 1
+            context["expression_negative_dict"] = expression_negative_dict
+            # 선택한 현상 카테고리 중립
+            expression_neutral_dict = {}
+            for word in select_expression_neutral:
+                if word in expression_neutral_dict:
+                    expression_neutral_dict[word] += 1
+                else:
+                    expression_neutral_dict[word] = 1
+            context["expression_neutral_dict"] = expression_neutral_dict
 
             context["select_category"] = select_category
 
