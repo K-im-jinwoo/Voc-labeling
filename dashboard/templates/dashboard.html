@@ -127,153 +127,89 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
           <div class="switch_label">
             <label for="target_radio">
-              <span class="target_btn fs-small fw-600" onclick="targetWordCloud()">대상</span>
+              <span class="target_btn fs-small fw-600" onclick="generateWordCloud('target')">대상</span>
             </label>
             <label for="expression_radio">
-              <span class="expression_btn fs-small fw-600" onclick="expressionWordCloud()">현상</span>
+              <span class="expression_btn fs-small fw-600" onclick="generateWordCloud('expression')">현상</span>
             </label>
           </div>
-            <script>
-              const target_radio = document.getElementById("target_radio");
-              const expression_radio = document.getElementById("expression_radio");
-              const target_btn = document.querySelector(".target_btn");
-              const expression_btn = document.querySelector(".expression_btn");
-  
-              function toggleOnfBtnClass() {
-                if (target_radio.checked) {
-                  target_btn.classList.add("onf_btn");
-                  expression_btn.classList.remove("onf_btn");
-                } else if (expression_radio.checked) {
-                  target_btn.classList.remove("onf_btn");
-                  expression_btn.classList.add("onf_btn");
-                }
-              }
-              function targetWordCloud(){ 
-                clearWordCloud()
-                var words_dict = {{ select_targets_dict| safe }};
-  
-                var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
-  
-                var width = 388,
-                  height = 142;
-  
-                var svg = d3.select("#cloud")
-                  .append("svg")
-                  .attr("width", width)
-                  .attr("height", height)
-                  .append("g")
-                  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-  
-                var color = d3.scaleOrdinal(d3.schemeCategory10);
-  
-                var layout = d3.layout.cloud()
-                  .size([width, height])
-                  .words(words_dataset)
-                  .rotate(0)
-                  .padding(10)
-                  .fontSize(function (d) { return d.size + 10; })
-                  .spiral('archimedean')
-                  .on("end", draw);
-  
-                layout.start();
-  
-                function draw(words) {
-                  svg.selectAll("text")
-                    .data(words)
-                    .enter()
-                    .append("text")
-                    .style("font-size", function (d) { return d.size + 10 + "px"; })
-                    .style("fill", function (d, i) { return color(i); })
-                    .attr("text-anchor", "middle")
-                    .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                    .text(function (d) { return d.text; });
-                }
-              }
-  
-              function expressionWordCloud() {
-                clearWordCloud()
-                var words_dict = {{ select_expression_dict | safe}};
-  
-                var words_dataset = Object.entries(words_dict).map(([key, value]) => ({ text: key, size: value }));
-  
-                var width = 388,
-                  height = 142;
-  
-                var svg = d3.select("#cloud")
-                  .append("svg")
-                  .attr("width", width)
-                  .attr("height", height)
-                  .append("g")
-                  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-  
-                var color = d3.scaleOrdinal(d3.schemeCategory10);
-  
-                var layout = d3.layout.cloud()
-                  .size([width, height])
-                  .words(words_dataset)
-                  .rotate(0)
-                  .padding(10)
-                  .fontSize(function (d) { return d.size + 10; })
-                  .spiral('archimedean')
-                  .on("end", draw);
-  
-                layout.start();
-  
-                function draw(words) {
-                  svg.selectAll("text")
-                    .data(words)
-                    .enter()
-                    .append("text")
-                    .style("font-size", function (d) { return d.size + 10 + "px"; })
-                    .style("fill", function (d, i) { return color(i); })
-                    .attr("text-anchor", "middle")
-                    .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                    .text(function (d) { return d.text; });
-                }
-                function clearWordCloud() {
-                  d3.select("#cloud > svg").remove();
-                }
-              }
-              
-  
-              target_radio.addEventListener("click", toggleOnfBtnClass);
-              expression_radio.addEventListener("click", toggleOnfBtnClass);
-            </script>
-          <div id="cloud"></div>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
-          <script src="https://unpkg.com/d3-cloud"></script>
-          <div class="select_btn">
-            <span class="select_pos">
-              <input type="checkbox" id="select_pos" name="positive" onclick="checkedWordCloud(this,'select_pos')">
-              <label for="select_pos">긍정</label>
-            </span>
-            <span class="select_neg">
-              <input type="checkbox" id="select_neg" name="negative" onclick="negativeWordCloud(this, 'select_neg')">
-              <label for="select_neg">부정</label>
-            </span>
-            <span class="select_neu">
-              <input type="checkbox" id="select_neu" name="neutral" onclick="neutralWordCloud(this, 'select_neu')">
-              <label for="select_neu">중립</label>
-            </span>
-          </div>
           <script>
-            function positiveWordCloud(){ 
-              var pos_dict = {{ target_positive_dict| safe }};
-  
+            const target_radio = document.getElementById("target_radio");
+            const expression_radio = document.getElementById("expression_radio");
+            const target_btn = document.querySelector(".target_btn");
+            const expression_btn = document.querySelector(".expression_btn");
+
+            function toggleOnfBtnClass() {
+              if (target_radio.checked) {
+                target_btn.classList.add("onf_btn");
+                expression_btn.classList.remove("onf_btn");
+              } else if (expression_radio.checked) {
+                target_btn.classList.remove("onf_btn");
+                expression_btn.classList.add("onf_btn");
+              }
+            }
+            function generateWordCloud(type) {
+              clearWordCloud();
+              const targetData = {{ select_targets_dict | safe }};
+              const expressionData = {{ select_expression_dict | safe }};
+              const target_positive_dict = {{ target_positive_dict | safe }};
+              const target_negative_dict = {{ target_negative_dict | safe }};
+              const target_neutral_dict = {{ target_neutral_dict | safe }};
+              
+              const expression_positive_dict = {{ expression_positive_dict | safe }};
+              const expression_negative_dict = {{ expression_negative_dict | safe }};
+              const expression_neutral_dict = {{ expression_neutral_dict | safe }};
+              
+              let selectedData;
+
+              const isTargetSelected = target_radio.checked;
+              const isExpressionSelected = expression_radio.checked;
+
+              if (type === 'target') {
+                selectedData = isTargetSelected ? targetData : expressionData;
+              } else if (type === 'expression') {
+                selectedData = isExpressionSelected ? expressionData : targetData;
+              } else if (type === 'positive') {
+                selectedData = isTargetSelected ? filterData(targetData, target_positive_dict) : filterData(expressionData, expression_positive_dict);
+              } else if (type === 'negative') {
+                selectedData = isTargetSelected ? filterData(targetData, target_negative_dict) : filterData(expressionData, expression_negative_dict);
+              } else if (type === 'neutral') {
+                selectedData = isTargetSelected ? filterData(targetData, target_neutral_dict) : filterData(expressionData, expression_neutral_dict);
+              }
+
+              if (type === 'positive') {
+                clearWordCloud();
+                positiveWordCloud(selectedData);
+              } else if (type === 'negative') {
+                clearWordCloud();
+                negativeWordCloud(selectedData);
+              } else if (type === 'neutral') {
+                clearWordCloud();
+                neutralWordCloud(selectedData);
+              }
+
+
+              toggleOnfBtnClass();
+            }
+
+
+            function positiveWordCloud(data){ 
+              var pos_dict = data;
+
               var pos_dataset = Object.entries(pos_dict).map(([key, value]) => ({ text: key, size: value }));
-  
+
               var width = 388,
                 height = 142;
-  
+
               var svg = d3.select("#cloud")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-  
+
               var color = d3.scaleOrdinal(d3.schemeCategory10);
-  
+
               var layout = d3.layout.cloud()
                 .size([width, height])
                 .words(pos_dataset)
@@ -282,9 +218,9 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                 .fontSize(function (d) { return d.size + 10; })
                 .spiral('archimedean')
                 .on("end", draw);
-  
+
               layout.start();
-  
+
               function draw(words) {
                 svg.selectAll("text")
                   .data(words)
@@ -297,24 +233,24 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                   .text(function (d) { return d.text; });
               }
             }
-  
-            function negativeWordCloud(){ 
-              var neg_dict = {{ target_negative_dict| safe }};
-  
+
+            function negativeWordCloud(data){ 
+              var neg_dict = data;
+
               var neg_dataset = Object.entries(neg_dict).map(([key, value]) => ({ text: key, size: value }));
-  
+
               var width = 388,
                 height = 142;
-  
+
               var svg = d3.select("#cloud")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-  
+
               var color = d3.scaleOrdinal(d3.schemeCategory10);
-  
+
               var layout = d3.layout.cloud()
                 .size([width, height])
                 .words(neg_dataset)
@@ -323,9 +259,9 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                 .fontSize(function (d) { return d.size + 10; })
                 .spiral('archimedean')
                 .on("end", draw);
-  
+
               layout.start();
-  
+
               function draw(words) {
                 svg.selectAll("text")
                   .data(words)
@@ -338,24 +274,24 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                   .text(function (d) { return d.text; });
               }
             }
-  
-            function neutralWordCloud(){ 
-              var neu_dict = {{ target_neutral_dict| safe }};
-  
+
+            function neutralWordCloud(data){ 
+              var neu_dict = data;
+
               var neu_dataset = Object.entries(neu_dict).map(([key, value]) => ({ text: key, size: value }));
-  
+
               var width = 388,
                 height = 142;
-  
+
               var svg = d3.select("#cloud")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-  
+
               var color = d3.scaleOrdinal(d3.schemeCategory10);
-  
+
               var layout = d3.layout.cloud()
                 .size([width, height])
                 .words(neu_dataset)
@@ -364,9 +300,9 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                 .fontSize(function (d) { return d.size + 10; })
                 .spiral('archimedean')
                 .on("end", draw);
-  
+
               layout.start();
-  
+
               function draw(words) {
                 svg.selectAll("text")
                   .data(words)
@@ -379,7 +315,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                   .text(function (d) { return d.text; });
               }
             }
-  
+
             function clearWordCloud() {
               d3.select("#cloud > svg").remove();
             }
@@ -390,6 +326,52 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                 clearWordCloud();
               }
             }
+            function filterData(targetData, specificData) {
+              const filteredData = {};
+              
+              for (const key in targetData) {
+                if (key in specificData) {
+                  filteredData[key] = targetData[key];
+                }
+              }
+              
+              return filteredData;
+            }
+          </script>
+          <div id="cloud"></div>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
+          <script src="https://unpkg.com/d3-cloud"></script>
+          <div class="select_btn">
+            <span class="select_pos">
+              <input type="radio" id="select_pos" name="positive" onclick="generateWordCloud('positive')" value="positive">
+              <label for="select_pos">긍정</label>
+            </span>
+            <span class="select_neg">
+              <input type="radio" id="select_neg" name="negative" onclick="generateWordCloud('negative')" value="negative">
+              <label for="select_neg">부정</label>
+            </span>
+            <span class="select_neu">
+              <input type="radio" id="select_neu" name="neutral" onclick="generateWordCloud('neutral')" value="neutral">
+              <label for="select_neu">중립</label>
+            </span>
+          </div>
+          <script>
+              const radioButtons = document.querySelectorAll('.select_btn input[type="radio"]');
+
+              radioButtons.forEach((radioButton) => {
+                  radioButton.addEventListener('click', (event) => {
+                      // 클릭된 라디오 버튼의 값을 가져옴
+                      const selectedType = event.target.value;
+
+                      // 모든 라디오 버튼의 체크를 해제
+                      radioButtons.forEach((rb) => {
+                          rb.checked = false;
+                      });
+
+                      // 클릭된 라디오 버튼만 체크
+                      event.target.checked = true;
+                  });
+              });
           </script>
         </div>
       </div>
@@ -408,7 +390,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
         <div class="frequency_box fs-small fw-400" width="500px" height="230px">  
-          <div id="treemap" width="800px"height="230px"></div>  
+          <div id="treemap" width="500px"height="230px"></div>  
         </div>
       </div>
       <div class="rank">
@@ -433,18 +415,12 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
     <script>
-      
-      const category_detail_list = {{ category_detail_list|safe }};
-      
-      const results_positive = {{ results_positive|safe }};
-      const results_negative = {{ results_negative|safe }};
-      const results_neutral = {{ results_neutral|safe }};
-      // treemap
+
       const expression_list = {{select_expression|safe}}
       
       var margin = {top: 10, right: 10, bottom: 10, left: 10},
-      width = 700 - margin.left - margin.right,
-      height = 350 - margin.top - margin.bottom;
+      width = 600 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
     
       // append the svg object to the body of the page
       var svg = d3.select("#treemap")
@@ -456,20 +432,18 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               "translate(" + margin.left + "," + margin.top + ")");
       
       
-      var aggregatedData = {};
-      for (var i=0; i<category_detail_list.length; i++) {
-          var total_count = results_positive[i] + results_negative[i] + results_neutral[i];
-          aggregatedData[category_detail_list[i]] = total_count;
-      }
-      
-      // Prepare the data for treemap
-      var data1 = [
-          { name: "Origin", parent: "", value: "" },
-          ...Object.entries(aggregatedData).map(([name,value]) => ({
-              name,
-              parent: "Origin",
-              value,
-            })),
+        const aggregatedData = expression_list.reduce((acc, item) => {
+          acc[item] = (acc[item] || 0) + 1;
+          return acc;
+        }, {});
+      // Read data
+      const data1 = [
+        { name: "Origin", parent: "", value: "" },
+        ...Object.entries(aggregatedData).map(([name, value]) => ({
+          name,
+          parent: "Origin",
+          value,
+        })),
       ];
       
       var root = d3.stratify()
@@ -485,7 +459,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           .padding(4)
           (root)
       
-      var maxLength = 10; 
+    
       // use this information to add rectangles:
       svg
         .selectAll("rect")
@@ -506,26 +480,23 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         .enter()
         .append("text")
         .attr("x", function (d) {
-          return d.x0 + 5; // adjust padding here
-        })
+          return d.x0 + 5;
+        }) // +5 for padding
         .attr("y", function (d) {
-          return d.y0 + 20; // adjust padding here
-        })
+          return d.y0 + 20;
+        }) // +20 to adjust the position
         .text(function (d) {
-          var text = d.data.name;
-          if(text.length > maxLength) { 
-            text = text.substring(0,maxLength)+"..."; 
-          }
-          return text;
+          return d.data.name;
         })
-      .attr("font-size", "10px") // adjust font size here 
-      .attr("fill", "white")
-      .style('display', function(d){
-        return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
-      });
-      
+        .attr("font-size", "15px")
+        .attr("fill", "white");
+        
+
       //  누적막대그래프
-      
+      const category_detail_list = {{ category_detail_list|safe }};
+      const results_positive = {{ results_positive|safe }};
+      const results_negative = {{ results_negative|safe }};
+      const results_neutral = {{ results_neutral|safe }};
 
       let stackedDataset = [
         {
