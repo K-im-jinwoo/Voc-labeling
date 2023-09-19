@@ -408,7 +408,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
         <div class="frequency_box fs-small fw-400" width="500px" height="230px">  
-          <div id="treemap" width="500px"height="230px"></div>  
+          <div id="treemap" width="800px"height="230px"></div>  
         </div>
       </div>
       <div class="rank">
@@ -433,12 +433,18 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
     <script>
-
+      
+      const category_detail_list = {{ category_detail_list|safe }};
+      
+      const results_positive = {{ results_positive|safe }};
+      const results_negative = {{ results_negative|safe }};
+      const results_neutral = {{ results_neutral|safe }};
+      // treemap
       const expression_list = {{select_expression|safe}}
       
       var margin = {top: 10, right: 10, bottom: 10, left: 10},
-      width = 600 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
+      width = 700 - margin.left - margin.right,
+      height = 350 - margin.top - margin.bottom;
     
       // append the svg object to the body of the page
       var svg = d3.select("#treemap")
@@ -450,18 +456,20 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               "translate(" + margin.left + "," + margin.top + ")");
       
       
-        const aggregatedData = expression_list.reduce((acc, item) => {
-          acc[item] = (acc[item] || 0) + 1;
-          return acc;
-        }, {});
-      // Read data
-      const data1 = [
-        { name: "Origin", parent: "", value: "" },
-        ...Object.entries(aggregatedData).map(([name, value]) => ({
-          name,
-          parent: "Origin",
-          value,
-        })),
+      var aggregatedData = {};
+      for (var i=0; i<category_detail_list.length; i++) {
+          var total_count = results_positive[i] + results_negative[i] + results_neutral[i];
+          aggregatedData[category_detail_list[i]] = total_count;
+      }
+      
+      // Prepare the data for treemap
+      var data1 = [
+          { name: "Origin", parent: "", value: "" },
+          ...Object.entries(aggregatedData).map(([name,value]) => ({
+              name,
+              parent: "Origin",
+              value,
+            })),
       ];
       
       var root = d3.stratify()
@@ -477,7 +485,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           .padding(4)
           (root)
       
-    
+      var maxLength = 10; 
       // use this information to add rectangles:
       svg
         .selectAll("rect")
@@ -498,23 +506,26 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         .enter()
         .append("text")
         .attr("x", function (d) {
-          return d.x0 + 5;
-        }) // +5 for padding
-        .attr("y", function (d) {
-          return d.y0 + 20;
-        }) // +20 to adjust the position
-        .text(function (d) {
-          return d.data.name;
+          return d.x0 + 5; // adjust padding here
         })
-        .attr("font-size", "15px")
-        .attr("fill", "white");
-        
-
+        .attr("y", function (d) {
+          return d.y0 + 20; // adjust padding here
+        })
+        .text(function (d) {
+          var text = d.data.name;
+          if(text.length > maxLength) { 
+            text = text.substring(0,maxLength)+"..."; 
+          }
+          return text;
+        })
+      .attr("font-size", "10px") // adjust font size here 
+      .attr("fill", "white")
+      .style('display', function(d){
+        return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
+      });
+      
       //  누적막대그래프
-      const category_detail_list = {{ category_detail_list|safe }};
-      const results_positive = {{ results_positive|safe }};
-      const results_negative = {{ results_negative|safe }};
-      const results_neutral = {{ results_neutral|safe }};
+      
 
       let stackedDataset = [
         {
