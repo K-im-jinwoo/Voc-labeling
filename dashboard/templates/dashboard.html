@@ -403,8 +403,8 @@
     <div class="dashboard wrap2">
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-        <div class="frequency_box fs-small fw-400" width="700px" height="350px">  
-          <div id="treemap" style="width:700px;height:350px;"></div>
+        <div class="frequency_box fs-small fw-400" width="1000px" height="350px">  
+          <div id="treemap" style="width:600px;height:350px;"></div>
         </div>
       </div>
       <div class="rank">
@@ -432,8 +432,8 @@
       const expression_list = {{select_expression|safe}}
       
       var margin = {top: 10, right: 10, bottom: 10, left: 10},
-      width = 600 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
+      width = 650 - margin.left - margin.right,
+      height = 350 - margin.top - margin.bottom;
     
       // append the svg object to the body of the page
       var svg = d3.select("#treemap")
