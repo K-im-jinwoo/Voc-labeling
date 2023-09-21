@@ -791,6 +791,7 @@ def dashboard(request):
                 for category in checked_data
                 if category in state["category_detail_list"]
             ]
+            
 
             # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
             select_category = (
@@ -1015,6 +1016,7 @@ def dashboard(request):
             context["product_names"] = (
                 Category.objects.all().values("category_product").distinct()
             )
+            context['checked_data'] = checked_data
             return render(request, "dashboard.html", context=context)
 
         else:
