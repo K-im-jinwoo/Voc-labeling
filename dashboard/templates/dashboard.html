@@ -403,8 +403,8 @@
     <div class="dashboard wrap2">
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-        <div class="frequency_box fs-small fw-400" width="500px" height="230px">  
-          <div id="treemap" width="500px"height="230px"></div>  
+        <div class="frequency_box fs-small fw-400" width="700px" height="350px">  
+          <div id="treemap" style="width:700px;height:350px;"></div>
         </div>
       </div>
       <div class="rank">
@@ -429,7 +429,6 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
     <script>
-
       const expression_list = {{select_expression|safe}}
       
       var margin = {top: 10, right: 10, bottom: 10, left: 10},
