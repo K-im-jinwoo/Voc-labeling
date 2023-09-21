@@ -100,24 +100,25 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post">
           {% csrf_token %}
           <div class="apply_box">
-              {% for category_detail_list in all_category_list %}
-              <div class="category_item">
-                  <div class="apply_on">
-                      <label class="switch">
-                          <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}">
-                          <input type="hidden" name="showing_index" value="{{ order }}" >
-                          <span class="slider round"></span>
-                      </label>
-                  </div>
-                  <div class="apply_main">
-                      <div>{{ category_detail_list }}</div>
-                  </div>
-              </div>
-              {% endfor %}
+            {% for category_detail_list in all_category_list %}
+            <div class="category_item">
+                <div class="apply_on">
+                    <label class="switch">
+                        <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}"
+                            {% if category_detail_list in checked_data %} checked {% endif %}>
+                        <input type="hidden" name="showing_index" value="{{ order }}" >
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="apply_main">
+                    <div>{{ category_detail_list }}</div>
+                </div>
+            </div>
+            {% endfor %}            
           </div>
           <input type="hidden" name="selected" id="selectedProduct" value="{{ selected }}">
           <button type="submit">적용하기</button>
-          
+
         </form>
       </div>
       <div class="isNagative">
