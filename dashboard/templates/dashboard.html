@@ -415,8 +415,6 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
     <script>
-
-      
       const category_detail_list = {{ category_detail_list|safe }};
       
       const results_positive = {{ results_positive|safe }};
@@ -465,7 +463,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         // The coordinates are added to the root object above
         d3.treemap()
           .size([width, height])
-          .padding(4)
+          .padding(8)
           (root)
       
       var maxLength = 10; 
