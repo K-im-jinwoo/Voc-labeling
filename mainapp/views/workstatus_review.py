@@ -302,7 +302,7 @@ def workstatus_review(request):
             everything = []
             order = []
             i = 0
-
+            print(positive)
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
                 positive_temp = FirstLabeledData.objects.filter(
@@ -476,7 +476,6 @@ def workstatus_review(request):
                 everything = []
                 order = []
                 i = 0
-
                 # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
                     positive_temp = FirstLabeledData.objects.filter(
@@ -499,6 +498,7 @@ def workstatus_review(request):
                     everything.append(everything_temp)
                     order.append(i)
                     i += 1
+                    
 
                 # 정렬 요청 들어오면 session에 정렬 요구 상태 저장
                 if request.method == "POST" and "sort" in request.POST:

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import numpy as np
 from django.db.models import Count, Q
+from django.http import JsonResponse  # 상단에 추가해 주세요
 
 # Create your views here.
 
@@ -790,6 +791,7 @@ def dashboard(request):
                 for category in checked_data
                 if category in state["category_detail_list"]
             ]
+            
 
             # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
             select_category = (
@@ -1008,13 +1010,13 @@ def dashboard(request):
                     elif key == "results_neutral":
                         results_neutral = selected_data
             context["category_detail_list"] = category_detail_list
-
             context["results_positive"] = results_positive
             context["results_negative"] = results_negative
             context["results_neutral"] = results_neutral
             context["product_names"] = (
                 Category.objects.all().values("category_product").distinct()
             )
+            context['checked_data'] = checked_data
             return render(request, "dashboard.html", context=context)
 
         else:
