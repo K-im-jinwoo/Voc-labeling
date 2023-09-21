@@ -389,8 +389,8 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <div class="dashboard wrap2">
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-        <div class="frequency_box fs-small fw-400" width="500px" height="230px">  
-          <div id="treemap" style="width:500px;height:250px;"></div>
+        <div class="frequency_box fs-small fw-400" width="700px" height="350px">  
+          <div id="treemap" style="width:700px;height:350px;"></div>
         </div>
       </div>
       <div class="rank">
@@ -423,7 +423,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       // treemap
       const expression_list = {{select_expression|safe}}
       
-      var margin = {top: 10, right: 10, bottom: 10, left: 10},
+      var margin = {top: 10, right: 30, bottom: 10, left: 10},
       width = 700 - margin.left - margin.right,
       height = 350 - margin.top - margin.bottom;
     
@@ -463,7 +463,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         // The coordinates are added to the root object above
         d3.treemap()
           .size([width, height])
-          .padding(8)
+          .padding(4)
           (root)
       
       var maxLength = 10; 
