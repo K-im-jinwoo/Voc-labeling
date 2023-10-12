@@ -689,7 +689,6 @@ def dashboard(request):
                     .filter(review_id__in=select_ids)
                     .values_list("review_content", flat=True)
                 )
-
                 # 선택한 카테고리의 대상
                 select_targets_list = list(
                     FirstLabeledData.objects.filter(
@@ -722,18 +721,6 @@ def dashboard(request):
                 negative = [item[2] for item in data_list]
                 neutral = [item[3] for item in data_list]
 
-                category = "기타"
-                filtered_data = [
-                    (pos, neg, neu)
-                    for cat, pos, neg, neu, _, _ in data_list
-                    if cat == category
-                ]
-
-                # 필요에 따라 filtered_data에서 positive/negative/neutral을 분리할 수 있습니다.
-                filtered_positive = [item[0] for item in filtered_data]
-                filtered_negative = [item[1] for item in filtered_data]
-                filtered_neutral = [item[2] for item in filtered_data]
-                print(filtered_data)
                 # positive 변수 출력
                 context = {
                     # 다른 데이터도 추가할 수 있음
@@ -757,6 +744,7 @@ def dashboard(request):
                 for queryset in neutral:
                     result = queryset.filter(first_labeled_emotion="neutral").count()
                     results_neutral.append(result if result else 0)
+
                 context = {
                     "category_detail_list": category_detail_list,
                     "results_positive": results_positive,
@@ -785,7 +773,6 @@ def dashboard(request):
                     .values("model_name")
                     .distinct()
                 )
-
                 context["model_names"] = my_model_list
                 context["selected"] = category_product
 
@@ -908,7 +895,7 @@ def dashboard(request):
             expression_list = [
                 query["first_labeled_expression"] for query in first_expression
             ]
-
+            print(state["category_detail_list"])
             # 어짜피 한 리스트로 쓸거라 두 배열을 합침
             for target in select_targets_list:
                 select_expression_list.append(target)
@@ -918,8 +905,7 @@ def dashboard(request):
             context["select_reviews"] = select_reviews_list
             # 선택한 카테고리의 현상
             context["select_expression"] = select_expression_list
-            print("gd2wwwwwwwwwwww")
-            print(category_detail_list)
+
             select_expression_dict = {}
             for word in select_expression_list:
                 if word in select_expression_dict:

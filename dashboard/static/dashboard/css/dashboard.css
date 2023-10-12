@@ -10,7 +10,12 @@ select {
   border-radius: 5px;
   border: 0.5px solid #D5D5D5;
 }
-
+.all_select{
+  text-align: left;
+  margin-top: 5px; 
+  margin-bottom : 5px;
+  background-color: white;
+}
 .dashboard {
   display: flex;
   flex-direction: row;
