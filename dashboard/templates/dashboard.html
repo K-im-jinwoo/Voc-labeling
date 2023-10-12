@@ -389,7 +389,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <div class="dashboard wrap2">
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-        <div class="frequency_box fs-small fw-400" width="1000px" height="350px">  
+        <div class="frequency_box fs-small fw-400"  height="350px">  
           <div id="treemap" style="width:1000px;height:350px;"></div>
         </div>
       </div>
@@ -488,7 +488,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           return d.x0 + 5; // adjust padding here
         })
         .attr("y", function (d) {
-          return d.y0 + 20; // adjust padding here
+          return d.y0 + 15; // adjust padding here
         })
         .text(function (d) {
           var text = d.data.name;
