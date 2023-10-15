@@ -85,6 +85,9 @@ li>img{
   margin-top: 10px;
 
 }
+.menu-pd > a{
+  color: #585757;
+}
 .upload-img,.labeling-img,.list-img,.download-img,.logout-img {
     position: absolute;
     left: 32px;
@@ -102,7 +105,7 @@ li>img{
 .menu-link {
   width: 100%;
   height: 100%;
-  color: #585757;
+  
 }
 
 .logout-btn {
@@ -191,9 +194,10 @@ li>img{
   background: #A50034;
 }
 
-.menu-pd:hover .menu-link {
+.menu-pd:hover > a {
   color: white;
 }
+
 .upload-img,.labeling-img,.list-img,.download-img {
   position: absolute;
   left: 32px;
@@ -208,4 +212,17 @@ li>img{
 .menu-pd:hover .list-img,
 .menu-pd:hover .download-img {
 color : white; /* hover 시 색상 */
+}
+/* 가운데 배치 */
+.user-profile-name, .log {
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+}
+
+.log{
+  width: 200px;
+  height: 42px;
+  background-color: #F2F2F2;
+  margin: auto;
 }
