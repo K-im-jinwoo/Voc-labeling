@@ -135,15 +135,15 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       </div>
       <div class="isNagative">
         <div>
-          <span>긍/부정</span>
-          <input type="radio" name="te_radio" id="target_radio" class="element-to-hide">
-          <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
+          <span class="isNagative_title fw-400 fs-base">긍/부정</span>
           <div class="switch_label">
             <label for="target_radio">
-              <span class="target_btn fs-small fw-600" onclick="generateWordCloud('target')">대상</span>
+              <input type="radio" name="te_radio" id="target_radio" class="element-to-hide">
+              <span class="target_btn fs-small fw-600" onclick="toggleOnfBtnClass(); generateWordCloud('target')">대상</span>
             </label>
             <label for="expression_radio">
-              <span class="expression_btn fs-small fw-600" onclick="generateWordCloud('expression')">현상</span>
+              <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
+              <span class="expression_btn fs-small fw-600" onclick="toggleOnfBtnClass(); generateWordCloud('expression')">현상</span>
             </label>
           </div>
           <script>
@@ -153,12 +153,23 @@ console.log(arr);  // [1, 2, 3, 4, 5]
             const expression_btn = document.querySelector(".expression_btn");
 
             function toggleOnfBtnClass() {
-              if (target_radio.checked) {
+              const positiveRadio = document.getElementById("select_pos");
+              const negativeRadio = document.getElementById("select_neg");
+              const neutralRadio = document.getElementById("select_neu");
+              if (!target_radio.checked) {
+                target_radio.checked = true; // "대상" 라디오 버튼을 선택 상태로 변경
                 target_btn.classList.add("onf_btn");
                 expression_btn.classList.remove("onf_btn");
-              } else if (expression_radio.checked) {
-                target_btn.classList.remove("onf_btn");
+                positiveRadio.checked = false;
+                negativeRadio.checked = false;
+                neutralRadio.checked = false;
+              } else if (!expression_radio.checked) {
+                expression_radio.checked = true; // "현상" 라디오 버튼을 선택 상태로 변경
                 expression_btn.classList.add("onf_btn");
+                target_btn.classList.remove("onf_btn");
+                positiveRadio.checked = false;
+                negativeRadio.checked = false;
+                neutralRadio.checked = false;
               }
             }
             function generateWordCloud(type) {
@@ -168,7 +179,6 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               const target_positive_dict = {{ target_positive_dict | safe }};
               const target_negative_dict = {{ target_negative_dict | safe }};
               const target_neutral_dict = {{ target_neutral_dict | safe }};
-              
               const expression_positive_dict = {{ expression_positive_dict | safe }};
               const expression_negative_dict = {{ expression_negative_dict | safe }};
               const expression_neutral_dict = {{ expression_neutral_dict | safe }};
@@ -177,11 +187,12 @@ console.log(arr);  // [1, 2, 3, 4, 5]
 
               const isTargetSelected = target_radio.checked;
               const isExpressionSelected = expression_radio.checked;
+              
 
               if (type === 'target') {
-                selectedData = isTargetSelected ? targetData : expressionData;
+                selectedData = targetData;
               } else if (type === 'expression') {
-                selectedData = isExpressionSelected ? expressionData : targetData;
+                selectedData = expressionData;
               } else if (type === 'positive') {
                 selectedData = isTargetSelected ? filterData(targetData, target_positive_dict) : filterData(expressionData, expression_positive_dict);
               } else if (type === 'negative') {
@@ -189,7 +200,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               } else if (type === 'neutral') {
                 selectedData = isTargetSelected ? filterData(targetData, target_neutral_dict) : filterData(expressionData, expression_neutral_dict);
               }
-
+            
               if (type === 'positive') {
                 clearWordCloud();
                 positiveWordCloud(selectedData);
@@ -200,9 +211,6 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                 clearWordCloud();
                 neutralWordCloud(selectedData);
               }
-
-
-              toggleOnfBtnClass();
             }
 
 
