@@ -17,7 +17,8 @@
 
 .nav {
   float:left;
-  position:relative;
+  width: 250px;
+  height: 100vh;
 }
 
 .login_signup {
@@ -47,6 +48,7 @@ li>img{
   color : #585757;
 }
 .nav-wrap {
+  position: fixed;
   width: 250px;
   height: 100vh;
   color: #585757;
