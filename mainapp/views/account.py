@@ -13,7 +13,6 @@ from mainapp.models import Profile
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 
-
 class AccountCreateView(CreateView):
     model = User
     form_class = UserCreationForm  # 기본적인 userform을 제공해준다.
@@ -98,3 +97,7 @@ def admin_secret_key(request):
             return render(request, 'mainapp/admin.html', {'message': '비밀번호가 틀렸습니다.'})
         return render(request, 'mainapp/admin.html', {'message': 'admin계정으로 등록되었습니다.'})
     return render(request, 'mainapp/admin.html')
+
+
+def main_page(request):
+    return render(request, 'mainapp/main_page.html')

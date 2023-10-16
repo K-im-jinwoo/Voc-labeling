@@ -7,7 +7,7 @@ from mainapp.views.workstatus_worker import server
 app_name = 'mainapp'
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="mainapp/main_page.html"), name='main'),
+    path('', TemplateView.as_view(template_name="mainapp/frist_page.html"), name='main'),
     path('server/', server, name='server'),
 ]
 
