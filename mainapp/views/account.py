@@ -8,7 +8,7 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from mainapp.decorators import profile_ownership_required
 
 from mainapp.forms import ProfileCreationForm, AccountUpdateForm
-from mainapp.models import Profile
+from mainapp.models import Profile, Category
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
@@ -99,5 +99,10 @@ def admin_secret_key(request):
     return render(request, 'mainapp/admin.html')
 
 
+def information(request):
+    return render(request, 'mainapp/information.html')
+
 def main_page(request):
-    return render(request, 'mainapp/main_page.html')
+    categories = Category.objects.all()
+    product_names = [category.category_product for category in categories if category.category_product]
+    return render(request, 'mainapp/main_page.html', {'product_names': product_names})
