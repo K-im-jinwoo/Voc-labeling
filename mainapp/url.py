@@ -3,14 +3,12 @@ from django.views.generic import TemplateView
 
 from mainapp.urls import account, workstatus_review, workstatus_worker, assignment
 from mainapp.views.workstatus_worker import server
-from mainapp.views.first_page import test
+from mainapp.views.account import main_page
 
 app_name = "mainapp"
 
 urlpatterns = [
-    path(
-        "", TemplateView.as_view(template_name="mainapp/first_page.html"), name="main"
-    ),
+    path("", main_page, name="main"),
     path("server/", server, name="server"),
 ]
 

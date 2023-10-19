@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static "mainapp/css/firstPage.css" %}">
+{% endblock %}
+<!-- content title 부분 -->
+{% block content-title %}
+<h2 class="content-title fs-large fw-600 gray-200">
+    Main Page
+</h2>    
+{% endblock %}
+
+{% block content %}
+    <h3>Product Status</h3>
+    <div class="productStatus">
+        <div class="overallProgress">
+            <p>Overall Progress</p>
+        </div>
+        <div class="totalProducts">
+            <p>Total Products</p>  
+        </div>
+        <div class="totalWorker">
+            <p>Total Worker</p>
+            {{ a }}
+        </div>
+    </div>
+{% endblock %}
