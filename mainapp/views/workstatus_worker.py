@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 
 from mainapp.models import Category, Review
-
+from django.db.models import Count
 from django.http import JsonResponse
 
 
@@ -12,6 +12,22 @@ def workstatus_worker(request):
     result_name = []
     result_count = []
     context = {}
+    product_count = Category.objects.values("category_product").distinct().count()
+    user_count = temp_user.count()
+    review_count = Review.objects.count()
+
+    context["product_count"] = product_count
+    context["user_count"] = user_count
+    context["review_count"] = review_count
+
+    users_with_review_counts = User.objects.annotate(review_count=Count("review"))
+
+    total_review_count_by_users = 0
+    for user in users_with_review_counts:
+        total_review_count_by_users += user.review_count
+
+    print(f"사용자들이 작성한 총 리뷰 개수: {total_review_count_by_users}")
+    context["review_ratio"] = round(total_review_count_by_users / review_count, 1)
     if "category_product" in request.GET:
         category_product = request.GET["category_product"]
         for i in temp_user:
