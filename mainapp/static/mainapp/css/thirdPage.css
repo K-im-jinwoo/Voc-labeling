@@ -1,0 +1,37 @@
+.flex-wrap {
+    display: flex;
+    justify-content: space-around;
+}
+
+.worker_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 366px;
+    height: 83px;
+    border-radius: 41.5px;
+    border: 1px;
+    margin-bottom: 13px;
+    background-color: #FFFFFF;
+}
+
+.worker_container_wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 336px;
+    height: 61px;
+    position: relative;
+}
+
+.worker_content {
+    margin-left: 13px;
+}
+
+.ratio {
+    width: 24px;
+    height: 20px;
+    position: absolute;
+    right: 16px;
+    color: #D38856;
+}

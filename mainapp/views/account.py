@@ -164,4 +164,25 @@ def main_page(request):
     context["review_ratio"] = round(
         total_review_count_by_users / review_count, 1
     )  # 아이디당 리뷰 수 총합 / 총리뷰수
+
+
+    # 메인 세번째
+    user_name = []
+    user_result_count = []
+    user_ratio = round(
+        total_review_count_by_users / review_count, 1
+    )
+    user_ratios = []
+
+    for user in users_with_review_counts:
+        user_name.append(user.username)
+        user_result_count.append(user.review_count)
+        user_ratios.append(user_ratio)
+        result = zip(user_name, user_result_count,user_ratios)
+
+    result = sorted(result, key=lambda x: x[1], reverse=True)
+    context["result_list"] = result
+    
+
+
     return render(request, "mainapp/main_page.html", context)
