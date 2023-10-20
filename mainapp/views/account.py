@@ -8,7 +8,8 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from mainapp.decorators import profile_ownership_required
 
 from mainapp.forms import ProfileCreationForm, AccountUpdateForm
-from mainapp.models import Profile, Category
+from mainapp.models import Profile, Category, Review
+from django.db.models import Count, Q
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
@@ -103,6 +104,42 @@ def information(request):
     return render(request, 'mainapp/information.html')
 
 def main_page(request):
-    categories = Category.objects.all()
-    product_names = [category.category_product for category in categories if category.category_product]
-    return render(request, 'mainapp/main_page.html', {'product_names': product_names})
+    context = dict()
+
+    # 제품별 모델개수
+    product_names = Review.objects.values('category_product').distinct()
+    product_model_counts = []
+    for product in product_names:
+        model_name_count = Review.objects.exclude(Q(model_name__isnull=True) | Q(model_name="")).filter(category_product=product['category_product']).values('model_name').distinct().count()
+        product_model_counts.append({
+            'category_product': product['category_product'],
+            'model_name_count': model_name_count
+        })
+    
+    sorted_products = sorted(product_model_counts, key=lambda x: x['category_product'])
+    context['product_model_counts'] = sorted_products[:5]
+
+    # 제품별 리뷰 총 개수
+    category_review_counts = Review.objects.values('category_product').annotate(review_count=Count('review_content'))
+    category_review_counts_first_true = Review.objects.filter(first_status=True).values('category_product').annotate(first_true_count=Count('review_content'))
+    
+    result_list = []
+    
+    for item in category_review_counts:
+        matched_item = next((x for x in category_review_counts_first_true if x['category_product'] == item['category_product']), None)
+        first_true_count = matched_item['first_true_count'] if matched_item else 0
+        percentage_labelled = round((first_true_count / item['review_count']) * 100) if item['review_count'] > 0 else 0
+        
+        result_list.append({
+            'category_product': item['category_product'],
+            'total_reviews': item['review_count'],
+            'first_status_True': first_true_count,
+            'percentage_labelled': percentage_labelled,
+            })
+        
+    sorted_result_list= sorted(result_list, key=lambda x: x['category_product'])
+    context['result'] = sorted_result_list[:5]
+        
+    return render(request, 'mainapp/main_page.html', context)
+
+
