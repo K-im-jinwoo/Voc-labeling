@@ -139,6 +139,33 @@ def main_page(request):
         
     sorted_result_list= sorted(result_list, key=lambda x: x['category_product'])
     context['result'] = sorted_result_list[:5]
+
+    # 메인 첫번째
+    temp_user = User.objects.all()
+    # temp_user = User.objects.filter(is_superuser=False)
+    result_name = []
+    result_count = []
+    product_count = (
+        Category.objects.values("category_product").distinct().count()
+    )  # 제품갯수
+    user_count = temp_user.count()  # 유저수
+    review_count = Review.objects.count()  # 총리뷰수
+
+    context["product_count"] = product_count
+    context["user_count"] = user_count
+    context["review_count"] = review_count
+
+    users_with_review_counts = User.objects.annotate(
+        review_count=Count("review")
+    )  # 아이디당 리뷰 몇개달았는지 수
+
+    total_review_count_by_users = 0  # 아이디당 리뷰 수 총 합
+    for user in users_with_review_counts:
+        total_review_count_by_users += user.review_count
+
+    context["review_ratio"] = round(
+        total_review_count_by_users / review_count, 1
+    )  # 아이디당 리뷰 수 총합 / 총리뷰수
         
     return render(request, 'mainapp/main_page.html', context)
 

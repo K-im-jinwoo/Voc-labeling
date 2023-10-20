@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 
 from mainapp.models import Category, Review
-
+from django.db.models import Count
 from django.http import JsonResponse
 
 
@@ -12,6 +12,7 @@ def workstatus_worker(request):
     result_name = []
     result_count = []
     context = {}
+
     if "category_product" in request.GET:
         category_product = request.GET["category_product"]
         for i in temp_user:
