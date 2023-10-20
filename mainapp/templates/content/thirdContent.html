@@ -46,9 +46,7 @@
         new Chart(ctx, {
           type: 'doughnut',
           data: {
-            labels: ['남은 리뷰 개수', '한 개수'],
             datasets: [{
-              label: '# of Votes',
               data: [reviewCount - userCount, userCount],
               backgroundColor:['#F4E0D3','#D38856'],
               borderWidth: 1
@@ -57,7 +55,14 @@
           options:{
                 responsive:false,
                 maintainAspectRatio:false,
+                interaction:{
+                  mode:'none'
+                },
                 plugins:{
+                    scales:{
+                      x:{ display:false },
+                      y:{ display:false }
+                    },  
                     legend:{
                         display:false
                     }
