@@ -8,8 +8,8 @@
 
 </head>
 <body>
-  <div class="">
-    <h2>Worker Status</h2>
+  <div class="fw-regular fs-tiny">
+    <h2 class="status_title fw-600">Worker Status</h2>
     <div class="flex-wrap">
         {% for name, count, ratio in result_list|slice:":6" %}
         <div class="worker_container">
