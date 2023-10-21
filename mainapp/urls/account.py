@@ -8,9 +8,11 @@ from mainapp.views.account import (
     AccountDeleteView,
     ProfileUpdateView,
     admin_secret_key,
+    information
 )
 
 patterns = [
+    path('info/', information, name='info'),
     path("login/", LoginView.as_view(template_name="mainapp/login.html"), name="login"),
     path("signup/", AccountCreateView.as_view(), name="signup"),
     path("logout/", LogoutView.as_view(), name="logout"),

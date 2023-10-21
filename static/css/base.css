@@ -4,19 +4,21 @@
   justify-content: right;
   flex-grow: 1;
   height: 60px;
-  border-bottom: 1px solid #D4D4D4;
+  
 }
 
-.header-title-name {
+.header-title-name > a{
   display: flex;
   padding: 40px 0 34px;
   justify-content: center;
   text-align: center;
+  color : #585757
 }
 
 .nav {
   float:left;
-  position:relative;
+  width: 250px;
+  height: 100vh;
 }
 
 .login_signup {
@@ -42,12 +44,15 @@
   color: black;
   padding: 12px;
 }
-
+li>img{
+  color : #585757;
+}
 .nav-wrap {
+  position: fixed;
   width: 250px;
-  height: 1024px;
-  color: rgba(255, 255, 255, 0.9);
-  background: #3E3E3E;
+  height: 100vh;
+  color: #585757;
+  background: white
 }
 .user-profile-login {
   display: flex;
@@ -80,21 +85,29 @@
   position:relative;
   padding: 10px 0 10px 61px;
   margin-top: 10px;
+
+}
+.menu-pd > a{
+  color: #585757;
 }
 .upload-img,.labeling-img,.list-img,.download-img,.logout-img {
     position: absolute;
     left: 32px;
     top: 15px;
+  
 }
 .menu-pd:hover {
   border-right: 4px solid #A50034;
+  color: white;
 }
 .menu-pd:hover, .logout-btn:hover {
-  background: #333333;
+  background: #A50034;
+  color : white;
 }
 .menu-link {
   width: 100%;
   height: 100%;
+  
 }
 
 .logout-btn {
@@ -177,3 +190,41 @@
     scale: 0;
     transition: 0.5s;
   }
+
+.menu-pd:hover {
+  border-right: 4px solid #A50034;
+  background: #A50034;
+}
+
+.menu-pd:hover > a {
+  color: white;
+}
+
+.upload-img,.labeling-img,.list-img,.download-img {
+  position: absolute;
+  left: 32px;
+  top: 15px;
+  color : #585757; /* 기본 색상 */
+}
+
+
+
+.menu-pd:hover .upload-img,
+.menu-pd:hover .labeling-img,
+.menu-pd:hover .list-img,
+.menu-pd:hover .download-img {
+color : white; /* hover 시 색상 */
+}
+/* 가운데 배치 */
+.user-profile-name, .log {
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+}
+
+.log{
+  width: 200px;
+  height: 42px;
+  background-color: #F2F2F2;
+  margin: auto;
+}

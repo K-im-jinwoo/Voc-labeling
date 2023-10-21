@@ -1,0 +1,66 @@
+.firstContainor{
+    padding-left: 50px;
+}
+.firstContainor>h2{
+    font-size: 20px;
+    line-height: 24px;
+    color : #585757;
+    margin-bottom: 13px;
+    border-left: 3px solid #A50034;
+    padding-left: 7px;
+}
+.productStatus{
+    display: flex;
+    flex-direction: row;
+}
+.overallProgress{
+    background-color: white;
+    width: 366px;
+    height: 69px;
+    margin-right: 30px;
+}
+.totalProducts{
+    background-color: white;
+    width: 366px;
+    height: 69px;
+    margin-right: 30px;
+}
+.totalWorkers{
+    background-color: white;
+    width: 366px;
+    height: 69px;
+
+}
+.status{
+    display: flex;
+    flex-direction: row;
+    padding-top : 23px;
+    padding-left: 37px;
+    padding-right: 37px;
+}
+.status > svg{
+    margin-right: 16px;
+}
+.status > h3 {
+    margin-right: 52px;
+    margin-top: 3px;
+    color : #585757;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 500;
+}
+.totalProducts > h3{
+    margin-right: 93px;
+    color : #585757;
+}
+.totalWorkers > h3{
+    margin-right: 93px;
+    color : #585757;
+}
+.status > p {
+    font-size: 38px;
+    line-height: 24px;
+    font-weight: 500;
+    margin-top: 3px;
+    color : #585757;
+}

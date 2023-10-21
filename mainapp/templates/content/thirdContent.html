@@ -1,0 +1,79 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../../static/mainapp/css/thirdPage.css">
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+  <div class="fw-regular fs-tiny">
+    <h2 class="status_title fw-600">Worker Status</h2>
+    <div class="flex-wrap">
+        {% for name, count, ratio in result_list|slice:":6" %}
+        <div class="worker_container">
+            <div class="worker_container_wrap">        
+                <img src="{% static 'mainapp/image/profile.svg' %}" alt="Person" style="">
+              
+                <div class="fs-tiny fw-medium worker_content">
+                    <p>Name : {{ name }}</p>
+                    <p>Team : H&M</p>
+                    <p>갯수 : {{review_count}} / {{ count }}</p>
+                </div>
+                    <canvas id="myChart{{ forloop.counter }}" data-user-count="{{ count }}" data-review-count="{{ review_count }}" style="position: absolute; right:0px; width:61px; height:61px;"></canvas>
+                    <div class="ratio fw-regular fs-tiny">{{ ratio }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+  </div>
+<script>
+    window.onload = function() {
+      let result_list_length = {{ result_list|length }};
+      
+
+      if(result_list_length > 6) {
+        result_list_length = 6;
+      }
+      
+      for(let i=1; i<=result_list_length; i++) {
+        const ctx = document.getElementById('myChart'+i);
+        const userCount = parseInt(ctx.getAttribute('data-user-count'));
+        const reviewCount = parseInt(ctx.getAttribute('data-review-count'));
+      
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [reviewCount - userCount, userCount],
+              backgroundColor:['#F4E0D3','#D38856'],
+              borderWidth: 1
+            }]
+          },
+          options:{
+                responsive:false,
+                maintainAspectRatio:false,
+                interaction:{
+                  mode:'none'
+                },
+                plugins:{
+                    scales:{
+                      x:{ display:false },
+                      y:{ display:false }
+                    },  
+                    legend:{
+                        display:false
+                    }
+                }
+            }
+        });
+       }
+    };
+</script>
+</body>
+</html>

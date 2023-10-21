@@ -97,9 +97,7 @@ def workstatus_review(request):
                 .filter(model_code=category_model_code)
                 .count()
             )
-            left = (
-                alltotal - first_num
-            )
+            left = alltotal - first_num - dummy_num
 
             """카테고리별 긍정 부정 개수"""
             context = {}
@@ -498,7 +496,6 @@ def workstatus_review(request):
                     everything.append(everything_temp)
                     order.append(i)
                     i += 1
-                    
 
                 # 정렬 요청 들어오면 session에 정렬 요구 상태 저장
                 if request.method == "POST" and "sort" in request.POST:

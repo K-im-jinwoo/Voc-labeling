@@ -791,7 +791,6 @@ def dashboard(request):
                 for category in checked_data
                 if category in state["category_detail_list"]
             ]
-            
 
             # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
             select_category = (
@@ -801,6 +800,7 @@ def dashboard(request):
                 .values("firstlabeleddata")
                 .distinct()
             )
+
             q = Q()
             for category in checked_data:
                 q |= Q(category_middle=category)
@@ -810,6 +810,24 @@ def dashboard(request):
                 .filter(q)
                 .values("category_id")
             )
+            select_categoryname = (
+                Category.objects.filter(category_product=cp)
+                .filter(q)
+                .values("category_product")
+            )
+            
+            clicked_name = request.GET.get('clickedName', '')
+            print(clicked_name,"클릭했어요")
+            # 클릭한 데이터 처리 또는 렌더링된 템플릿에 데이터 전달
+            context = {'clicked_name': clicked_name}
+
+
+            select_namereviews = list(
+                Review.objects.filter(category_product=cp)
+                .filter(category_product__in=select_categoryname)
+                .values_list("review_content", flat=True)
+            )
+            print(select_namereviews,"sdasdwqw2")
 
             # 선택한 카테고리의 리뷰 id
             select_ids = FirstLabeledData.objects.filter(
@@ -836,20 +854,17 @@ def dashboard(request):
             # <-- 선택한 카테고리 target emotion
             select_target_positive = list(
                 FirstLabeledData.objects.filter(
-                    category_id__in=select_categorys,
-                    first_labeled_emotion='positive'
+                    category_id__in=select_categorys, first_labeled_emotion="positive"
                 ).values_list("first_labeled_target", flat=True)
             )
             select_target_negative = list(
                 FirstLabeledData.objects.filter(
-                    category_id__in=select_categorys,
-                    first_labeled_emotion='negative'
+                    category_id__in=select_categorys, first_labeled_emotion="negative"
                 ).values_list("first_labeled_target", flat=True)
             )
             select_target_neutral = list(
                 FirstLabeledData.objects.filter(
-                    category_id__in=select_categorys,
-                    first_labeled_emotion='neutral'
+                    category_id__in=select_categorys, first_labeled_emotion="neutral"
                 ).values_list("first_labeled_target", flat=True)
             )
             # --> 선택한 카테고리 target emotion
@@ -857,20 +872,17 @@ def dashboard(request):
             # <-- 선택한 카테고리 expression emotion
             select_expression_positive = list(
                 FirstLabeledData.objects.filter(
-                    category_id__in=select_categorys,
-                    first_labeled_emotion='positive'
+                    category_id__in=select_categorys, first_labeled_emotion="positive"
                 ).values_list("first_labeled_expression", flat=True)
             )
             select_expression_negative = list(
                 FirstLabeledData.objects.filter(
-                    category_id__in=select_categorys,
-                    first_labeled_emotion='negative'
+                    category_id__in=select_categorys, first_labeled_emotion="negative"
                 ).values_list("first_labeled_expression", flat=True)
             )
             select_expression_neutral = list(
                 FirstLabeledData.objects.filter(
-                    category_id__in=select_categorys,
-                    first_labeled_emotion='neutral'
+                    category_id__in=select_categorys, first_labeled_emotion="neutral"
                 ).values_list("first_labeled_expression", flat=True)
             )
             # --> 선택한 카테고리 expression emotion
@@ -940,7 +952,7 @@ def dashboard(request):
                     target_positive_dict[word] += 1
                 else:
                     target_positive_dict[word] = 1
-            print("dict:",target_positive_dict)
+            print("dict:", target_positive_dict)
             context["target_positive_dict"] = target_positive_dict
             # 선택한 카테고리 부정
             target_negative_dict = {}
@@ -950,7 +962,7 @@ def dashboard(request):
                 else:
                     target_negative_dict[word] = 1
             context["target_negative_dict"] = target_negative_dict
-            print("neg:",target_negative_dict)
+            print("neg:", target_negative_dict)
             # 선택한 카테고리 중립
             target_neutral_dict = {}
             for word in select_target_neutral:
@@ -959,7 +971,7 @@ def dashboard(request):
                 else:
                     target_neutral_dict[word] = 1
             context["target_neutral_dict"] = target_neutral_dict
-            print("t_neu:" , target_neutral_dict)
+            print("t_neu:", target_neutral_dict)
 
             # 선택한 현상 카테고리 긍정
             expression_positive_dict = {}
@@ -968,7 +980,7 @@ def dashboard(request):
                     expression_positive_dict[word] += 1
                 else:
                     expression_positive_dict[word] = 1
-            print("ex_dict:",expression_positive_dict)
+            print("ex_dict:", expression_positive_dict)
             context["expression_positive_dict"] = expression_positive_dict
             # 선택한 현상 카테고리 부정
             expression_negative_dict = {}
@@ -1016,7 +1028,7 @@ def dashboard(request):
             context["product_names"] = (
                 Category.objects.all().values("category_product").distinct()
             )
-            context['checked_data'] = checked_data
+            context["checked_data"] = checked_data
             return render(request, "dashboard.html", context=context)
 
         else:

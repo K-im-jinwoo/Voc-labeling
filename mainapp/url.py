@@ -3,13 +3,16 @@ from django.views.generic import TemplateView
 
 from mainapp.urls import account, workstatus_review, workstatus_worker, assignment
 from mainapp.views.workstatus_worker import server
+from mainapp.views.account import main_page
+from .views.account import upload_profile_picture
 
-app_name = 'mainapp'
+app_name = "mainapp"
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="mainapp/main_page.html"), name='main'),
-    path('server/', server, name='server'),
+    path("", main_page, name="main"),
+    path("server/", server, name="server"),
 ]
+
 
 urlpatterns += account.patterns
 urlpatterns += workstatus_review.patterns

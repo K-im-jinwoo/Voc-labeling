@@ -76,6 +76,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         }
         select.addEventListener("change", function() {
           localStorage.setItem("product_select_status", this.value);
+          
         });
       });
     
@@ -96,16 +97,19 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     </script>
     <div class="dashboard wrap1">
       <div class = "category_apply">
-        <h3 class="apply_text fs-base fw-400" >카테고리</h3>
+        
         <form id="checked-data-form" action="{% url 'dashboard:dashboard' %}" method="post">
           {% csrf_token %}
           <div class="apply_box">
+            <h3 class="apply_text fs-base fw-400" >카테고리</h3>
+            <button class ="all_select" type="button" id="select-all">전체선택</button>
             {% for category_detail_list in all_category_list %}
             <div class="category_item">
                 <div class="apply_on">
                     <label class="switch">
-                        <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}"
-                            {% if category_detail_list in checked_data %} checked {% endif %}>
+                      <input type="checkbox" name="checked_data[]" value="{{ category_detail_list }}"
+                      {% if not checked_data or category_detail_list in checked_data %} checked {% endif %}>
+                          
                         <input type="hidden" name="showing_index" value="{{ order }}" >
                         <span class="slider round"></span>
                     </label>
@@ -116,21 +120,30 @@ console.log(arr);  // [1, 2, 3, 4, 5]
             </div>
             {% endfor %}            
           </div>
+          <script type='text/javascript'>
+            document.getElementById('select-all').addEventListener('click', function() {
+                var checkboxes = document.querySelectorAll('input[type=checkbox]');
+                var allChecked = Array.from(checkboxes).every(x => x.checked);
+                for (var checkbox of checkboxes) {
+                  checkbox.checked = !allChecked;
+                }
+              });
+        </script> 
           <input type="hidden" name="selected" id="selectedProduct" value="{{ selected }}">
           <button type="submit">적용하기</button>
         </form>
       </div>
       <div class="isNagative">
         <div>
-          <span>긍/부정</span>
-          <input type="radio" name="te_radio" id="target_radio" class="element-to-hide">
-          <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
+          <span class="isNagative_title fw-400 fs-base">긍/부정</span>
           <div class="switch_label">
             <label for="target_radio">
-              <span class="target_btn fs-small fw-600" onclick="generateWordCloud('target')">대상</span>
+              <input type="radio" name="te_radio" id="target_radio" class="element-to-hide">
+              <span class="target_btn fs-small fw-600" onclick="toggleOnfBtnClass(); generateWordCloud('target')">대상</span>
             </label>
             <label for="expression_radio">
-              <span class="expression_btn fs-small fw-600" onclick="generateWordCloud('expression')">현상</span>
+              <input type="radio" name="te_radio" id="expression_radio" class="element-to-hide">
+              <span class="expression_btn fs-small fw-600" onclick="toggleOnfBtnClass(); generateWordCloud('expression')">현상</span>
             </label>
           </div>
           <script>
@@ -140,12 +153,23 @@ console.log(arr);  // [1, 2, 3, 4, 5]
             const expression_btn = document.querySelector(".expression_btn");
 
             function toggleOnfBtnClass() {
-              if (target_radio.checked) {
+              const positiveRadio = document.getElementById("select_pos");
+              const negativeRadio = document.getElementById("select_neg");
+              const neutralRadio = document.getElementById("select_neu");
+              if (!target_radio.checked) {
+                target_radio.checked = true; // "대상" 라디오 버튼을 선택 상태로 변경
                 target_btn.classList.add("onf_btn");
                 expression_btn.classList.remove("onf_btn");
-              } else if (expression_radio.checked) {
-                target_btn.classList.remove("onf_btn");
+                positiveRadio.checked = false;
+                negativeRadio.checked = false;
+                neutralRadio.checked = false;
+              } else if (!expression_radio.checked) {
+                expression_radio.checked = true; // "현상" 라디오 버튼을 선택 상태로 변경
                 expression_btn.classList.add("onf_btn");
+                target_btn.classList.remove("onf_btn");
+                positiveRadio.checked = false;
+                negativeRadio.checked = false;
+                neutralRadio.checked = false;
               }
             }
             function generateWordCloud(type) {
@@ -155,7 +179,6 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               const target_positive_dict = {{ target_positive_dict | safe }};
               const target_negative_dict = {{ target_negative_dict | safe }};
               const target_neutral_dict = {{ target_neutral_dict | safe }};
-              
               const expression_positive_dict = {{ expression_positive_dict | safe }};
               const expression_negative_dict = {{ expression_negative_dict | safe }};
               const expression_neutral_dict = {{ expression_neutral_dict | safe }};
@@ -164,11 +187,12 @@ console.log(arr);  // [1, 2, 3, 4, 5]
 
               const isTargetSelected = target_radio.checked;
               const isExpressionSelected = expression_radio.checked;
+              
 
               if (type === 'target') {
-                selectedData = isTargetSelected ? targetData : expressionData;
+                selectedData = targetData;
               } else if (type === 'expression') {
-                selectedData = isExpressionSelected ? expressionData : targetData;
+                selectedData = expressionData;
               } else if (type === 'positive') {
                 selectedData = isTargetSelected ? filterData(targetData, target_positive_dict) : filterData(expressionData, expression_positive_dict);
               } else if (type === 'negative') {
@@ -176,7 +200,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
               } else if (type === 'neutral') {
                 selectedData = isTargetSelected ? filterData(targetData, target_neutral_dict) : filterData(expressionData, expression_neutral_dict);
               }
-
+            
               if (type === 'positive') {
                 clearWordCloud();
                 positiveWordCloud(selectedData);
@@ -187,9 +211,6 @@ console.log(arr);  // [1, 2, 3, 4, 5]
                 clearWordCloud();
                 neutralWordCloud(selectedData);
               }
-
-
-              toggleOnfBtnClass();
             }
 
 
@@ -389,7 +410,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     <div class="dashboard wrap2">
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-        <div class="frequency_box fs-small fw-400" width="1000px" height="350px">  
+        <div class="frequency_box fs-small fw-400"  height="350px">  
           <div id="treemap" style="width:1000px;height:350px;"></div>
         </div>
       </div>
@@ -476,7 +497,14 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           .attr('width', function (d) { return d.x1 - d.x0; })
           .attr('height', function (d) { return d.y1 - d.y0; })
           .style("stroke", "black")
-          .style("fill", "#69b3a2");
+          .style("fill", "#69b3a2")
+          .on("click", function (d) {
+            console.log(d.srcElement.__data__.data.name);
+        
+            var clickedName = d.srcElement.__data__.data.name;
+          });
+        
+          
     
       // and to add the text labels
       svg
@@ -488,7 +516,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           return d.x0 + 5; // adjust padding here
         })
         .attr("y", function (d) {
-          return d.y0 + 20; // adjust padding here
+          return d.y0 + 15; // adjust padding here
         })
         .text(function (d) {
           var text = d.data.name;
@@ -503,6 +531,19 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
         
+      // 선택: 모든 레이블 텍스트 요소 선택
+      var textLabels = svg.selectAll("text");
+
+      // 데이터 바인딩: 선택한 요소에 데이터 바인딩
+      var textData = textLabels.data();
+
+      // 데이터 출력: 콘솔에 레이블 텍스트 출력
+      textData.forEach(function (d) {
+        if (d.data.value >= 1) {
+          console.log(d.data.name); // 레이블 텍스트
+        }      
+      });
+
 
       //  누적막대그래프
   

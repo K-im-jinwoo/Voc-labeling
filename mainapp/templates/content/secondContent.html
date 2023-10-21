@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../../static/mainapp/css/secondContent.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="SecondContainor">
+    <div class="second_title fw-600">
+      Labeling Status
+    </div>
+    <div class="second_product_box">
+        {% for product in product_model_counts %}
+        <div class='second_model_count_box'>
+          <div class="product_title fw-400">{{ product.category_product }} Models</div>
+          <div class="model_count fw-600">{{ product.model_name_count }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="second_percent_box">
+      {% for item in result %}
+        <div class = 'second_labeled_count_box'>
+            <div class = "category_product_title fw-400">{{ item.category_product }}</div>
+            <div class="chart-container">
+                <canvas id="doughnutChart{{ forloop.counter }}" style="width: 87px; height: 87px;"></canvas>
+                <div class="center-text fw-600">{{ item.percentage_labelled }}%</div>
+            </div>
+          
+            <script type = "text/javascript"> 
+              var ctx = document.getElementById('doughnutChart{{ forloop.counter }}').getContext('2d');
+              
+              var data = {
+                 datasets: [{
+                     data: [{{ item.percentage_labelled }}, 100 - {{ item.percentage_labelled }}],
+                     backgroundColor:[
+                         '#006580',
+                         '#E8EBF0'
+                     ],
+                     borderColor:[
+                       '#006580',
+                       '#E8EBF0'
+                   ],
+                   borderWidth :1
+                 }],
+                 labels: [
+                     'Labelled',
+                     'Unlabelled'
+                 ]
+              };
+              
+              var myDoughnutChart = new Chart(ctx,{
+                 type:'doughnut',
+                 data:data,
+                 options:{
+                   responsive:false,
+                   maintainAspectRatio:false,
+                   interaction:{
+                       mode:'none'
+                   },
+                   scales:{
+                       x:{ display:false },
+                       y:{ display:false }
+                   },
+                   plugins:{
+                       legend:false
+                   },
+                   cutout: '60%'
+               }
+              });
+              </script> 
+          <div class="reviews_count fw-medium">{{ item.total_reviews }} reviews</div>
+          <div class="labeled_count fw-medium">{{ item.first_status_True }} labeled</div> 
+        </div>
+    {% endfor %}
+
+    </div>
+  </div>
+</body>
+</html>

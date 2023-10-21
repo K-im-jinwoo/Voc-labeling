@@ -16,11 +16,13 @@ div{
 
 .product{
     
-    margin-left: 55px;
+ 
+    
 }
 
 .work_count{
     margin-left: 46px;
+    margin-right: 45px;
 }
 
 .product_name > select{
@@ -30,38 +32,49 @@ div{
 }
 
 .work_count > .input{
-    width: 83px;
+    text-align: center;
+    width: 208px;
     height: 34px;
     border-radius: 5px;
     border: 0.5px solid #D5D5D5;
 }
 
 .work_count > .asdf{
-    width: 56px;
+    width: 107px;
     height: 34px;
-    background: #F2F2F2;
     margin-bottom: 2px;
+    margin-left: 310px;
     border-radius: 5px;
     border: 0.5px solid #D5D5D5;
+    padding: 5px, 0px, 5px, 15px;
 }
+.line{
+    margin: auto;
 
+    margin-top: 30px;
+    width: 1031px;
+    border: 1px solid #D4D4D4;;
+}
 .tool_box{
     padding-top: 43px;  
     display: flex;
     flex-direction: column;
 }
-
+.top_box{
+    margin-right: 45px;
+    margin-top: 18px;
+    margin-left: 45px;
+}
 .show-container{
     display: flex;
     flex-direction: column;
-    padding: 22px;
+    padding-top: 22px; /* 변경된 부분 */
     margin-right: 45px;
-    margin-top: 38px;
+    margin-top: 18px;
     margin-left: 45px;
     margin-bottom: 20px;
-    border: 1px solid #E8E8E8;
-    border-radius: 10px;
-    background: #F8F8F8;
+    
+    
 }
 
 .category{
@@ -74,10 +87,22 @@ div{
     justify-content: center;
     align-items: center;
     padding: 5px 15px;
+    margin-bottom: 20px;
+    height: 34px;
+    border-radius: 5px;
+    width: 105px;
+    margin-right: 10px;
+}
+.category_value1{
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 15px;
+    margin-bottom: 20px;
     border-radius: 5px;
     height: 34px;
 }
-
 
 .c_text{
     width: 100px;
@@ -85,6 +110,7 @@ div{
 }
 
 .c_content{
+   
 }
 
 .feel{
@@ -101,7 +127,7 @@ div{
 .result-container{
     margin-left: 45px;
     margin-right: 45px;
-    background: #FFFFFF;
+    background: #F8F8F8;
     border: 1px solid #E8E8E8;
     border-radius: 10px;
     padding-top: 54px;
@@ -176,6 +202,10 @@ div{
     display: flex;
     flex-direction: row;
 }
+#trash{
+    height: 34px;
+    width: 115px;
+}
 .work_result{
     display: flex;
     justify-content: center;
@@ -183,6 +213,14 @@ div{
     flex-direction: column;
     margin-top: 60px;
     margin-bottom: 15px;
+}
+#DummyForm{
+    margin-right: 8px;
+    height: 34px;
+}
+.bet > #btn{
+    height: 34px;
+    width: 115px;
 }
 .work_result > div{
     display: flex;

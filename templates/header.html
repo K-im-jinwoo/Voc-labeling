@@ -1,7 +1,7 @@
 {% load static %}
 
 <div id="header">
-  <header class="header-title primary-bg">
+  <header class="header-title">
     <div class="login_signup">
       {% if user.is_authenticated %} <!--로그인 한 상태-->
         <div class="user-profile-login">
@@ -11,7 +11,7 @@
             <strong class="user-profile-name">
                 <div id="my_profile" class="my_profile" onclick="usermodal()">{{ user.username }}</div>
                 <div id="my_profile_modal" class="my_profile_modal">
-                  <div class="modal_img"><img src="{{ user.profile.image.url }}" class="profile-img"></div>
+
                   <div class="modal_name">{{ user.username }}</div>
                 </div>
             </strong>

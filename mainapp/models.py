@@ -5,8 +5,8 @@ from django.db import models
 
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    image = models.ImageField(upload_to='profile/', null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    image = models.ImageField(upload_to="profile/", null=True)
     name = models.CharField(max_length=256, null=True)
 
 
@@ -17,7 +17,11 @@ class Category(models.Model):
     category_product = models.CharField(max_length=256)
 
     def __str__(self):
-        return str(self.category_id) + ' - ' + str(self.category_middle)
+        return str(self.category_id) + " - " + str(self.category_middle)
+
+
+class UserProfile(models.Model):
+    profile_picture = models.ImageField(upload_to="profile_pictures/")
 
 
 class Review(models.Model):
@@ -35,7 +39,8 @@ class Review(models.Model):
     model_code = models.TextField(default="", null=True)
 
     def __str__(self):
-        return str(self.review_id) + ' - ' + str(self.category_product)
+        return str(self.review_id) + " - " + str(self.category_product)
+
 
 class FirstLabeledData(models.Model):
     first_labeled_id = models.AutoField(primary_key=True)
@@ -48,7 +53,7 @@ class FirstLabeledData(models.Model):
     model_code = models.TextField(default="", null=True)
 
     def __str__(self):
-        return str(self.first_labeled_id) + ' - ' + str(self.first_labeled_emotion)
+        return str(self.first_labeled_id) + " - " + str(self.first_labeled_emotion)
 
 
 class SecondLabeledData(models.Model):
@@ -60,7 +65,7 @@ class SecondLabeledData(models.Model):
     review_id = models.ForeignKey("Review", on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.second_labeled_id) + ' - ' + str(self.second_labeled_emotion)
+        return str(self.second_labeled_id) + " - " + str(self.second_labeled_emotion)
 
 
 class Result(models.Model):
