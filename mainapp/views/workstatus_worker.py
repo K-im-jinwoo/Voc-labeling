@@ -31,7 +31,8 @@ def workstatus_worker(request):
         }
 
     # product_names 가져오기
-
+    review_count = Review.objects.count()  # 총리뷰수
+    context["review_count"] = review_count
     product_names = (
         Category.objects.all().values_list("category_product", flat=True).distinct()
     )
