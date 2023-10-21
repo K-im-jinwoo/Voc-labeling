@@ -7,11 +7,17 @@
       <div class="mb-4">
           <h4>프로필 편집</h4>
       </div>
+      <form action="{% url 'mainapp:update_profile' pk=target_profile.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="delete_image" value="true">
+        <input type="submit" value="이미지 삭제">
+    </form>
     <form action="{% url 'mainapp:update_profile' pk=target_profile.pk %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" class="btn btn-dark rounded-pill col-6 mt-4">
     </form>
+    
     </div>
 
 {% endblock %}

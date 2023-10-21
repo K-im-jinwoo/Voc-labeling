@@ -11,6 +11,11 @@ from mainapp.forms import ProfileCreationForm, AccountUpdateForm
 from mainapp.models import Profile, Category, Review
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
+from django.shortcuts import get_object_or_404
+
+from mainapp.models import Review
+from ..forms import UserProfileForm
+from django.shortcuts import render, redirect
 
 
 class AccountCreateView(CreateView):
@@ -83,6 +88,21 @@ class ProfileCreateView(CreateView):
         return reverse("mainapp:account", kwargs={"pk": self.object.user.pk})
 
 
+def upload_profile_picture(request):
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            user_profile = form.save()
+            # 성공적으로 저장되었을 때의 동작 등 추가 작업 수행
+
+            return redirect("profile")  # 프로필 페이지 등으로 리디렉션
+
+    else:
+        form = UserProfileForm()
+
+    return render(request, "upload_profile.html", {"form": form})
+
+
 @method_decorator(profile_ownership_required, "get")
 @method_decorator(profile_ownership_required, "post")
 class ProfileUpdateView(UpdateView):
@@ -91,6 +111,14 @@ class ProfileUpdateView(UpdateView):
     form_class = ProfileCreationForm
     success_url = reverse_lazy("mainapp:main")
     template_name = "mainapp/update_profile.html"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if "delete_image" in request.POST:
+            profile = get_object_or_404(Profile, pk=kwargs["pk"])
+            profile.image = None  # Set the image field to None
+            profile.save()
+        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse("mainapp:account", kwargs={"pk": self.object.user.pk})
