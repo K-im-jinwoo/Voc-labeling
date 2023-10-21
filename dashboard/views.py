@@ -800,6 +800,7 @@ def dashboard(request):
                 .values("firstlabeleddata")
                 .distinct()
             )
+
             q = Q()
             for category in checked_data:
                 q |= Q(category_middle=category)
@@ -809,6 +810,24 @@ def dashboard(request):
                 .filter(q)
                 .values("category_id")
             )
+            select_categoryname = (
+                Category.objects.filter(category_product=cp)
+                .filter(q)
+                .values("category_product")
+            )
+            
+            clicked_name = request.GET.get('clickedName', '')
+            print(clicked_name,"클릭했어요")
+            # 클릭한 데이터 처리 또는 렌더링된 템플릿에 데이터 전달
+            context = {'clicked_name': clicked_name}
+
+
+            select_namereviews = list(
+                Review.objects.filter(category_product=cp)
+                .filter(category_product__in=select_categoryname)
+                .values_list("review_content", flat=True)
+            )
+            print(select_namereviews,"sdasdwqw2")
 
             # 선택한 카테고리의 리뷰 id
             select_ids = FirstLabeledData.objects.filter(

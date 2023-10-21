@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'content/first_content.html'%}
-    {% include 'content/secondContent.html' %}
+    <div class = "firstContent">{% include 'content/first_content.html'%}</div>
+    <div class = "secondContent">{% include 'content/secondContent.html' %}</div>
+    <div class = "thirdContent">{% include 'content/thirdContent.html' %}</div>
 {% endblock %}

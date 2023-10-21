@@ -498,6 +498,12 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           .attr('height', function (d) { return d.y1 - d.y0; })
           .style("stroke", "black")
           .style("fill", "#69b3a2")
+          .on("click", function (d) {
+            console.log(d.srcElement.__data__.data.name);
+        
+            var clickedName = d.srcElement.__data__.data.name;
+          });
+        
           
     
       // and to add the text labels
@@ -525,6 +531,19 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
         
+      // 선택: 모든 레이블 텍스트 요소 선택
+      var textLabels = svg.selectAll("text");
+
+      // 데이터 바인딩: 선택한 요소에 데이터 바인딩
+      var textData = textLabels.data();
+
+      // 데이터 출력: 콘솔에 레이블 텍스트 출력
+      textData.forEach(function (d) {
+        if (d.data.value >= 1) {
+          console.log(d.data.name); // 레이블 텍스트
+        }      
+      });
+
 
       //  누적막대그래프
   
