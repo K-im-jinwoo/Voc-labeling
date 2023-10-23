@@ -31,7 +31,16 @@ def workstatus_worker(request):
         }
 
     # product_names 가져오기
-
+    review_count = Review.objects.count()  # 총리뷰수
+    context["review_count"] = review_count
+    users_with_review_counts = User.objects.annotate(
+        review_count=Count("review")
+    )  # 아이디당 리뷰 몇개달았는
+    context["users_with_review_counts"] = users_with_review_counts
+    total_review_count_by_users = 0  # 아이디당 리뷰 수 총 합
+    for user in users_with_review_counts:
+        total_review_count_by_users += user.review_count
+    context["total_review_count_by_users"] = total_review_count_by_users
     product_names = (
         Category.objects.all().values_list("category_product", flat=True).distinct()
     )
