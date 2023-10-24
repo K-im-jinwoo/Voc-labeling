@@ -220,6 +220,11 @@ margin-bottom: 15px;
 
 }
 
+/* 클릭한 데이터 색칠 */
+.highlight {
+  background-color: yellow; 
+}
+
 
 
 ::-webkit-scrollbar {

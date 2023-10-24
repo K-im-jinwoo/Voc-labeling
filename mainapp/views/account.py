@@ -236,7 +236,7 @@ def main_page(request):
     # 메인 세번째
     user_name = []
     user_result_count = []
-    user_ratio = round(total_review_count_by_users / review_count, 1)
+    user_ratio = int((total_review_count_by_users / review_count) * 100)
     user_ratios = []
 
     for user in users_with_review_counts:
