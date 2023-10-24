@@ -230,7 +230,7 @@ def main_page(request):
         total_review_count_by_users += user.review_count
 
     context["review_ratio"] = round(
-        total_review_count_by_users / review_count, 1
+        (total_review_count_by_users / review_count) * 100, 1
     )  # 아이디당 리뷰 수 총합 / 총리뷰수
 
     # 메인 세번째
