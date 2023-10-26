@@ -144,7 +144,6 @@ def information(request):
 
 def main_page(request):
     context = dict()
-
     # 제품별 모델개수
     product_names = Review.objects.values("category_product").distinct()
     product_model_counts = []
@@ -170,10 +169,10 @@ def main_page(request):
     category_review_counts = Review.objects.values("category_product").annotate(
         review_count=Count("review_content")
     )
-    category_review_counts_first_true = (
-        Review.objects.filter(first_status=True)
+    category_review_counts_labeled = (
+        Review.objects.filter(labeled_user_id__isnull=False)
         .values("category_product")
-        .annotate(first_true_count=Count("review_content"))
+        .annotate(labeled_count=Count("review_content"))
     )
 
     result_list = []
@@ -182,14 +181,14 @@ def main_page(request):
         matched_item = next(
             (
                 x
-                for x in category_review_counts_first_true
+                for x in category_review_counts_labeled
                 if x["category_product"] == item["category_product"]
             ),
             None,
         )
-        first_true_count = matched_item["first_true_count"] if matched_item else 0
-        percentage_labelled = (
-            round((first_true_count / item["review_count"]) * 100)
+        labeled_count = matched_item["labeled_count"] if matched_item else 0
+        percentage_labeled = (
+            round((labeled_count / item["review_count"]) * 100)
             if item["review_count"] > 0
             else 0
         )
@@ -198,13 +197,16 @@ def main_page(request):
             {
                 "category_product": item["category_product"],
                 "total_reviews": item["review_count"],
-                "first_status_True": first_true_count,
-                "percentage_labelled": percentage_labelled,
+                "labeled_count": labeled_count,
+                "percentage_labeled": percentage_labeled,
             }
         )
 
     sorted_result_list = sorted(result_list, key=lambda x: x["category_product"])
     context["result"] = sorted_result_list[:5]
+
+
+
 
     # 메인 첫번째
     temp_user = User.objects.all()
@@ -230,7 +232,7 @@ def main_page(request):
         total_review_count_by_users += user.review_count
 
     context["review_ratio"] = round(
-        total_review_count_by_users / review_count, 1
+        total_review_count_by_users / review_count * 100 , 1
     )  # 아이디당 리뷰 수 총합 / 총리뷰수
 
     # 메인 세번째

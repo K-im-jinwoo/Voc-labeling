@@ -59,7 +59,12 @@ body {
 .fw-600 {
   font-family: lg_smartsemibold;
   font-weight: 600;
-} 
+}
+
+.fw-title {
+  font-family: lg_smartsemibold;
+  font-weight: 500;
+}
 
 /* gray color */
 
