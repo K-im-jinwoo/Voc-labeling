@@ -9,8 +9,8 @@
 .second_product_box {
     display : flex;
     flex-direction: row;
-    justify-content: space-around;
-    margin: 10px 20px;
+    justify-content: space-between;
+    margin: 10px 50px;
 }
 
 .second_model_count_box {
@@ -30,8 +30,8 @@
 .second_percent_box {
     display : flex;
     flex-direction: row;
-    justify-content: space-around;
-    margin: auto 20px;
+    justify-content: space-between;
+    margin: auto 50px;
 }
 
 .product_title {

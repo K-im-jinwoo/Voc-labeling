@@ -1,7 +1,6 @@
 .subject {
   display: inline-block;
   margin-right: 10px
-  
 }
 
 select {
@@ -218,6 +217,11 @@ margin-right: 0;
 .ratio1_text{
 margin-bottom: 15px;
 
+}
+
+/* 클릭한 데이터 색칠 */
+.highlight {
+  background-color: yellow; 
 }
 
 

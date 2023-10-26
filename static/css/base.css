@@ -136,7 +136,7 @@ li>img{
 .content-title {
   display: inline-block;
   width: 500px;
-  margin: 40px 0 30px 61px;
+  margin: 31px 0 36px 61px;
 }
 
 .first-desc {
@@ -226,5 +226,5 @@ color : white; /* hover 시 색상 */
   width: 200px;
   height: 42px;
   background-color: #F2F2F2;
-  margin: auto;
+  margin: 135px auto 0;
 }

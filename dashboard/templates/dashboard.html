@@ -1,7 +1,14 @@
 {% extends 'base.html' %} {% load static %} {% block style %}
 <link rel="stylesheet" href="{% static '../static/dashboard/css/dashboard.css' %}?after" />
-{% endblock %} {% block content-title %}
-{% endblock %} {% block content %}
+{% endblock %} 
+
+{% block content-title %}
+<h2 class="content-title fs-large fw-title gray-200">
+  DashBoard
+</h2>
+{% endblock %} 
+
+{% block content %}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
@@ -26,7 +33,7 @@ const arr = JSON.parse(str);
 console.log(arr);  // [1, 2, 3, 4, 5]
 
 </script>
-  <div class="first-desc-wrap">
+  <div class="first-desc-wrap" style="padding: 0 45px 22px;">
     <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
       <p class="subject fw-400 fs-base">제품 선택</p>
@@ -486,6 +493,8 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           (root)
       
       var maxLength = 10; 
+
+      //token
       // use this information to add rectangles:
       svg
         .selectAll("rect")
@@ -499,9 +508,31 @@ console.log(arr);  // [1, 2, 3, 4, 5]
           .style("stroke", "black")
           .style("fill", "#69b3a2")
           .on("click", function (d) {
-            console.log(d.srcElement.__data__.data.name);
-        
             var clickedName = d.srcElement.__data__.data.name;
+            $(".rawdata_item").removeClass("highlight");
+
+            $.ajax({
+              url: '/dashboard/', // 해당 엔드포인트에 Django 뷰를 연결하세요.
+              method: 'POST', // POST 요청을 사용하거나 GET을 사용할 수 있습니다.
+              data: { treemap_name: clickedName },
+              success: function (response) {
+                console.log(response.selected_reviews); // 선택된 리뷰 목록 출력
+
+                response.selected_reviews.forEach(function (selectedReview) {
+                  var selectedReviewText = selectedReview.trim(); // 선택된 리뷰의 공백을 제거하여 정확한 비교를 위해
+
+                  $(".rawdata_item").each(function () {
+                      var reviewText = $(this).text().trim(); // 리뷰 데이터의 공백을 제거하여 정확한 비교를 위해
+                      if (reviewText === selectedReviewText) {
+                          $(this).addClass("highlight"); // 색칠 클래스 추가
+                      }
+                  });
+                });
+              },
+              error: function (error) {
+                console.error(error);
+              }
+            });
           });
         
           

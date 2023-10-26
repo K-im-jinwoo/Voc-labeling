@@ -68,6 +68,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "mainapp.context_processors.add_target_user",
             ],
         },
     },
@@ -153,3 +154,6 @@ STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 SCHEDULER_DEFAULT = True
+
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000

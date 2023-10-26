@@ -30,13 +30,22 @@
             Review Labeling
           </a>
         </h1>
-        <a href="{% url 'mainapp:account' user.pk %}" class="mypage-img">
-          <img src="{% static 'images/setting.svg' %}" alt="Mypage" >
-      </a>
-        <strong class="user-profile-name">
-          <div id="my_profile" class="my_profile" >{{ user.username }}</div>
+        
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction:column">
+          <!-- Add a right margin to the settings icon -->
+          <a href="{% url 'mainapp:account' user.pk %}" class="mypage-img" style="margin-left: 70%;">
+            <img src="{% static 'images/setting.svg' %}" alt="Mypage" >
+          </a>
           
-      </strong>
+          {% if target_user.profile %}
+          <img src="{{ target_user.profile.image.url }}" alt="" style="width: 128px; border-radius: 8rem; margin-bottom : 13px" />
+          {% else %}
+            <img src="{% static 'mainapp/image/defaultProfile.svg' %}" alt="Person" style="margin-bottom:13px">
+          {% endif %}
+        </div>
+        <strong class="user-profile-name">
+          <div id="my_profile" class="my_profile" >{{ user.username }}</div> 
+        </strong>
 
         <ul class="fw-400 fs-small">
           <li class="menu-pd">
@@ -70,7 +79,7 @@
               </svg>
               
             <a href="{% url 'dashboard:dashboard' %}" class="menu-link" onclick={statusls()}>
-              Dash Board</a>
+              DashBoard</a>
           </li>
           <li class="menu-pd">
             <svg class="download-img"width="12" height="12" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -95,7 +104,7 @@
         
       {% else %}
       <div class="user-profile-login fw-600 fs-medium loginplease">
-        <a style="color:#585757;" href="{% url 'mainapp:login' %}?next={{ request.path }}">로그인 해주세요</a>
+        <a style="color:#585757;" href="{% url 'mainapp:login' %}?next={{ request.path }}">로그인</a>
       </div>
       <ul class="fw-400 fs-small">
         <li class="menu-pd">
@@ -129,7 +138,7 @@
 </svg>
 
           <a href="{% url 'mainapp:login' %}?next={{ request.path }}" onclick={statusls()}>
-            Dash Board</a>
+            DashBoard</a>
         </li>
        
         <li class="menu-pd">

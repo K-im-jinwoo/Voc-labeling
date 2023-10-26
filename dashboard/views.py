@@ -8,9 +8,11 @@ from django.http import JsonResponse  # 상단에 추가해 주세요
 
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseBadRequest
 from mainapp.models import Category, Review, FirstLabeledData
 import json
+
+from django.views.decorators.csrf import csrf_exempt
 
 
 # def dashboard_check(request):
@@ -62,7 +64,7 @@ def sorting(sort, category_detail_list, positive, negative, neutral, everything)
                 everything[i], everything[j] = everything[j], everything[i]
                 standard[i], standard[j] = standard[j], standard[i]
 
-
+@csrf_exempt
 def dashboard(request):
     try:
         if "category_model_code" in request.GET:
@@ -810,25 +812,6 @@ def dashboard(request):
                 .filter(q)
                 .values("category_id")
             )
-            select_categoryname = (
-                Category.objects.filter(category_product=cp)
-                .filter(q)
-                .values("category_product")
-            )
-            
-            clicked_name = request.GET.get('clickedName', '')
-            print(clicked_name,"클릭했어요")
-            # 클릭한 데이터 처리 또는 렌더링된 템플릿에 데이터 전달
-            context = {'clicked_name': clicked_name}
-
-
-            select_namereviews = list(
-                Review.objects.filter(category_product=cp)
-                .filter(category_product__in=select_categoryname)
-                .values_list("review_content", flat=True)
-            )
-            print(select_namereviews,"sdasdwqw2")
-
             # 선택한 카테고리의 리뷰 id
             select_ids = FirstLabeledData.objects.filter(
                 category_id__in=select_categorys
@@ -1029,6 +1012,28 @@ def dashboard(request):
                 Category.objects.all().values("category_product").distinct()
             )
             context["checked_data"] = checked_data
+
+            #트리맵 클릭한 제품명 ajax로 가져오기 
+            treemap_name = request.POST.get('treemap_name')
+            
+            print("treemap name:", treemap_name)
+            if treemap_name:
+                category = Category.objects.get(category_middle=treemap_name)
+                
+                first_labeled_data_list = FirstLabeledData.objects.filter(category_id=category)
+                
+                review_list = Review.objects.filter(review_id__in=first_labeled_data_list.values("review_id"))
+                review_contents = []
+
+                for review in review_list:
+                    review_contents.append(review.review_content)
+
+                response_data = {
+                    'selected_reviews': review_contents,
+                }
+
+                return JsonResponse(response_data)
+
             return render(request, "dashboard.html", context=context)
 
         else:
