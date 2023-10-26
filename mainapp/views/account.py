@@ -105,7 +105,6 @@ def information(request):
 
 def main_page(request):
     context = dict()
-
     # 제품별 모델개수
     product_names = Review.objects.values('category_product').distinct()
     product_model_counts = []
@@ -139,6 +138,8 @@ def main_page(request):
         
     sorted_result_list= sorted(result_list, key=lambda x: x['category_product'])
     context['result'] = sorted_result_list[:5]
+
+
 
     # 메인 첫번째
     temp_user = User.objects.all()
