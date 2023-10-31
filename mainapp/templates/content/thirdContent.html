@@ -17,16 +17,17 @@
         <div class="worker_container">
             <div class="worker_container_wrap">        
                 <img src="{% static 'mainapp/image/profile.svg' %}" alt="Person" style="">
-              
                 <div class="fs-tiny fw-medium worker_content">
                     <p>Name : {{ name }}</p>
                     <p>Team : H&M</p>
                     <p>갯수 : {{ count }} / {{review_count}} </p>
                 </div>
-                    <canvas id="myChart{{ forloop.counter }}" data-user-count="{{ count }}" data-review-count="{{ review_count }}" style="position: absolute; right:0px; width:61px; height:61px;"></canvas>
-                    <div class="centered-content">
-                      <div class="ratio fw-regular fs-tiny">{{ ratio }}</div>
-                    </div>
+                <div class="canvas-wrap">
+                  <canvas id="myChart{{ forloop.counter }}" data-user-count="{{ count }}" data-review-count="{{ review_count }}" style="width:61px; height:61px;"></canvas>
+                </div>
+                <div class="centered-content">
+                  <div class="ratio fw-regular fs-tiny">{{ ratio }}</div>
+                </div>
             </div>
         </div>
         {% endfor %}
