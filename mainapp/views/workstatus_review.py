@@ -300,7 +300,7 @@ def workstatus_review(request):
             everything = []
             order = []
             i = 0
-            print(positive)
+
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
                 positive_temp = FirstLabeledData.objects.filter(
