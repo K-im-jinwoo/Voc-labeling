@@ -235,13 +235,13 @@ def main_page(request):
     # 메인 세번째
     user_name = []
     user_result_count = []
-    user_ratio = int((total_review_count_by_users / review_count) * 100)
     user_ratios = []
 
     for user in users_with_review_counts:
         user_name.append(user.username)
         user_result_count.append(user.review_count)
-        user_ratios.append(user_ratio)
+        user_ratio_percentage = int((user.review_count / review_count) * 100)
+        user_ratios.append(user_ratio_percentage)
         result = zip(user_name, user_result_count, user_ratios)
 
     result = sorted(result, key=lambda x: x[1], reverse=True)
