@@ -17,6 +17,7 @@
 
 .worker_container{
     display: flex;
+    flex: 0 0 calc(33.3333% - 10px);
     justify-content: center;
     align-items: center;
     width: 366px;
