@@ -1,7 +1,14 @@
 {% extends 'base.html' %} {% load static %} {% block style %}
 <link rel="stylesheet" href="{% static '../static/dashboard/css/dashboard.css' %}?after" />
-{% endblock %} {% block content-title %}
-{% endblock %} {% block content %}
+{% endblock %} 
+
+{% block content-title %}
+<h2 class="content-title fs-large fw-title gray-200">
+  DashBoard
+</h2>
+{% endblock %} 
+
+{% block content %}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
@@ -26,7 +33,7 @@ const arr = JSON.parse(str);
 console.log(arr);  // [1, 2, 3, 4, 5]
 
 </script>
-  <div class="first-desc-wrap">
+  <div class="first-desc-wrap" style="padding: 0 45px 22px;">
     <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
       <p class="subject fw-400 fs-base">제품 선택</p>

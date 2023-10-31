@@ -79,7 +79,7 @@
               </svg>
               
             <a href="{% url 'dashboard:dashboard' %}" class="menu-link" onclick={statusls()}>
-              Dash Board</a>
+              DashBoard</a>
           </li>
           <li class="menu-pd">
             <svg class="download-img"width="12" height="12" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -104,7 +104,7 @@
         
       {% else %}
       <div class="user-profile-login fw-600 fs-medium loginplease">
-        <a style="color:#585757;" href="{% url 'mainapp:login' %}?next={{ request.path }}">로그인 해주세요</a>
+        <a style="color:#585757;" href="{% url 'mainapp:login' %}?next={{ request.path }}">로그인</a>
       </div>
       <ul class="fw-400 fs-small">
         <li class="menu-pd">
@@ -138,7 +138,7 @@
 </svg>
 
           <a href="{% url 'mainapp:login' %}?next={{ request.path }}" onclick={statusls()}>
-            Dash Board</a>
+            DashBoard</a>
         </li>
        
         <li class="menu-pd">
