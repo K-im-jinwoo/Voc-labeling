@@ -8,6 +8,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.urls import reverse_lazy
@@ -23,8 +25,19 @@ SECRET_KEY = "django-insecure-@k_q+^!nv4o=shg%0$-j-=8=cn2eqm+i6nk+6vzc%9hg3zlk9r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+sentry_sdk.init(
+    dsn="https://5d4cbbcff09656fd1ea28d4a74829561@o4506148641439744.ingest.sentry.io/4506148641505280",
+    integrations=[DjangoIntegration()],
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production,
+    traces_sample_rate=1.0,
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True,
+)
 # Application definition
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["http://43.200.38.56/"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
