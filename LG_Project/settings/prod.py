@@ -7,7 +7,7 @@ STATIC_ROOT = BASE_DIR / "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-DEBUG = False
+DEBUG = True
 
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")

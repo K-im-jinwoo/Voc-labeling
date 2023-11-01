@@ -7,6 +7,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+import sentry_sdk
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,11 +22,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = "django-insecure-@k_q+^!nv4o=shg%0$-j-=8=cn2eqm+i6nk+6vzc%9hg3zlk9r"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
-ALLOWED_HOSTS = ["*"]
-
+ALLOWED_HOSTS = ["http://43.200.38.56/"]
+sentry_sdk.init(
+    dsn="https://5d4cbbcff09656fd1ea28d4a74829561@o4506148641439744.ingest.sentry.io/4506148641505280",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
