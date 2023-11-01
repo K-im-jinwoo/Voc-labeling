@@ -227,21 +227,22 @@ def main_page(request):
     total_review_count_by_users = 0  # 아이디당 리뷰 수 총 합
     for user in users_with_review_counts:
         total_review_count_by_users += user.review_count
-
+        
+    user_ratio = int((total_review_count_by_users / review_count) * 100)
     context["review_ratio"] = round(
-        total_review_count_by_users / review_count, 1
+        (total_review_count_by_users / review_count) * 100, 1
     )  # 아이디당 리뷰 수 총합 / 총리뷰수
 
     # 메인 세번째
     user_name = []
     user_result_count = []
-    user_ratio = int((total_review_count_by_users / review_count) * 100)
     user_ratios = []
 
     for user in users_with_review_counts:
         user_name.append(user.username)
         user_result_count.append(user.review_count)
-        user_ratios.append(user_ratio)
+        user_ratio_percentage = int((user.review_count / review_count) * 100)
+        user_ratios.append(user_ratio_percentage)
         result = zip(user_name, user_result_count, user_ratios)
 
     result = sorted(result, key=lambda x: x[1], reverse=True)
