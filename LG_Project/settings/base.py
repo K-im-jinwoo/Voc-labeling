@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-@k_q+^!nv4o=shg%0$-j-=8=cn2eqm+i6nk+6vzc%9hg3zlk9r
 DEBUG = False
 
 # Application definition
-ALLOWED_HOSTS = ["http://43.200.38.56/"]
+ALLOWED_HOSTS = ["*"]
 sentry_sdk.init(
     dsn="https://5d4cbbcff09656fd1ea28d4a74829561@o4506148641439744.ingest.sentry.io/4506148641505280",
     # Set traces_sample_rate to 1.0 to capture 100%
