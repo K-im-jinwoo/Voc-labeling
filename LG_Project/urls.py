@@ -20,10 +20,6 @@ from django.urls import path, include
 from django_pydenticon.views import image as pydenticon_image
 
 
-def trigger_error(request):
-    division_by_zero = 1 / 0
-
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("mainapp.url")),
@@ -32,5 +28,4 @@ urlpatterns = [
     path("labeling/", include("labelingapp.url")),
     path("dashboard/", include("dashboard.urls.dashboard")),
     path("output/", include("outputapp.urls")),
-    path("sentry-debug/", trigger_error),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
