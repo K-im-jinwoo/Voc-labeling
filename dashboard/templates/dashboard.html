@@ -418,7 +418,8 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
         <div class="frequency_box fs-small fw-400"  height="350px">  
-          <div id="treemap" style="width:1000px;height:350px;"></div>
+          <div id="treemapPositive" style="width:1000px;height:170px;"></div>
+          <div id="treemapNegative" style="width:1000px;height:170px;"></div>
         </div>
       </div>
     </div>
@@ -454,13 +455,20 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       width = 1000 - margin.left - margin.right,
       height = 350 - margin.top - margin.bottom;
 
-      var svg = d3.select("#treemap")
+      var svgPositive = d3.select("#treemapPositive")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      // 부정 트리맵을 위한 SVG 생성
+      var svgNegative = d3.select("#treemapNegative")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       var aggregatedDataPositive = {};
       var aggregatedDataNegative = {};
       for (var i=0; i<category_detail_list.length; i++) {
@@ -468,30 +476,42 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         aggregatedDataNegative[category_detail_list[i]] = results_negative[i];
       }
 
-      var dataPositive = [
-        { name: "OriginPositive", parent: "", value: "" },
-        ...Object.entries(aggregatedDataPositive).map(([name,value]) => ({
-            name,
-            parent: "OriginPositive",
-            value,
-        })),
-      ];
+          var dataPositive = [
+      { name: "OriginPositive", parent: "", value: "" },
+      ...Object.entries(aggregatedDataPositive).filter(([,value]) => value != 0).map(([name,value]) => ({
+          name,
+          parent: "OriginPositive",
+          value,
+      })),
+    ];
 
-      var dataNegative = [
-        { name: "OriginNegative", parent: "", value: "" },
-        ...Object.entries(aggregatedDataNegative).map(([name,value]) => ({
-            name,
-            parent: "OriginNegative",
-            value,
-        })),
-      ];
+    var dataNegative = [
+      { name: "OriginNegative", parent: "", value: "" },
+      ...Object.entries(aggregatedDataNegative).filter(([,value]) => value != 0).map(([name,value]) => ({
+          name,
+          parent: "OriginNegative",
+          value,
+      })),
+    ];
+      
+      // 긍정 트리맵 생성
+      var treemapPositive = d3.treemap()
+      .size([width, height/2])
+      .padding(4);
+
+      // 부정 트리맵 생성
+      var treemapNegative = d3.treemap()
+      .size([width, height/2])
+      .padding(4);
 
       var rootPositive = d3.stratify()
       .id(function(d) { return d.name; })   
       .parentId(function(d) { return d.parent; })   
       (dataPositive);
-      rootPositive.sum(function(d) { return +d.value })   
-
+      rootPositive.sum(function(d) { return +d.value })  
+      
+      
+      
       d3.treemap()
       .size([width, height/2])  // height를 2로 나누어 긍정과 부정 트리맵을 위아래로 배치
       .padding(4)
@@ -511,8 +531,15 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       var maxLength = 10; 
       var top6Positive = rootPositive.leaves().slice(0, 6);
       var top6Negative = rootNegative.leaves().slice(0, 6);
-      
-      svg
+      var colorScalePositive = d3.scaleOrdinal()
+    .domain(top6Positive.map(function(d) { return d.data.name; }))
+    .range(d3.schemeCategory10);
+
+  var colorScaleNegative = d3.scaleOrdinal()
+    .domain(top6Negative.map(function(d) { return d.data.name; }))
+    .range(d3.schemeCategory10);
+      treemapPositive(rootPositive);
+      svgPositive.selectAll(".rectPositive")
       .data(top6Positive)
       .enter()
       .append("rect")
@@ -521,7 +548,9 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       .attr('width', function (d) { return d.x1 - d.x0; })
       .attr('height', function (d) { return d.y1 - d.y0; })
       .style("stroke", "black")
-      .style("fill", function (d, i) { return colorPalette(i); })
+      .style("fill", function (d) {
+        return colorScalePositive(d.data.name);
+      })
       .on("click", function (d) {
         var clickedName = d.srcElement.__data__.data.name;
         $(".rawdata_item").removeClass("highlight");
@@ -550,7 +579,8 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         });
       });
 
-      svg
+      treemapNegative(rootNegative);
+      svgNegative.selectAll(".rectNegative")
       .data(top6Negative)
       .enter()
       .append("rect")
@@ -559,7 +589,9 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       .attr('width', function (d) { return d.x1 - d.x0; })
       .attr('height', function (d) { return d.y1 - d.y0; })
       .style("stroke", "black")
-      .style("fill", function (d, i) { return colorPalette(i); })
+      .style("fill", function (d) {
+        return colorScaleNegative(d.data.name);
+      })
       .on("click", function (d) {
         var clickedName = d.srcElement.__data__.data.name;
         $(".rawdata_item").removeClass("highlight");
@@ -588,8 +620,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         });
       });
 
-      svg
-      .selectAll("textPositive")
+      svgPositive.selectAll("textPositive")
       .data(rootPositive.leaves())
       .enter()
       .append("text")
@@ -612,8 +643,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
 
-      svg
-      .selectAll("textNegative")
+      svgNegative.selectAll("textNegative")
       .data(rootNegative.leaves())
       .enter()
       .append("text")
@@ -621,7 +651,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x0 + 5;
       })
       .attr("y", function (d) {
-        return d.y0 + 15 + height/2;  // y 위치를 height/2만큼 아래로 이동
+        return d.y0 + 15;  // y 위치를 아래로 이동하지 않음
       })
       .text(function (d) {
         var text = d.data.name;
