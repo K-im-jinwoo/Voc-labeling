@@ -169,69 +169,98 @@ def labeling_work(request):
                         first_labeled_data.save()
 
                     wpp = '/labeling/work/?' + 'category_product=' + category_product
-                    print("경로", wpp)
                     return HttpResponseRedirect(wpp)
 
                 # Next 버튼을 눌렀을 때
                 if request.method == "GET" and request.GET.get("form-type") == 'NextForm':
-                    #####---- 리뷰 상태 변경 ----####
                     review_id = request.GET.get('review_id')
-                    Review.objects.filter(pk=review_id).update(first_status=True, labeled_user_id=request.user)
+                    review = Review.objects.get(pk=review_id)
+
+                    # 리뷰 상태 변경
+                    review.first_status = True
+                    review.labeled_user_id = request.user
+                    review.save()
+
                     review_first = print_review(category_product, request)
 
-                    ######---- 자동 라벨링 ----#####
-                    # 자동라벨링 - 저장
                     if ('auto_labeling_status' in request.session and request.session['auto_labeling_status'] !=
                             review_first[0].review_id):
                         current_review = review_first[0].review_content
-                        compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
-                        auto_data_id = []
+
+                        # 자동 라벨링 - 데이터 필터링 및 중복 제거
+                        compare_data = FirstLabeledData.objects.filter(
+                            review_id__category_product=category_product,
+                            first_labeled_target__isnull=False,
+                            first_labeled_expression__isnull=False
+                        )
+
+                        auto_data_id = set()
+
                         for i in compare_data:
-                            if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
-                                    i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
-                                if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
-                                        'first_labeled_target', flat=True):
-                                    if i.first_labeled_expression not in compare_data.filter(
-                                            pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
-                                        auto_data_id.append(i.pk)
+                            if (
+                                current_review.__contains__(i.first_labeled_target)
+                                and current_review.__contains__(i.first_labeled_expression)
+                            ):
+                                auto_data_id.add(i.pk)
+
                         auto_data = compare_data.filter(pk__in=auto_data_id)
+
+                        auto_data_list = []
+
                         for data in auto_data:
-                            print('current auto labeling 지금 실행됨')
-                            auto = FirstLabeledData()
-                            auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
-                            auto.first_labeled_target = data.first_labeled_target  # 대상 저장
-                            auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
-                            auto.review_id = Review.objects.get(pk=review_first[0].pk)
-                            auto.category_id = data.category_id
-                            auto.model_name = Review.objects.get(pk=review_first[0].pk).model_name
-                            auto.model_code = Review.objects.get(pk=review_first[0].pk).model_code
-                            auto.save()
+                            auto_data_list.append(
+                                FirstLabeledData(
+                                    first_labeled_emotion=data.first_labeled_emotion,
+                                    first_labeled_target=data.first_labeled_target,
+                                    first_labeled_expression=data.first_labeled_expression,
+                                    review_id=review,
+                                    category_id=data.category_id,
+                                    model_name=review.model_name,
+                                    model_code=review.model_code,
+                                )
+                            )
+
+                        FirstLabeledData.objects.bulk_create(auto_data_list)
                         request.session['auto_labeling_status'] = review_first[0].review_id
                     elif 'auto_labeling_status' not in request.session:
                         current_review = review_first[0].review_content
-                        compare_data = FirstLabeledData.objects.filter(review_id__category_product=category_product)
-                        auto_data_id = []
+
+                        # 자동 라벨링 - 데이터 필터링 및 중복 제거
+                        compare_data = FirstLabeledData.objects.filter(
+                            review_id__category_product=category_product,
+                            first_labeled_target__isnull=False,
+                            first_labeled_expression__isnull=False
+                        )
+
+                        auto_data_id = set()
+
                         for i in compare_data:
-                            if current_review.__contains__(i.first_labeled_target) and current_review.__contains__(
-                                    i.first_labeled_expression) and i.first_labeled_target != '' and i.first_labeled_expression != '':
-                                if i.first_labeled_target not in compare_data.filter(pk__in=auto_data_id).values_list(
-                                        'first_labeled_target', flat=True):
-                                    if i.first_labeled_expression not in compare_data.filter(
-                                            pk__in=auto_data_id).values_list('first_labeled_expression', flat=True):
-                                        auto_data_id.append(i.pk)
+                            if (
+                                current_review.__contains__(i.first_labeled_target)
+                                and current_review.__contains__(i.first_labeled_expression)
+                            ):
+                                auto_data_id.add(i.pk)
+
                         auto_data = compare_data.filter(pk__in=auto_data_id)
+
+                        auto_data_list = []
+
                         for data in auto_data:
-                            print('current auto labeling 지금 실행됨')
-                            auto = FirstLabeledData()
-                            auto.first_labeled_emotion = data.first_labeled_emotion  # 긍정 ,부정, 중립 저장
-                            auto.first_labeled_target = data.first_labeled_target  # 대상 저장
-                            auto.first_labeled_expression = data.first_labeled_expression  # 현상 저장
-                            auto.review_id = Review.objects.get(pk=review_first[0].pk)
-                            auto.category_id = data.category_id
-                            auto.model_name = Review.objects.get(pk=review_first[0].pk).model_name
-                            auto.model_code = Review.objects.get(pk=review_first[0].pk).model_code
-                            auto.save()
+                            auto_data_list.append(
+                                FirstLabeledData(
+                                    first_labeled_emotion=data.first_labeled_emotion,
+                                    first_labeled_target=data.first_labeled_target,
+                                    first_labeled_expression=data.first_labeled_expression,
+                                    review_id=review,
+                                    category_id=data.category_id,
+                                    model_name=review.model_name,
+                                    model_code=review.model_code,
+                                )
+                            )
+
+                        FirstLabeledData.objects.bulk_create(auto_data_list)
                         request.session['auto_labeling_status'] = review_first[0].review_id
+
                     status_result = FirstLabeledData.objects.filter(review_id=review_first[0].pk)
 
                     context['category_detail'] = category_detail
@@ -241,7 +270,6 @@ def labeling_work(request):
 
                 return render(request, 'labelingapp/labeling_work.html', context)
 
-            return render(request, 'labelingapp/labeling_work.html')
 
         else:
             context = dict()
