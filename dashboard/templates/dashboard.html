@@ -447,14 +447,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       const results_neutral = {{ results_neutral|safe }};
       const expression_list = {{select_expression|safe}}
       
-      function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
+     
     var colorPalette = d3.scaleOrdinal(d3.schemeCategory10);
 
       var margin = {top: 10, right: 10, bottom: 10, left: 20},
@@ -516,10 +509,11 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       (rootNegative)
 
       var maxLength = 10; 
-
+      var top6Positive = rootPositive.leaves().slice(0, 6);
+      var top6Negative = rootNegative.leaves().slice(0, 6);
+      
       svg
-      .selectAll(".rectPositive") // 수정된 부분: ".rectPositive"로 변경
-      .data(rootPositive.leaves())
+      .data(top6Positive)
       .enter()
       .append("rect")
       .attr('x', function (d) { return d.x0; })
@@ -557,12 +551,11 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       });
 
       svg
-      .selectAll("rectNegative")
-      .data(rootNegative.leaves())
+      .data(top6Negative)
       .enter()
       .append("rect")
       .attr('x', function (d) { return d.x0; })
-      .attr('y', function (d) { return d.y0 + height/2; })
+      .attr('y', function (d) { return d.y0; })
       .attr('width', function (d) { return d.x1 - d.x0; })
       .attr('height', function (d) { return d.y1 - d.y0; })
       .style("stroke", "black")
