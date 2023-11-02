@@ -442,138 +442,207 @@ console.log(arr);  // [1, 2, 3, 4, 5]
     
     <script>
       const category_detail_list = {{ category_detail_list|safe }};
-      
       const results_positive = {{ results_positive|safe }};
       const results_negative = {{ results_negative|safe }};
       const results_neutral = {{ results_neutral|safe }};
-      // treemap
       const expression_list = {{select_expression|safe}}
       
+      function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    var colorPalette = d3.scaleOrdinal(d3.schemeCategory10);
+
       var margin = {top: 10, right: 10, bottom: 10, left: 20},
       width = 1000 - margin.left - margin.right,
       height = 350 - margin.top - margin.bottom;
-    
-      // append the svg object to the body of the page
+
       var svg = d3.select("#treemap")
       .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
       .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
-      
-      
-      var aggregatedData = {};
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var aggregatedDataPositive = {};
+      var aggregatedDataNegative = {};
       for (var i=0; i<category_detail_list.length; i++) {
-          var total_count = results_positive[i] + results_negative[i] + results_neutral[i];
-          aggregatedData[category_detail_list[i]] = total_count;
+        aggregatedDataPositive[category_detail_list[i]] = results_positive[i];
+        aggregatedDataNegative[category_detail_list[i]] = results_negative[i];
       }
-      
-      // Prepare the data for treemap
-      var data1 = [
-          { name: "Origin", parent: "", value: "" },
-          ...Object.entries(aggregatedData).map(([name,value]) => ({
-              name,
-              parent: "Origin",
-              value,
-            })),
+
+      var dataPositive = [
+        { name: "OriginPositive", parent: "", value: "" },
+        ...Object.entries(aggregatedDataPositive).map(([name,value]) => ({
+            name,
+            parent: "OriginPositive",
+            value,
+        })),
       ];
-      
-      var root = d3.stratify()
-          .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
-          .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
-          (data1);
-        root.sum(function(d) { return +d.value })   // Compute the numeric value for each entity
-      
-        // Then d3.treemap computes the position of each element of the hierarchy
-        // The coordinates are added to the root object above
-        d3.treemap()
-          .size([width, height])
-          .padding(4)
-          (root)
-      
+
+      var dataNegative = [
+        { name: "OriginNegative", parent: "", value: "" },
+        ...Object.entries(aggregatedDataNegative).map(([name,value]) => ({
+            name,
+            parent: "OriginNegative",
+            value,
+        })),
+      ];
+
+      var rootPositive = d3.stratify()
+      .id(function(d) { return d.name; })   
+      .parentId(function(d) { return d.parent; })   
+      (dataPositive);
+      rootPositive.sum(function(d) { return +d.value })   
+
+      d3.treemap()
+      .size([width, height/2])  // height를 2로 나누어 긍정과 부정 트리맵을 위아래로 배치
+      .padding(4)
+      (rootPositive)
+
+      var rootNegative = d3.stratify()
+      .id(function(d) { return d.name; })   
+      .parentId(function(d) { return d.parent; })   
+      (dataNegative);
+      rootNegative.sum(function(d) { return +d.value })   
+
+      d3.treemap()
+      .size([width, height/2])  // height를 2로 나누어 긍정과 부정 트리맵을 위아래로 배치
+      .padding(4)
+      (rootNegative)
+
       var maxLength = 10; 
 
-      //token
-      // use this information to add rectangles:
       svg
-        .selectAll("rect")
-        .data(root.leaves())
-        .enter()
-        .append("rect")
-          .attr('x', function (d) { return d.x0; })
-          .attr('y', function (d) { return d.y0; })
-          .attr('width', function (d) { return d.x1 - d.x0; })
-          .attr('height', function (d) { return d.y1 - d.y0; })
-          .style("stroke", "black")
-          .style("fill", "#69b3a2")
-          .on("click", function (d) {
-            var clickedName = d.srcElement.__data__.data.name;
-            $(".rawdata_item").removeClass("highlight");
+      .selectAll(".rectPositive") // 수정된 부분: ".rectPositive"로 변경
+      .data(rootPositive.leaves())
+      .enter()
+      .append("rect")
+      .attr('x', function (d) { return d.x0; })
+      .attr('y', function (d) { return d.y0; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
+      .attr('height', function (d) { return d.y1 - d.y0; })
+      .style("stroke", "black")
+      .style("fill", function (d, i) { return colorPalette(i); })
+      .on("click", function (d) {
+        var clickedName = d.srcElement.__data__.data.name;
+        $(".rawdata_item").removeClass("highlight");
 
-            $.ajax({
-              url: '/dashboard/', // 해당 엔드포인트에 Django 뷰를 연결하세요.
-              method: 'POST', // POST 요청을 사용하거나 GET을 사용할 수 있습니다.
-              data: { treemap_name: clickedName },
-              success: function (response) {
-                console.log(response.selected_reviews); // 선택된 리뷰 목록 출력
+        $.ajax({
+          url: '/dashboard/',
+          method: 'POST',
+          data: { treemap_name: clickedName },
+          success: function (response) {
+            console.log(response.selected_reviews);
 
-                response.selected_reviews.forEach(function (selectedReview) {
-                  var selectedReviewText = selectedReview.trim(); // 선택된 리뷰의 공백을 제거하여 정확한 비교를 위해
+            response.selected_reviews.forEach(function (selectedReview) {
+              var selectedReviewText = selectedReview.trim();
 
-                  $(".rawdata_item").each(function () {
-                      var reviewText = $(this).text().trim(); // 리뷰 데이터의 공백을 제거하여 정확한 비교를 위해
-                      if (reviewText === selectedReviewText) {
-                          $(this).addClass("highlight"); // 색칠 클래스 추가
-                      }
-                  });
-                });
-              },
-              error: function (error) {
-                console.error(error);
-              }
+              $(".rawdata_item").each(function () {
+                  var reviewText = $(this).text().trim();
+                  if (reviewText === selectedReviewText) {
+                      $(this).addClass("highlight");
+                  }
+              });
             });
-          });
-        
-          
-    
-      // and to add the text labels
-      svg
-        .selectAll("text")
-        .data(root.leaves())
-        .enter()
-        .append("text")
-        .attr("x", function (d) {
-          return d.x0 + 5; // adjust padding here
-        })
-        .attr("y", function (d) {
-          return d.y0 + 15; // adjust padding here
-        })
-        .text(function (d) {
-          var text = d.data.name;
-          if(text.length > maxLength) { 
-            text = text.substring(0,maxLength)+"..."; 
+          },
+          error: function (error) {
+            console.error(error);
           }
-          return text;
-        })
-      .attr("font-size", "10px") // adjust font size here 
+        });
+      });
+
+      svg
+      .selectAll("rectNegative")
+      .data(rootNegative.leaves())
+      .enter()
+      .append("rect")
+      .attr('x', function (d) { return d.x0; })
+      .attr('y', function (d) { return d.y0 + height/2; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
+      .attr('height', function (d) { return d.y1 - d.y0; })
+      .style("stroke", "black")
+      .style("fill", function (d, i) { return colorPalette(i); })
+      .on("click", function (d) {
+        var clickedName = d.srcElement.__data__.data.name;
+        $(".rawdata_item").removeClass("highlight");
+
+        $.ajax({
+          url: '/dashboard/',
+          method: 'POST',
+          data: { treemap_name: clickedName },
+          success: function (response) {
+            console.log(response.selected_reviews);
+
+            response.selected_reviews.forEach(function (selectedReview) {
+              var selectedReviewText = selectedReview.trim();
+
+              $(".rawdata_item").each(function () {
+                  var reviewText = $(this).text().trim();
+                  if (reviewText === selectedReviewText) {
+                      $(this).addClass("highlight");
+                  }
+              });
+            });
+          },
+          error: function (error) {
+            console.error(error);
+          }
+        });
+      });
+
+      svg
+      .selectAll("textPositive")
+      .data(rootPositive.leaves())
+      .enter()
+      .append("text")
+      .attr("x", function (d) {
+        return d.x0 + 5;
+      })
+      .attr("y", function (d) {
+        return d.y0 + 15;
+      })
+      .text(function (d) {
+        var text = d.data.name;
+        if(text.length > maxLength) { 
+          text = text.substring(0,maxLength)+"..."; 
+        }
+        return text;
+      })
+      .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
-        
-      // 선택: 모든 레이블 텍스트 요소 선택
-      var textLabels = svg.selectAll("text");
 
-      // 데이터 바인딩: 선택한 요소에 데이터 바인딩
-      var textData = textLabels.data();
-
-      // 데이터 출력: 콘솔에 레이블 텍스트 출력
-      textData.forEach(function (d) {
-        if (d.data.value >= 1) {
-          console.log(d.data.name); // 레이블 텍스트
-        }      
+      svg
+      .selectAll("textNegative")
+      .data(rootNegative.leaves())
+      .enter()
+      .append("text")
+      .attr("x", function (d) {
+        return d.x0 + 5;
+      })
+      .attr("y", function (d) {
+        return d.y0 + 15 + height/2;  // y 위치를 height/2만큼 아래로 이동
+      })
+      .text(function (d) {
+        var text = d.data.name;
+        if(text.length > maxLength) { 
+          text = text.substring(0,maxLength)+"..."; 
+        }
+        return text;
+      })
+      .attr("font-size", "10px")
+      .attr("fill", "white")
+      .style('display', function(d){
+        return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
+      
 
 
       //  누적막대그래프
