@@ -701,7 +701,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
-        return d.x1 - d.x0 > 35 && d.y1 - d.y0 > 15 ? 'block' : 'none';
+        return Math.min(d.x1 - d.x0, d.y1 - d.y0) > 30 ? 'block' : 'none';
       });
 
     svgNegative.selectAll("textNegative")
@@ -724,7 +724,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
-        return d.x1 - d.x0 > 35 && d.y1 - d.y0 > 15 ? 'block' : 'none';
+        return Math.min(d.x1 - d.x0, d.y1 - d.y0) > 30 ? 'block' : 'none';
       });
 
       //  누적막대그래프
