@@ -693,8 +693,8 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       })
       .text(function (d) {
         var text = d.data.name;
-        if(text.length > maxLength) { 
-          text = text.substring(0,maxLength)+"..."; 
+        if (text.length > maxLength) { 
+          text = text.substring(0, maxLength) + "..."; 
         }
         return text;
       })
@@ -704,7 +704,7 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
 
-      svgNegative.selectAll("textNegative")
+    svgNegative.selectAll("textNegative")
       .data(rootNegative.leaves())
       .enter()
       .append("text")
@@ -712,22 +712,20 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x0 + 5;
       })
       .attr("y", function (d) {
-        return d.y0 + 15;  // y 위치를 아래로 이동하지 않음
+        return d.y0 + 15;
       })
       .text(function (d) {
         var text = d.data.name;
-        if(text.length > maxLength) { 
-          text = text.substring(0,maxLength)+"..."; 
+        if (text.length > maxLength) { 
+          text = text.substring(0, maxLength) + "..."; 
         }
         return text;
       })
-      
       .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
-
 
       //  누적막대그래프
   
