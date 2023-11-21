@@ -418,7 +418,9 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
         <div class="frequency_box fs-small fw-400"  height="350px">  
+          <div id="tooltip"></div>
           <div id="treemapPositive" style="width:1000px;height:170px;"></div>
+          
           <div id="treemapNegative" style="width:1000px;height:170px;"></div>
         </div>
       </div>
@@ -440,7 +442,16 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       </div>
     </div>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    
+    <style>
+      #tooltip {
+        position: absolute;
+        background-color: white;
+        padding: 5px;
+        border: 1px solid black;
+        visibility: hidden;
+        z-index: 1000;  /* 툴팁이 다른 요소 위에 보이도록 z-index를 높게 설정 */
+      }
+    </style>
     <script>
       const category_detail_list = {{ category_detail_list|safe }};
       const results_positive = {{ results_positive|safe }};
@@ -538,46 +549,70 @@ console.log(arr);  // [1, 2, 3, 4, 5]
   var colorScaleNegative = d3.scaleOrdinal()
     .domain(top6Negative.map(function(d) { return d.data.name; }))
     .range(d3.schemeCategory10);
-      treemapPositive(rootPositive);
-      svgPositive.selectAll(".rectPositive")
-      .data(top6Positive)
-      .enter()
-      .append("rect")
-      .attr('x', function (d) { return d.x0; })
-      .attr('y', function (d) { return d.y0; })
-      .attr('width', function (d) { return d.x1 - d.x0; })
-      .attr('height', function (d) { return d.y1 - d.y0; })
-      .style("stroke", "black")
-      .style("fill", function (d) {
-        return colorScalePositive(d.data.name);
-      })
-      .on("click", function (d) {
-        var clickedName = d.srcElement.__data__.data.name;
-        $(".rawdata_item").removeClass("highlight");
-
-        $.ajax({
-          url: '/dashboard/',
-          method: 'POST',
-          data: { treemap_name: clickedName },
-          success: function (response) {
-            console.log(response.selected_reviews);
-
-            response.selected_reviews.forEach(function (selectedReview) {
-              var selectedReviewText = selectedReview.trim();
-
-              $(".rawdata_item").each(function () {
-                  var reviewText = $(this).text().trim();
-                  if (reviewText === selectedReviewText) {
-                      $(this).addClass("highlight");
-                  }
-              });
+    svgPositive.selectAll(".rectPositive")
+    .data(rootPositive.leaves())  // 수정된 부분
+    .enter()
+    .append("rect")
+    .attr('x', function (d) { return d.x0; })
+    .attr('y', function (d) { return d.y0; })
+    .attr('width', function (d) { return d.x1 - d.x0; })
+    .attr('height', function (d) { return d.y1 - d.y0; })
+    .style("stroke", "black")
+    .style("fill", function (d) {
+      return colorScalePositive(d.data.name);
+    })
+    .on("click", function (d) {
+      var clickedName = d.srcElement.__data__.data.name;
+      $(".rawdata_item").removeClass("highlight");
+      
+      $.ajax({
+        url: '/dashboard/',
+        method: 'POST',
+        data: { treemap_name: clickedName },
+        success: function (response) {
+          console.log(response.selected_reviews);
+  
+          response.selected_reviews.forEach(function (selectedReview) {
+            var selectedReviewText = selectedReview.trim();
+  
+            $(".rawdata_item").each(function () {
+              var reviewText = $(this).text().trim();
+              if (reviewText === selectedReviewText) {
+                $(this).addClass("highlight");
+              }
             });
-          },
-          error: function (error) {
-            console.error(error);
-          }
-        });
+          });
+        },
+        error: function (error) {
+          console.error(error);
+        }
       });
+    })
+    .on("mouseover", function(d, event) {
+      var clickedName = d.srcElement.__data__.data.name;
+      console.log(clickedName)
+      // 툴팁에 표시할 텍스트 설정
+      var text = clickedName;
+      if(text.length > maxLength) { 
+        text = text.substring(0,maxLength)+"..."; 
+      }
+    
+      // 툴팁 위치 설정
+      var tooltipX = event.pageX + 10;  // event.pageX 사용
+      var tooltipY = event.pageY -20;  // event.pageY 사용
+    
+      // 툴팁 생성
+      d3.select("#tooltip")
+        .style("left", tooltipX + "px")
+        .style("top", tooltipY + "px")
+        .style("visibility", "visible")
+        .text(text);
+    })
+    .on("mouseout", function() {
+      // 툴팁 숨기기
+      d3.select("#tooltip")
+        .style("visibility", "hidden");
+    });
 
       treemapNegative(rootNegative);
       svgNegative.selectAll(".rectNegative")
@@ -595,22 +630,22 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       .on("click", function (d) {
         var clickedName = d.srcElement.__data__.data.name;
         $(".rawdata_item").removeClass("highlight");
-
+        
         $.ajax({
           url: '/dashboard/',
           method: 'POST',
           data: { treemap_name: clickedName },
           success: function (response) {
             console.log(response.selected_reviews);
-
+    
             response.selected_reviews.forEach(function (selectedReview) {
               var selectedReviewText = selectedReview.trim();
-
+    
               $(".rawdata_item").each(function () {
-                  var reviewText = $(this).text().trim();
-                  if (reviewText === selectedReviewText) {
-                      $(this).addClass("highlight");
-                  }
+                var reviewText = $(this).text().trim();
+                if (reviewText === selectedReviewText) {
+                  $(this).addClass("highlight");
+                }
               });
             });
           },
@@ -618,7 +653,33 @@ console.log(arr);  // [1, 2, 3, 4, 5]
             console.error(error);
           }
         });
+      })
+      .on("mouseover", function(d, event) {
+        var clickedName = d.srcElement.__data__.data.name;
+        console.log(clickedName)
+        // 툴팁에 표시할 텍스트 설정
+        var text = clickedName;
+        if(text.length > maxLength) { 
+          text = text.substring(0,maxLength)+"..."; 
+        }
+      
+        // 툴팁 위치 설정
+        var tooltipX = event.pageX;
+        var tooltipY = event.pageY;
+      
+        // 툴팁 생성
+        d3.select("#tooltip")
+          .style("left", tooltipX + "px")
+          .style("top", tooltipY + "px")
+          .style("visibility", "visible")
+          .text(text);
+      })
+      .on("mouseout", function() {
+        // 툴팁 숨기기
+        d3.select("#tooltip")
+          .style("visibility", "hidden");
       });
+      
 
       svgPositive.selectAll("textPositive")
       .data(rootPositive.leaves())
@@ -660,12 +721,12 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         }
         return text;
       })
+      
       .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
         return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
       });
-      
 
 
       //  누적막대그래프
