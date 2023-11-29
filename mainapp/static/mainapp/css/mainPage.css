@@ -5,3 +5,22 @@
 .secondContent {
     margin-bottom: 48px;
 }
+.header-nav-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-login {
+    width: 43px;
+    height: 24px;
+    font-size: 16px;
+    color: #313238;
+}
+.header-signup {
+    width: 43px;
+    height: 24px;
+    font-size: 16px;
+    color: #313238;
+    margin-left: 24px;
+    margin-right: 72px;
+}

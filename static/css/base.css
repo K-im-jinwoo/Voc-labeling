@@ -9,10 +9,12 @@
 
 .header-title-name > a{
   display: flex;
+  flex-direction: column;
   padding: 40px 0 34px;
   justify-content: center;
   text-align: center;
-  color : #585757
+  color : #585757;
+  line-height: 24px;
 }
 
 .nav {
@@ -73,14 +75,6 @@ li>img{
   border-radius: 50%;
 }
 
-.user-profile-name {
-
-}
-
-.mypage-img {
-}
-
-
 .menu-pd {
   position:relative;
   padding: 10px 0 10px 61px;
@@ -90,11 +84,19 @@ li>img{
 .menu-pd > a{
   color: #585757;
 }
+
+.menu-export {
+  border-bottom: 1px solid #E0E0E0;
+}
 .upload-img,.labeling-img,.list-img,.download-img,.logout-img {
     position: absolute;
     left: 32px;
     top: 15px;
-  
+}
+.info-img {
+  position: absolute;
+  left: 28px;
+  top: 12px;
 }
 .menu-pd:hover {
   border-right: 4px solid #A50034;
