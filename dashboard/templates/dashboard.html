@@ -439,7 +439,10 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       <div class="frequency">
         <h3 class ="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
         <div class="frequency_box fs-small fw-400"  height="350px">  
-          <div id="treemap" style="width:1000px;height:350px;"></div>
+          <div id="tooltip"></div>
+          <div id="treemapPositive" style="width:1000px;height:170px;"></div>
+          
+          <div id="treemapNegative" style="width:1000px;height:170px;"></div>
         </div>
       </div>
     </div>
@@ -460,7 +463,16 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       </div>
     </div>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    
+    <style>
+      #tooltip {
+        position: absolute;
+        background-color: white;
+        padding: 5px;
+        border: 1px solid black;
+        visibility: hidden;
+        z-index: 1000;  /* 툴팁이 다른 요소 위에 보이도록 z-index를 높게 설정 */
+      }
+    </style>
     <script>
       const category_detail_list = {{ category_detail_list|safe }};
       const results_positive = {{ results_positive|safe }};
@@ -475,13 +487,20 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       width = 1000 - margin.left - margin.right,
       height = 350 - margin.top - margin.bottom;
 
-      var svg = d3.select("#treemap")
+      var svgPositive = d3.select("#treemapPositive")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      // 부정 트리맵을 위한 SVG 생성
+      var svgNegative = d3.select("#treemapNegative")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       var aggregatedDataPositive = {};
       var aggregatedDataNegative = {};
       for (var i=0; i<category_detail_list.length; i++) {
@@ -489,30 +508,42 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         aggregatedDataNegative[category_detail_list[i]] = results_negative[i];
       }
 
-      var dataPositive = [
-        { name: "OriginPositive", parent: "", value: "" },
-        ...Object.entries(aggregatedDataPositive).map(([name,value]) => ({
-            name,
-            parent: "OriginPositive",
-            value,
-        })),
-      ];
+          var dataPositive = [
+      { name: "OriginPositive", parent: "", value: "" },
+      ...Object.entries(aggregatedDataPositive).filter(([,value]) => value != 0).map(([name,value]) => ({
+          name,
+          parent: "OriginPositive",
+          value,
+      })),
+    ];
 
-      var dataNegative = [
-        { name: "OriginNegative", parent: "", value: "" },
-        ...Object.entries(aggregatedDataNegative).map(([name,value]) => ({
-            name,
-            parent: "OriginNegative",
-            value,
-        })),
-      ];
+    var dataNegative = [
+      { name: "OriginNegative", parent: "", value: "" },
+      ...Object.entries(aggregatedDataNegative).filter(([,value]) => value != 0).map(([name,value]) => ({
+          name,
+          parent: "OriginNegative",
+          value,
+      })),
+    ];
+      
+      // 긍정 트리맵 생성
+      var treemapPositive = d3.treemap()
+      .size([width, height/2])
+      .padding(4);
+
+      // 부정 트리맵 생성
+      var treemapNegative = d3.treemap()
+      .size([width, height/2])
+      .padding(4);
 
       var rootPositive = d3.stratify()
       .id(function(d) { return d.name; })   
       .parentId(function(d) { return d.parent; })   
       (dataPositive);
-      rootPositive.sum(function(d) { return +d.value })   
-
+      rootPositive.sum(function(d) { return +d.value })  
+      
+      
+      
       d3.treemap()
       .size([width, height/2])  // height를 2로 나누어 긍정과 부정 트리맵을 위아래로 배치
       .padding(4)
@@ -532,46 +563,80 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       var maxLength = 10; 
       var top6Positive = rootPositive.leaves().slice(0, 6);
       var top6Negative = rootNegative.leaves().slice(0, 6);
+      var colorScalePositive = d3.scaleOrdinal()
+    .domain(top6Positive.map(function(d) { return d.data.name; }))
+    .range(d3.schemeCategory10);
+
+  var colorScaleNegative = d3.scaleOrdinal()
+    .domain(top6Negative.map(function(d) { return d.data.name; }))
+    .range(d3.schemeCategory10);
+    svgPositive.selectAll(".rectPositive")
+    .data(rootPositive.leaves())  // 수정된 부분
+    .enter()
+    .append("rect")
+    .attr('x', function (d) { return d.x0; })
+    .attr('y', function (d) { return d.y0; })
+    .attr('width', function (d) { return d.x1 - d.x0; })
+    .attr('height', function (d) { return d.y1 - d.y0; })
+    .style("stroke", "black")
+    .style("fill", function (d) {
+      return colorScalePositive(d.data.name);
+    })
+    .on("click", function (d) {
+      var clickedName = d.srcElement.__data__.data.name;
+      $(".rawdata_item").removeClass("highlight");
       
-      svg
-      .data(top6Positive)
-      .enter()
-      .append("rect")
-      .attr('x', function (d) { return d.x0; })
-      .attr('y', function (d) { return d.y0; })
-      .attr('width', function (d) { return d.x1 - d.x0; })
-      .attr('height', function (d) { return d.y1 - d.y0; })
-      .style("stroke", "black")
-      .style("fill", function (d, i) { return colorPalette(i); })
-      .on("click", function (d) {
-        var clickedName = d.srcElement.__data__.data.name;
-        $(".rawdata_item").removeClass("highlight");
-
-        $.ajax({
-          url: '/dashboard/',
-          method: 'POST',
-          data: { treemap_name: clickedName },
-          success: function (response) {
-            console.log(response.selected_reviews);
-
-            response.selected_reviews.forEach(function (selectedReview) {
-              var selectedReviewText = selectedReview.trim();
-
-              $(".rawdata_item").each(function () {
-                  var reviewText = $(this).text().trim();
-                  if (reviewText === selectedReviewText) {
-                      $(this).addClass("highlight");
-                  }
-              });
+      $.ajax({
+        url: '/dashboard/',
+        method: 'POST',
+        data: { treemap_name: clickedName },
+        success: function (response) {
+          console.log(response.selected_reviews);
+  
+          response.selected_reviews.forEach(function (selectedReview) {
+            var selectedReviewText = selectedReview.trim();
+  
+            $(".rawdata_item").each(function () {
+              var reviewText = $(this).text().trim();
+              if (reviewText === selectedReviewText) {
+                $(this).addClass("highlight");
+              }
             });
-          },
-          error: function (error) {
-            console.error(error);
-          }
-        });
+          });
+        },
+        error: function (error) {
+          console.error(error);
+        }
       });
+    })
+    .on("mouseover", function(d, event) {
+      var clickedName = d.srcElement.__data__.data.name;
+      console.log(clickedName)
+      // 툴팁에 표시할 텍스트 설정
+      var text = clickedName;
+      if(text.length > maxLength) { 
+        text = text.substring(0,maxLength)+"..."; 
+      }
+    
+      // 툴팁 위치 설정
+      var tooltipX = event.pageX + 10;  // event.pageX 사용
+      var tooltipY = event.pageY -20;  // event.pageY 사용
+    
+      // 툴팁 생성
+      d3.select("#tooltip")
+        .style("left", tooltipX + "px")
+        .style("top", tooltipY + "px")
+        .style("visibility", "visible")
+        .text(text);
+    })
+    .on("mouseout", function() {
+      // 툴팁 숨기기
+      d3.select("#tooltip")
+        .style("visibility", "hidden");
+    });
 
-      svg
+      treemapNegative(rootNegative);
+      svgNegative.selectAll(".rectNegative")
       .data(top6Negative)
       .enter()
       .append("rect")
@@ -580,26 +645,28 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       .attr('width', function (d) { return d.x1 - d.x0; })
       .attr('height', function (d) { return d.y1 - d.y0; })
       .style("stroke", "black")
-      .style("fill", function (d, i) { return colorPalette(i); })
+      .style("fill", function (d) {
+        return colorScaleNegative(d.data.name);
+      })
       .on("click", function (d) {
         var clickedName = d.srcElement.__data__.data.name;
         $(".rawdata_item").removeClass("highlight");
-
+        
         $.ajax({
           url: '/dashboard/',
           method: 'POST',
           data: { treemap_name: clickedName },
           success: function (response) {
             console.log(response.selected_reviews);
-
+    
             response.selected_reviews.forEach(function (selectedReview) {
               var selectedReviewText = selectedReview.trim();
-
+    
               $(".rawdata_item").each(function () {
-                  var reviewText = $(this).text().trim();
-                  if (reviewText === selectedReviewText) {
-                      $(this).addClass("highlight");
-                  }
+                var reviewText = $(this).text().trim();
+                if (reviewText === selectedReviewText) {
+                  $(this).addClass("highlight");
+                }
               });
             });
           },
@@ -607,10 +674,35 @@ console.log(arr);  // [1, 2, 3, 4, 5]
             console.error(error);
           }
         });
+      })
+      .on("mouseover", function(d, event) {
+        var clickedName = d.srcElement.__data__.data.name;
+        console.log(clickedName)
+        // 툴팁에 표시할 텍스트 설정
+        var text = clickedName;
+        if(text.length > maxLength) { 
+          text = text.substring(0,maxLength)+"..."; 
+        }
+      
+        // 툴팁 위치 설정
+        var tooltipX = event.pageX;
+        var tooltipY = event.pageY;
+      
+        // 툴팁 생성
+        d3.select("#tooltip")
+          .style("left", tooltipX + "px")
+          .style("top", tooltipY + "px")
+          .style("visibility", "visible")
+          .text(text);
+      })
+      .on("mouseout", function() {
+        // 툴팁 숨기기
+        d3.select("#tooltip")
+          .style("visibility", "hidden");
       });
+      
 
-      svg
-      .selectAll("textPositive")
+      svgPositive.selectAll("textPositive")
       .data(rootPositive.leaves())
       .enter()
       .append("text")
@@ -622,19 +714,18 @@ console.log(arr);  // [1, 2, 3, 4, 5]
       })
       .text(function (d) {
         var text = d.data.name;
-        if(text.length > maxLength) { 
-          text = text.substring(0,maxLength)+"..."; 
+        if (text.length > maxLength) { 
+          text = text.substring(0, maxLength) + "..."; 
         }
         return text;
       })
       .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
-        return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
+        return Math.min(d.x1 - d.x0, d.y1 - d.y0) > 25 ? 'block' : 'none';
       });
 
-      svg
-      .selectAll("textNegative")
+    svgNegative.selectAll("textNegative")
       .data(rootNegative.leaves())
       .enter()
       .append("text")
@@ -642,22 +733,20 @@ console.log(arr);  // [1, 2, 3, 4, 5]
         return d.x0 + 5;
       })
       .attr("y", function (d) {
-        return d.y0 + 15 + height/2;  // y 위치를 height/2만큼 아래로 이동
+        return d.y0 + 15;
       })
       .text(function (d) {
         var text = d.data.name;
-        if(text.length > maxLength) { 
-          text = text.substring(0,maxLength)+"..."; 
+        if (text.length > maxLength) { 
+          text = text.substring(0, maxLength) + "..."; 
         }
         return text;
       })
       .attr("font-size", "10px")
       .attr("fill", "white")
       .style('display', function(d){
-        return d.x1 - d.x0 > this.getComputedTextLength() ? 'block' : 'none';
+        return Math.min(d.x1 - d.x0, d.y1 - d.y0) > 25 ? 'block' : 'none';
       });
-      
-
 
       //  누적막대그래프
   

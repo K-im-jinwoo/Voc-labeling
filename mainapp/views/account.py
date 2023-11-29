@@ -139,7 +139,7 @@ def admin_secret_key(request):
 
 
 def information(request):
-    return render(request, "mainapp/information.html")
+    return render(request, "mainapp/Information.html")
 
 
 def main_page(request):
