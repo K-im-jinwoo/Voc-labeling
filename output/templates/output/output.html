@@ -2,7 +2,7 @@
 {% load static %}
 <!-- style -->
 {% block style %}
-<link rel="stylesheet" href="{% static 'outputapp/css/output.css' %}">
+<link rel="stylesheet" href="{% static 'output/css/output.css' %}">
 {% endblock %}
 
 <!-- content title 부분 -->
@@ -13,18 +13,18 @@
     </h2>
     {% if user.is_authenticated %}
     <div class="fw-400 fs-medium">
-        <a href="{% url 'mainapp:logout' %}" class="header-signup">Logout</a>
+        <a href="{% url 'main:logout' %}" class="header-signup">Logout</a>
     </div>
     {% else %}    
     <div class="fw-400 fs-medium">
         <a
             class="header-login"
-          href="{% url 'mainapp:login' %}?next={{ request.path }}"
+          href="{% url 'main:login' %}?next={{ request.path }}"
           >로그인</a
         >
         <a
             class="header-signup"
-          href="{% url 'mainapp:signup' %}?next={{ request.path }}"
+          href="{% url 'main:signup' %}?next={{ request.path }}"
           >회원가입</a
         >
     </div>
@@ -109,7 +109,7 @@
           <span class="fs-small">* .xlsx 파일로 뽑아내는 데이터는 작업 완료된 데이터 입니다.</span>
         <!--엑셀 파일 csv로 내보내기 => 엑셀 파일 필요시, 주피터로 중복 전처리 후, 엑셀로 뽑아내야함-->
         <div class="export_form_wrap">
-          <form action="{% url 'outputapp:output' %}" method="post" enctype="multipart/form-data">
+          <form action="{% url 'output:output' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="submit" name="export" value=".xlsx export" class="export fw-400">
             <input type="submit" name="export" value=".csv export" class="analysis fw-400">

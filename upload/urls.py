@@ -1,13 +1,9 @@
-
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
-
+from django.urls import path
 from . import views
 
-app_name = 'uploadapp'
+app_name = "upload"
 
 urlpatterns = [
-    path('', views.upload_main, name="upload"),
-    path('delete-category/', views.delete_category, name="delete"),
+    path("", views.upload_main, name="upload"),
+    path("delete-category/", views.delete_category, name="delete"),
 ]

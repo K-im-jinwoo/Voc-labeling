@@ -33,10 +33,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "labelingapp",
-    "uploadapp",
-    "mainapp",
-    "outputapp",
+    "labeling",
+    "upload",
+    "main",
+    "output",
     "dashboard",
     "bootstrap4",
     "storages",
@@ -68,7 +68,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "mainapp.context_processors.add_target_user",
+                "main.context_processors.add_target_user",
             ],
         },
     },
@@ -133,8 +133,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # media가 저장되는 경로
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = reverse_lazy("mainapp:main")
-LOGOUT_REDIRECT_URL = reverse_lazy("mainapp:main")
+LOGIN_REDIRECT_URL = reverse_lazy("main:main")
+LOGOUT_REDIRECT_URL = reverse_lazy("main:main")
 
 # AWS
 AWS_ACCESS_KEY_ID = "AKIAV6TAQVC6X7WYHMG4"  # .csv 파일에 있는 내용을 입력 Access key ID

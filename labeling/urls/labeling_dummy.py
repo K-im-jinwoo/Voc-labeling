@@ -1,6 +1,6 @@
 from django.urls import path
-from labelingapp.views import dummy_to_trashcan
+from labeling.views import labeling_dummy
 
 patterns = [
-    path('dummydummy/', dummy_to_trashcan.dummydummy, name='dummydummy'),
+    path("dummy/", labeling_dummy.dummy, name="dummy"),
 ]

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'labelingapp/css/labeling_work.css' %}">
+    <link rel="stylesheet" href="{% static 'labeling/css/labeling_work.css' %}">
 {% endblock %}
 <style>
     .drag {
@@ -25,18 +25,18 @@
     </h2>
     {% if user.is_authenticated %}
     <div class="fw-400 fs-medium">
-        <a href="{% url 'mainapp:logout' %}" class="header-signup">Logout</a>
+        <a href="{% url 'main:logout' %}" class="header-signup">Logout</a>
     </div>
     {% else %}    
     <div class="fw-400 fs-medium">
         <a
             class="header-login"
-          href="{% url 'mainapp:login' %}?next={{ request.path }}"
+          href="{% url 'main:login' %}?next={{ request.path }}"
           >로그인</a
         >
         <a
             class="header-signup"
-          href="{% url 'mainapp:signup' %}?next={{ request.path }}"
+          href="{% url 'main:signup' %}?next={{ request.path }}"
           >회원가입</a
         >
     </div>
@@ -49,7 +49,7 @@
     <div class="mc">
         <div class="tool_box">
             <div class="top_box">
-                <form action="{% url 'labelingapp:work' %}" method="get">
+                <form action="{% url 'labeling:work' %}" method="get">
                     {% csrf_token %}
                     <div class="product">
                         <div class="product_name">
@@ -307,7 +307,7 @@
                 <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
                     <div class="bottom">
                         <div class="bet" >
-                            <form action="{% url 'labelingapp:work' %}" method="get" id="DummyForm">
+                            <form action="{% url 'labeling:work' %}" method="get" id="DummyForm">
                                 {% csrf_token %}
                                 <input type="hidden" name="form-type" value="DummyForm">
                                 <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
@@ -337,7 +337,7 @@
                             
         
                             <div style="margin-left: 20px;">
-                                <form action="{% url 'labelingapp:work' %}" method="get" id="NextForm" >
+                                <form action="{% url 'labeling:work' %}" method="get" id="NextForm" >
                                     {% csrf_token %}
                                     <input type="hidden" name="form-type" value="NextForm">
                                     <input type="hidden" name="review_id" value="{{ review_first.review_id }}">

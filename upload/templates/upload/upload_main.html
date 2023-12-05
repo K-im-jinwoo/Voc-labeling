@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block style %}
-    <link rel="stylesheet" href="{% static "uploadapp/css/upload_main.css" %}">
+    <link rel="stylesheet" href="{% static "upload/css/upload_main.css" %}">
 {% endblock %}
 {% block content-title %}
 
@@ -12,18 +12,18 @@
     </h2>
     {% if user.is_authenticated %}
     <div class="fw-400 fs-medium">
-        <a href="{% url 'mainapp:logout' %}" class="header-signup">Logout</a>
+        <a href="{% url 'main:logout' %}" class="header-signup">Logout</a>
     </div>
     {% else %}    
     <div class="fw-400 fs-medium">
         <a
             class="header-login"
-          href="{% url 'mainapp:login' %}?next={{ request.path }}"
+          href="{% url 'main:login' %}?next={{ request.path }}"
           >로그인</a
         >
         <a
             class="header-signup"
-          href="{% url 'mainapp:signup' %}?next={{ request.path }}"
+          href="{% url 'main:signup' %}?next={{ request.path }}"
           >회원가입</a
         >
     </div>
@@ -164,7 +164,7 @@
                     {% endif %}
                 </div>
 
-                <form class="category_add" action="{% url 'uploadapp:upload' %}" method="post" id="formOne">
+                <form class="category_add" action="{% url 'upload:upload' %}" method="post" id="formOne">
                     {% csrf_token %}
                     <div class="add">
                       <input type="hidden" name="form-type" value="formOne">
@@ -190,7 +190,7 @@
     
             <!--엑셀 파일 업로드하기-->
             <div id="uploadbox" class="file_upload">
-                <form name="form2" action="{% url 'uploadapp:upload' %}" method="post" id="formTwo" enctype="multipart/form-data">
+                <form name="form2" action="{% url 'upload:upload' %}" method="post" id="formTwo" enctype="multipart/form-data">
                     {% csrf_token %}
                 <input type="hidden" name="form-type" value="formTwo">
                 <label for="file">
@@ -252,7 +252,7 @@
                     {% endif %}
                 </form>
             </div>
-            <form name="form3" action="{% url 'uploadapp:upload' %}" method="post" id="formThree">
+            <form name="form3" action="{% url 'upload:upload' %}" method="post" id="formThree">
                 {% csrf_token %}
                 <input type="hidden" name="form-type" value="formThree">
                 <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
