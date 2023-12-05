@@ -1,27 +1,9 @@
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
-import numpy as np
-from django.db.models import Count, Q
-from django.http import JsonResponse  # 상단에 추가해 주세요
-
-# Create your views here.
-
-
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from django.http import JsonResponse,HttpResponseBadRequest
-from main.models import Category, Review, FirstLabeledData
-import json
-
 from django.views.decorators.csrf import csrf_exempt
 
-
-# def dashboard_check(request):
-#     if request.method == "POST":
-#         checked_data = request.POST.getlist("checked_data[]")
-#         print(checked_data)
-
-
-#     return render(request, "dashboard.html")
+from main import models as main_models
 
 
 def type_to_variable(what_type, positive, negative, neutral, everything):
@@ -82,36 +64,32 @@ def dashboard(request):
             category_model_name = (
                 category_model_name.replace("{", "").replace("}", "").replace('"', "")
             )
-            print("A", category_model_code)
-            print("B", category_model_name)
-            print("C", category_product)
-            print(request.GET.get("category_model_code"))
             if "sort" not in request.session:
                 request.session["sort"] = "positive"
                 # 해당 제품군의 카테고리 정보 불러옴
-            category_detail = Category.objects.filter(category_product=category_product)
+            category_detail = main_models.Category.objects.filter(category_product=category_product)
             alltotal = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
                 .count()
             )
             first_num = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(first_status=True)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
                 .count()
             )
             second_num = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(second_status=True)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
                 .count()
             )
             dummy_num = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(dummy_status=True)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
@@ -132,28 +110,28 @@ def dashboard(request):
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
                 positive_temp = (
-                    FirstLabeledData.objects.filter(
+                    main_models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 negative_temp = (
-                    FirstLabeledData.objects.filter(
+                    main_models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 neutral_temp = (
-                    FirstLabeledData.objects.filter(
+                    main_models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 everything_temp = (
-                    FirstLabeledData.objects.filter(category_id=category)
+                    main_models.FirstLabeledData.objects.filter(category_id=category)
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
@@ -170,10 +148,8 @@ def dashboard(request):
             if request.method == "POST" and "sort" in request.POST:
                 sort = request.POST.get("sort")
                 request.session["sort"] = sort
-            print(request.session["sort"])
 
             # session에 저장한 요구 상태를 읽어 정렬 수행
-
             if request.session["sort"] != "sort":
                 sorting(
                     request.session["sort"],
@@ -235,7 +211,7 @@ def dashboard(request):
                 context["labeled_word"] = labeled_word
                 # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                 labeled_review = labeled_word.values_list("review_id", flat=True)
-                labeled_review = Review.objects.filter(pk__in=labeled_review)
+                labeled_review = main_models.Review.objects.filter(pk__in=labeled_review)
                 context["labeled_review"] = labeled_review
 
             data = zip(
@@ -281,8 +257,6 @@ def dashboard(request):
                 "results_neutral": results_neutral,
             }
 
-            print(category_detail_list)
-            print(results_positive)
             context["data"] = data
             context["category_product"] = category_product
             context["alltotal"] = alltotal
@@ -291,11 +265,11 @@ def dashboard(request):
             context["second_num"] = second_num
             context["left"] = alltotal - first_num
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                main_models.Category.objects.all().values("category_product").distinct()
             )
 
             my_model_list = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .values("model_name")
                 .distinct()
             )
@@ -303,7 +277,7 @@ def dashboard(request):
             context["selected_name"] = category_model_name
             context["selected"] = category_product
             my_code_list = (
-                Review.objects.filter(
+                main_models.Review.objects.filter(
                     category_product=category_product, model_name=category_model_name
                 )
                 .values("model_code")
@@ -321,32 +295,30 @@ def dashboard(request):
                 category_model_name.replace("{", "").replace("}", "").replace('"', "")
             )
             selected = selected.replace("{", "").replace("}", "").replace('"', "")
-            print(category_model_name)
-            print(selected)
             category_product = selected
             if "sort" not in request.session:
                 request.session["sort"] = "positive"
                 # 해당 제품군의 카테고리 정보 불러옴
-            category_detail = Category.objects.filter(category_product=category_product)
+            category_detail = main_models.Category.objects.filter(category_product=category_product)
             alltotal = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(model_name=category_model_name)
                 .count()
             )
             first_num = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(first_status=True)
                 .filter(model_name=category_model_name)
                 .count()
             )
             second_num = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(second_status=True)
                 .filter(model_name=category_model_name)
                 .count()
             )
             dummy_num = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .filter(dummy_status=True)
                 .filter(model_name=category_model_name)
                 .count()
@@ -364,16 +336,16 @@ def dashboard(request):
 
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
-                positive_temp = FirstLabeledData.objects.filter(
+                positive_temp = main_models.FirstLabeledData.objects.filter(
                     category_id=category, first_labeled_emotion="positive"
                 ).filter(model_name=category_model_name)
-                negative_temp = FirstLabeledData.objects.filter(
+                negative_temp = main_models.FirstLabeledData.objects.filter(
                     category_id=category, first_labeled_emotion="negative"
                 ).filter(model_name=category_model_name)
-                neutral_temp = FirstLabeledData.objects.filter(
+                neutral_temp = main_models.FirstLabeledData.objects.filter(
                     category_id=category, first_labeled_emotion="neutral"
                 ).filter(model_name=category_model_name)
-                everything_temp = FirstLabeledData.objects.filter(
+                everything_temp = main_models.FirstLabeledData.objects.filter(
                     category_id=category
                 ).filter(model_name=category_model_name)
 
@@ -384,13 +356,10 @@ def dashboard(request):
                 everything.append(everything_temp)
                 order.append(i)
                 i += 1
-            print("d1111111111111111111111111111")
             # 정렬 요청 들어오면 session에 정렬 요구 상태 저장
             if request.method == "POST" and "sort" in request.POST:
                 sort = request.POST.get("sort")
                 request.session["sort"] = sort
-            print(request.session["sort"])
-            print("22222222222222222222222222222")
             data1 = zip(
                 category_detail_list, positive, negative, neutral, everything, order
             )
@@ -431,11 +400,8 @@ def dashboard(request):
                 "results_negative": results_negative,
                 "results_neutral": results_neutral,
             }
-            print(category_detail_list)
-            print(results_positive)
 
             # session에 저장한 요구 상태를 읽어 정렬 수행
-
             if request.session["sort"] != "sort":
                 sorting(
                     request.session["sort"],
@@ -458,7 +424,6 @@ def dashboard(request):
 
             # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
             if request.method == "GET" and "showing_index" in request.GET:
-                print("333333333333333333333333333")
                 # 번호의 위치(showing_index)와 번호의 긍부정 여부(showing_type)을 가져옴
                 showing_index = request.GET.get("showing_index")
                 showing_type = request.GET.get("showing_type")
@@ -495,11 +460,10 @@ def dashboard(request):
                 # labeled_word = list(set(labeled_word))
                 context["box"] = labeled_box
                 context["box_counter"] = box_counter
-                # print('aAAAAAAAAAAAAAAA',labeled_word)
                 context["labeled_word"] = labeled_word
                 # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                 labeled_review = labeled_word.values_list("review_id", flat=True)
-                labeled_review = Review.objects.filter(pk__in=labeled_review)
+                labeled_review = main_models.Review.objects.filter(pk__in=labeled_review)
                 context["labeled_review"] = labeled_review
 
             data = zip(
@@ -514,18 +478,18 @@ def dashboard(request):
             context["second_num"] = second_num
             context["left"] = alltotal - first_num
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                main_models.Category.objects.all().values("category_product").distinct()
             )
 
             my_model_list = (
-                Review.objects.filter(category_product=category_product)
+                main_models.Review.objects.filter(category_product=category_product)
                 .values("model_name")
                 .distinct()
             )
             context["model_names"] = my_model_list
             context["selected_name"] = category_model_name
             my_code_list = (
-                Review.objects.filter(
+                main_models.Review.objects.filter(
                     category_product=category_product, model_name=category_model_name
                 )
                 .values("model_code")
@@ -550,24 +514,24 @@ def dashboard(request):
                     request.session["sort"] = "positive"
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET["category_product"]
-                category_detail = Category.objects.filter(
+                category_detail = main_models.Category.objects.filter(
                     category_product=category_product
                 )
-                alltotal = Review.objects.filter(
+                alltotal = main_models.Review.objects.filter(
                     category_product=category_product
                 ).count()
                 first_num = (
-                    Review.objects.filter(category_product=category_product)
+                    main_models.Review.objects.filter(category_product=category_product)
                     .filter(first_status=True)
                     .count()
                 )
                 second_num = (
-                    Review.objects.filter(category_product=category_product)
+                    main_models.Review.objects.filter(category_product=category_product)
                     .filter(second_status=True)
                     .count()
                 )
                 dummy_num = (
-                    Review.objects.filter(category_product=category_product)
+                    main_models.Review.objects.filter(category_product=category_product)
                     .filter(dummy_status=True)
                     .count()
                 )
@@ -584,16 +548,16 @@ def dashboard(request):
 
                 # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
-                    positive_temp = FirstLabeledData.objects.filter(
+                    positive_temp = main_models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
-                    negative_temp = FirstLabeledData.objects.filter(
+                    negative_temp = main_models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
-                    neutral_temp = FirstLabeledData.objects.filter(
+                    neutral_temp = main_models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
-                    everything_temp = FirstLabeledData.objects.filter(
+                    everything_temp = main_models.FirstLabeledData.objects.filter(
                         category_id=category
                     )
 
@@ -609,7 +573,6 @@ def dashboard(request):
                 if request.method == "POST" and "sort" in request.POST:
                     sort = request.POST.get("sort")
                     request.session["sort"] = sort
-                print(request.session["sort"])
 
                 # session에 저장한 요구 상태를 읽어 정렬 수행
 
@@ -671,35 +634,34 @@ def dashboard(request):
                     # labeled_word = list(set(labeled_word))
                     context["box"] = labeled_box
                     context["box_counter"] = box_counter
-                    # print('aAAAAAAAAAAAAAAA',labeled_word)
                     context["labeled_word"] = labeled_word
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                     labeled_review = labeled_word.values_list("review_id", flat=True)
-                    labeled_review = Review.objects.filter(pk__in=labeled_review)
+                    labeled_review = main_models.Review.objects.filter(pk__in=labeled_review)
                     context["labeled_review"] = labeled_review
 
-                select_categorys = Category.objects.filter(
+                select_categorys = main_models.Category.objects.filter(
                     category_product=category_product
                 ).values("category_id")
 
-                select_ids = FirstLabeledData.objects.filter(
+                select_ids = main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys
                 ).values("review_id")
                 # 선택한 카테고리의 리뷰id 활용해서 해당 contents만 뽑기
                 select_reviews_list = list(
-                    Review.objects.filter(category_product=cp)
+                    main_models.Review.objects.filter(category_product=cp)
                     .filter(review_id__in=select_ids)
                     .values_list("review_content", flat=True)
                 )
                 # 선택한 카테고리의 대상
                 select_targets_list = list(
-                    FirstLabeledData.objects.filter(
+                    main_models.FirstLabeledData.objects.filter(
                         category_id__in=select_categorys
                     ).values_list("first_labeled_target", flat=True)
                 )
                 # 선택한 카테고리의 현상
                 select_expression_list = list(
-                    FirstLabeledData.objects.filter(
+                    main_models.FirstLabeledData.objects.filter(
                         category_id__in=select_categorys
                     ).values_list("first_labeled_expression", flat=True)
                 )
@@ -767,11 +729,11 @@ def dashboard(request):
                 context["second_num"] = second_num
                 context["left"] = alltotal - first_num
                 context["product_names"] = (
-                    Category.objects.all().values("category_product").distinct()
+                    main_models.Category.objects.all().values("category_product").distinct()
                 )
 
                 my_model_list = (
-                    Review.objects.filter(category_product=category_product)
+                    main_models.Review.objects.filter(category_product=category_product)
                     .values("model_name")
                     .distinct()
                 )
@@ -781,7 +743,7 @@ def dashboard(request):
                 return render(request, "dashboard.html", context=context)
             context = dict()
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                main_models.Category.objects.all().values("category_product").distinct()
             )
             return render(request, "dashboard.html", context=context)
 
@@ -796,7 +758,7 @@ def dashboard(request):
 
             # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
             select_category = (
-                Review.objects.filter(
+                main_models.Review.objects.filter(
                     category_product=cp, firstlabeleddata__isnull=False
                 )
                 .values("firstlabeleddata")
@@ -808,45 +770,45 @@ def dashboard(request):
                 q |= Q(category_middle=category)
             # Category모델에서 category_product와 우리가 선택한 product와 비교해 해당 카테고리 들고오기, 그 중에서 q로 필터링하기, value로 해당하는 category_id 들고옴
             select_categorys = (
-                Category.objects.filter(category_product=cp)
+                main_models.Category.objects.filter(category_product=cp)
                 .filter(q)
                 .values("category_id")
             )
             # 선택한 카테고리의 리뷰 id
-            select_ids = FirstLabeledData.objects.filter(
+            select_ids = main_models.FirstLabeledData.objects.filter(
                 category_id__in=select_categorys
             ).values("review_id")
             # 선택한 카테고리의 리뷰id 활용해서 해당 contents만 뽑기
             select_reviews_list = list(
-                Review.objects.filter(category_product=cp)
+                main_models.Review.objects.filter(category_product=cp)
                 .filter(review_id__in=select_ids)
                 .values_list("review_content", flat=True)
             )
             # 선택한 카테고리의 대상
             select_targets_list = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys
                 ).values_list("first_labeled_target", flat=True)
             )
             # 선택한 카테고리의 현상
             select_expression_list = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys
                 ).values_list("first_labeled_expression", flat=True)
             )
             # <-- 선택한 카테고리 target emotion
             select_target_positive = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="positive"
                 ).values_list("first_labeled_target", flat=True)
             )
             select_target_negative = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="negative"
                 ).values_list("first_labeled_target", flat=True)
             )
             select_target_neutral = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="neutral"
                 ).values_list("first_labeled_target", flat=True)
             )
@@ -854,17 +816,17 @@ def dashboard(request):
 
             # <-- 선택한 카테고리 expression emotion
             select_expression_positive = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="positive"
                 ).values_list("first_labeled_expression", flat=True)
             )
             select_expression_negative = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="negative"
                 ).values_list("first_labeled_expression", flat=True)
             )
             select_expression_neutral = list(
-                FirstLabeledData.objects.filter(
+                main_models.FirstLabeledData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="neutral"
                 ).values_list("first_labeled_expression", flat=True)
             )
@@ -875,20 +837,20 @@ def dashboard(request):
                 category["firstlabeleddata"] for category in select_category
             ]
 
-            # 모든 first_values에 해당하는 FirstLabeledData를 추출
+            # 모든 first_values에 해당하는 main_models.FirstLabeledData를 추출
             # 이 때 distinct()를 사용하여 중복된 데이터를 제거하고, values() 메서드를 사용하여 first_labeled_target 값만 추출
             first_targets = (
-                FirstLabeledData.objects.filter(first_labeled_id__in=first_values)
+                main_models.FirstLabeledData.objects.filter(first_labeled_id__in=first_values)
                 .distinct()
                 .values("first_labeled_target")
             )
-            first_expression = FirstLabeledData.objects.filter(
+            first_expression = main_models.FirstLabeledData.objects.filter(
                 first_labeled_id__in=first_values
             ).values("first_labeled_expression")
-            first_emotion = FirstLabeledData.objects.filter(
+            first_emotion = main_models.FirstLabeledData.objects.filter(
                 first_labeled_id__in=first_values
             ).values("first_labeled_emotion")
-            categoryId = FirstLabeledData.objects.filter(
+            categoryId = main_models.FirstLabeledData.objects.filter(
                 first_labeled_id__in=first_values
             ).values("category_id")
             # categoryMiddle = Category.objects.filter(categoty_id=categoryId).values("category_middle")
@@ -897,7 +859,6 @@ def dashboard(request):
             expression_list = [
                 query["first_labeled_expression"] for query in first_expression
             ]
-            print(state["category_detail_list"])
             # 어짜피 한 리스트로 쓸거라 두 배열을 합침
             for target in select_targets_list:
                 select_expression_list.append(target)
@@ -935,7 +896,6 @@ def dashboard(request):
                     target_positive_dict[word] += 1
                 else:
                     target_positive_dict[word] = 1
-            print("dict:", target_positive_dict)
             context["target_positive_dict"] = target_positive_dict
             # 선택한 카테고리 부정
             target_negative_dict = {}
@@ -945,7 +905,6 @@ def dashboard(request):
                 else:
                     target_negative_dict[word] = 1
             context["target_negative_dict"] = target_negative_dict
-            print("neg:", target_negative_dict)
             # 선택한 카테고리 중립
             target_neutral_dict = {}
             for word in select_target_neutral:
@@ -954,7 +913,6 @@ def dashboard(request):
                 else:
                     target_neutral_dict[word] = 1
             context["target_neutral_dict"] = target_neutral_dict
-            print("t_neu:", target_neutral_dict)
 
             # 선택한 현상 카테고리 긍정
             expression_positive_dict = {}
@@ -963,7 +921,6 @@ def dashboard(request):
                     expression_positive_dict[word] += 1
                 else:
                     expression_positive_dict[word] = 1
-            print("ex_dict:", expression_positive_dict)
             context["expression_positive_dict"] = expression_positive_dict
             # 선택한 현상 카테고리 부정
             expression_negative_dict = {}
@@ -1009,20 +966,19 @@ def dashboard(request):
             context["results_negative"] = results_negative
             context["results_neutral"] = results_neutral
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                main_models.Category.objects.all().values("category_product").distinct()
             )
             context["checked_data"] = checked_data
 
             #트리맵 클릭한 제품명 ajax로 가져오기 
             treemap_name = request.POST.get('treemap_name')
             
-            print("treemap name:", treemap_name)
             if treemap_name:
-                category = Category.objects.get(category_middle=treemap_name)
+                category = main_models.Category.objects.get(category_middle=treemap_name)
                 
-                first_labeled_data_list = FirstLabeledData.objects.filter(category_id=category)
+                first_labeled_data_list = main_models.FirstLabeledData.objects.filter(category_id=category)
                 
-                review_list = Review.objects.filter(review_id__in=first_labeled_data_list.values("review_id"))
+                review_list = main_models.Review.objects.filter(review_id__in=first_labeled_data_list.values("review_id"))
                 review_contents = []
 
                 for review in review_list:
@@ -1039,7 +995,7 @@ def dashboard(request):
         else:
             context = {"message": "제품을 다시 선택해주세요."}
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                main_models.Category.objects.all().values("category_product").distinct()
             )
             return render(
                 request,
