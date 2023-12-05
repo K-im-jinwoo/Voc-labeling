@@ -8,7 +8,7 @@
           <h4>프로필 편집</h4>
       </div>
      
-    <form action="{% url 'mainapp:update_profile' pk=target_profile.pk %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'main:update_profile' pk=target_profile.pk %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" class="btn btn-dark rounded-pill col-6 mt-4">

@@ -14,14 +14,14 @@
                 </div>
                 {% if target_user == user %}
                     <div style="height: auto; padding: 0.3rem 0.3rem 0.3rem 0.3rem;">
-                        <a href="{% url 'mainapp:update_profile' pk=target_user.profile.pk %}" style="color : black">
+                        <a href="{% url 'main:update_profile' pk=target_user.profile.pk %}" style="color : black">
                             프로필 편집
                         </a>
                     </div>
                 {% endif %}
             {% else %}
                 {% if target_user == user %}
-                    <a href="{% url 'mainapp:account_profile' %}" style="display: inline-block; margin-top: 15rem;">
+                    <a href="{% url 'main:account_profile' %}" style="display: inline-block; margin-top: 15rem;">
                         <p class="btn"
                            style="width: 10rem; height: auto; padding: 0.3rem 0.3rem 0.3rem 0.3rem; border-radius: 0.5rem;
                               background-color: #eeeeee; display: block; font-family: 'Nanum Gothic Coding', monospace;,color : black">
@@ -35,18 +35,18 @@
                 {% endif %}
             {% endif %}
             {% if target_user == user %}
-                <a href="{% url 'mainapp:update' pk=user.pk %}" style="color : black">
+                <a href="{% url 'main:update' pk=user.pk %}" style="color : black">
                     <p>
                         개인정보 수정
                     </p>
                 </a>
-                <a href="{% url 'mainapp:delete' pk=user.pk %}" style="color : black">
+                <a href="{% url 'main:delete' pk=user.pk %}" style="color : black">
                     <p>
                         계정 삭제
                     </p>
                 </a>
             {% endif %}
-            <a href="{% url 'mainapp:admin_secret_key' %}" style="color : black">admin으로 등록하기</a>
+            <a href="{% url 'main:admin_secret_key' %}" style="color : black">admin으로 등록하기</a>
         </div>
 
     </div>

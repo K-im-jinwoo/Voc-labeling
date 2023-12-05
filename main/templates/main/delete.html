@@ -7,7 +7,7 @@
       <div class="mb-4">
           <h4>계정 삭제</h4>
       </div>
-    <form action="{% url 'mainapp:delete' pk=target_user.pk %}" method="post">
+    <form action="{% url 'main:delete' pk=target_user.pk %}" method="post">
         {% csrf_token %}
         <input type="submit" class="btn btn-danger rounded-pill col-6 mt-4">
     </form>

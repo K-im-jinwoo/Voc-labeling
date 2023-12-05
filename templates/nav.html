@@ -21,7 +21,7 @@
     <div class="nav-wrap">
       {% if user.is_authenticated %}
       <h1 class="header-title-name">
-        <a href="{% url 'mainapp:main' %}" class="fs-large">
+        <a href="{% url 'main:main' %}" class="fs-large">
           <span class="fw-600"> LG 3F VOC </span>
           Analysis System
         </a>
@@ -37,7 +37,7 @@
       >
         <!-- Add a right margin to the settings icon -->
         <a
-          href="{% url 'mainapp:account' user.pk %}"
+          href="{% url 'main:account' user.pk %}"
           class="mypage-img"
           style="margin-left: 70%"
         >
@@ -52,7 +52,7 @@
         />
         {% else %}
         <img
-          src="{% static 'mainapp/image/defaultProfile.svg' %}"
+          src="{% static 'main/image/defaultProfile.svg' %}"
           alt="Person"
           style="margin-bottom: 13px"
         />
@@ -127,7 +127,7 @@
           </svg>
 
           <a
-            href="{% url 'mainapp:workstatus' %}"
+            href="{% url 'main:workstatus' %}"
             class="menu-link"
             onclick="{statusls()}"
           >
@@ -213,16 +213,16 @@
             />
           </svg>
 
-          <a href="{% url 'mainapp:info' %}" class="menu-link"> Inforamtion</a>
+          <a href="{% url 'main:info' %}" class="menu-link"> Inforamtion</a>
         </li>
       </ul>
       <div class="log">
-        <a href="{% url 'mainapp:logout' %}" class="logout_btn">Logout</a>
+        <a href="{% url 'main:logout' %}" class="logout_btn">Logout</a>
       </div>
 
       {% else %}
       <h1 class="header-title-name">
-        <a href="{% url 'mainapp:main' %}" class="fs-large">
+        <a href="{% url 'main:main' %}" class="fs-large">
           <span class="fw-600"> LG 3F VOC </span>
           Analysis System
         </a>
@@ -230,7 +230,7 @@
       <div class="user-profile-login fw-600 fs-medium loginplease">
         <a
           style="color: #585757"
-          href="{% url 'mainapp:login' %}?next={{ request.path }}"
+          href="{% url 'main:login' %}?next={{ request.path }}"
           >로그인</a
         >
       </div>
@@ -252,7 +252,7 @@
           </svg>
 
           <a
-            href="{% url 'mainapp:login' %}?next={{ request.path }}"
+            href="{% url 'main:login' %}?next={{ request.path }}"
             onclick="{uploadls()}"
           >
             Data Upload
@@ -275,7 +275,7 @@
           </svg>
 
           <a
-            href="{% url 'mainapp:login' %}?next={{ request.path }}"
+            href="{% url 'main:login' %}?next={{ request.path }}"
             onclick="{labelingls()}"
           >
             Data Labeling</a
@@ -298,7 +298,7 @@
           </svg>
 
           <a
-            href="{% url 'mainapp:login' %}?next={{ request.path }}"
+            href="{% url 'main:login' %}?next={{ request.path }}"
             onclick="{statusls()}"
           >
             Work Status</a
@@ -321,7 +321,7 @@
           </svg>
 
           <a
-            href="{% url 'mainapp:login' %}?next={{ request.path }}"
+            href="{% url 'main:login' %}?next={{ request.path }}"
             onclick="{statusls()}"
           >
             Dash Board</a
@@ -343,7 +343,7 @@
               fill-opacity="0.9"
             />
           </svg>
-          <a href="{% url 'mainapp:login' %}?next={{ request.path }}">
+          <a href="{% url 'main:login' %}?next={{ request.path }}">
             Data Export</a
           >
         </li>
@@ -354,7 +354,7 @@
             <path d="M9.99982 13.3333C9.88482 13.3333 9.79149 13.4267 9.79232 13.5417C9.79232 13.6567 9.88565 13.75 10.0007 13.75C10.1157 13.75 10.209 13.6567 10.209 13.5417C10.209 13.4267 10.1157 13.3333 9.99982 13.3333" stroke="#585757" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             
-          <a href="{% url 'mainapp:info' %}" class="menu-link"> Inforamtion </a>
+          <a href="{% url 'main:info' %}" class="menu-link"> Inforamtion </a>
         </li>
       </ul>
 

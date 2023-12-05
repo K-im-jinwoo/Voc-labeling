@@ -9,18 +9,18 @@
     </h2>
     {% if user.is_authenticated %}
     <div class="fw-400 fs-medium">
-        <a href="{% url 'mainapp:logout' %}" class="header-signup">Logout</a>
+        <a href="{% url 'main:logout' %}" class="header-signup">Logout</a>
     </div>
     {% else %}    
     <div class="fw-400 fs-medium">
         <a
             class="header-login"
-          href="{% url 'mainapp:login' %}?next={{ request.path }}"
+          href="{% url 'main:login' %}?next={{ request.path }}"
           >로그인</a
         >
         <a
             class="header-signup"
-          href="{% url 'mainapp:signup' %}?next={{ request.path }}"
+          href="{% url 'main:signup' %}?next={{ request.path }}"
           >회원가입</a
         >
     </div>

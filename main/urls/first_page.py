@@ -1,8 +1,8 @@
-from django.urls import path
-from mainapp.views import workstatus_worker
-from mainapp.views import first_page
-from mainapp.views import test
+# from django.urls import path
+# from main.views import test
 
-urlpatterns = [
-    path("", test, name="test"),
-]
+# urlpatterns = [
+#     path("", test, name="test"),
+# ]
+
+### 사용하는지 확인해야함

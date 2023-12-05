@@ -4,7 +4,7 @@
 
 <html lang="en">
 <head>
-  <link rel="stylesheet" href={% static "mainapp/css/thirdPage.css" %}>
+  <link rel="stylesheet" href="{% static 'main/css/third_page.css' %}">
   <meta charset="UTF-8">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -16,7 +16,7 @@
         {% for name, count, ratio in result_list|slice:":6" %}
         <div class="worker_container">
             <div class="worker_container_wrap">        
-                <img src="{% static 'mainapp/image/profile.svg' %}" alt="Person" style="">
+                <img src="{% static 'main/image/profile.svg' %}" alt="Person" style="">
                 <div class="fs-tiny fw-medium worker_content">
                     <p>Name : {{ name }}</p>
                     <p>Team : H&M</p>

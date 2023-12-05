@@ -1,43 +1,34 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponseForbidden
-from django.shortcuts import render
+from django.db.models import Count, Q
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from mainapp.decorators import profile_ownership_required
 
-from mainapp.forms import ProfileCreationForm, AccountUpdateForm
-from mainapp.models import Profile, Category, Review
-from django.db.models import Count, Q
-
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
-from django.shortcuts import get_object_or_404
-
-from mainapp.models import Review
-from ..forms import UserProfileForm
-from django.shortcuts import render, redirect
+from .. import decorators, forms, models
 
 
 class AccountCreateView(CreateView):
     model = User
     form_class = UserCreationForm  # 기본적인 userform을 제공해준다.
     success_url = reverse_lazy(
-        "mainapp:login"
+        "main:login"
     )  # reverse는 함수형, reverse_lazy는 class에서 사욯한다.
-    template_name = "mainapp/signup.html"
+    template_name = "main/signup.html"
 
 
 class AccountLoginView(LoginView):
     form_class = AuthenticationForm
-    template_name = "mainapp/login.html"
+    template_name = "main/login.html"
 
 
 class AccountDetailView(DetailView):
     model = User
     context_object_name = "target_user"
-    template_name = "mainapp/account.html"
+    template_name = "main/account.html"
 
     def get(self, *args, **kwargs):
         if (
@@ -61,24 +52,24 @@ class AccountDetailView(DetailView):
 class AccountUpdateView(UpdateView):
     model = User
     context_object_name = "target_user"
-    form_class = AccountUpdateForm
-    success_url = reverse_lazy("mainapp:main")
-    template_name = "mainapp/update.html"
+    form_class = forms.AccountUpdateForm
+    success_url = reverse_lazy("main:main")
+    template_name = "main/update.html"
 
 
 class AccountDeleteView(DeleteView):
     model = User
     context_object_name = "target_user"
-    success_url = reverse_lazy("mainapp:main")
-    template_name = "mainapp/delete.html"
+    success_url = reverse_lazy("main:main")
+    template_name = "main/delete.html"
 
 
 class ProfileCreateView(CreateView):
-    model = Profile
+    model = models.Profile
     context_object_name = "target_profile"
-    form_class = ProfileCreationForm
-    success_url = reverse_lazy("mainapp:main")
-    template_name = "mainapp/account_profile.html"
+    form_class = forms.ProfileCreationForm
+    success_url = reverse_lazy("main:main")
+    template_name = "main/account_profile.html"
 
     def form_valid(self, form):
         temp_profile = form.save(commit=False)
@@ -87,12 +78,12 @@ class ProfileCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("mainapp:account", kwargs={"pk": self.object.user.pk})
+        return reverse("main:account", kwargs={"pk": self.object.user.pk})
 
 
 def upload_profile_picture(request):
     if request.method == "POST":
-        form = UserProfileForm(request.POST, request.FILES)
+        form = forms.UserProfileForm(request.POST, request.FILES)
         if form.is_valid():
             user_profile = form.save()
             # 성공적으로 저장되었을 때의 동작 등 추가 작업 수행
@@ -100,30 +91,30 @@ def upload_profile_picture(request):
             return redirect("profile")  # 프로필 페이지 등으로 리디렉션
 
     else:
-        form = UserProfileForm()
+        form = forms.UserProfileForm()
 
     return render(request, "upload_profile.html", {"form": form})
 
 
-@method_decorator(profile_ownership_required, "get")
-@method_decorator(profile_ownership_required, "post")
+@method_decorator(decorators.profile_ownership_required, "get")
+@method_decorator(decorators.profile_ownership_required, "post")
 class ProfileUpdateView(UpdateView):
-    model = Profile
+    model = models.Profile
     context_object_name = "target_profile"
-    form_class = ProfileCreationForm
-    success_url = reverse_lazy("mainapp:main")
-    template_name = "mainapp/update_profile.html"
+    form_class = forms.ProfileCreationForm
+    success_url = reverse_lazy("main:main")
+    template_name = "main/update_profile.html"
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "delete_image" in request.POST:
-            profile = get_object_or_404(Profile, pk=kwargs["pk"])
+            profile = get_object_or_404(models.Profile, pk=kwargs["pk"])
             profile.image = None  # Set the image field to None
             profile.save()
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse("mainapp:account", kwargs={"pk": self.object.user.pk})
+        return reverse("main:account", kwargs={"pk": self.object.user.pk})
 
 
 def admin_secret_key(request):
@@ -133,23 +124,23 @@ def admin_secret_key(request):
         if admin_secret_key == admin_secret_key_original:
             User.objects.filter(pk=request.user.pk).update(is_staff=1)
         else:
-            return render(request, "mainapp/admin.html", {"message": "비밀번호가 틀렸습니다."})
-        return render(request, "mainapp/admin.html", {"message": "admin계정으로 등록되었습니다."})
-    return render(request, "mainapp/admin.html")
+            return render(request, "main/admin.html", {"message": "비밀번호가 틀렸습니다."})
+        return render(request, "main/admin.html", {"message": "admin계정으로 등록되었습니다."})
+    return render(request, "main/admin.html")
 
 
 def information(request):
-    return render(request, "mainapp/Information.html")
+    return render(request, "main/Information.html")
 
 
 def main_page(request):
     context = dict()
     # 제품별 모델개수
-    product_names = Review.objects.values("category_product").distinct()
+    product_names = models.Review.objects.values("category_product").distinct()
     product_model_counts = []
     for product in product_names:
         model_name_count = (
-            Review.objects.exclude(Q(model_name__isnull=True) | Q(model_name=""))
+            models.Review.objects.exclude(Q(model_name__isnull=True) | Q(model_name=""))
             .filter(category_product=product["category_product"])
             .values("model_name")
             .distinct()
@@ -166,11 +157,11 @@ def main_page(request):
     context["product_model_counts"] = sorted_products[:5]
 
     # 제품별 리뷰 총 개수
-    category_review_counts = Review.objects.values("category_product").annotate(
+    category_review_counts = models.Review.objects.values("category_product").annotate(
         review_count=Count("review_content")
     )
     category_review_counts_labeled = (
-        Review.objects.filter(labeled_user_id__isnull=False)
+        models.Review.objects.filter(labeled_user_id__isnull=False)
         .values("category_product")
         .annotate(labeled_count=Count("review_content"))
     )
@@ -211,10 +202,10 @@ def main_page(request):
     result_name = []
     result_count = []
     product_count = (
-        Category.objects.values("category_product").distinct().count()
+        models.Category.objects.values("category_product").distinct().count()
     )  # 제품갯수
     user_count = temp_user.count()  # 유저수
-    review_count = Review.objects.count()  # 총리뷰수
+    review_count = models.Review.objects.count()  # 총리뷰수
 
     context["product_count"] = product_count
     context["user_count"] = user_count
@@ -248,4 +239,4 @@ def main_page(request):
     result = sorted(result, key=lambda x: x[1], reverse=True)
     context["result_list"] = result
 
-    return render(request, "mainapp/main_page.html", context)
+    return render(request, "main/main_page.html", context)

@@ -1,14 +1,12 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import register_events, DjangoJobStore
 
-from mainapp.models import Review
-from .forms import UserProfileForm
-from django.shortcuts import render, redirect
+from . import models
 
 
 # 할당 상태 자동 리셋
 def assignment_delete():
-    Review.objects.all().update(first_assign_user=0)
+    models.Review.objects.all().update(first_assign_user=0)
     print("삭제완료")
 
 

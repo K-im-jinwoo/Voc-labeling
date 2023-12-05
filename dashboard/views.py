@@ -9,7 +9,7 @@ from django.http import JsonResponse  # 상단에 추가해 주세요
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import JsonResponse,HttpResponseBadRequest
-from mainapp.models import Category, Review, FirstLabeledData
+from main.models import Category, Review, FirstLabeledData
 import json
 
 from django.views.decorators.csrf import csrf_exempt

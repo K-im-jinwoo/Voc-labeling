@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
-
-from .models import Category, Review, FirstLabeledData, Result, SecondLabeledData
+from . import models
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -28,7 +26,7 @@ class ReviewAdmin(admin.ModelAdmin):
         for i in range(0, total_reviews, chunk_size):
             chunk = selected_reviews[i:i + chunk_size]
             # Delete reviews in chunks of 1000 or less
-            Review.objects.filter(pk__in=[review.pk for review in chunk]).delete()
+            models.Review.objects.filter(pk__in=[review.pk for review in chunk]).delete()
 
         modeladmin.message_user(
             request,
@@ -39,8 +37,8 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Review,  ReviewAdmin)
-admin.site.register(FirstLabeledData)
-admin.site.register(SecondLabeledData)
-admin.site.register(Result)
+admin.site.register(models.Category, CategoryAdmin)
+admin.site.register(models.Review,  ReviewAdmin)
+admin.site.register(models.FirstLabeledData)
+admin.site.register(models.SecondLabeledData)
+admin.site.register(models.Result)

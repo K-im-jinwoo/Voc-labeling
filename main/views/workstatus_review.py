@@ -1,7 +1,6 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 
-from mainapp.models import Category, Review, FirstLabeledData
+from .. import models
 
 
 def type_to_variable(what_type, positive, negative, neutral, everything):
@@ -62,36 +61,33 @@ def workstatus_review(request):
             category_model_name = (
                 category_model_name.replace("{", "").replace("}", "").replace('"', "")
             )
-            print("A", category_model_code)
-            print("B", category_model_name)
-            print("C", category_product)
-            print(request.GET.get("category_model_code"))
+
             if "sort" not in request.session:
                 request.session["sort"] = "positive"
                 # 해당 제품군의 카테고리 정보 불러옴
-            category_detail = Category.objects.filter(category_product=category_product)
+            category_detail = models.Category.objects.filter(category_product=category_product)
             alltotal = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
                 .count()
             )
             first_num = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(first_status=True)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
                 .count()
             )
             second_num = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(second_status=True)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
                 .count()
             )
             dummy_num = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(dummy_status=True)
                 .filter(model_name=category_model_name)
                 .filter(model_code=category_model_code)
@@ -112,28 +108,28 @@ def workstatus_review(request):
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
                 positive_temp = (
-                    FirstLabeledData.objects.filter(
+                    models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 negative_temp = (
-                    FirstLabeledData.objects.filter(
+                    models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 neutral_temp = (
-                    FirstLabeledData.objects.filter(
+                    models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 everything_temp = (
-                    FirstLabeledData.objects.filter(category_id=category)
+                    models.FirstLabeledData.objects.filter(category_id=category)
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
@@ -150,10 +146,8 @@ def workstatus_review(request):
             if request.method == "POST" and "sort" in request.POST:
                 sort = request.POST.get("sort")
                 request.session["sort"] = sort
-            print(request.session["sort"])
 
             # session에 저장한 요구 상태를 읽어 정렬 수행
-
             if request.session["sort"] != "sort":
                 sorting(
                     request.session["sort"],
@@ -211,11 +205,10 @@ def workstatus_review(request):
                 # labeled_word = list(set(labeled_word))
                 context["box"] = labeled_box
                 context["box_counter"] = box_counter
-                # print('aAAAAAAAAAAAAAAA',labeled_word)
                 context["labeled_word"] = labeled_word
                 # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                 labeled_review = labeled_word.values_list("review_id", flat=True)
-                labeled_review = Review.objects.filter(pk__in=labeled_review)
+                labeled_review = models.Review.objects.filter(pk__in=labeled_review)
                 context["labeled_review"] = labeled_review
 
             data = zip(
@@ -230,11 +223,11 @@ def workstatus_review(request):
             context["second_num"] = second_num
             context["left"] = alltotal - first_num
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                models.Category.objects.all().values("category_product").distinct()
             )
 
             my_model_list = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .values("model_name")
                 .distinct()
             )
@@ -242,7 +235,7 @@ def workstatus_review(request):
             context["selected_name"] = category_model_name
             context["selected"] = category_product
             my_code_list = (
-                Review.objects.filter(
+                models.Review.objects.filter(
                     category_product=category_product, model_name=category_model_name
                 )
                 .values("model_code")
@@ -251,7 +244,7 @@ def workstatus_review(request):
             context["model_codes"] = my_code_list
             context["selected_code"] = category_model_code
 
-            return render(request, "mainapp/workstatus.html", context=context)
+            return render(request, "main/workstatus.html", context=context)
         elif "category_model_name" in request.GET:
             category_model_name, selected = request.GET.get(
                 "category_model_name"
@@ -260,32 +253,30 @@ def workstatus_review(request):
                 category_model_name.replace("{", "").replace("}", "").replace('"', "")
             )
             selected = selected.replace("{", "").replace("}", "").replace('"', "")
-            print(category_model_name)
-            print(selected)
             category_product = selected
             if "sort" not in request.session:
                 request.session["sort"] = "positive"
                 # 해당 제품군의 카테고리 정보 불러옴
-            category_detail = Category.objects.filter(category_product=category_product)
+            category_detail = models.Category.objects.filter(category_product=category_product)
             alltotal = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(model_name=category_model_name)
                 .count()
             )
             first_num = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(first_status=True)
                 .filter(model_name=category_model_name)
                 .count()
             )
             second_num = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(second_status=True)
                 .filter(model_name=category_model_name)
                 .count()
             )
             dummy_num = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .filter(dummy_status=True)
                 .filter(model_name=category_model_name)
                 .count()
@@ -303,16 +294,16 @@ def workstatus_review(request):
 
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
-                positive_temp = FirstLabeledData.objects.filter(
+                positive_temp = models.FirstLabeledData.objects.filter(
                     category_id=category, first_labeled_emotion="positive"
                 ).filter(model_name=category_model_name)
-                negative_temp = FirstLabeledData.objects.filter(
+                negative_temp = models.FirstLabeledData.objects.filter(
                     category_id=category, first_labeled_emotion="negative"
                 ).filter(model_name=category_model_name)
-                neutral_temp = FirstLabeledData.objects.filter(
+                neutral_temp = models.FirstLabeledData.objects.filter(
                     category_id=category, first_labeled_emotion="neutral"
                 ).filter(model_name=category_model_name)
-                everything_temp = FirstLabeledData.objects.filter(
+                everything_temp = models.FirstLabeledData.objects.filter(
                     category_id=category
                 ).filter(model_name=category_model_name)
 
@@ -323,15 +314,12 @@ def workstatus_review(request):
                 everything.append(everything_temp)
                 order.append(i)
                 i += 1
-            print("d1111111111111111111111111111")
             # 정렬 요청 들어오면 session에 정렬 요구 상태 저장
             if request.method == "POST" and "sort" in request.POST:
                 sort = request.POST.get("sort")
                 request.session["sort"] = sort
-            print(request.session["sort"])
-            print("22222222222222222222222222222")
-            # session에 저장한 요구 상태를 읽어 정렬 수행
 
+            # session에 저장한 요구 상태를 읽어 정렬 수행
             if request.session["sort"] != "sort":
                 sorting(
                     request.session["sort"],
@@ -354,7 +342,6 @@ def workstatus_review(request):
 
             # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
             if request.method == "GET" and "showing_index" in request.GET:
-                print("333333333333333333333333333")
                 # 번호의 위치(showing_index)와 번호의 긍부정 여부(showing_type)을 가져옴
                 showing_index = request.GET.get("showing_index")
                 showing_type = request.GET.get("showing_type")
@@ -391,11 +378,10 @@ def workstatus_review(request):
                 # labeled_word = list(set(labeled_word))
                 context["box"] = labeled_box
                 context["box_counter"] = box_counter
-                # print('aAAAAAAAAAAAAAAA',labeled_word)
                 context["labeled_word"] = labeled_word
                 # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                 labeled_review = labeled_word.values_list("review_id", flat=True)
-                labeled_review = Review.objects.filter(pk__in=labeled_review)
+                labeled_review = models.Review.objects.filter(pk__in=labeled_review)
                 context["labeled_review"] = labeled_review
 
             data = zip(
@@ -410,18 +396,18 @@ def workstatus_review(request):
             context["second_num"] = second_num
             context["left"] = alltotal - first_num
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                models.Category.objects.all().values("category_product").distinct()
             )
 
             my_model_list = (
-                Review.objects.filter(category_product=category_product)
+                models.Review.objects.filter(category_product=category_product)
                 .values("model_name")
                 .distinct()
             )
             context["model_names"] = my_model_list
             context["selected_name"] = category_model_name
             my_code_list = (
-                Review.objects.filter(
+                models.Review.objects.filter(
                     category_product=category_product, model_name=category_model_name
                 )
                 .values("model_code")
@@ -430,7 +416,7 @@ def workstatus_review(request):
             context["model_codes"] = my_code_list
             context["selected"] = category_product
 
-            return render(request, "mainapp/workstatus.html", context=context)
+            return render(request, "main/workstatus.html", context=context)
 
             ###########################################################################################################################
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
@@ -443,24 +429,24 @@ def workstatus_review(request):
                     request.session["sort"] = "positive"
                 # 해당 제품군의 카테고리 정보 불러옴
                 category_product = request.GET["category_product"]
-                category_detail = Category.objects.filter(
+                category_detail = models.Category.objects.filter(
                     category_product=category_product
                 )
-                alltotal = Review.objects.filter(
+                alltotal = models.Review.objects.filter(
                     category_product=category_product
                 ).count()
                 first_num = (
-                    Review.objects.filter(category_product=category_product)
+                    models.Review.objects.filter(category_product=category_product)
                     .filter(first_status=True)
                     .count()
                 )
                 second_num = (
-                    Review.objects.filter(category_product=category_product)
+                    models.Review.objects.filter(category_product=category_product)
                     .filter(second_status=True)
                     .count()
                 )
                 dummy_num = (
-                    Review.objects.filter(category_product=category_product)
+                    models.Review.objects.filter(category_product=category_product)
                     .filter(dummy_status=True)
                     .count()
                 )
@@ -476,16 +462,16 @@ def workstatus_review(request):
                 i = 0
                 # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
-                    positive_temp = FirstLabeledData.objects.filter(
+                    positive_temp = models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
-                    negative_temp = FirstLabeledData.objects.filter(
+                    negative_temp = models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
-                    neutral_temp = FirstLabeledData.objects.filter(
+                    neutral_temp = models.FirstLabeledData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
-                    everything_temp = FirstLabeledData.objects.filter(
+                    everything_temp = models.FirstLabeledData.objects.filter(
                         category_id=category
                     )
 
@@ -501,7 +487,6 @@ def workstatus_review(request):
                 if request.method == "POST" and "sort" in request.POST:
                     sort = request.POST.get("sort")
                     request.session["sort"] = sort
-                print(request.session["sort"])
 
                 # session에 저장한 요구 상태를 읽어 정렬 수행
 
@@ -562,11 +547,10 @@ def workstatus_review(request):
                     # labeled_word = list(set(labeled_word))
                     context["box"] = labeled_box
                     context["box_counter"] = box_counter
-                    # print('aAAAAAAAAAAAAAAA',labeled_word)
                     context["labeled_word"] = labeled_word
                     # 번호 눌렀을 때 리뷰 원문 데이터 보여주기
                     labeled_review = labeled_word.values_list("review_id", flat=True)
-                    labeled_review = Review.objects.filter(pk__in=labeled_review)
+                    labeled_review = models.Review.objects.filter(pk__in=labeled_review)
                     context["labeled_review"] = labeled_review
 
                 data = zip(
@@ -581,33 +565,33 @@ def workstatus_review(request):
                 context["second_num"] = second_num
                 context["left"] = alltotal - first_num
                 context["product_names"] = (
-                    Category.objects.all().values("category_product").distinct()
+                    models.Category.objects.all().values("category_product").distinct()
                 )
 
                 my_model_list = (
-                    Review.objects.filter(category_product=category_product)
+                    models.Review.objects.filter(category_product=category_product)
                     .values("model_name")
                     .distinct()
                 )
                 context["model_names"] = my_model_list
                 context["selected"] = category_product
 
-                return render(request, "mainapp/workstatus.html", context=context)
+                return render(request, "main/workstatus.html", context=context)
             context = dict()
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                models.Category.objects.all().values("category_product").distinct()
             )
-            return render(request, "mainapp/workstatus.html", context=context)
+            return render(request, "main/workstatus.html", context=context)
 
         else:
             context = {"message": "제품을 다시 선택해주세요."}
             context["product_names"] = (
-                Category.objects.all().values("category_product").distinct()
+                models.Category.objects.all().values("category_product").distinct()
             )
-            return render(request, "mainapp/workstatus.html", context=context)
+            return render(request, "main/workstatus.html", context=context)
 
     # 예외처리
     except Exception as identifier:
         print(identifier)
     context = dict()
-    return render(request, "mainapp/workstatus.html", context=context)
+    return render(request, "main/workstatus.html", context=context)

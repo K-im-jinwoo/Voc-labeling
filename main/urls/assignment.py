@@ -1,8 +1,7 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
-from mainapp.views import assignment
+from ..views import assignment as views_assignment
 
 patterns = [
-    path('assignment/', assignment.assignment, name='assignment'),
+    path('assignment/', views_assignment.assignment, name='assignment'),
 ]

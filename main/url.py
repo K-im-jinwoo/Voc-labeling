@@ -1,20 +1,25 @@
-from django.urls import path, include
-from django.views.generic import TemplateView
+from django.urls import path
 
-from mainapp.urls import account, workstatus_review, workstatus_worker, assignment
-from mainapp.views.workstatus_worker import server
-from mainapp.views.account import main_page
-from .views.account import upload_profile_picture
+from .urls import (
+    account as urls_account, 
+    assignment as urls_assignment,
+    workstatus_review as urls_workstatus_review, 
+    workstatus_worker as urls_workstatus_worker, 
+    )
+from .views import (
+    workstatus_worker as views_workstatus_worker, 
+    account as views_account,
+    )
 
-app_name = "mainapp"
+
+app_name = "main"
 
 urlpatterns = [
-    path("", main_page, name="main"),
-    path("server/", server, name="server"),
+    path("", views_account.main_page, name="main"),
+    path("server/", views_workstatus_worker.server, name="server"),
 ]
 
-
-urlpatterns += account.patterns
-urlpatterns += workstatus_review.patterns
-urlpatterns += workstatus_worker.patterns
-urlpatterns += assignment.patterns
+urlpatterns += urls_account.patterns
+urlpatterns += urls_workstatus_review.patterns
+urlpatterns += urls_workstatus_worker.patterns
+urlpatterns += urls_assignment.patterns

@@ -1,12 +1,11 @@
-from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 
-from mainapp.models import Profile
+from . import models
 
 
 def profile_ownership_required(func):
     def decorated(request, *args, **kwargs):
-        profile = Profile.objects.get(pk=kwargs['pk'])
+        profile = models.Profile.objects.get(pk=kwargs['pk'])
         if not profile.user == request.user:
             return HttpResponseForbidden()
         return func(request, *args, **kwargs)

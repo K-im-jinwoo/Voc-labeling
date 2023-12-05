@@ -5,10 +5,10 @@
 
   <body>
     {% load static %} {% block style %}
-    <link rel="stylesheet" href="{% static 'mainapp/css/login.css' %}" />
+    <link rel="stylesheet" href="{% static 'main/css/login.css' %}" />
     {% endblock %}
     <div class="login_containor">
-      <a href="{% url 'mainapp:main' %}" class="fs-large">
+      <a href="{% url 'main:main' %}" class="fs-large">
         <h4 class="fw-600 fs-large" style="color:black">
           Review Labeling
         </h4>

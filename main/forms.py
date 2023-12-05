@@ -1,14 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import ModelForm
-
 from django import forms
-from .models import UserProfile
-from mainapp.models import Profile
+
+from . import models
 
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = UserProfile
+        model = models.UserProfile
         fields = ["profile_picture"]
 
 
@@ -18,7 +16,7 @@ class AccountUpdateForm(UserCreationForm):
         self.fields["username"].disabled = True
 
 
-class ProfileCreationForm(ModelForm):
+class ProfileCreationForm(forms.ModelForm):
     class Meta:
-        model = Profile
+        model = models.Profile
         fields = ["image", "name"]

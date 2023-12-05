@@ -1,4 +1,4 @@
-# from mainapp.models import Category
+# from main.models import Category
 # from django.shortcuts import render
 
 # def secondContent(request):
