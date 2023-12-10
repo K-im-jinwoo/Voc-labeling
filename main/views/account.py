@@ -219,10 +219,17 @@ def main_page(request):
     for user in users_with_review_counts:
         total_review_count_by_users += user.review_count
         
-    user_ratio = int((total_review_count_by_users / review_count) * 100)
-    context["review_ratio"] = round(
-        (total_review_count_by_users / review_count) * 100, 1
-    )  # 아이디당 리뷰 수 총합 / 총리뷰수
+    # user_ratio = int((total_review_count_by_users / review_count) * 100)
+    # context["review_ratio"] = round(
+    #     (total_review_count_by_users / review_count) * 100, 1
+    # )  # 아이디당 리뷰 수 총합 / 총리뷰수
+    if review_count != 0:
+        context["review_ratio"] = round(
+            (total_review_count_by_users / review_count) * 100, 1
+        )
+    else:
+        # review_count가 0인 경우에 대한 처리
+        context["review_ratio"] = 0
 
     # 메인 세번째
     user_name = []
@@ -232,7 +239,12 @@ def main_page(request):
     for user in users_with_review_counts:
         user_name.append(user.username)
         user_result_count.append(user.review_count)
-        user_ratio_percentage = int((user.review_count / review_count) * 100)
+        # user_ratio_percentage = int((user.review_count / review_count) * 100)
+        if review_count != 0:
+            user_ratio_percentage = int((user.review_count / review_count) * 100)
+        else:
+            # review_count가 0인 경우에 대한 처리
+            user_ratio_percentage = 0
         user_ratios.append(user_ratio_percentage)
         result = zip(user_name, user_result_count, user_ratios)
 
