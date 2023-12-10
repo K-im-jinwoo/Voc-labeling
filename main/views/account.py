@@ -8,7 +8,11 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
-from .. import decorators, forms, models
+from main import (
+    decorators as main_decorators, 
+    forms as main_forms, 
+    models as main_models
+)
 
 
 class AccountCreateView(CreateView):
@@ -52,7 +56,7 @@ class AccountDetailView(DetailView):
 class AccountUpdateView(UpdateView):
     model = User
     context_object_name = "target_user"
-    form_class = forms.AccountUpdateForm
+    form_class = main_forms.AccountUpdateForm
     success_url = reverse_lazy("main:main")
     template_name = "main/update.html"
 
@@ -65,9 +69,9 @@ class AccountDeleteView(DeleteView):
 
 
 class ProfileCreateView(CreateView):
-    model = models.Profile
+    model = main_models.Profile
     context_object_name = "target_profile"
-    form_class = forms.ProfileCreationForm
+    form_class = main_forms.ProfileCreationForm
     success_url = reverse_lazy("main:main")
     template_name = "main/account_profile.html"
 
@@ -83,7 +87,7 @@ class ProfileCreateView(CreateView):
 
 def upload_profile_picture(request):
     if request.method == "POST":
-        form = forms.UserProfileForm(request.POST, request.FILES)
+        form = main_forms.UserProfileForm(request.POST, request.FILES)
         if form.is_valid():
             user_profile = form.save()
             # 성공적으로 저장되었을 때의 동작 등 추가 작업 수행
@@ -91,24 +95,24 @@ def upload_profile_picture(request):
             return redirect("profile")  # 프로필 페이지 등으로 리디렉션
 
     else:
-        form = forms.UserProfileForm()
+        form = main_forms.UserProfileForm()
 
     return render(request, "upload_profile.html", {"form": form})
 
 
-@method_decorator(decorators.profile_ownership_required, "get")
-@method_decorator(decorators.profile_ownership_required, "post")
+@method_decorator(main_decorators.profile_ownership_required, "get")
+@method_decorator(main_decorators.profile_ownership_required, "post")
 class ProfileUpdateView(UpdateView):
-    model = models.Profile
+    model = main_models.Profile
     context_object_name = "target_profile"
-    form_class = forms.ProfileCreationForm
+    form_class = main_forms.ProfileCreationForm
     success_url = reverse_lazy("main:main")
     template_name = "main/update_profile.html"
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "delete_image" in request.POST:
-            profile = get_object_or_404(models.Profile, pk=kwargs["pk"])
+            profile = get_object_or_404(main_models.Profile, pk=kwargs["pk"])
             profile.image = None  # Set the image field to None
             profile.save()
         return super().post(request, *args, **kwargs)
@@ -136,11 +140,11 @@ def information(request):
 def main_page(request):
     context = dict()
     # 제품별 모델개수
-    product_names = models.Review.objects.values("category_product").distinct()
+    product_names = main_models.Review.objects.values("category_product").distinct()
     product_model_counts = []
     for product in product_names:
         model_name_count = (
-            models.Review.objects.exclude(Q(model_name__isnull=True) | Q(model_name=""))
+            main_models.Review.objects.exclude(Q(model_name__isnull=True) | Q(model_name=""))
             .filter(category_product=product["category_product"])
             .values("model_name")
             .distinct()
@@ -157,11 +161,11 @@ def main_page(request):
     context["product_model_counts"] = sorted_products[:5]
 
     # 제품별 리뷰 총 개수
-    category_review_counts = models.Review.objects.values("category_product").annotate(
+    category_review_counts = main_models.Review.objects.values("category_product").annotate(
         review_count=Count("review_content")
     )
     category_review_counts_labeled = (
-        models.Review.objects.filter(labeled_user_id__isnull=False)
+        main_models.Review.objects.filter(labeled_user_id__isnull=False)
         .values("category_product")
         .annotate(labeled_count=Count("review_content"))
     )
@@ -202,10 +206,10 @@ def main_page(request):
     result_name = []
     result_count = []
     product_count = (
-        models.Category.objects.values("category_product").distinct().count()
+        main_models.Category.objects.values("category_product").distinct().count()
     )  # 제품갯수
     user_count = temp_user.count()  # 유저수
-    review_count = models.Review.objects.count()  # 총리뷰수
+    review_count = main_models.Review.objects.count()  # 총리뷰수
 
     context["product_count"] = product_count
     context["user_count"] = user_count

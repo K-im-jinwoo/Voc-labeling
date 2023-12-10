@@ -1,12 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
-from . import models
+from . import models as main_models
 
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = models.UserProfile
+        model = main_models.UserProfile
         fields = ["profile_picture"]
 
 
@@ -18,5 +18,5 @@ class AccountUpdateForm(UserCreationForm):
 
 class ProfileCreationForm(forms.ModelForm):
     class Meta:
-        model = models.Profile
+        model = main_models.Profile
         fields = ["image", "name"]

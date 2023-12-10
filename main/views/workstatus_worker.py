@@ -2,8 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.shortcuts import render
 
-from .. import models
-
+from main import models as main_models
 
 def workstatus_worker(request):
     temp_user = User.objects.all()
@@ -15,7 +14,7 @@ def workstatus_worker(request):
     if "category_product" in request.GET:
         category_product = request.GET["category_product"]
         for i in temp_user:
-            temp_count = models.Review.objects.filter(
+            temp_count = main_models.Review.objects.filter(
                 category_product=category_product, labeled_user_id=int(i.pk)
             ).count()
             result_name.append(i.username)
@@ -30,7 +29,7 @@ def workstatus_worker(request):
         }
 
     # product_names 가져오기
-    review_count = models.Review.objects.count()  # 총리뷰수
+    review_count = main_models.Review.objects.count()  # 총리뷰수
     context["review_count"] = review_count
     users_with_review_counts = User.objects.annotate(
         review_count=Count("review")
@@ -41,7 +40,7 @@ def workstatus_worker(request):
         total_review_count_by_users += user.review_count
     context["total_review_count_by_users"] = total_review_count_by_users
     product_names = (
-        models.Category.objects.all().values_list("category_product", flat=True).distinct()
+        main_models.Category.objects.all().values_list("category_product", flat=True).distinct()
     )
     context["product_names"] = product_names
     return render(request, "main/workstatus_count.html", context=context)
@@ -50,7 +49,7 @@ def workstatus_worker(request):
 def server(request):
     print("버튼 적용 성공")
     # 시간정해서 작업하지않은 리뷰 할당상태 변경하는 코드
-    models.Review.objects.all().update(first_assign_user=0, second_assign_user=0)
+    main_models.Review.objects.all().update(first_assign_user=0, second_assign_user=0)
     print("완료")
 
     return render(request, "main/workstatus_count.html")
