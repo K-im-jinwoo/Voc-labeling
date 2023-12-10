@@ -80,11 +80,16 @@ WSGI_APPLICATION = "LG_Project.wsgi.application"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'labeling_project',
+        'USER': 'root',
+        'PASSWORD': '', # 개인 비밀번호 직접 입력
+        'HOST': 'localhost',  # MySQL 서버 호스트
+        'PORT': '3306',       # MySQL 포트 번호
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -152,8 +157,15 @@ AWS_S3_OBJECT_PARAMETERS = {
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
+# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 SCHEDULER_DEFAULT = True
 
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
+
+SCHEDULER_DEFAULT_ARGS = {
+    'apscheduler.job_defaults.coalesce': True,
+    'apscheduler.job_defaults.max_instances': 1,
+}
+
+APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'
