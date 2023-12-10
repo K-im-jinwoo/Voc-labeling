@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+from . import database_config as DATABASE
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.urls import reverse_lazy
@@ -81,12 +82,11 @@ WSGI_APPLICATION = "LG_Project.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'labeling_project',
-        'USER': 'root',
-        'PASSWORD': '', # 개인 비밀번호 직접 입력
-        'HOST': 'localhost',  # MySQL 서버 호스트
-        'PORT': '3306',       # MySQL 포트 번호
+        'ENGINE': DATABASE.ENGINE,
+        'NAME': DATABASE.NAME,
+        'USER': DATABASE.USER,
+        'PASSWORD': DATABASE.PASSWORD,
+        'PORT': DATABASE.PORT,
     }
 }
 

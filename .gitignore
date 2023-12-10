@@ -38,3 +38,6 @@ migrations/
 
 # macOS-specific
 .DS_Store
+
+# database_config
+database_config.py
