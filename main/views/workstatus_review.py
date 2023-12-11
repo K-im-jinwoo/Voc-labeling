@@ -108,28 +108,28 @@ def workstatus_review(request):
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
                 positive_temp = (
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 negative_temp = (
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 neutral_temp = (
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 everything_temp = (
-                    main_models.FirstLabeledData.objects.filter(category_id=category)
+                    main_models.LabelingData.objects.filter(category_id=category)
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
@@ -294,16 +294,16 @@ def workstatus_review(request):
 
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
-                positive_temp = main_models.FirstLabeledData.objects.filter(
+                positive_temp = main_models.LabelingData.objects.filter(
                     category_id=category, first_labeled_emotion="positive"
                 ).filter(model_name=category_model_name)
-                negative_temp = main_models.FirstLabeledData.objects.filter(
+                negative_temp = main_models.LabelingData.objects.filter(
                     category_id=category, first_labeled_emotion="negative"
                 ).filter(model_name=category_model_name)
-                neutral_temp = main_models.FirstLabeledData.objects.filter(
+                neutral_temp = main_models.LabelingData.objects.filter(
                     category_id=category, first_labeled_emotion="neutral"
                 ).filter(model_name=category_model_name)
-                everything_temp = main_models.FirstLabeledData.objects.filter(
+                everything_temp = main_models.LabelingData.objects.filter(
                     category_id=category
                 ).filter(model_name=category_model_name)
 
@@ -462,16 +462,16 @@ def workstatus_review(request):
                 i = 0
                 # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
-                    positive_temp = main_models.FirstLabeledData.objects.filter(
+                    positive_temp = main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
-                    negative_temp = main_models.FirstLabeledData.objects.filter(
+                    negative_temp = main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
-                    neutral_temp = main_models.FirstLabeledData.objects.filter(
+                    neutral_temp = main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
-                    everything_temp = main_models.FirstLabeledData.objects.filter(
+                    everything_temp = main_models.LabelingData.objects.filter(
                         category_id=category
                     )
 

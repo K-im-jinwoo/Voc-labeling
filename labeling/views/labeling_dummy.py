@@ -13,7 +13,7 @@ def dummy(request):
             request.POST.get("category_product") != ""
             and request.POST.get("category_middle") != ""
         ):
-            dummy_data = main_models.FirstLabeledData.objects.filter(
+            dummy_data = main_models.LabelingData.objects.filter(
                 category_id__category_product=request.POST.get("category_product"),
                 category_id__category_middle=request.POST.get("category_middle"),
                 first_labeled_target=request.POST.get("first_labeled_target"),

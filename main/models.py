@@ -3,80 +3,69 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-# Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     image = models.ImageField(upload_to="profile/", null=True)
     name = models.CharField(max_length=256, null=True)
-
-
-class Category(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    category_middle = models.CharField(max_length=256)
-    category_color = models.CharField(max_length=256)
-    category_product = models.CharField(max_length=256)
-
-    def __str__(self):
-        return str(self.category_id) + " - " + str(self.category_middle)
+    manager = models.BooleanField(default=False) # 관리자 권한 여부
 
 
 class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to="profile_pictures/")
 
 
+# 제품 모델 
+# ex) id:1, name:청소기
+class Product(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return f"{self.id} - {self.name}"
+
+
+# 카테고리 모델 
+# ex) product: Product, id: 1, name: 흡입력, color: #ffffff
+class Category(models.Model):
+    product = models.ForeignKey("Product", on_delete=models.CASCADE, related_name="category_products")
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=256)
+    color = models.CharField(max_length=256)
+
+    def __str__(self):
+        return f"{self.product} - {self.id} - {self.name} - {self.color}"
+
+
+# 리뷰 데이터 모델
+# product: Product, assigned_user: 할당된 유저, worked_user: 작업한 유저, id: 1, number: 리뷰 번호, content: 리뷰
+# is_labeled: 라벨링 여부, is_trashed: 데이터 버림 여부, model_name: 모델 이름, model_code: 모델 코드, date_uploaded: 데이터 업로드 날짜
 class Review(models.Model):
-    review_id = models.AutoField(primary_key=True)
-    category_product = models.CharField(max_length=256, null=False)
-    review_number = models.IntegerField(null=False)
-    review_content = models.TextField(null=False)
-    first_status = models.BooleanField(default=False)
-    second_status = models.BooleanField(default=False)
-    dummy_status = models.BooleanField(default=False)
-    labeled_user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    first_assign_user = models.TextField(default="0", null=True)
-    second_assign_user = models.TextField(default="0", null=True)
-    model_name = models.TextField(default="", null=True)
-    model_code = models.TextField(default="", null=True)
+    product = models.OneToOneField("Product", on_delete=models.CASCADE, related_name="review_products")
+    assigned_user = models.OneToOneField("Profile", on_delete=models.CASCADE, null=True, related_name="review_assigned_users")
+    worked_user = models.OneToOneField("Profile", on_delete=models.CASCADE, null=True, related_name="review_worked_users")
+    id = models.AutoField(primary_key=True)
+    number = models.IntegerField(null=False)
+    content = models.TextField(null=False)
+    is_labeled = models.BooleanField(default=False) # true: 라벨링됨
+    is_trashed = models.BooleanField(default=False) # true: 버림
+    model_name = models.CharField(null=True, max_length=256)
+    model_code = models.CharField(null=True, max_length=256)
+    date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.review_id) + " - " + str(self.category_product)
+        return f"{self.product} - {self.worked_user.name} - {self.assigned_user.name} - {self.id} - {self.is_labeled} - {self.is_trashed}"
 
 
-class FirstLabeledData(models.Model):
-    first_labeled_id = models.AutoField(primary_key=True)
-    first_labeled_emotion = models.CharField(max_length=256)
-    first_labeled_target = models.CharField(max_length=256)
-    first_labeled_expression = models.CharField(max_length=256)
-    category_id = models.ForeignKey("Category", on_delete=models.CASCADE)
-    review_id = models.ForeignKey("Review", on_delete=models.CASCADE)
-    model_name = models.TextField(default="", null=True)
-    model_code = models.TextField(default="", null=True)
-
-    def __str__(self):
-        return str(self.first_labeled_id) + " - " + str(self.first_labeled_emotion)
-
-
-class SecondLabeledData(models.Model):
-    second_labeled_id = models.AutoField(primary_key=True)
-    second_labeled_emotion = models.CharField(max_length=256)
-    second_labeled_target = models.CharField(max_length=256)
-    second_labeled_expression = models.CharField(max_length=256)
-    category_id = models.ForeignKey("Category", on_delete=models.CASCADE)
-    review_id = models.ForeignKey("Review", on_delete=models.CASCADE)
+# 라벨링 데이터 모델
+# review: Review, category: Category, id: 1, emotion: 긍정/부정/중립, target: 대상, phenomenon: 현상, date_labeled: 라벨링된 날짜
+class LabelingData(models.Model):
+    review = models.ForeignKey("Review", on_delete=models.CASCADE, related_name="labeling_data_reviews")
+    category = models.ForeignKey("Category", on_delete=models.CASCADE, null=True, related_name="labeling_data_categories")
+    id = models.AutoField(primary_key=True)
+    emotion = models.CharField(max_length=256)
+    target = models.CharField(max_length=256)
+    phenomenon = models.CharField(max_length=256)
+    date_labeled = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.second_labeled_id) + " - " + str(self.second_labeled_emotion)
-
-
-class Result(models.Model):
-    result_id = models.AutoField(primary_key=True)
-    second_labeled_id = models.ForeignKey("SecondLabeledData", on_delete=models.CASCADE)
-    result_emotion = models.CharField(max_length=256)
-    result_target = models.CharField(max_length=256)
-    result_expression = models.CharField(max_length=256)
-
-
-class WebStatus(models.Model):
-    status_id = models.AutoField(primary_key=True)
-    status_name = models.TextField(default="")
-    status_value = models.TextField(default="")
+        return f"{self.review.id} - ({self.review.product.name} - {self.category.name}) - {self.id}"

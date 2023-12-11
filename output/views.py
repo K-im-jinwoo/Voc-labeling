@@ -69,7 +69,7 @@ def output(request):
 
         elif request.method == "POST" and "export" in request.POST:
             if request.POST["export"] == ".xlsx export":
-                all_keywords = main_models.FirstLabeledData.objects.filter(
+                all_keywords = main_models.LabelingData.objects.filter(
                     category_id__category_product=request.POST["product"]
                 )
                 categorys = main_models.Category.objects.filter(
@@ -186,7 +186,7 @@ def output(request):
                 )
                 result = [[""]] * len(reviews)
                 for i in range(len(reviews)):
-                    categorys = main_models.FirstLabeledData.objects.filter(
+                    categorys = main_models.LabelingData.objects.filter(
                         review_id=reviews[i], category_id__category_product=product
                     ).values_list("category_id__category_middle", flat=True)
                     review_category = ""

@@ -20,7 +20,7 @@ def print_review(category_product, request):
 def reset(request):
     print("작업 쪽 초기화 작업")
     print(request.GET["review_id"])
-    main_models.FirstLabeledData.objects.filter(
+    main_models.LabelingData.objects.filter(
         review_id=request.GET["review_id"]
     ).delete()
     return JsonResponse(data={})
@@ -30,7 +30,7 @@ def reset(request):
 def delete_label(request):
     print("실행!")
     print(request.GET["label_number"])
-    main_models.FirstLabeledData.objects.filter(pk=request.GET["label_number"]).delete()
+    main_models.LabelingData.objects.filter(pk=request.GET["label_number"]).delete()
     return JsonResponse(data={})
 
 
@@ -54,7 +54,7 @@ def labeling_work(request):
             if request.GET.get("category_product"):
                 #####---- 해당 리뷰 불러오기 ----#####
                 category_product = request.GET["category_product"]
-                category_detail = Category.objects.filter(
+                category_detail = main_models.Category.objects.filter(
                     category_product=category_product
                 )
 
@@ -62,7 +62,7 @@ def labeling_work(request):
                 if (
                     auto_assignment_status == "True"
                     and len(
-                        Review.objects.filter(
+                        main_models.Review.objects.filter(
                             category_product=category_product,
                             first_status=0,
                             second_status=0,
@@ -83,7 +83,7 @@ def labeling_work(request):
                         .order_by("review_number")
                         .values("pk")[: int(auto_assignment_value)]
                     )
-                    review_assignment = Review.objects.filter(
+                    review_assignment = main_models.Review.objects.filter(
                         pk__in=review_assignment
                     ).order_by("review_number")
                     review_assignment.update(
@@ -96,7 +96,7 @@ def labeling_work(request):
                 if (
                     auto_assignment_status == "False"
                     and len(
-                        Review.objects.filter(
+                        main_models.Review.objects.filter(
                             category_product=category_product,
                             first_status=0,
                             second_status=0,
@@ -108,7 +108,7 @@ def labeling_work(request):
                     and "assignment_count" in request.GET
                 ):
                     review_assignment = (
-                        Review.objects.filter(
+                        main_models.Review.objects.filter(
                             category_product=category_product,
                             first_status=0,
                             second_status=0,
@@ -137,7 +137,7 @@ def labeling_work(request):
                         dummy_status=True,
                         labeled_user_id=request.user,
                     )
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         review_id=review_id
                     ).delete()
 
@@ -148,7 +148,7 @@ def labeling_work(request):
                 # 자동 라벨링 - 저장
                 if "auto_labeling_status" not in request.session:
                     current_review = review_first[0].review_content
-                    compare_data = main_models.FirstLabeledData.objects.filter(
+                    compare_data = main_models.LabelingData.objects.filter(
                         review_id__category_product=category_product
                     )
                     auto_data_id = []
@@ -173,7 +173,7 @@ def labeling_work(request):
                     request.session["auto_labeling_status"] = review_first[0].review_id
                     for data in auto_data:
                         print("current auto labeling 지금 실행됨")
-                        auto = main_models.FirstLabeledData()
+                        auto = main_models.LabelingData()
                         auto.first_labeled_emotion = (
                             data.first_labeled_emotion
                         )  # 긍정 ,부정, 중립 저장
@@ -197,7 +197,7 @@ def labeling_work(request):
                     request.session["auto_labeling_status"] != review_first[0].review_id
                 ):
                     current_review = review_first[0].review_content
-                    compare_data = main_models.FirstLabeledData.objects.filter(
+                    compare_data = main_models.LabelingData.objects.filter(
                         review_id__category_product=category_product
                     )
                     auto_data_id = []
@@ -220,7 +220,7 @@ def labeling_work(request):
                                     auto_data_id.append(i.pk)
                     auto_data = compare_data.filter(pk__in=auto_data_id)
                     for data in auto_data:
-                        auto = main_models.FirstLabeledData()
+                        auto = main_models.LabelingData()
                         auto.first_labeled_emotion = (
                             data.first_labeled_emotion
                         )  # 긍정 ,부정, 중립 저장
@@ -244,7 +244,7 @@ def labeling_work(request):
                 # 해당 제품군과 범위 중 제일 처음 한 개만 가져옴 => print_review() 함수 사용
                 review_first = print_review(category_product, request)
 
-                status_result = main_models.FirstLabeledData.objects.filter(
+                status_result = main_models.LabelingData.objects.filter(
                     review_id=review_first[0].pk
                 )
 
@@ -280,7 +280,7 @@ def labeling_work(request):
                         "category_id"
                     )  # 해당하는 리뷰에 맞는 카테고리id를 받아오기
                     print(target, emotion, expression)
-                    if not main_models.FirstLabeledData.objects.filter(
+                    if not main_models.LabelingData.objects.filter(
                         first_labeled_emotion=emotion,
                         first_labeled_target=target,
                         first_labeled_expression=expression,
@@ -288,7 +288,7 @@ def labeling_work(request):
                         review_id=review_id,
                     ):
                         # First_Labeled_Data모델을 불러와서 first_labeled_data에 저장
-                        first_labeled_data = main_models.FirstLabeledData()
+                        first_labeled_data = main_models.LabelingData()
 
                         # labeling_work에서 불러온 값들을 first_labeled_data 안에 정해진 db이름으로 넣음
                         first_labeled_data.first_labeled_emotion = (
@@ -339,7 +339,7 @@ def labeling_work(request):
                         current_review = review_first[0].review_content
 
                         # 자동 라벨링 - 데이터 필터링 및 중복 제거
-                        compare_data = main_models.FirstLabeledData.objects.filter(
+                        compare_data = main_models.LabelingData.objects.filter(
                             review_id__category_product=category_product,
                             first_labeled_target__isnull=False,
                             first_labeled_expression__isnull=False,
@@ -361,7 +361,7 @@ def labeling_work(request):
 
                         for data in auto_data:
                             auto_data_list.append(
-                                main_models.FirstLabeledData(
+                                main_models.LabelingData(
                                     first_labeled_emotion=data.first_labeled_emotion,
                                     first_labeled_target=data.first_labeled_target,
                                     first_labeled_expression=data.first_labeled_expression,
@@ -372,7 +372,7 @@ def labeling_work(request):
                                 )
                             )
 
-                        main_models.FirstLabeledData.objects.bulk_create(auto_data_list)
+                        main_models.LabelingData.objects.bulk_create(auto_data_list)
                         request.session["auto_labeling_status"] = review_first[
                             0
                         ].review_id
@@ -380,7 +380,7 @@ def labeling_work(request):
                         current_review = review_first[0].review_content
 
                         # 자동 라벨링 - 데이터 필터링 및 중복 제거
-                        compare_data = main_models.FirstLabeledData.objects.filter(
+                        compare_data = main_models.LabelingData.objects.filter(
                             review_id__category_product=category_product,
                             first_labeled_target__isnull=False,
                             first_labeled_expression__isnull=False,
@@ -402,7 +402,7 @@ def labeling_work(request):
 
                         for data in auto_data:
                             auto_data_list.append(
-                                main_models.FirstLabeledData(
+                                main_models.LabelingData(
                                     first_labeled_emotion=data.first_labeled_emotion,
                                     first_labeled_target=data.first_labeled_target,
                                     first_labeled_expression=data.first_labeled_expression,
@@ -413,12 +413,12 @@ def labeling_work(request):
                                 )
                             )
 
-                        main_models.FirstLabeledData.objects.bulk_create(auto_data_list)
+                        main_models.LabelingData.objects.bulk_create(auto_data_list)
                         request.session["auto_labeling_status"] = review_first[
                             0
                         ].review_id
 
-                    status_result = main_models.FirstLabeledData.objects.filter(
+                    status_result = main_models.LabelingData.objects.filter(
                         review_id=review_first[0].pk
                     )
 

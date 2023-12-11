@@ -110,28 +110,28 @@ def dashboard(request):
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
                 positive_temp = (
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 negative_temp = (
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 neutral_temp = (
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
                 everything_temp = (
-                    main_models.FirstLabeledData.objects.filter(category_id=category)
+                    main_models.LabelingData.objects.filter(category_id=category)
                     .filter(model_name=category_model_name)
                     .filter(model_code=category_model_code)
                 )
@@ -336,16 +336,16 @@ def dashboard(request):
 
             # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
             for category in category_detail:
-                positive_temp = main_models.FirstLabeledData.objects.filter(
+                positive_temp = main_models.LabelingData.objects.filter(
                     category_id=category, first_labeled_emotion="positive"
                 ).filter(model_name=category_model_name)
-                negative_temp = main_models.FirstLabeledData.objects.filter(
+                negative_temp = main_models.LabelingData.objects.filter(
                     category_id=category, first_labeled_emotion="negative"
                 ).filter(model_name=category_model_name)
-                neutral_temp = main_models.FirstLabeledData.objects.filter(
+                neutral_temp = main_models.LabelingData.objects.filter(
                     category_id=category, first_labeled_emotion="neutral"
                 ).filter(model_name=category_model_name)
-                everything_temp = main_models.FirstLabeledData.objects.filter(
+                everything_temp = main_models.LabelingData.objects.filter(
                     category_id=category
                 ).filter(model_name=category_model_name)
 
@@ -548,16 +548,16 @@ def dashboard(request):
 
                 # 카테고리별 라벨링된 데이터 개수 불러옴(개수 아니기 때문에 바로 쓰시면 됩니다.)
                 for category in category_detail:
-                    positive_temp = main_models.FirstLabeledData.objects.filter(
+                    positive_temp = main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="positive"
                     )
-                    negative_temp = main_models.FirstLabeledData.objects.filter(
+                    negative_temp = main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="negative"
                     )
-                    neutral_temp = main_models.FirstLabeledData.objects.filter(
+                    neutral_temp = main_models.LabelingData.objects.filter(
                         category_id=category, first_labeled_emotion="neutral"
                     )
-                    everything_temp = main_models.FirstLabeledData.objects.filter(
+                    everything_temp = main_models.LabelingData.objects.filter(
                         category_id=category
                     )
 
@@ -644,7 +644,7 @@ def dashboard(request):
                     category_product=category_product
                 ).values("category_id")
 
-                select_ids = main_models.FirstLabeledData.objects.filter(
+                select_ids = main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys
                 ).values("review_id")
                 # 선택한 카테고리의 리뷰id 활용해서 해당 contents만 뽑기
@@ -655,13 +655,13 @@ def dashboard(request):
                 )
                 # 선택한 카테고리의 대상
                 select_targets_list = list(
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id__in=select_categorys
                     ).values_list("first_labeled_target", flat=True)
                 )
                 # 선택한 카테고리의 현상
                 select_expression_list = list(
-                    main_models.FirstLabeledData.objects.filter(
+                    main_models.LabelingData.objects.filter(
                         category_id__in=select_categorys
                     ).values_list("first_labeled_expression", flat=True)
                 )
@@ -756,12 +756,12 @@ def dashboard(request):
                 if category in state["category_detail_list"]
             ]
 
-            # 해당 카테고리에 속하는 모든 리뷰 중에서 firstlabeleddata 값이 존재하는 리뷰만 추출
+            # 해당 카테고리에 속하는 모든 리뷰 중에서 LabelingData 값이 존재하는 리뷰만 추출
             select_category = (
                 main_models.Review.objects.filter(
-                    category_product=cp, firstlabeleddata__isnull=False
+                    category_product=cp, LabelingData__isnull=False
                 )
-                .values("firstlabeleddata")
+                .values("LabelingData")
                 .distinct()
             )
 
@@ -775,7 +775,7 @@ def dashboard(request):
                 .values("category_id")
             )
             # 선택한 카테고리의 리뷰 id
-            select_ids = main_models.FirstLabeledData.objects.filter(
+            select_ids = main_models.LabelingData.objects.filter(
                 category_id__in=select_categorys
             ).values("review_id")
             # 선택한 카테고리의 리뷰id 활용해서 해당 contents만 뽑기
@@ -786,29 +786,29 @@ def dashboard(request):
             )
             # 선택한 카테고리의 대상
             select_targets_list = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys
                 ).values_list("first_labeled_target", flat=True)
             )
             # 선택한 카테고리의 현상
             select_expression_list = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys
                 ).values_list("first_labeled_expression", flat=True)
             )
             # <-- 선택한 카테고리 target emotion
             select_target_positive = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="positive"
                 ).values_list("first_labeled_target", flat=True)
             )
             select_target_negative = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="negative"
                 ).values_list("first_labeled_target", flat=True)
             )
             select_target_neutral = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="neutral"
                 ).values_list("first_labeled_target", flat=True)
             )
@@ -816,41 +816,41 @@ def dashboard(request):
 
             # <-- 선택한 카테고리 expression emotion
             select_expression_positive = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="positive"
                 ).values_list("first_labeled_expression", flat=True)
             )
             select_expression_negative = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="negative"
                 ).values_list("first_labeled_expression", flat=True)
             )
             select_expression_neutral = list(
-                main_models.FirstLabeledData.objects.filter(
+                main_models.LabelingData.objects.filter(
                     category_id__in=select_categorys, first_labeled_emotion="neutral"
                 ).values_list("first_labeled_expression", flat=True)
             )
             # --> 선택한 카테고리 expression emotion
 
-            # 추출된 리뷰의 모든 firstlabeleddata 값을 추출하여 리스트로 변환
+            # 추출된 리뷰의 모든 LabelingData 값을 추출하여 리스트로 변환
             first_values = [
-                category["firstlabeleddata"] for category in select_category
+                category["LabelingData"] for category in select_category
             ]
 
-            # 모든 first_values에 해당하는 main_models.FirstLabeledData를 추출
+            # 모든 first_values에 해당하는 main_models.LabelingData를 추출
             # 이 때 distinct()를 사용하여 중복된 데이터를 제거하고, values() 메서드를 사용하여 first_labeled_target 값만 추출
             first_targets = (
-                main_models.FirstLabeledData.objects.filter(first_labeled_id__in=first_values)
+                main_models.LabelingData.objects.filter(first_labeled_id__in=first_values)
                 .distinct()
                 .values("first_labeled_target")
             )
-            first_expression = main_models.FirstLabeledData.objects.filter(
+            first_expression = main_models.LabelingData.objects.filter(
                 first_labeled_id__in=first_values
             ).values("first_labeled_expression")
-            first_emotion = main_models.FirstLabeledData.objects.filter(
+            first_emotion = main_models.LabelingData.objects.filter(
                 first_labeled_id__in=first_values
             ).values("first_labeled_emotion")
-            categoryId = main_models.FirstLabeledData.objects.filter(
+            categoryId = main_models.LabelingData.objects.filter(
                 first_labeled_id__in=first_values
             ).values("category_id")
             # categoryMiddle = Category.objects.filter(categoty_id=categoryId).values("category_middle")
@@ -976,7 +976,7 @@ def dashboard(request):
             if treemap_name:
                 category = main_models.Category.objects.get(category_middle=treemap_name)
                 
-                first_labeled_data_list = main_models.FirstLabeledData.objects.filter(category_id=category)
+                first_labeled_data_list = main_models.LabelingData.objects.filter(category_id=category)
                 
                 review_list = main_models.Review.objects.filter(review_id__in=first_labeled_data_list.values("review_id"))
                 review_contents = []
