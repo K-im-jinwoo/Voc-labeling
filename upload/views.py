@@ -11,6 +11,7 @@ from LG_Project.settings.base import BASE_DIR
 from main import models as main_models
 import time
 
+# 카테고리 삭제
 def delete_category(request):
     if request.method == "POST":
         category_middle = request.POST.get("category_middle")
@@ -96,58 +97,52 @@ def cleansing(csv_file, is_csv=True):
 
 def upload_main(request):
     try:
+        # 제품 선택
         if request.method == "GET":
             context = dict()
             context["product_names"] = (
                 main_models.Product.objects.all().values("name").distinct()
             )
-            print(context["product_names"])
-            request.session["name"] = "--제품을 선택하세요--"
-            if request.GET.get("name"):
-                request.session["name"] = request.GET.get(
-                    "name"
+            request.session["category_product"] = "제품명 선택"
+            if request.GET.get("category_product"):
+                request.session["category_product"] = request.GET.get(
+                    "category_product"
                 )
             context["category_detail"] = main_models.Category.objects.filter(
-                name=request.session["name"]
+                name=request.session["category_product"]
             )
-            category_product = request.POST.get("name")
+            category_product = request.POST.get("category_product")
             return render(request, "upload/upload_main.html", context)
 
+        # 제품 추가
         elif request.method == "POST":
             if request.POST.get("category_add"):
+                product = main_models.Product()
                 category = main_models.Category()
-                category.category_product = request.POST.get("category_add")
-                category.category_middle = "기타"
-                category.category_color = "#c8c8c850"
+                product.name = request.POST.get("category_add")
+                product.save()
+                category.product = main_models.Product.objects.get(name=request.POST.get("category_add"))
+                category.name = "기타"
+                category.color = "#c8c8c850"
                 category.save()
                 return HttpResponseRedirect(reverse("upload:upload"))
 
+            # 제품명 변경
             if request.POST.get("category_update"):
                 category_product = request.POST.get("category_product")
                 category_update = request.POST.get("category_update")
 
-                # 중복된 값을 가진 모든 객체 가져오기
-                duplicate_categories = main_models.Category.objects.filter(
-                    category_product=category_product
+                # 해당하는 제품명 변경
+                duplicate_product = main_models.Product.objects.get(
+                    name=category_product
                 )
-
-                # 중복된 객체들에 대해 업데이트 수행
-                for category in duplicate_categories:
-                    category.category_product = category_update
-                    category.save()
-
-                    # Review 모델에서 해당 카테고리의 모든 객체 가져오기
-                reviews = main_models.Review.objects.filter(
-                    category_product=category_product
-                )
-
-                # 가져온 Review 객체들을 반복하며 제품명 변경 후 저장
-                for review in reviews:
-                    review.category_product = category_update
-                    review.save()
+                duplicate_product.name  = category_update
+                duplicate_product.save()
 
                 return HttpResponseRedirect(reverse("upload:upload"))
-
+            
+            ### 여기서부터
+            # 카테고리 추가
             if request.POST.get("form-type") == "formOne":
                 category = main_models.Category()
                 category.category_product = request.session["category_product"]
