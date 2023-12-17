@@ -43,7 +43,7 @@ def workstatus_worker(request):
         main_models.Category.objects.all().values_list("category_product", flat=True).distinct()
     )
     context["product_names"] = product_names
-    return render(request, "main/workstatus_count.html", context=context)
+    return render(request, "main/workstatus_worker.html", context=context)
 
 
 def server(request):
@@ -52,4 +52,4 @@ def server(request):
     main_models.Review.objects.all().update(first_assign_user=0, second_assign_user=0)
     print("완료")
 
-    return render(request, "main/workstatus_count.html")
+    return render(request, "main/workstatus_worker.html")

@@ -22,10 +22,10 @@ from django_pydenticon.views import image as pydenticon_image
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("main.url")),
+    path("", include("main.urls")),
     path("identicon/image/<path:data>", pydenticon_image, name="pydenticon_image"),
     path("upload/", include("upload.urls")),
-    path("labeling/", include("labeling.url")),
-    path("dashboard/", include("dashboard.urls.dashboard")),
+    path("labeling/", include("labeling.urls")),
+    path("dashboard/", include("dashboard.urls")),
     path("output/", include("output.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

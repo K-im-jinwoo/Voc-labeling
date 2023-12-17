@@ -244,7 +244,7 @@ def workstatus_review(request):
             context["model_codes"] = my_code_list
             context["selected_code"] = category_model_code
 
-            return render(request, "main/workstatus.html", context=context)
+            return render(request, "main/workstatus_review.html", context=context)
         elif "category_model_name" in request.GET:
             category_model_name, selected = request.GET.get(
                 "category_model_name"
@@ -416,7 +416,7 @@ def workstatus_review(request):
             context["model_codes"] = my_code_list
             context["selected"] = category_product
 
-            return render(request, "main/workstatus.html", context=context)
+            return render(request, "main/workstatus_review.html", context=context)
 
             ###########################################################################################################################
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
@@ -576,22 +576,22 @@ def workstatus_review(request):
                 context["model_names"] = my_model_list
                 context["selected"] = category_product
 
-                return render(request, "main/workstatus.html", context=context)
+                return render(request, "main/workstatus_review.html", context=context)
             context = dict()
             context["product_names"] = (
                 main_models.Category.objects.all().values("category_product").distinct()
             )
-            return render(request, "main/workstatus.html", context=context)
+            return render(request, "main/workstatus_review.html", context=context)
 
         else:
             context = {"message": "제품을 다시 선택해주세요."}
             context["product_names"] = (
                 main_models.Category.objects.all().values("category_product").distinct()
             )
-            return render(request, "main/workstatus.html", context=context)
+            return render(request, "main/workstatus_review.html", context=context)
 
     # 예외처리
     except Exception as identifier:
         print(identifier)
     context = dict()
-    return render(request, "main/workstatus.html", context=context)
+    return render(request, "main/workstatus_review.html", context=context)

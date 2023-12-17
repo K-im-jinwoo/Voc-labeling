@@ -286,7 +286,7 @@ def dashboard(request):
             context["model_codes"] = my_code_list
             context["selected_code"] = category_model_code
 
-            return render(request, "dashboard.html", context=context)
+            return render(request, "dashboard/dashboard.html", context=context)
         elif "category_model_name" in request.GET:
             category_model_name, selected = request.GET.get(
                 "category_model_name"
@@ -498,7 +498,7 @@ def dashboard(request):
             context["model_codes"] = my_code_list
             context["selected"] = category_product
 
-            return render(request, "dashboard.html", context=context)
+            return render(request, "dashboard/dashboard.html", context=context)
 
             ###########################################################################################################################
         # reqeust한 URL의 파라미터에 제품군, 시작위치, 끝 위치가 있으면 데이터를 반환함
@@ -740,12 +740,12 @@ def dashboard(request):
                 context["model_names"] = my_model_list
                 context["selected"] = category_product
 
-                return render(request, "dashboard.html", context=context)
+                return render(request, "dashboard/dashboard.html", context=context)
             context = dict()
             context["product_names"] = (
                 main_models.Category.objects.all().values("category_product").distinct()
             )
-            return render(request, "dashboard.html", context=context)
+            return render(request, "dashboard/dashboard.html", context=context)
 
         elif request.method == "POST":
             # 선택한 카테고리
@@ -990,7 +990,7 @@ def dashboard(request):
 
                 return JsonResponse(response_data)
 
-            return render(request, "dashboard.html", context=context)
+            return render(request, "dashboard/dashboard.html", context=context)
 
         else:
             context = {"message": "제품을 다시 선택해주세요."}
@@ -999,7 +999,7 @@ def dashboard(request):
             )
             return render(
                 request,
-                "dashboard.html",
+                "dashboard/dashboard.html",
                 context=context,
             )
 
@@ -1007,4 +1007,4 @@ def dashboard(request):
     except Exception as identifier:
         print(identifier)
     context = dict()
-    return render(request, "dashboard.html", context=context)
+    return render(request, "dashboard/dashboard.html", context=context)
