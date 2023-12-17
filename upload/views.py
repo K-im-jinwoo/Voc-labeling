@@ -9,7 +9,7 @@ import sys
 from django.urls import reverse
 from LG_Project.settings.base import BASE_DIR
 from main import models as main_models
-
+import time
 
 def delete_category(request):
     if request.method == "POST":
@@ -23,207 +23,94 @@ def delete_category(request):
         )
     return HttpResponseRedirect(url)
 
+# 코드 실행 이전 시간 기록
+# start_time = time.time()
 
 def cleansing(csv_file, is_csv=True):
-    print("Inside cleansing")
-    """전처리 시작"""
+    
+    # .csv 파일 불러오기
     if is_csv:
         raw_data = pd.read_csv("." + csv_file, encoding="utf-8")
     else:
-        print("raw_data before")
         raw_data = csv_file
-        print("raw_data after")
-
-        # print(raw_data)
-        # print("데이터 제거 전 1",data.shape,model_name.shape)
-        """중복 제거(1)"""
-        # 중복이 확인되어 제거될 데이터의 인덱스번호 추출
-        # removed_index = list(set(data.index) - set(data.drop_duplicates(['Original Comments']).index))
-        # removed_index.sort(reverse=True)
-        # data(댓글)에서 제거된 인덱스에 맞추어 model_name(모델명) 데이터 제거
-        # for index_to_drop in removed_index:
-        #      model_name = model_name.drop(index_to_drop)
-
-        # print("데이터 제거 후 1",data.shape,model_name.shape)
-    data = raw_data.filter(["Original Comments", "Model Name", "Model Code"])
-    print("1. data:", data)
-    data = data[["Original Comments", "Model Name", "Model Code"]]
+    
+    # 필요한 열 선택 및 중복 제거
+    data = raw_data[["Date", "Model Name", "Model Code", "Original Comments"]]
     data = data.drop_duplicates(["Original Comments"])
+    upload_data = data.copy()
 
-    """불필요한 문자열 제거"""
-    # html태그 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"<[^>]*>", repl=r"", regex=True
+    # Original Comment 텍스트 클리닝 - 불필요한 문자열 제거
+    upload_data["Original Comments"] = (
+        upload_data["Original Comments"]
+        .str.replace(pat=r"<[^>]*>", repl=r"", regex=True)  # HTML 태그 제거
+        .str.replace(pat=r"(<[a-zA-Z0-9\_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-\.]+>)", repl=r"", regex=True)  # 이메일 주소 제거
+        .str.replace("_", "") # _제거
+        .str.replace(pat=r"[\r|\n]", repl=r"", regex=True) # \r, \n 제거
+        .str.replace(
+            pat=r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""",
+            repl=r"",
+            regex=True,
+        ) # url 제거
+        .str.replace(
+            pat=r"([ㄱ-ㅎㅏ-ㅣ]+)", repl=r"", regex=True
+        ) # 자음, 모음 제거
+        .str.replace(
+            pat=r"[^\w\s]", repl=r"", regex=True
+        ) # 알파벳, 숫자, 공백 제외 모든 문자 제거
+        .str.replace("1n", "") # "1n" 문자열 제거
+        .str.replace("_", "") # "_" 문자열 제거
+        .str.replace(
+            pat=r"^[a-zA-Z\s]+$", repl=r"", regex=True
+        ) # 모두 영어인 행 공백으로 대체
+        .str.replace(
+            pat=r"^[0-9\s]+$", repl=r"", regex=True
+        ) # 모두 숫자인 행 공백으로 대체
+        .str.strip() # 좌우 공백 제거
     )
-
-    # email 주소 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"(\[a-zA-Z0-9\_.+-\]+@\[a-zA-Z0-9-\]+.\[a-zA-Z0-9-.\]+)",
-        repl=r"",
-        regex=True,
-    )
-    # _제거
-    data["Original Comments"] = data["Original Comments"].str.replace("_", "")
-
-    # \r, \n 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"[\r|\n]", repl=r"", regex=True
-    )
-
-    # url 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""",
-        repl=r"",
-        regex=True,
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*",
-        repl=r"",
-        regex=True,
-    )
-
-    # 자음, 모음 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"([ㄱ-ㅎㅏ-ㅣ]+)", repl=r"", regex=True
-    )
-
-    # 특수 기호 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"[^\w\s]", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace("1n", "")
-    data["Original Comments"] = data["Original Comments"].str.replace("_", "")
-
-    # 모두 영어인 행 공백으로 대체
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"^[a-zA-Z\s]+$", repl=r"", regex=True
-    )
-
-    # 모두 숫자인 행 공백으로 대체
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"^[0-9\s]+$", repl=r"", regex=True
-    )
-
-    # 좌우 공백 제거
-    data["Original Comments"] = data["Original Comments"].str.strip()
-    print("2. data:", data)  # 추가된 출력 코드
 
     # 아이디 관련 단어 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"ID\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"아이디\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"id\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"ID[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"아이디[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"id[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"ID\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"아이디\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"id\s", repl=r"", regex=True
+    upload_data["Original Comments"] = (
+        upload_data["Original Comments"]
+        .str.replace(
+            pat=r"(ID|아이디|id)\s[a-zA-Z0-9]+", repl=r"", regex=True
+        )
     )
 
     # 주문번호 관련 단어 제거
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"주문번호\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"결제번호\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"구매번호\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"주문\s번호\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"결제\s번호\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"구매\s번호\s[a-zA-Z0-9]+", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"주문번호\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"결제번호\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"구매번호\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"주문\s번호\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"결제\s번호\s", repl=r"", regex=True
-    )
-    data["Original Comments"] = data["Original Comments"].str.replace(
-        pat=r"구매\s번호\s", repl=r"", regex=True
+    upload_data["Original Comments"] = (
+        upload_data["Original Comments"]
+        .str.replace(
+            pat=r"(주문번호|결제번호|구매번호|주문\s번호|결제\s번호|구매\s번호)\s[a-zA-Z0-9]+", repl=r"", regex=True
+        )
     )
 
-    """중복 제거(2)"""
-    # data['index'] = data.index
+    # " " -> "" 처리 후 중복 리뷰 제거
+    upload_data["temp"] = upload_data["Original Comments"].str.replace(" ", "")
+    upload_data = upload_data.drop_duplicates(["temp"]).drop(["temp"], axis=1)
 
-    # 데이터 전처리
-    data["temp"] = data["Original Comments"]
-    data["temp"] = data["temp"].str.replace(" ", "")
-
-    # 중복 제거
-    data = data.drop_duplicates(["temp"])
-    print("3. data:", data)  # 추가된 출력 코드
-    data = data.drop(["temp"], axis=1)
-
-    # 중복 제거 이전과 이후의 인덱스 비교하여 삭제된 행의 인덱스 리스트 구하기
-    # removed_index2 = list(set(data['index'].index) - set(unique_data['index']))
-    # removed_index2.sort(reverse=True)
-    # unique_data = unique_data.drop(['index'], axis=1)
-    # data['temp'] = data['Original Comments']
-    # data['temp'] = data['temp'].str.replace(' ', '')
-
-    # data = data.drop_duplicates(['temp'], ignore_index=True)
-    # unique_data = data.drop(['temp'], axis=1)
-
-    # removed_index2 = list(set(data['Original Comments'].index) - set(data['temp'].index))
-    # data(댓글)에서 제거된 인덱스에 맞추어 model_name(모델명) 데이터 제거
-    # for index_to_drop2 in removed_index2:
-    #      model_name = model_name.drop(index_to_drop2)
-
-    # data = unique_data
-    # print("데이터 제거 후 2",data.shape,model_name.shape)
-    # print(data)
-    return data
-
+    # 코드 실행 후 시간 기록
+    # end_time = time.time()
+    # execution_time = end_time - start_time
+    # print("코드 실행 시간: ", execution_time)
+    return upload_data
 
 def upload_main(request):
     try:
         if request.method == "GET":
             context = dict()
             context["product_names"] = (
-                main_models.Category.objects.all().values("category_product").distinct()
+                main_models.Product.objects.all().values("name").distinct()
             )
-            request.session["category_product"] = "--제품을 선택하세요--"
-            if request.GET.get("category_product"):
-                request.session["category_product"] = request.GET.get(
-                    "category_product"
+            print(context["product_names"])
+            request.session["name"] = "--제품을 선택하세요--"
+            if request.GET.get("name"):
+                request.session["name"] = request.GET.get(
+                    "name"
                 )
             context["category_detail"] = main_models.Category.objects.filter(
-                category_product=request.session["category_product"]
+                name=request.session["name"]
             )
-            category_product = request.POST.get("category_product")
+            category_product = request.POST.get("name")
             return render(request, "upload/upload_main.html", context)
 
         elif request.method == "POST":

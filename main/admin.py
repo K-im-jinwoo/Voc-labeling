@@ -1,3 +1,30 @@
+from django.contrib import admin
+from .models import Profile, UserProfile, Product, Category, Review, LabelingData
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'manager')
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('profile_picture',)
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('product', 'id', 'name', 'color')
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('product', 'assigned_user', 'worked_user', 'id', 'number', 'is_labeled', 'is_trashed', 'model_name', 'model_code', 'date_writted', 'date_uploaded')
+
+@admin.register(LabelingData)
+class LabelingDataAdmin(admin.ModelAdmin):
+    list_display = ('review', 'category', 'id', 'emotion', 'target', 'phenomenon', 'date_labeled')
+
 # from django.contrib import admin
 
 # from . import models as main_models

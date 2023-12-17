@@ -38,7 +38,7 @@ class Category(models.Model):
 
 # 리뷰 데이터 모델
 # product: Product, assigned_user: 할당된 유저, worked_user: 작업한 유저, id: 1, number: 리뷰 번호, content: 리뷰
-# is_labeled: 라벨링 여부, is_trashed: 데이터 버림 여부, model_name: 모델 이름, model_code: 모델 코드, date_uploaded: 데이터 업로드 날짜
+# is_labeled: 라벨링 여부, is_trashed: 데이터 버림 여부, model_name: 모델 이름, model_code: 모델 코드, date_writted: 리뷰 작성 날짜, date_uploaded: 데이터 업로드 날짜
 class Review(models.Model):
     product = models.OneToOneField("Product", on_delete=models.CASCADE, related_name="review_products")
     assigned_user = models.OneToOneField("Profile", on_delete=models.CASCADE, null=True, related_name="review_assigned_users")
@@ -50,6 +50,7 @@ class Review(models.Model):
     is_trashed = models.BooleanField(default=False) # true: 버림
     model_name = models.CharField(null=True, max_length=256)
     model_code = models.CharField(null=True, max_length=256)
+    date_writted = models.DateField(null=True)
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
