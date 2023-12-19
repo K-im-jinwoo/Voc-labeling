@@ -1,0 +1,26 @@
+[
+    {
+        "model": "main.Emotion",
+        "pk": 1,
+        "fields": {
+            "e_name": "positive",
+            "k_name": "긍정"
+        }
+    },
+    {
+        "model": "main.Emotion",
+        "pk": 2,
+        "fields": {
+            "e_name": "negative",
+            "k_name": "부정"
+        }
+    },
+    {
+        "model": "main.Emotion",
+        "pk": 3,
+        "fields": {
+            "e_name": "neutral",
+            "k_name": "중립"
+        }
+    }
+]

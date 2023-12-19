@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, UserProfile, Product, Category, Review, LabelingData
+from .models import Profile, UserProfile, Product, Category, Review, LabelingData, Emotion
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -24,6 +24,10 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(LabelingData)
 class LabelingDataAdmin(admin.ModelAdmin):
     list_display = ('review', 'category', 'id', 'emotion', 'target', 'phenomenon', 'date_labeled')
+
+@admin.register(Emotion)
+class EmotionAdmin(admin.ModelAdmin):
+    list_display = ("id", "k_name", "e_name")
 
 # from django.contrib import admin
 
