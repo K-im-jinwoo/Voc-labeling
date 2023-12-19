@@ -11,11 +11,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'k_name', 'e_name')
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('product', 'id', 'name', 'color')
+    list_display = ('product', 'id', 'k_name', 'e_name', 'color')
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):

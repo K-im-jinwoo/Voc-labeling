@@ -15,25 +15,27 @@ class UserProfile(models.Model):
 
 
 # 제품 모델 
-# ex) id:1, name:청소기
+# ex) id:1, k_name:청소기, e_name:cleaner
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=256)
+    k_name = models.CharField(max_length=256)
+    e_name = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.id} - {self.name}"
+        return f"{self.id} - {self.k_name} - {self.e_name}"
 
 
 # 카테고리 모델 
-# ex) product: Product, id: 1, name: 흡입력, color: #ffffff
+# ex) product: Product, id: 1, k_name: 흡입력, e_name:suction_power, color: #ffffff
 class Category(models.Model):
     product = models.ForeignKey("Product", on_delete=models.CASCADE, related_name="category_products")
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=256)
+    k_name = models.CharField(max_length=256)
+    e_name = models.CharField(max_length=256)
     color = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.product} - {self.id} - {self.name} - {self.color}"
+        return f"{self.product} - {self.id} - {self.k_name} - {self.e_name} - {self.color}"
 
 
 # 리뷰 데이터 모델
@@ -69,4 +71,4 @@ class LabelingData(models.Model):
     date_labeled = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.review.id} - ({self.review.product.name} - {self.category.name}) - {self.id}"
+        return f"{self.review.id} - ({self.review.product.k_name} - {self.category.k_name}) - {self.id}"
