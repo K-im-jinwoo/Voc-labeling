@@ -9,10 +9,15 @@ class Profile(models.Model):
     name = models.CharField(max_length=256, null=True)
     manager = models.BooleanField(default=False) # 관리자 권한 여부
 
+    def __str__(self):
+        return f"user: {self.user} - name: {self.name}"
+    
 
 class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to="profile_pictures/")
 
+    def __str__(self):
+        return f"profile_picture: {self.profile_picture}"
 
 # 제품 모델 
 # ex) id:1, k_name:청소기, e_name:cleaner
@@ -22,7 +27,7 @@ class Product(models.Model):
     e_name = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.id} - {self.k_name} - {self.e_name}"
+        return f"id: {self.id} - k_name: {self.k_name}"
 
 
 # 카테고리 모델 
@@ -35,7 +40,7 @@ class Category(models.Model):
     color = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.product} - {self.id} - {self.k_name} - {self.e_name} - {self.color}"
+        return f"product__k_name: {self.product.k_name} - id: {self.id} - k_name: {self.k_name}"
 
 
 # 리뷰 데이터 모델
@@ -56,7 +61,7 @@ class Review(models.Model):
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Product_k_name:{self.product.k_name} - Review_id:{self.id}"
+        return f"product__k_name: {self.product.k_name} - id: {self.id}"
 
 
 # 라벨링 데이터 모델
