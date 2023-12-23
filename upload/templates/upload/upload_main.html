@@ -149,10 +149,10 @@
                 <div class="category_value">
                     {% if category_detail %}
                         {% for category_detail in category_detail %}
-                            <div class="c_content fs-base fw-400" style="background-color: {{ category_detail.category_color }};">
-                                {{ category_detail.category_middle }}
+                            <div class="c_content fs-base fw-400" style="background-color: {{ category_detail.color }};">
+                                {{ category_detail.name }}
                                 {% csrf_token %} 
-                                <button class="xbtn" style="display:none;" onclick="deleteCategory(`{{ category_detail.category_middle }}`)">
+                                <button class="xbtn" style="display:none;" onclick="deleteCategory(`{{ category_detail.name }}`)">
                                     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="8.5" cy="9" r="8.25" fill="#F2F2F2" stroke="#D5D5D5" stroke-width="0.5"/>
                                         <path d="M11.714 6.21912C11.5283 6.03341 11.2283 6.03341 11.0426 6.21912L8.71399 8.54293L6.38542 6.21436C6.19971 6.02864 5.89971 6.02864 5.71399 6.21436C5.52828 6.40007 5.52828 6.70007 5.71399 6.88579L8.04256 9.21436L5.71399 11.5429C5.52828 11.7286 5.52828 12.0286 5.71399 12.2144C5.89971 12.4001 6.19971 12.4001 6.38542 12.2144L8.71399 9.88579L11.0426 12.2144C11.2283 12.4001 11.5283 12.4001 11.714 12.2144C11.8997 12.0286 11.8997 11.7286 11.714 11.5429L9.38542 9.21436L11.714 6.88579C11.8949 6.70484 11.8949 6.40007 11.714 6.21912Z" fill="#969696"/>
@@ -183,7 +183,7 @@
         <div class="fileload">
             <div class="upload_title">
                 <p class="subject fs-base fw-400">파일 업로드</p>
-                <p class="asd fs-tiny">* XXMB 이하의 .excel 파일 1개 업로드 가능합니다.</p>
+                <p class="asd fs-tiny">* XXMB 이하의 .csv 파일 1개 업로드 가능합니다.</p>
                 <p style="float:right; margin: 0 0 0 0; display:inline-block; color: blue; font-weight: bold">{{ request.session.message }}</p>
             </div>
     
@@ -251,7 +251,7 @@
                     {% endif %}
                 </form>
             </div>
-            <form name="form3" action="{% url 'upload:upload' %}" method="post" id="formThree">
+            <!-- <form name="form3" action="{% url 'upload:upload' %}" method="post" id="formThree">
                 {% csrf_token %}
                 <input type="hidden" name="form-type" value="formThree">
                 <input type="hidden" value="{{ request.session.category_product }}" name="category_product">
@@ -265,7 +265,7 @@
                 {% else %}
                     <p style="float: right; display: inline-block; font-family: 'Nanum Gothic Coding', monospace; font-weight: 570; color: saddlebrown">카테고리를 선택해주시기 바랍니다.</p>
                 {% endif %}
-            </form>
+            </form> -->
         </div>
     </div>
 </div>
