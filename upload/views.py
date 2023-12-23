@@ -142,7 +142,7 @@ def upload_main(request):
                 duplicate_product.name  = category_update
                 duplicate_product.save()
 
-                return HttpResponseRedirect(reverse("upload:upload"))
+                return HttpResponseRedirect(reverse("upload:upload") + f"?category_product={duplicate_product.name}")
             
             # 카테고리 추가
             if request.POST.get("form-type") == "formOne":
