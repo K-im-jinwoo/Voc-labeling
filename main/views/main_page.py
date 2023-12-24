@@ -70,23 +70,18 @@ def main_page(request):
     else:
         context["review_ratio"] = 0
 
-    # 유저별 리뷰 개수 및 비율
+    # 유저별 리뷰 개수 및 비율    
     result_list = []
-    user_name_obj_list = User.objects.all().values_list()
-    user_name_list = user_name_obj_list.values("username")
+    # 전체 리뷰 수
     total_review_count = main_models.Review.objects.all().count()
-    i = 0
-    for user_name in user_name_obj_list:
-        user_labeled_count = main_models.Review.objects.filter(worked_user=user_name).count()
+    user_name_list = User.objects.all()
+    for user_name in user_name_list:
+        user_labeled_count = main_models.Review.objects.filter(worked_user__user__username=user_name).count()
         user_ratio_percentage = 0
         if total_review_count != 0:
             user_ratio_percentage = int((user_labeled_count / total_review_count) * 100)
-        result_list.append((user_name_list[i]["username"], user_labeled_count, user_ratio_percentage))
-        i = i + 1
-
-    # 결과 리스트를 리뷰 개수 기준으로 내림차순으로 정렬
+        result_list.append((user_name, user_labeled_count, user_ratio_percentage))
     result_list = sorted(result_list, key=lambda x: x[1], reverse=True)
     context["result_list"] = result_list
-        
 
     return render(request, "main/main_page.html", context)
