@@ -111,7 +111,11 @@
         <div class="export_form_wrap">
           <form action="{% url 'output:output' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="submit" name="export" value=".xlsx export" class="export fw-400">
+            {% if select_product %}
+              <input type="submit" name="export" value=".xlsx export" class="export fw-400">
+            {% else %}
+              <input type="submit" name="export" value=".xlsx export" class="export fw-400" disabled>
+            {% endif %}
             <!-- <input type="submit" name="export" value=".csv export" class="analysis fw-400" disabled> -->
             <input type="hidden" name="product" value="{{ select_product }}">
           </form>
