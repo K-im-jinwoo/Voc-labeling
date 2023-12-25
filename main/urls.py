@@ -29,5 +29,5 @@ urlpatterns = [
 
     path('workstatus/', views_workstatus_review.workstatus_review, name='workstatus_review'),
     
-    path('workstatus/count/', views_workstatus_worker.workstatus_worker, name='workstatus_worker'),
+    path('workstatus/worker/', views_workstatus_worker.workstatus_worker, name='workstatus_worker'),
 ]

@@ -5,44 +5,25 @@ from django.shortcuts import render
 from main import models as main_models
 
 def workstatus_worker(request):
-    temp_user = User.objects.all()
-    # temp_user = User.objects.filter(is_superuser=False)
-    result_name = []
-    result_count = []
-    context = {}
+    context = dict()
+    # 제품군 리스트
+    context["product_names"] = main_models.Product.objects.all().order_by("id")
 
-    if "category_product" in request.GET:
-        category_product = request.GET["category_product"]
-        for i in temp_user:
-            temp_count = main_models.Review.objects.filter(
-                category_product=category_product, labeled_user_id=int(i.pk)
-            ).count()
-            result_name.append(i.username)
-            result_count.append(temp_count)
-        result = zip(result_name, result_count)
-        result_list = list(result)
+    if "product" in request.GET:
+        select_product = request.GET["product"]
+        context["product"] = select_product
 
-        context = {
-            "result": result,
-            "category_product": category_product,
-            "result_list": result_list,
-        }
+        # user
+        user = main_models.Profile.objects.all().order_by("name")
+        # 제품군에 해당하는 작업완료 된 review
+        worked_review = main_models.Review.objects.filter(product__name=select_product, worked_user__isnull=False)
 
-    # product_names 가져오기
-    review_count = main_models.Review.objects.count()  # 총리뷰수
-    context["review_count"] = review_count
-    users_with_review_counts = User.objects.annotate(
-        review_count=Count("review")
-    )  # 아이디당 리뷰 몇개달았는
-    context["users_with_review_counts"] = users_with_review_counts
-    total_review_count_by_users = 0  # 아이디당 리뷰 수 총 합
-    for user in users_with_review_counts:
-        total_review_count_by_users += user.review_count
-    context["total_review_count_by_users"] = total_review_count_by_users
-    product_names = (
-        main_models.Category.objects.all().values_list("category_product", flat=True).distinct()
-    )
-    context["product_names"] = product_names
+        worker_count_dict={}
+        for user in user:
+            user_review_count = worked_review.filter(worked_user=user).count()
+            worker_count_dict[user.name]=user_review_count
+        
+        context["worker_count_dict"]=worker_count_dict
     return render(request, "main/workstatus_worker.html", context=context)
 
 
