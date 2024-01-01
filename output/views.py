@@ -66,7 +66,7 @@ def output(request):
 
         elif request.method == "POST" and "export" in request.POST:
             select_product=request.POST["product"]
-            if request.POST["export"] == ".xlsx export":
+            if request.POST["export"] == ".xlsx export" or request.POST["export"] == ".csv export":
                 # 선택한 제품의 작업된 데이터를 가져옴
                 labeled_data_by_product = main_models.LabelingData.objects.filter(
                     category__product__name=select_product
@@ -124,62 +124,29 @@ def output(request):
                         }
                         df = pd.DataFrame.from_dict(export_dict, orient="index")
                         df = df.transpose()
-                        df.to_excel(writer, sheet_name=category.name, index=False)
-                        format_change(writer, category)
+
+                        if request.POST["export"] == ".xlsx export":
+                            df.to_excel(writer, sheet_name=category.name, index=False)
+                            format_change(writer, category)
+                        elif request.POST["export"] == ".csv export":
+                            # CSV로 변환하여 응답
+                            csv_filename = f"{select_product}.csv"
+                            csv_response = HttpResponse(content_type="text/csv")
+                            csv_response["Content-Disposition"] = f'attachment; filename="{csv_filename}"'
+                            print(csv_filename)
+                            df.to_csv(csv_response, index=False, encoding='utf-8')
+                            return csv_response
+
                     writer.save()
-                    encoded_filename = urllib.parse.quote(select_product)
-                    content_type = "application/vnd.ms-excel"
-                    response = HttpResponse(b.getvalue(), content_type=content_type)
-                    response["Content-Disposition"] = (
-                        'attachment; filename="' + encoded_filename + '.xlsx"'
-                    )
-                    return response
 
-            # elif request.POST["export"] == ".csv export":
-            #     ####---- HttpResponse 설정 ----####
-            #     product = request.POST["product"]
-            #     response = HttpResponse(content_type="text/csv")
-            #     response["Content-Disposition"] = (
-            #         "attachment; filename="
-            #         + product
-            #         + "_"
-            #         + datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
-            #         + ".csv"
-            #     )
-            #     response.write("\ufeff".encode("utf8"))
-
-            #     ####---- csv 파일 만들기 ----####
-            #     writer = csv.writer(response)
-            #     reviews = list(
-            #         main_models.Review.objects.filter(
-            #             first_status=True, category_product=product
-            #         ).values_list("review_id", flat=True)
-            #     )
-            #     review_contents = list(
-            #         main_models.Review.objects.filter(
-            #             first_status=True, category_product=product
-            #         ).values_list("review_content", flat=True)
-            #     )
-            #     result = [[""]] * len(reviews)
-            #     for i in range(len(reviews)):
-            #         categorys = main_models.LabelingData.objects.filter(
-            #             review_id=reviews[i], category_id__category_product=product
-            #         ).values_list("category_id__category_middle", flat=True)
-            #         review_category = ""
-            #         for category in categorys:
-            #             review_category += category + "and"
-            #         review_category = review_category[:-3]
-            #         result[i] = [reviews[i], review_contents[i], review_category]
-            #     print(result[0])
-
-            #     # 6. csv 파일 만들기
-            #     writer.writerow(["리뷰 번호", "리뷰 원문", "카테고리"])
-            #     for rlt in result:
-            #         writer.writerow(rlt)
-            #     return response
-
-            # else:
-            #     print("error")
+                    if request.POST["export"] == ".xlsx export":
+                        encoded_filename = urllib.parse.quote(select_product)
+                        content_type = "application/vnd.ms-excel"
+                        response = HttpResponse(b.getvalue(), content_type=content_type)
+                        response["Content-Disposition"] = (
+                            'attachment; filename="' + encoded_filename + '.xlsx"'
+                        )
+                        return response
         else:
             print("error")
 
