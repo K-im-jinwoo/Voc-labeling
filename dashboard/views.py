@@ -75,6 +75,7 @@ def dashboard(request):
                     res_data[product.name] = {"model_name":list(model_names_by_product), "category":list(categories_by_product)}
 
                 context["product"] = res_data
+                print(context["product"])
         return render( request, "dashboard/dashboard.html", context=context)
 
     # 예외처리
