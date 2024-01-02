@@ -251,3 +251,37 @@ border-radius: 5px;
 ::-webkit-scrollbar-track-piece {
 margin-top: 5px;
 }
+
+/* 토글버튼 */
+
+.switch > [type="checkbox"] {
+  appearance: none;
+  position: relative;
+  width: 29px;
+  height: 17px;
+  background: #D9D9D9;
+  border-radius: 17px;
+  transition: background 0.4s;
+}
+
+.switch > [type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  transform: scale(0.8);
+  background-color: gray;
+  transition: left 250ms linear;
+}
+
+.switch > [type="checkbox"]:checked::before {
+  background-color: #A50034;
+  left: 0.8em;
+}
+
+.switch > [type="checkbox"]:checked {
+  background-color: #FFD6E1;
+  border-color: #A50034;
+}
