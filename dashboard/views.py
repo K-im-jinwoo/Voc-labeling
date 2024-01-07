@@ -13,11 +13,11 @@ def dashboard(request):
                 emotions = main_models.Emotion.objects.all()
 
                 product_name = request.GET.get("product")
-                model_name = request.GET.get("model_name")
+                model_name = request.GET.get("model_name", None)
                 category_list = request.GET.getlist("category_list")
 
                 # category instance
-                select_categories = main_models.Category.objects.filter(Q(product__name=product_name)&Q(name__in=category_list))
+                select_categories = main_models.Category.objects.select_related("product").filter(Q(product__name=product_name)&Q(name__in=category_list)).order_by("id")
 
                 # condition 설정
                 condition={
@@ -29,18 +29,19 @@ def dashboard(request):
                     condition["model_name"]=model_name
 
                 # 제품, 모델이름, 카테고리에 해당하는 리뷰를 가져옴(라벨링 작업이 끝난)
-                review_by_condition = main_models.Review.objects.filter(**condition)
+                review_by_condition = main_models.Review.objects.select_related("product").filter(**condition)
 
                 # 리뷰에 대한 작업 데이터
-                labeling_data = main_models.LabelingData.objects.filter(Q(review__in=review_by_condition)&Q(category__in=select_categories))
+                labeling_data = main_models.LabelingData.objects.select_related(
+                    "review", "category", "emotion"
+                    ).filter(Q(review__in=review_by_condition)&Q(category__in=select_categories))
 
                 # emotion_rank_data 생성
                 emotion_rank_data={}
                 for emotion in emotions:
-                    labeling_data_by_emotion = labeling_data.filter(emotion=emotion)
                     emotion_rank_data[emotion.e_name]={
-                        "target": list(labeling_data_by_emotion.exclude(target=None).values_list('target', flat=True).annotate(count=Count('target')).order_by('-count')[:10]),
-                        "phenomenon": list(labeling_data_by_emotion.exclude(phenomenon=None).values_list('phenomenon', flat=True).annotate(count=Count('phenomenon')).order_by('-count')[:10])
+                        "target": list(labeling_data.filter(emotion=emotion, target__isnull=False).values_list('target', flat=True).annotate(count=Count('target')).order_by('-count')[:10]),
+                        "phenomenon": list(labeling_data.filter(emotion=emotion, phenomenon__isnull=False).values_list('phenomenon', flat=True).annotate(count=Count('phenomenon')).order_by('-count')[:10])
                     }
 
                 # count_by_category 생성
@@ -56,12 +57,21 @@ def dashboard(request):
                 total_by_review = {}
                 for emotion in emotions:
                     total_by_review[emotion.e_name] = labeling_data.filter(emotion=emotion).count()
+
+                # select_raw_data
+                select_raw_data={}
+                for select_category in select_categories:
+                    select_raw_data[select_category.name]={
+                        "positive": list((labeling_data.filter(Q(category=select_category)&Q(emotion__e_name="positive")).distinct()).values_list("review__content", flat=True)),
+                        "negative": list((labeling_data.filter(Q(category=select_category)&Q(emotion__e_name="negative")).distinct()).values_list("review__content", flat=True))
+                    }
                 
                 # response_data
                 context["emotion_rank_data"] = emotion_rank_data
                 context["raw_data"] = list(review_by_condition.values_list("content", flat=True))
                 context["count_by_category"] = count_by_category
                 context["total_by_review"] = total_by_review
+                context["select_raw_data"] = select_raw_data
 
             elif "product" not in request.GET:
                 qs_product = main_models.Product.objects.all()
@@ -75,7 +85,6 @@ def dashboard(request):
                     res_data[product.name] = {"model_name":list(model_names_by_product), "category":list(categories_by_product)}
 
                 context["product"] = res_data
-                print(context["product"])
         return render( request, "dashboard/dashboard.html", context=context)
 
     # 예외처리
