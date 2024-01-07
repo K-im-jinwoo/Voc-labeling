@@ -85,10 +85,14 @@ def dashboard(request):
                     res_data[product.name] = {"model_name":list(model_names_by_product), "category":list(categories_by_product)}
 
                 context["product"] = res_data
-        return render( request, "dashboard/dashboard.html", context=context)
+        return render(request, "dashboard/dashboard.html", context=context)
 
     # 예외처리
     except Exception as identifier:
         print(identifier)
     context = dict()
     return render(request, "dashboard/dashboard.html", context=context)
+
+@csrf_exempt
+def dashboard_by_date(request):
+    return render(request, "dashboard/dashboard_date.html")
