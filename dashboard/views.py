@@ -1,8 +1,14 @@
+from datetime import datetime, timedelta
 from django.db.models import Q, Count
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from main import models as main_models
+
+def calculate_date_intervals(start_date, end_date, num_intervals):
+    date_range = end_date - start_date
+    interval = date_range // num_intervals
+    return [{"start": start_date + i * interval, "end": start_date + (i + 1) * interval - timedelta(days=1)} for i in range(num_intervals)]
 
 @csrf_exempt
 def dashboard(request):
@@ -95,4 +101,64 @@ def dashboard(request):
 
 @csrf_exempt
 def dashboard_by_date(request):
-    return render(request, "dashboard/dashboard_date.html")
+    try:
+        context=dict()              
+        if request.method == "GET":
+            if "product_name" in request.GET:
+                product_name = request.GET.get("product_name")
+                model_name = request.GET.get("model_name", None)
+                parsed_start_date = datetime.strptime(request.GET.get("start_date"), "%Y-%m-%d").date()
+                parsed_end_date = datetime.strptime(request.GET.get("end_date"), "%Y-%m-%d").date()
+
+                # category_by_product
+                categories = main_models.Category.objects.filter(product__name=product_name)
+
+                # 6등분한 날짜 계산
+                divided_dates = calculate_date_intervals(parsed_start_date, parsed_end_date, 6)
+        
+                # condition 설정
+                condition={
+                    "review__product__name": product_name,
+                    "review__date_writted__range": [parsed_start_date, parsed_end_date],
+                }
+
+                if model_name is not None:
+                    condition["review__model_name"] = model_name
+
+                # labeling_data_by_condition
+                labeling_data = main_models.LabelingData.objects.select_related(
+                    "review__product", "category"
+                ).filter(**condition)
+
+                # review_count_by_category
+                review_count_by_category = {}
+                for category in categories:
+                    date_count_list = []
+                    for divided_date in divided_dates:
+                        date_count_list.append(
+                            {
+                                "date": f"{divided_date['start']} ~ {divided_date['end']}",
+                                "count": labeling_data.filter(category=category, review__date_writted__range=[divided_date['start'], divided_date['end']]).values("review").distinct().count()
+                            }
+                        )
+                    review_count_by_category[category.name]=date_count_list
+
+                context["review_count_by_category"] = review_count_by_category
+
+            elif "product" not in request.GET:
+                qs_product = main_models.Product.objects.all()
+                qs_review = main_models.Review.objects.all()
+
+                res_data={}
+                for product in qs_product:
+                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    res_data[product.name] = {"model_name":list(model_names_by_product)}
+
+                context["product"] = res_data
+        return render(request, "dashboard/dashboard_date.html", context=context)
+
+    # 예외처리
+    except Exception as identifier:
+        print(identifier)
+    context = dict()
+    return render(request, "dashboard/dashboard_date.html", context=context)
