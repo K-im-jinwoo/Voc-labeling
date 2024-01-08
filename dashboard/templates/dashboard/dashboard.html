@@ -31,9 +31,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script src="https://d3js.org/d3.v6.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.2.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-format@2.2.3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
+<script src="https://unpkg.com/d3-cloud"></script>
+<script
+type="text/javascript"
+src="https://www.gstatic.com/charts/loader.js"
+></script>
 
 <div class="first-desc-wrap" style="padding: 0 45px 22px">
   {% comment %} 제품선택 {% endcomment %}
@@ -49,7 +54,7 @@
     </select>
     {% comment %} 모델 선택 {% endcomment %}
     <select name="model_name" id="model_name_select_status">
-      <option value="None" selected>
+      <option value="None" disabled selected>
         모델이름을 선택하세요
       </option>
       <option
@@ -134,29 +139,14 @@
           });
         </script>
 
-        {% comment %} 전체선택 기능 , 현재 작동 안함{% endcomment %}
-        <script type="text/javascript">
-          var categories = productData[selectedProduct].category;
-          document
-            .getElementById("select-all")
-            .addEventListener("click", function () {
-              var checkboxes = document.querySelectorAll("input[type=checkbox]");
-              var allChecked = Array.from(checkboxes).every((x) => x.checked);
-              for (var checkbox of checkboxes) {
-                checkbox.checked = !allChecked;
-              }
-            });
-        </script>
-
-        {% comment %} 적용하기 버튼 클릭 시 product, model_name, category 보내주기
-        {% endcomment %}
+        {% comment %} 적용하기 버튼 클릭 시 product, model_name, category 보내주기 {% endcomment %}
         <button type="submit">적용하기</button>
     </div>
   </form>
 
-<p>{{emotion_rank_data}}</p>
     <div class="isNagative">
       <div>
+        {% comment %} 데이터 하나일 때 이렇게 뽑고 많을 때는 join 사용해서 리스트에서 빼서 쓰기  {% endcomment %}
         <span class="isNagative_title fw-400 fs-base">긍/부정</span>
         <div class="switch_label">
           <label for="target_radio">
@@ -168,7 +158,6 @@
             />
             <span
               class="target_btn fs-small fw-600"
-              onclick="toggleOnfBtnClass(); generateWordCloud('target')"
               >대상</span
             >
           </label>
@@ -181,281 +170,169 @@
             />
             <span
               class="expression_btn fs-small fw-600"
-              onclick="toggleOnfBtnClass(); generateWordCloud('expression')"
               >현상</span
             >
           </label>
         </div>
-        <script>
-          const target_radio = document.getElementById("target_radio");
-          const expression_radio = document.getElementById("expression_radio");
-          const target_btn = document.querySelector(".target_btn");
-          const expression_btn = document.querySelector(".expression_btn");
-
-          function toggleOnfBtnClass() {
-            const positiveRadio = document.getElementById("select_pos");
-            const negativeRadio = document.getElementById("select_neg");
-            const neutralRadio = document.getElementById("select_neu");
-            if (!target_radio.checked) {
-              target_radio.checked = true; // "대상" 라디오 버튼을 선택 상태로 변경
-              target_btn.classList.add("onf_btn");
-              expression_btn.classList.remove("onf_btn");
-              positiveRadio.checked = false;
-              negativeRadio.checked = false;
-              neutralRadio.checked = false;
-            } else if (!expression_radio.checked) {
-              expression_radio.checked = true; // "현상" 라디오 버튼을 선택 상태로 변경
-              expression_btn.classList.add("onf_btn");
-              target_btn.classList.remove("onf_btn");
-              positiveRadio.checked = false;
-              negativeRadio.checked = false;
-              neutralRadio.checked = false;
-            }
-          }
-          function generateWordCloud(type) {
-            clearWordCloud();
-            const targetData = {{ select_targets_dict | safe }};
-            const expressionData = {{ select_expression_dict | safe }};
-            const target_positive_dict = {{ target_positive_dict | safe }};
-            const target_negative_dict = {{ target_negative_dict | safe }};
-            const target_neutral_dict = {{ target_neutral_dict | safe }};
-            const expression_positive_dict = {{ expression_positive_dict | safe }};
-            const expression_negative_dict = {{ expression_negative_dict | safe }};
-            const expression_neutral_dict = {{ expression_neutral_dict | safe }};
-
-            let selectedData;
-
-            const isTargetSelected = target_radio.checked;
-            const isExpressionSelected = expression_radio.checked;
-
-
-            if (type === 'target') {
-              selectedData = targetData;
-            } else if (type === 'expression') {
-              selectedData = expressionData;
-            } else if (type === 'positive') {
-              selectedData = isTargetSelected ? filterData(targetData, target_positive_dict) : filterData(expressionData, expression_positive_dict);
-            } else if (type === 'negative') {
-              selectedData = isTargetSelected ? filterData(targetData, target_negative_dict) : filterData(expressionData, expression_negative_dict);
-            } else if (type === 'neutral') {
-              selectedData = isTargetSelected ? filterData(targetData, target_neutral_dict) : filterData(expressionData, expression_neutral_dict);
-            }
-
-            if (type === 'positive') {
-              clearWordCloud();
-              positiveWordCloud(selectedData);
-            } else if (type === 'negative') {
-              clearWordCloud();
-              negativeWordCloud(selectedData);
-            } else if (type === 'neutral') {
-              clearWordCloud();
-              neutralWordCloud(selectedData);
-            }
-          }
-
-
-          function positiveWordCloud(data){
-            var pos_dict = data;
-
-            var pos_dataset = Object.entries(pos_dict).map(([key, value]) => ({ text: key, size: value }));
-
-            var width = 388,
-              height = 142;
-
-            var svg = d3.select("#cloud")
-              .append("svg")
-              .attr("width", width)
-              .attr("height", height)
-              .append("g")
-              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-            var layout = d3.layout.cloud()
-              .size([width, height])
-              .words(pos_dataset)
-              .rotate(0)
-              .padding(10)
-              .fontSize(function (d) { return d.size + 10; })
-              .spiral('archimedean')
-              .on("end", draw);
-
-            layout.start();
-
-            function draw(words) {
-              svg.selectAll("text")
-                .data(words)
-                .enter()
-                .append("text")
-                .style("font-size", function (d) { return d.size + 10 + "px"; })
-                .style("fill", function (d, i) { return color(i); })
-                .attr("text-anchor", "middle")
-                .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                .text(function (d) { return d.text; });
-            }
-          }
-
-          function negativeWordCloud(data){
-            var neg_dict = data;
-
-            var neg_dataset = Object.entries(neg_dict).map(([key, value]) => ({ text: key, size: value }));
-
-            var width = 388,
-              height = 142;
-
-            var svg = d3.select("#cloud")
-              .append("svg")
-              .attr("width", width)
-              .attr("height", height)
-              .append("g")
-              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-            var layout = d3.layout.cloud()
-              .size([width, height])
-              .words(neg_dataset)
-              .rotate(0)
-              .padding(10)
-              .fontSize(function (d) { return d.size + 10; })
-              .spiral('archimedean')
-              .on("end", draw);
-
-            layout.start();
-
-            function draw(words) {
-              svg.selectAll("text")
-                .data(words)
-                .enter()
-                .append("text")
-                .style("font-size", function (d) { return d.size + 10 + "px"; })
-                .style("fill", function (d, i) { return color(i); })
-                .attr("text-anchor", "middle")
-                .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                .text(function (d) { return d.text; });
-            }
-          }
-
-          function neutralWordCloud(data){
-            var neu_dict = data;
-
-            var neu_dataset = Object.entries(neu_dict).map(([key, value]) => ({ text: key, size: value }));
-
-            var width = 388,
-              height = 142;
-
-            var svg = d3.select("#cloud")
-              .append("svg")
-              .attr("width", width)
-              .attr("height", height)
-              .append("g")
-              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-            var layout = d3.layout.cloud()
-              .size([width, height])
-              .words(neu_dataset)
-              .rotate(0)
-              .padding(10)
-              .fontSize(function (d) { return d.size + 10; })
-              .spiral('archimedean')
-              .on("end", draw);
-
-            layout.start();
-
-            function draw(words) {
-              svg.selectAll("text")
-                .data(words)
-                .enter()
-                .append("text")
-                .style("font-size", function (d) { return d.size + 10 + "px"; })
-                .style("fill", function (d, i) { return color(i); })
-                .attr("text-anchor", "middle")
-                .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                .text(function (d) { return d.text; });
-            }
-          }
-
-          function clearWordCloud() {
-            d3.select("#cloud > svg").remove();
-          }
-          function checkedWordCloud(checkbox) {
-            if(checkbox.checked) {
-              positiveWordCloud();
-            } else {
-              clearWordCloud();
-            }
-          }
-          function filterData(targetData, specificData) {
-            const filteredData = {};
-
-            for (const key in targetData) {
-              if (key in specificData) {
-                filteredData[key] = targetData[key];
-              }
-            }
-
-            return filteredData;
-          }
-        </script>
         <div id="cloud"></div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
-        <script src="https://unpkg.com/d3-cloud"></script>
+
         <div class="select_btn">
           <span class="select_pos">
             <input
-              type="radio"
+              type="checkbox"
               id="select_pos"
               name="positive"
-              onclick="generateWordCloud('positive')"
               value="positive"
             />
             <label for="select_pos">긍정</label>
           </span>
           <span class="select_neg">
             <input
-              type="radio"
+              type="checkbox"
               id="select_neg"
               name="negative"
-              onclick="generateWordCloud('negative')"
               value="negative"
             />
             <label for="select_neg">부정</label>
           </span>
           <span class="select_neu">
             <input
-              type="radio"
+              type="checkbox"
               id="select_neu"
               name="neutral"
-              onclick="generateWordCloud('neutral')"
               value="neutral"
             />
             <label for="select_neu">중립</label>
           </span>
         </div>
-        <script>
-          const radioButtons = document.querySelectorAll(
-            '.select_btn input[type="radio"]'
-          );
-
-          radioButtons.forEach((radioButton) => {
-            radioButton.addEventListener("click", (event) => {
-              // 클릭된 라디오 버튼의 값을 가져옴
-              const selectedType = event.target.value;
-
-              // 모든 라디오 버튼의 체크를 해제
-              radioButtons.forEach((rb) => {
-                rb.checked = false;
-              });
-
-              // 클릭된 라디오 버튼만 체크
-              event.target.checked = true;
-            });
-          });
-        </script>
       </div>
     </div>
+    <script>
+      const target_radio = document.getElementById("target_radio");
+      const expression_radio = document.getElementById("expression_radio");
+      const target_btn = document.querySelector(".target_btn");
+      const expression_btn = document.querySelector(".expression_btn");
+      const positiveRadio = document.getElementById("select_pos");
+      const negativeRadio = document.getElementById("select_neg");
+      const neutralRadio = document.getElementById("select_neu");
+
+      const positiveTargetData = {{emotion_rank_data.positive.target|safe}}
+      const negativeTargetData = {{emotion_rank_data.negative.target|safe}}
+      const neutralTargetData = {{emotion_rank_data.neutral.target|safe}}
+
+      const positivePhenemenonData = {{emotion_rank_data.positive.phenomenon|safe}}
+      const negativePhenemenonData = {{emotion_rank_data.negative.phenomenon|safe}}
+      const neutralPhenemenonData = {{emotion_rank_data.neutral.phenomenon|safe}}
+
+      target_btn.addEventListener("click", function() {
+        target_radio.checked = true
+        expression_radio.checked = false
+        target_btn.classList.add("onf_btn");
+        expression_btn.classList.remove("onf_btn");
+        positiveRadio.checked = true
+        if (positiveRadio.checked) {
+          generateWordCloud(positiveTargetData); // 긍정 데이터로 워드 클라우드 생성
+        } else if (negativeRadio.checked) {
+          generateWordCloud(negativeTargetData); // 부정 데이터로 워드 클라우드 생성
+        } else if (neutralRadio.checked) {
+          generateWordCloud(neutralTargetData); // 중립 데이터로 워드 클라우드 생성
+        } 
+      });
+      
+      expression_btn.addEventListener("click", function() {
+        target_radio.checked = false
+        expression_radio.checked = true
+        expression_btn.classList.add("onf_btn");
+        target_btn.classList.remove("onf_btn");
+        positiveRadio.checked = true
+        if (positiveRadio.checked) {
+          generateWordCloud(positivePhenemenonData); // 긍정 데이터로 워드 클라우드 생성
+        } else if (negativeRadio.checked) {
+          generateWordCloud(negativePhenemenonData); // 부정 데이터로 워드 클라우드 생성
+        } else if (neutralRadio.checked) {
+          generateWordCloud(neutralPhenemenonData); // 중립 데이터로 워드 클라우드 생성
+        } 
+      });
+
+      positiveRadio.addEventListener("click", function() {
+        if (target_radio.checked) {
+          if (positiveRadio.checked) {
+            generateWordCloud(positiveTargetData); // 긍정 데이터로 워드 클라우드 생성
+          }
+        } else if (expression_radio.checked) {
+          if (positiveRadio.checked) {
+            generateWordCloud(positivePhenemenonData); // 긍정 데이터로 워드 클라우드 생성
+          }
+        }
+      });
+      
+      negativeRadio.addEventListener("click", function() {
+        if (target_radio.checked) {
+          if (negativeRadio.checked) {
+            generateWordCloud(negativeTargetData); // 긍정 데이터로 워드 클라우드 생성
+          }
+        } else if (expression_radio.checked) {
+          if (negativeRadio.checked) {
+            generateWordCloud(negativePhenemenonData); // 긍정 데이터로 워드 클라우드 생성
+          }
+        }
+      });
+      
+      neutralRadio.addEventListener("click", function() {
+        if (target_radio.checked) {
+          if (neutralRadio.checked) {
+            generateWordCloud(neutralTargetData); // 긍정 데이터로 워드 클라우드 생성
+          }
+        } else if (expression_radio.checked) {
+          if (neutralRadio.checked) {
+            generateWordCloud(neutralPhenemenonData); // 긍정 데이터로 워드 클라우드 생성
+          }
+        }
+      });
+
+      {% comment %} 워드클라우드 생성 {% endcomment %}
+      function generateWordCloud(data) {
+        const sort_data = data.reverse()
+        const words = sort_data.map((word, index) => ({ text: word, size: index + 1 }));
+        
+        const width = 388;
+        const height = 142;
+        //워드 클라우드 초기화
+        d3.select("#cloud").select("svg").remove();
+        const svg = d3.select("#cloud")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", `translate(${width / 2}, ${height / 2})`);
+        
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        
+        const layout = d3.layout.cloud()
+          .size([width, height])
+          .words(words)
+          .padding(5)
+          .rotate(0)
+          .fontSize(d => d.size * 10) // 워드 사이즈 조정
+          .text(d => d.text)
+          .font("Impact")
+          .on("end", draw);
+        
+        layout.start();
+        
+        function draw(words) {
+          svg.selectAll("text")
+            .data(words)
+            .enter().append("text")
+            .style("font-size", d => `${d.size}px`)
+            .style("fill", (_, i) => color(i))
+            .attr("text-anchor", "middle")
+            .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
+            .text(d => d.text);
+        }
+      }
+      
+    </script>
 
     <div class="rawdata fw-400 fs-base">
       <h3 class="rawdata_text">Raw Data</h3>
@@ -470,11 +347,11 @@
   <div class="dashboard wrap2">
     <div class="frequency">
       <h3 class="frequency_text fw-400 fs-base">카테고리별 빈도</h3>
-      <div class="frequency_box fs-small fw-400" height="350px">
-        <div id="tooltip"></div>
-        <div id="treemapPositive" style="width: 1000px; height: 170px"></div>
-
-        <div id="treemapNegative" style="width: 1000px; height: 170px"></div>
+      <div class="frequency_box fs-small fw-400">
+        <p class="fw-400 fs-base">긍정</p>
+        <div id="treemapPositive"></div>
+        <p class="fw-400 fs-base">부정</p>
+        <div id="treemapNegative"></div>
       </div>
     </div>
   </div>
@@ -496,373 +373,146 @@
     </div>
   </div>
 
-  <script
-    type="text/javascript"
-    src="https://www.gstatic.com/charts/loader.js"
-  ></script>
-  <style>
-    #tooltip {
-      position: absolute;
-      background-color: white;
-      padding: 5px;
-      border: 1px solid black;
-      visibility: hidden;
-      z-index: 1000; /* 툴팁이 다른 요소 위에 보이도록 z-index를 높게 설정 */
-    }
-  </style>
   <script>
-        const category_detail_list = {{ category_detail_list|safe }};
-        const results_positive = {{ results_positive|safe }};
-        const results_negative = {{ results_negative|safe }};
-        const results_neutral = {{ results_neutral|safe }};
-        const expression_list = {{select_expression|safe}}
-
-
-      var colorPalette = d3.scaleOrdinal(d3.schemeCategory10);
-
-        var margin = {top: 10, right: 10, bottom: 10, left: 20},
-        width = 1000 - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom;
-
-        var svgPositive = d3.select("#treemapPositive")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        // 부정 트리맵을 위한 SVG 생성
-        var svgNegative = d3.select("#treemapNegative")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var aggregatedDataPositive = {};
-        var aggregatedDataNegative = {};
-        for (var i=0; i<category_detail_list.length; i++) {
-          aggregatedDataPositive[category_detail_list[i]] = results_positive[i];
-          aggregatedDataNegative[category_detail_list[i]] = results_negative[i];
+    const count_by_category = {{count_by_category|safe}};
+    const total_count = {{total_by_review|safe}};
+    const positiveValues = {};
+    const negativeValues = {};
+    const neutralValues = {};
+    // count_by_category 객체를 순회하면서 positive 값을 새로운 객체에 추가
+    for (const key in count_by_category) {
+        if (count_by_category.hasOwnProperty(key)) {
+            positiveValues[key] = count_by_category[key].positive;
+            negativeValues[key] = count_by_category[key].negative;
+            neutralValues[key] = count_by_category[key].neutral;
         }
+    }
+    // 트리맵 생성
+    function prepareData(values) {
+      return {
+        children: Object.entries(values).map(([key, value]) => ({ name: key, value }))
+      };
+    }
+    
+    
+    const dataPos = prepareData(positiveValues);
+    const dataNeg = prepareData(negativeValues);
+    const dataNeu = prepareData(neutralValues);
 
-            var dataPositive = [
-        { name: "OriginPositive", parent: "", value: "" },
-        ...Object.entries(aggregatedDataPositive).filter(([,value]) => value != 0).map(([name,value]) => ({
-            name,
-            parent: "OriginPositive",
-            value,
-        })),
-      ];
+    const width = 300;
+    const height = 210;
+    
+    const createTreemap = (svg, data) => {
+      if (data.children.some(child => child.value !== 0)) {
+        const treemap = d3.treemap()
+          .size([width, height])
+          .padding(10);
+    
+        const root = d3.hierarchy(data)
+          .sum(d => d.value || 0)
+          .each(d => { d.key = d.data.name; });
+    
+        treemap(root);
+    
+        const cell = svg.selectAll("g")
+          .data(root.leaves())
+          .enter().append("g")
+          .attr("transform", d => `translate(${d.x0},${d.y0})`);
+    
+        cell.append("rect")
+          .attr("width", d => d.x1 - d.x0)
+          .attr("height", d => d.y1 - d.y0)
+          .attr("fill", "steelblue");
+    
+        cell.append("text")
+          .attr("x", 5)
+          .attr("y", 15)
+          .text(d => d.data.value !== 0 ? d.key : ""); // If value is 0, don't display text
+      }
+    };
+    
+    const svgPositive = d3.select("#treemapPositive")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+    const svgNegative = d3.select("#treemapNegative")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
 
-      var dataNegative = [
-        { name: "OriginNegative", parent: "", value: "" },
-        ...Object.entries(aggregatedDataNegative).filter(([,value]) => value != 0).map(([name,value]) => ({
-            name,
-            parent: "OriginNegative",
-            value,
-        })),
-      ];
+    createTreemap(svgPositive, dataPos);
+    createTreemap(svgNegative, dataNeg);
+        
+    //  누적막대그래프
+    let stackedDataset = [
+      {
+        label: 'Positive',
+        data: Object.values(positiveValues),
+        backgroundColor: '#1f77b4'
+      },
+      {
+        label: 'Negative',
+        data: Object.values(negativeValues),
+        backgroundColor: '#d62728'
+      },
+      {
+        label: 'Neutral',
+        data: Object.values(neutralValues),
+        backgroundColor: '#7f7f7f'
+      }
+    ];
 
-        // 긍정 트리맵 생성
-        var treemapPositive = d3.treemap()
-        .size([width, height/2])
-        .padding(4);
+    let category_detail_list = Object.keys(count_by_category); // 카테고리 리스트
 
-        // 부정 트리맵 생성
-        var treemapNegative = d3.treemap()
-        .size([width, height/2])
-        .padding(4);
+    let numData = category_detail_list.length; // 데이터 개수
+    const barThickness = numData <= 3 ? 100 : 'flex';
 
-        var rootPositive = d3.stratify()
-        .id(function(d) { return d.name; })
-        .parentId(function(d) { return d.parent; })
-        (dataPositive);
-        rootPositive.sum(function(d) { return +d.value })
-
-
-
-        d3.treemap()
-        .size([width, height/2])  // height를 2로 나누어 긍정과 부정 트리맵을 위아래로 배치
-        .padding(4)
-        (rootPositive)
-
-        var rootNegative = d3.stratify()
-        .id(function(d) { return d.name; })
-        .parentId(function(d) { return d.parent; })
-        (dataNegative);
-        rootNegative.sum(function(d) { return +d.value })
-
-        d3.treemap()
-        .size([width, height/2])  // height를 2로 나누어 긍정과 부정 트리맵을 위아래로 배치
-        .padding(4)
-        (rootNegative)
-
-        var maxLength = 10;
-        var top6Positive = rootPositive.leaves().slice(0, 6);
-        var top6Negative = rootNegative.leaves().slice(0, 6);
-        var colorScalePositive = d3.scaleOrdinal()
-      .domain(top6Positive.map(function(d) { return d.data.name; }))
-      .range(d3.schemeCategory10);
-
-    var colorScaleNegative = d3.scaleOrdinal()
-      .domain(top6Negative.map(function(d) { return d.data.name; }))
-      .range(d3.schemeCategory10);
-      svgPositive.selectAll(".rectPositive")
-      .data(rootPositive.leaves())  // 수정된 부분
-      .enter()
-      .append("rect")
-      .attr('x', function (d) { return d.x0; })
-      .attr('y', function (d) { return d.y0; })
-      .attr('width', function (d) { return d.x1 - d.x0; })
-      .attr('height', function (d) { return d.y1 - d.y0; })
-      .style("stroke", "black")
-      .style("fill", function (d) {
-        return colorScalePositive(d.data.name);
-      })
-      .on("click", function (d) {
-        var clickedName = d.srcElement.__data__.data.name;
-        $(".rawdata_item").removeClass("highlight");
-
-        $.ajax({
-          url: '/dashboard/',
-          method: 'POST',
-          data: { treemap_name: clickedName },
-          success: function (response) {
-            console.log(response.selected_reviews);
-
-            response.selected_reviews.forEach(function (selectedReview) {
-              var selectedReviewText = selectedReview.trim();
-
-              $(".rawdata_item").each(function () {
-                var reviewText = $(this).text().trim();
-                if (reviewText === selectedReviewText) {
-                  $(this).addClass("highlight");
-                }
-              });
-            });
-          },
-          error: function (error) {
-            console.error(error);
-          }
-        });
-      })
-      .on("mouseover", function(d, event) {
-        var clickedName = d.srcElement.__data__.data.name;
-        console.log(clickedName)
-        // 툴팁에 표시할 텍스트 설정
-        var text = clickedName;
-        if(text.length > maxLength) {
-          text = text.substring(0,maxLength)+"...";
-        }
-
-        // 툴팁 위치 설정
-        var tooltipX = event.pageX + 10;  // event.pageX 사용
-        var tooltipY = event.pageY -20;  // event.pageY 사용
-
-        // 툴팁 생성
-        d3.select("#tooltip")
-          .style("left", tooltipX + "px")
-          .style("top", tooltipY + "px")
-          .style("visibility", "visible")
-          .text(text);
-      })
-      .on("mouseout", function() {
-        // 툴팁 숨기기
-        d3.select("#tooltip")
-          .style("visibility", "hidden");
-      });
-
-        treemapNegative(rootNegative);
-        svgNegative.selectAll(".rectNegative")
-        .data(top6Negative)
-        .enter()
-        .append("rect")
-        .attr('x', function (d) { return d.x0; })
-        .attr('y', function (d) { return d.y0; })
-        .attr('width', function (d) { return d.x1 - d.x0; })
-        .attr('height', function (d) { return d.y1 - d.y0; })
-        .style("stroke", "black")
-        .style("fill", function (d) {
-          return colorScaleNegative(d.data.name);
-        })
-        .on("click", function (d) {
-          var clickedName = d.srcElement.__data__.data.name;
-          $(".rawdata_item").removeClass("highlight");
-
-          $.ajax({
-            url: '/dashboard/',
-            method: 'POST',
-            data: { treemap_name: clickedName },
-            success: function (response) {
-              console.log(response.selected_reviews);
-
-              response.selected_reviews.forEach(function (selectedReview) {
-                var selectedReviewText = selectedReview.trim();
-
-                $(".rawdata_item").each(function () {
-                  var reviewText = $(this).text().trim();
-                  if (reviewText === selectedReviewText) {
-                    $(this).addClass("highlight");
-                  }
-                });
-              });
-            },
-            error: function (error) {
-              console.error(error);
-            }
-          });
-        })
-        .on("mouseover", function(d, event) {
-          var clickedName = d.srcElement.__data__.data.name;
-          console.log(clickedName)
-          // 툴팁에 표시할 텍스트 설정
-          var text = clickedName;
-          if(text.length > maxLength) {
-            text = text.substring(0,maxLength)+"...";
-          }
-
-          // 툴팁 위치 설정
-          var tooltipX = event.pageX;
-          var tooltipY = event.pageY;
-
-          // 툴팁 생성
-          d3.select("#tooltip")
-            .style("left", tooltipX + "px")
-            .style("top", tooltipY + "px")
-            .style("visibility", "visible")
-            .text(text);
-        })
-        .on("mouseout", function() {
-          // 툴팁 숨기기
-          d3.select("#tooltip")
-            .style("visibility", "hidden");
-        });
-
-
-        svgPositive.selectAll("textPositive")
-        .data(rootPositive.leaves())
-        .enter()
-        .append("text")
-        .attr("x", function (d) {
-          return d.x0 + 5;
-        })
-        .attr("y", function (d) {
-          return d.y0 + 15;
-        })
-        .text(function (d) {
-          var text = d.data.name;
-          if (text.length > maxLength) {
-            text = text.substring(0, maxLength) + "...";
-          }
-          return text;
-        })
-        .attr("font-size", "10px")
-        .attr("fill", "white")
-        .style('display', function(d){
-          return Math.min(d.x1 - d.x0, d.y1 - d.y0) > 25 ? 'block' : 'none';
-        });
-
-      svgNegative.selectAll("textNegative")
-        .data(rootNegative.leaves())
-        .enter()
-        .append("text")
-        .attr("x", function (d) {
-          return d.x0 + 5;
-        })
-        .attr("y", function (d) {
-          return d.y0 + 15;
-        })
-        .text(function (d) {
-          var text = d.data.name;
-          if (text.length > maxLength) {
-            text = text.substring(0, maxLength) + "...";
-          }
-          return text;
-        })
-        .attr("font-size", "10px")
-        .attr("fill", "white")
-        .style('display', function(d){
-          return Math.min(d.x1 - d.x0, d.y1 - d.y0) > 25 ? 'block' : 'none';
-        });
-
-        //  누적막대그래프
-
-
-        let stackedDataset = [
-          {
-            label: 'Positive',
-            data: results_positive,
-            backgroundColor: '#1f77b4'
-          },
-          {
-            label: 'Negative',
-            data: results_negative,
-            backgroundColor: '#d62728'
-          },
-          {
-            label: 'Neutral',
-            data: results_neutral,
-            backgroundColor: '#7f7f7f'
-          }
-        ];
-
-        let numData = category_detail_list.length; // 데이터 개수
-        const barThickness = numData <= 3 ? 100 : 'flex';
-
-        new Chart(document.getElementById("ratio_category"), {
-          type: 'bar',
-          data: {
-            labels: category_detail_list,
-              datasets: stackedDataset.map(dataset => ({
-        ...dataset,
-        barThickness
+    new Chart(document.getElementById("ratio_category"), {
+      type: 'bar',
+      data: {
+        labels: category_detail_list,
+        datasets: stackedDataset.map(dataset => ({
+          ...dataset,
+          barThickness
         }))
-            },
-
-            options: {
-              scales: {
-                x: {
-                  stacked: true
-                },
-                y: {
-                  stacked: true
-                }
-              },
-
-            }
-          });
-
-        //도넛형 그래프
-
-        let positiveSum = results_positive.reduce((a, b) => a + b, 0);
-        let negativeSum = results_negative.reduce((a, b) => a + b, 0);
-        let neutralSum = results_neutral.reduce((a, b) => a + b, 0);
-
-
-        let ctx = document.getElementById("ratio").getContext("2d");
-        let pieChart = new Chart(ctx, {
-          type: "doughnut",
-
-          data: {
-            labels: ["Positive", "Negative", "Neutral"],
-            datasets: [
-              {
-                data: [positiveSum, negativeSum, neutralSum],
-                backgroundColor: ["#1f77b4", "#d62728", "#7f7f7f"],
-              },
-            ],
+      },
+      options: {
+        scales: {
+          x: {
+            stacked: true
           },
-          options: {
-            responsive: true,
-            scales: {
-              x: { display: false },
-              y: { display: false }
-            },
-            plugins: {
-              legend: false
-            }
+          y: {
+            stacked: true
           }
-        });
+        }
+      }
+    });
+
+    //도넛형 그래프
+    let ctx = document.getElementById("ratio").getContext("2d");
+    let pieChart = new Chart(ctx, {
+      type: "doughnut",
+
+      data: {
+        labels: ["Positive", "Negative", "Neutral"],
+        datasets: [
+          {
+            data: [total_count.positive, total_count.negative, total_count.neutral],
+            backgroundColor: ["#1f77b4", "#d62728", "#7f7f7f"],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        },
+        plugins: {
+          legend: false
+        }
+      }
+    });
   </script>
 </div>
 {% endblock %}
