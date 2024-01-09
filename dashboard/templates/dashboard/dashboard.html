@@ -39,6 +39,14 @@
 type="text/javascript"
 src="https://www.gstatic.com/charts/loader.js"
 ></script>
+<script type="text/javascript">
+  var receivedData = {{ product | safe }};
+  var receivedDataKeys = Object.keys(receivedData);
+  console.log(receivedData)
+  localStorage.setItem('receivedData', JSON.stringify(receivedData))
+  localStorage.setItem('receivedDataKeys',JSON.stringify(receivedDataKeys))
+  console.log(JSON.parse(localStorage.getItem('receivedDataKeys')))
+</script>
 
 <div class="first-desc-wrap" style="padding: 0 45px 22px">
   {% comment %} 제품선택 {% endcomment %}
@@ -48,38 +56,13 @@ src="https://www.gstatic.com/charts/loader.js"
       <option value="None" selected>
         제품이름을 선택하세요
       </option>
-      {% for product_name in product %}
-        <option value="{{ product_name }}">{{ product_name }}</option>
-      {% endfor %}
     </select>
     {% comment %} 모델 선택 {% endcomment %}
     <select name="model_name" id="model_name_select_status">
       <option value="None" disabled selected>
         모델이름을 선택하세요
       </option>
-      <option
-        id="model_name_display"
-        value="{{ product_data.model_name }}"
-      ></option>
     </select>
-    {% comment %} 선택한 제품명으로 해당하는 모델, 카테고리 표시 {% endcomment %}
-    <script>
-      $('#product_select_status').change(function() {
-          var selectedProduct = $(this).val();
-          var productData = {{ product|safe }};
-          var modelNames = productData[selectedProduct].model_name;
-          var modelSelect = $('#model_name_select_status');
-          // 모델명 표시
-          modelSelect.find('option:not(:first-child)').remove(); // 기존 옵션 제거
-
-          $.each(modelNames, function(index, modelName) {
-              modelSelect.append($('<option>', {
-                  value: modelName,
-                  text: modelName
-              }));
-          });
-      });
-    </script>
     <div class="dashboard wrap1">
       <div class="category_apply">
         <div class="apply_box">
@@ -87,62 +70,167 @@ src="https://www.gstatic.com/charts/loader.js"
           <button class="all_select" type="button" id="select-all">
             전체선택
           </button>
-          <div class="category_item">
-            <div class="apply_on">
-              {% comment %} 체크박스 부분 value에 유효한 카테고리 값 넣어야 함. {%endcomment %}
-              <label class="switch">
-                <input type="hidden"/>
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div class="apply_main">
-              {% comment %} 페이지에서 보여지는 카테고리 부분 {% endcomment %}
-              <div>{{ category_detail_list }}</div>
-            </div>
-          </div>
         </div>
-
-        {% comment %} 제품선택 시 카테고리 생성 {% endcomment %}
-        <script>
-          $('#product_select_status').change(function() {
-              var selectedProduct = $(this).val();
-              var productData = {{ product|safe }};
-              var categoryNames = productData[selectedProduct].category;
-              var categoryContainer = $('.category_apply .apply_box');
-
-              // 기존에 있던 checkbox 제거
-              categoryContainer.find('.category_item').remove();
-
-              // 각 카테고리마다 checkbox 추가
-              $.each(categoryNames, function(index, categoryName) {
-                  var categoryItem = $('<div>', { class: 'category_item' });
-
-                  var applyOnDiv = $('<div>', { class: 'apply_on' });
-                  var label = $('<label>', { class: 'switch' });
-                  var checkbox = $('<input>', {
-                      type: 'checkbox',
-                      name: 'category_list',
-                      value: categoryName
-                  });
-
-                  label.append(checkbox);
-                  label.append('<span class="slider round"></span>');
-                  applyOnDiv.append(label);
-
-                  var applyMainDiv = $('<div>', { class: 'apply_main' }).append(categoryName);
-
-                  categoryItem.append(applyOnDiv);
-                  categoryItem.append(applyMainDiv);
-
-                  categoryContainer.append(categoryItem);
-              });
-          });
-        </script>
-
         {% comment %} 적용하기 버튼 클릭 시 product, model_name, category 보내주기 {% endcomment %}
-        <button type="submit">적용하기</button>
+        <button id="submit_button" type="submit">적용하기</button>
     </div>
   </form>
+  <script>
+    var getProductName = JSON.parse(localStorage.getItem('receivedDataKeys'))
+    var selectElement = document.getElementById('product_select_status');
+    var selectModelElement = document.getElementById('model_name_select_status');
+  
+    for (var i = 0; i < getProductName.length; i++) {
+      var option = document.createElement('option');
+      option.value = getProductName[i];
+      option.textContent = getProductName[i];
+      selectElement.appendChild(option);
+    }
+
+    selectElement.addEventListener('change', function() {
+      var receivedData = JSON.parse(localStorage.getItem('receivedData'))
+
+      var selectedProductName = this.value;
+
+      localStorage.setItem('selectedProductName', selectedProductName);
+      localStorage.setItem('select_data',JSON.stringify(receivedData[selectedProductName]))
+      var select_data = JSON.parse(localStorage.getItem('select_data'));
+      
+    
+      var getCategory = receivedData[selectedProductName].category;
+      localStorage.setItem('getCategory', JSON.stringify(getCategory));
+    
+      // 모델 옵션 업데이트
+      var getModelName = select_data.model_name;
+      localStorage.setItem('getModelName', JSON.stringify(getModelName));
+      const model_list = JSON.parse(localStorage.getItem('getModelName'));
+      selectModelElement.innerHTML = ''; // 기존 옵션 제거
+      selectModelElement.addEventListener('change', function() {
+        var selectedModelName = this.value
+        localStorage.setItem('selectedModelName', selectedModelName);
+      })
+    
+      for (var i = 0; i < model_list.length; i++) {
+        var option = document.createElement('option');
+        option.value = model_list[i];
+        option.textContent = model_list[i];
+        selectModelElement.appendChild(option);
+      }
+    
+      // 카테고리 동적 추가
+      const category_list = JSON.parse(localStorage.getItem('getCategory'));
+      const categoryContainer = $('.apply_box');
+      categoryContainer.html(''); // 기존 카테고리 삭제
+    
+      category_list.forEach(category => {
+        const categoryItem = $('<div>', { class: 'category_item' });
+    
+        const applyOnDiv = $('<div>', { class: 'apply_on' });
+        const label = $('<label>', { class: 'switch' });
+        const hiddenInput = $('<input>', { type: 'checkbox', value: category, name: 'category_list' });
+        const span = $('<span>', { class: 'slider round' });
+
+        hiddenInput.on('change', function() {
+          // 체크박스의 현재 상태를 가져옵니다.
+          const isChecked = $(this).prop('checked');
+      
+          // localStorage에 저장된 기존 체크박스 상태를 가져옵니다.
+          let checkedCategories = JSON.parse(localStorage.getItem('checkedCategories')) || [];
+      
+          if (isChecked) {
+            // 체크박스가 체크된 상태라면, 이 체크박스의 value를 배열에 추가합니다.
+            checkedCategories.push(category);
+          } else {
+            // 체크박스가 체크 해제된 상태라면, 이 체크박스의 value를 배열에서 제거합니다.
+            checkedCategories = checkedCategories.filter(item => item !== category);
+          }
+      
+          // 변경된 체크박스 상태를 다시 localStorage에 저장합니다.
+          localStorage.setItem('checkedCategories', JSON.stringify(checkedCategories));
+        });
+        
+        label.append(hiddenInput);
+        label.append(span);
+        applyOnDiv.append(label);
+    
+        const applyMainDiv = $('<div>', { class: 'apply_main', text: category });
+    
+        categoryItem.append(applyOnDiv);
+        categoryItem.append(applyMainDiv);
+    
+        categoryContainer.append(categoryItem);
+      });
+    });
+
+    // 페이지 로드 시 선택된 제품명을 가져와서 적용합니다.
+    window.onload = function() {
+      var selectedProductName = localStorage.getItem('selectedProductName');
+      var selectedModelName = localStorage.getItem('selectedModelName');
+      const model_list = JSON.parse(localStorage.getItem('getModelName'));
+      if (selectedProductName) {
+        selectElement.value = selectedProductName; // selectElement에 저장된 제품명을 선택합니다.
+        // 나머지 코드 실행
+        const category_list = JSON.parse(localStorage.getItem('getCategory'));
+        const categoryContainer = $('.apply_box');
+        categoryContainer.html(''); // 기존 카테고리 삭제
+      
+        category_list.forEach(category => {
+          const categoryItem = $('<div>', { class: 'category_item' });
+      
+          const applyOnDiv = $('<div>', { class: 'apply_on' });
+          const label = $('<label>', { class: 'switch' });
+          const hiddenInput = $('<input>', { type: 'checkbox', value: category, name: 'category_list' });
+          const span = $('<span>', { class: 'slider round' });
+          hiddenInput.on('change', function() {
+            // 체크박스의 현재 상태를 가져옵니다.
+            const isChecked = $(this).prop('checked');
+        
+            // localStorage에 저장된 기존 체크박스 상태를 가져옵니다.
+            let checkedCategories = JSON.parse(localStorage.getItem('checkedCategories')) || [];
+        
+            if (isChecked) {
+              // 체크박스가 체크된 상태라면, 이 체크박스의 value를 배열에 추가합니다.
+              checkedCategories.push(category);
+            } else {
+              // 체크박스가 체크 해제된 상태라면, 이 체크박스의 value를 배열에서 제거합니다.
+              checkedCategories = checkedCategories.filter(item => item !== category);
+            }
+        
+            // 변경된 체크박스 상태를 다시 localStorage에 저장합니다.
+            localStorage.setItem('checkedCategories', JSON.stringify(checkedCategories));
+          });
+      
+          label.append(hiddenInput);
+          label.append(span);
+          applyOnDiv.append(label);
+      
+          const applyMainDiv = $('<div>', { class: 'apply_main', text: category });
+      
+          categoryItem.append(applyOnDiv);
+          categoryItem.append(applyMainDiv);
+      
+          categoryContainer.append(categoryItem);
+          const checkedCategories = JSON.parse(localStorage.getItem('checkedCategories')) || [];
+          if (checkedCategories.includes(category)) {
+            hiddenInput.prop('checked', true);
+          }
+        });
+      }
+      if (selectedModelName) {
+        for (var i = 0; i < model_list.length; i++) {
+          var option = document.createElement('option');
+          option.value = model_list[i];
+          option.textContent = model_list[i];
+          selectModelElement.appendChild(option);
+        }
+        selectModelElement.value = selectedModelName;
+        selectModelElement.onchange = function() {
+          // 선택된 모델명을 localStorage에 저장합니다.
+          localStorage.setItem('selectedModelName', selectModelElement.value);
+        };
+      }
+    };
+  </script>
 
     <div class="isNagative">
       <div>
