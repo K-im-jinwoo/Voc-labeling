@@ -40,6 +40,7 @@ type="text/javascript"
 src="https://www.gstatic.com/charts/loader.js"
 ></script>
 <script type="text/javascript">
+  window.localStorage.clear();
   var receivedData = {{ product | safe }};
   var receivedDataKeys = Object.keys(receivedData);
   console.log(receivedData)
@@ -50,7 +51,7 @@ src="https://www.gstatic.com/charts/loader.js"
 
 <div class="first-desc-wrap" style="padding: 0 45px 22px">
   {% comment %} 제품선택 {% endcomment %}
-  <form method="GET" action="{% url 'dashboard:dashboard' %}">
+  <form method="GET" action="{% url 'dashboard:dashboard' %}" onsubmit="return handleFormSubmit()">
     <p class="subject fw-400 fs-base">제품 선택</p>
     <select name="product" id="product_select_status">
       <option value="None" selected>
@@ -59,7 +60,7 @@ src="https://www.gstatic.com/charts/loader.js"
     </select>
     {% comment %} 모델 선택 {% endcomment %}
     <select name="model_name" id="model_name_select_status">
-      <option value="None" disabled selected>
+      <option value="">
         모델이름을 선택하세요
       </option>
     </select>
@@ -67,9 +68,6 @@ src="https://www.gstatic.com/charts/loader.js"
       <div class="category_apply">
         <div class="apply_box">
           <h3 class="apply_text fs-base fw-400">카테고리</h3>
-          <button class="all_select" type="button" id="select-all">
-            전체선택
-          </button>
         </div>
         {% comment %} 적용하기 버튼 클릭 시 product, model_name, category 보내주기 {% endcomment %}
         <button id="submit_button" type="submit">적용하기</button>
@@ -104,7 +102,9 @@ src="https://www.gstatic.com/charts/loader.js"
       var getModelName = select_data.model_name;
       localStorage.setItem('getModelName', JSON.stringify(getModelName));
       const model_list = JSON.parse(localStorage.getItem('getModelName'));
-      selectModelElement.innerHTML = ''; // 기존 옵션 제거
+      while (selectModelElement.length > 1) {
+        selectModelElement.remove(1)
+      }
       selectModelElement.addEventListener('change', function() {
         var selectedModelName = this.value
         localStorage.setItem('selectedModelName', selectedModelName);
@@ -121,7 +121,8 @@ src="https://www.gstatic.com/charts/loader.js"
       const category_list = JSON.parse(localStorage.getItem('getCategory'));
       const categoryContainer = $('.apply_box');
       categoryContainer.html(''); // 기존 카테고리 삭제
-    
+      localStorage.removeItem('checkedCategories');
+
       category_list.forEach(category => {
         const categoryItem = $('<div>', { class: 'category_item' });
     
@@ -129,7 +130,7 @@ src="https://www.gstatic.com/charts/loader.js"
         const label = $('<label>', { class: 'switch' });
         const hiddenInput = $('<input>', { type: 'checkbox', value: category, name: 'category_list' });
         const span = $('<span>', { class: 'slider round' });
-
+          
         hiddenInput.on('change', function() {
           // 체크박스의 현재 상태를 가져옵니다.
           const isChecked = $(this).prop('checked');
@@ -161,19 +162,36 @@ src="https://www.gstatic.com/charts/loader.js"
         categoryContainer.append(categoryItem);
       });
     });
-
+    function handleFormSubmit() {
+      const selectElement = document.getElementById('model_name_select_status');
+      
+      if (selectElement.value === "") {
+        // 첫 번째 옵션이 선택되었다면 해당 select 요소의 name 속성을 임시로 제거합니다.
+        selectElement.removeAttribute('name');
+        
+        // form 제출이 완료된 후 name 속성을 다시 복원합니다.
+        setTimeout(function() {
+          selectElement.setAttribute('name', 'modelName');
+        }, 0);
+      }
+      
+      // form 제출 진행
+      return true;
+    }
+  
     // 페이지 로드 시 선택된 제품명을 가져와서 적용합니다.
     window.onload = function() {
       var selectedProductName = localStorage.getItem('selectedProductName');
       var selectedModelName = localStorage.getItem('selectedModelName');
       const model_list = JSON.parse(localStorage.getItem('getModelName'));
+      
       if (selectedProductName) {
         selectElement.value = selectedProductName; // selectElement에 저장된 제품명을 선택합니다.
         // 나머지 코드 실행
         const category_list = JSON.parse(localStorage.getItem('getCategory'));
         const categoryContainer = $('.apply_box');
         categoryContainer.html(''); // 기존 카테고리 삭제
-      
+        
         category_list.forEach(category => {
           const categoryItem = $('<div>', { class: 'category_item' });
       
@@ -224,6 +242,19 @@ src="https://www.gstatic.com/charts/loader.js"
           selectModelElement.appendChild(option);
         }
         selectModelElement.value = selectedModelName;
+        selectModelElement.onchange = function() {
+          // 선택된 모델명을 localStorage에 저장합니다.
+          localStorage.setItem('selectedModelName', selectModelElement.value);
+        };
+      }
+      else if (!selectedModelName){
+        for (var i = 0; i < model_list.length; i++) {
+          var option = document.createElement('option');
+          option.value = model_list[i];
+          option.textContent = model_list[i];
+          selectModelElement.appendChild(option);
+        }
+        selectModelElement.value = '';
         selectModelElement.onchange = function() {
           // 선택된 모델명을 localStorage에 저장합니다.
           localStorage.setItem('selectedModelName', selectModelElement.value);

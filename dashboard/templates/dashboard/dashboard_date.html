@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/css/dashboard.css' %}?after"
+/>
+{% endblock %} {% block content-title %}
+<div class="header-nav-wrap">
+  <h2 class="content-title fs-large fw-title gray-200">Dash board</h2>
+  {% if user.is_authenticated %}
+  <div class="fw-400 fs-medium">
+    <a href="{% url 'main:logout' %}" class="header-signup">Logout</a>
+  </div>
+  {% else %}
+  <div class="fw-400 fs-medium">
+    <a
+      class="header-login"
+      href="{% url 'main:login' %}?next={{ request.path }}"
+      >로그인</a
+    >
+    <a
+      class="header-signup"
+      href="{% url 'main:signup' %}?next={{ request.path }}"
+      >회원가입</a
+    >
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %} 
+{% block content %}
+{% endblock %}
