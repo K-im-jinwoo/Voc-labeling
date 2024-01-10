@@ -20,6 +20,7 @@ def workstatus_review(request):
                 if model_name:
                     filter_conditions &= Q(model_name=model_name)
                     filter_conditions_labeled_review &= Q(review__model_name=model_name)
+                    
 
                 # model_code가 존재하면 해당 조건 추가
                 if model_code:
@@ -53,7 +54,7 @@ def workstatus_review(request):
                 for category in category_list:
                     emotion_count = main_models.LabelingData.objects.filter(category__name=category).filter(filter_conditions_labeled_review)
                     positive_count = emotion_count.filter(emotion__e_name="positive").count()
-                    nagetive_count = emotion_count.filter(emotion__e_name="nagetive").count()
+                    nagetive_count = emotion_count.filter(emotion__e_name="negative").count()
                     neutral_count = emotion_count.filter(emotion__e_name="neutral").count()
                     emotion_total_count = positive_count + nagetive_count + neutral_count
                     category_emotion_dict[category] = {"positive_count": positive_count, "negative_count": nagetive_count, "neutral_count": neutral_count, "emotion_total_count": emotion_total_count}
@@ -75,11 +76,10 @@ def workstatus_review(request):
                         category_emotion_dict = dict(sorted(category_emotion_dict.items(), key=lambda x: x[1][key_mapping[sort_pick]], reverse=True))
                         context["sorted_category_emotion_dict"] = category_emotion_dict
 
-
                 # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
                 if request.method == "GET" and "showing_index" in request.GET:
-                    category_name = request.POST.get("category") # 카테고리 중 1개
-                    emotion_name = request.POST.get("emotion") # positive, negative, neutral, total 중 1개
+                    category_name = request.GET.get("category") # 카테고리 중 1개
+                    emotion_name = request.GET.get("emotion") # positive, negative, neutral, total 중 1개
             
                     labeling_data_obj = main_models.LabelingData.objects.filter(filter_conditions_labeled_review).filter(category__name=category_name)
                     if emotion_name == "positive":
@@ -136,7 +136,7 @@ def workstatus_review(request):
                 context["product"] = res_data
                 context["emotion"] = emotion_names
                 # 예시 형식 -> {'테스트 제품': {'model_name': {'모델네임1': {'model_code': ['모델코드1', '모델코드2']}, '모델네임2': {'model_code': ['모델코드3', '모델코드4']}}}
-    
+        return render(request, "main/workstatus_review.html", context=context)
     # 예외처리
     except Exception as identifier:
         print(identifier)
