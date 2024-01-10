@@ -22,6 +22,7 @@ select {
   margin-right: 75px;
 }
 .category_apply {
+  position: relative;
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
@@ -85,7 +86,9 @@ select {
 .apply_box{
   display: flex;
   flex-direction: column;
-  
+}
+.apply_text{
+  margin-bottom: 10px;
 }
 .category_item{
   display: flex;
@@ -98,7 +101,9 @@ background-color: #fff;
 color: #000;
 transition: background-color 0.2s, color 0.2s;
 }
-
+.apply_main {
+  margin-left: 5px;
+}
 .apply_button.on {
 background-color: #ff0000;
 color: #fff;
@@ -117,7 +122,21 @@ margin-bottom: 10px;
 .category_ratio_text{
 margin-bottom: 15px;
 }
-
+#submit_button {
+  position: absolute;
+  bottom: 21px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  width: 70%;
+  height: 38px;
+  border-radius: 6px;
+  background-color: #F0F2F5;
+}
+#submit_button:hover {
+  color: #fff;
+  background-color: #A50034;
+}
 
 /* 워드클라우드 스위치*/
 .isNagative {
@@ -216,13 +235,6 @@ margin-right: 0;
 margin-bottom: 15px;
 
 }
-
-/* 클릭한 데이터 색칠 */
-.highlight {
-  background-color: yellow; 
-}
-
-
 
 ::-webkit-scrollbar {
 width: 2px;

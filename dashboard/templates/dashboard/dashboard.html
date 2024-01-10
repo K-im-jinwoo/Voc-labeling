@@ -84,7 +84,6 @@ src="https://www.gstatic.com/charts/loader.js"
       option.textContent = getProductName[i];
       selectElement.appendChild(option);
     }
-
     selectElement.addEventListener('change', function() {
       var receivedData = JSON.parse(localStorage.getItem('receivedData'))
 
@@ -120,7 +119,7 @@ src="https://www.gstatic.com/charts/loader.js"
       // 카테고리 동적 추가
       const category_list = JSON.parse(localStorage.getItem('getCategory'));
       const categoryContainer = $('.apply_box');
-      categoryContainer.html(''); // 기존 카테고리 삭제
+      categoryContainer.children(':not(h3)').remove();
       localStorage.removeItem('checkedCategories');
 
       category_list.forEach(category => {
@@ -190,7 +189,7 @@ src="https://www.gstatic.com/charts/loader.js"
         // 나머지 코드 실행
         const category_list = JSON.parse(localStorage.getItem('getCategory'));
         const categoryContainer = $('.apply_box');
-        categoryContainer.html(''); // 기존 카테고리 삭제
+        categoryContainer.children(':not(h3)').remove();
         
         category_list.forEach(category => {
           const categoryItem = $('<div>', { class: 'category_item' });
@@ -344,6 +343,8 @@ src="https://www.gstatic.com/charts/loader.js"
       const neutralPhenemenonData = {{emotion_rank_data.neutral.phenomenon|safe}}
 
       target_btn.addEventListener("click", function() {
+        clearWordCloud()
+
         target_radio.checked = true;
         expression_radio.checked = false;
         target_btn.classList.add("onf_btn");
@@ -384,6 +385,8 @@ src="https://www.gstatic.com/charts/loader.js"
       });
       
       expression_btn.addEventListener("click", function() {
+        clearWordCloud()
+        
         target_radio.checked = false
         expression_radio.checked = true
         expression_btn.classList.add("onf_btn");
@@ -465,7 +468,10 @@ src="https://www.gstatic.com/charts/loader.js"
             .text(d => d.text);
         }
       }
-      
+      function clearWordCloud() {
+        const svg = d3.select("#cloud").select("svg");
+        svg.selectAll("*").remove();
+      }
     </script>
 
     <div class="rawdata fw-400 fs-base">
