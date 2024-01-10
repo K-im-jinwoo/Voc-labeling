@@ -78,7 +78,6 @@ def workstatus_review(request):
 
                 # 번호 개수를 눌렀을 때 (대상, 현상)과 원문데이터 보여줌
                 if request.method == "GET" and "showing_index" in request.GET:
-                    print('aa')
                     category_name = request.GET.get("category") # 카테고리 중 1개
                     emotion_name = request.GET.get("emotion") # positive, negative, neutral, total 중 1개
             
