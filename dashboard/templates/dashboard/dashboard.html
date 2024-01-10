@@ -344,18 +344,43 @@ src="https://www.gstatic.com/charts/loader.js"
       const neutralPhenemenonData = {{emotion_rank_data.neutral.phenomenon|safe}}
 
       target_btn.addEventListener("click", function() {
-        target_radio.checked = true
-        expression_radio.checked = false
+        target_radio.checked = true;
+        expression_radio.checked = false;
         target_btn.classList.add("onf_btn");
         expression_btn.classList.remove("onf_btn");
-        positiveRadio.checked = true
-        if (positiveRadio.checked) {
-          generateWordCloud(positiveTargetData); // 긍정 데이터로 워드 클라우드 생성
-        } else if (negativeRadio.checked) {
-          generateWordCloud(negativeTargetData); // 부정 데이터로 워드 클라우드 생성
-        } else if (neutralRadio.checked) {
-          generateWordCloud(neutralTargetData); // 중립 데이터로 워드 클라우드 생성
-        } 
+        positiveRadio.checked = false;
+        negativeRadio.checked = false;
+        neutralRadio.checked = false;
+        let data = [];
+        positiveRadio.addEventListener('change', function() {
+          if (positiveRadio.checked) {
+            data = data.concat(positiveTargetData);
+          } else {
+            data = data.filter(item => !positiveTargetData.includes(item));
+          }
+          console.log(data);
+          generateWordCloud(data);
+        });
+        
+        negativeRadio.addEventListener('change', function() {
+          if (negativeRadio.checked) {
+            data = data.concat(negativeTargetData);
+          } else {
+            data = data.filter(item => !negativeTargetData.includes(item));
+          }
+          console.log(data);
+          generateWordCloud(data);
+        });
+        
+        neutralRadio.addEventListener('change', function() {
+          if (neutralRadio.checked) {
+            data = data.concat(neutralTargetData);
+          } else {
+            data = data.filter(item => !neutralTargetData.includes(item));
+          }
+          console.log(data);
+          generateWordCloud(data);
+        });
       });
       
       expression_btn.addEventListener("click", function() {
@@ -363,51 +388,41 @@ src="https://www.gstatic.com/charts/loader.js"
         expression_radio.checked = true
         expression_btn.classList.add("onf_btn");
         target_btn.classList.remove("onf_btn");
-        positiveRadio.checked = true
-        if (positiveRadio.checked) {
-          generateWordCloud(positivePhenemenonData); // 긍정 데이터로 워드 클라우드 생성
-        } else if (negativeRadio.checked) {
-          generateWordCloud(negativePhenemenonData); // 부정 데이터로 워드 클라우드 생성
-        } else if (neutralRadio.checked) {
-          generateWordCloud(neutralPhenemenonData); // 중립 데이터로 워드 클라우드 생성
-        } 
-      });
-
-      positiveRadio.addEventListener("click", function() {
-        if (target_radio.checked) {
+        positiveRadio.checked = false;
+        negativeRadio.checked = false;
+        neutralRadio.checked = false;
+        let data = [];
+        positiveRadio.addEventListener('change', function() {
           if (positiveRadio.checked) {
-            generateWordCloud(positiveTargetData); // 긍정 데이터로 워드 클라우드 생성
+            data = data.concat(positivePhenemenonData);
+          } else {
+            data = data.filter(item => !positivePhenemenonData.includes(item));
           }
-        } else if (expression_radio.checked) {
-          if (positiveRadio.checked) {
-            generateWordCloud(positivePhenemenonData); // 긍정 데이터로 워드 클라우드 생성
+          console.log(data);
+          generateWordCloud(data);
+        });
+        
+        negativeRadio.addEventListener('change', function() {
+          if (negativeRadio.checked) {
+            data = data.concat(negativePhenemenonData);
+          } else {
+            data = data.filter(item => !negativePhenemenonData.includes(item));
           }
-        }
+          console.log(data);
+          generateWordCloud(data);
+        });
+        
+        neutralRadio.addEventListener('change', function() {
+          if (neutralRadio.checked) {
+            data = data.concat(neutralPhenemenonData);
+          } else {
+            data = data.filter(item => !neutralPhenemenonData.includes(item));
+          }
+          console.log(data);
+          generateWordCloud(data);
+        });
       });
       
-      negativeRadio.addEventListener("click", function() {
-        if (target_radio.checked) {
-          if (negativeRadio.checked) {
-            generateWordCloud(negativeTargetData); // 긍정 데이터로 워드 클라우드 생성
-          }
-        } else if (expression_radio.checked) {
-          if (negativeRadio.checked) {
-            generateWordCloud(negativePhenemenonData); // 긍정 데이터로 워드 클라우드 생성
-          }
-        }
-      });
-      
-      neutralRadio.addEventListener("click", function() {
-        if (target_radio.checked) {
-          if (neutralRadio.checked) {
-            generateWordCloud(neutralTargetData); // 긍정 데이터로 워드 클라우드 생성
-          }
-        } else if (expression_radio.checked) {
-          if (neutralRadio.checked) {
-            generateWordCloud(neutralPhenemenonData); // 긍정 데이터로 워드 클라우드 생성
-          }
-        }
-      });
 
       {% comment %} 워드클라우드 생성 {% endcomment %}
       function generateWordCloud(data) {
@@ -455,12 +470,71 @@ src="https://www.gstatic.com/charts/loader.js"
 
     <div class="rawdata fw-400 fs-base">
       <h3 class="rawdata_text">Raw Data</h3>
-      {% for review in raw_data %}
-      <div class="rawdata_wrap">
-        <div class="rawdata_item fs-tiny fw-400">{{review}}</div>
+      <div class="rawdata_container">
+        {% for review in raw_data %}
+        <div class="rawdata_wrap">
+          <div class="rawdata_item fs-tiny fw-400">{{review}}</div>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
+    <script>
+      let select_raw_data = {{select_raw_data | safe}}
+      let raw_data = {{raw_data | safe}}
+    
+      document.addEventListener('DOMContentLoaded', (event) => {
+        var gElements = document.querySelectorAll('g');
+        var lastClickedElement = null;
+    
+        gElements.forEach((gElement) => {
+          gElement.addEventListener('click', function(event) {
+            var clickedId = gElement.getAttribute('id');
+            var isPositive = document.querySelector('#treemapPositive').contains(gElement);
+            var isNegative = document.querySelector('#treemapNegative').contains(gElement);
+            var new_data;
+    
+            var rawdata_container = document.querySelector('.rawdata_container');
+            rawdata_container.innerHTML = '';
+    
+            // 클릭된 요소가 이전에 클릭된 요소와 같다면 원본 데이터 복원
+            if (gElement === lastClickedElement) {
+              gElement.classList.remove('highlight');
+              new_data = raw_data;
+              lastClickedElement = null; // 마지막으로 클릭된 요소 초기화
+            } else {
+              // 클릭된 요소에 따라 new_data 설정
+              if (isPositive) {
+                new_data = select_raw_data[clickedId].positive;
+              } 
+              if (isNegative) {
+                new_data = select_raw_data[clickedId].negative;
+              }
+
+              gElements.forEach((element) => {
+                element.classList.remove('highlight');
+              });
+
+              gElement.classList.add('highlight');
+
+              lastClickedElement = gElement;
+            }
+    
+            new_data.forEach((item, i) => {
+              var rawdata_wrap = document.createElement('div');
+              rawdata_wrap.className = 'rawdata_wrap';
+        
+              var rawdata_item = document.createElement('div');
+              rawdata_item.className = 'rawdata_item fs-tiny fw-400';
+              rawdata_item.textContent = item;
+        
+              rawdata_wrap.appendChild(rawdata_item);
+              rawdata_container.appendChild(rawdata_wrap);
+            });
+          });
+        });
+      });      
+    </script>
+    
   </div>
 
   <div class="dashboard wrap2">
@@ -536,7 +610,9 @@ src="https://www.gstatic.com/charts/loader.js"
         const cell = svg.selectAll("g")
           .data(root.leaves())
           .enter().append("g")
-          .attr("transform", d => `translate(${d.x0},${d.y0})`);
+          .attr("transform", d => `translate(${d.x0},${d.y0})`)
+          .attr("id", d => `${(d.key)}`);
+
     
         cell.append("rect")
           .attr("width", d => d.x1 - d.x0)
