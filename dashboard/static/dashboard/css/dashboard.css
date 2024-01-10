@@ -307,6 +307,5 @@ margin-top: 5px;
 }
 
 .highlight {
-  stroke: #C3002F;
-  stroke-width: 1;
+  fill: #fff;
 }

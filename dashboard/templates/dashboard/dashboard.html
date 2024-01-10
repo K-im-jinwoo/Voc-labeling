@@ -601,7 +601,7 @@ src="https://www.gstatic.com/charts/loader.js"
     const width = 300;
     const height = 210;
     
-    const createTreemap = (svg, data) => {
+    const createTreemap = (svg, data, color) => {
       if (data.children.some(child => child.value !== 0)) {
         const treemap = d3.treemap()
           .size([width, height])
@@ -623,12 +623,12 @@ src="https://www.gstatic.com/charts/loader.js"
         cell.append("rect")
           .attr("width", d => d.x1 - d.x0)
           .attr("height", d => d.y1 - d.y0)
-          .attr("fill", "steelblue");
+          .attr("fill", color);
     
         cell.append("text")
           .attr("x", 5)
           .attr("y", 15)
-          .text(d => d.data.value !== 0 ? d.key : ""); // If value is 0, don't display text
+          .text(d => d.data.value !== 0 ? d.key : "");
       }
     };
     
@@ -641,8 +641,8 @@ src="https://www.gstatic.com/charts/loader.js"
       .attr("width", width)
       .attr("height", height);
 
-    createTreemap(svgPositive, dataPos);
-    createTreemap(svgNegative, dataNeg);
+    createTreemap(svgPositive, dataPos, '#1f77b4');
+    createTreemap(svgNegative, dataNeg, '#d62728');
         
     //  누적막대그래프
     let stackedDataset = [
