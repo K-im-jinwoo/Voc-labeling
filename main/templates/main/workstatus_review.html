@@ -33,12 +33,18 @@
 
 {{ product|json_script:"productData" }}
 <script type="text/javascript">
-  let productData = JSON.parse(document.getElementById('productData').textContent);
-  // productData가 로컬 스토리지에 없거나 빈 문자열일 때만 저장
-  let storedProductData = localStorage.getItem('productData');
-  if (!storedProductData || storedProductData === "") {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!localStorage.getItem('productDataInitialized')) {
+      let productData = JSON.parse(document.getElementById('productData').textContent);
       localStorage.setItem('productData', JSON.stringify(productData));
-  }
+      localStorage.setItem('productDataInitialized', 'true');
+    }
+
+    let storedProductData = localStorage.getItem('productData');
+    if (!storedProductData || storedProductData === "") {
+      localStorage.setItem('productData', JSON.stringify(productData));
+    }
+  });
 </script>
 
 
@@ -247,25 +253,59 @@
                 </div></th>
               </tr>
             </thead>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script>
-                $(document).ready(function() {
-                    $('th.sortable').click(function(){
-                        var table = $(this).parents('table').eq(0)
-                        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
-                        this.asc = !this.asc
-                        if (!this.asc){rows = rows.reverse()}
-                        for (var i = 0; i < rows.length; i++){table.append(rows[i])}
-                    })
-                    function comparer(index) {
-                        return function(a, b) {
-                            var valA = getCellValue(a, index), valB = getCellValue(b, index)
-                            return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
-                        }
-                    }
-                    function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+              $(document).ready(function() {
+                if (!localStorage.getItem('categoryOrderInitialized')) {
+                  localStorage.removeItem('categoryOrder');
+                  localStorage.setItem('categoryOrderInitialized', 'true');
+                }
+          
+                saveCategoryOrder();
+          
+                $('th.sortable').click(function() {
+                  var table = $(this).parents('table').eq(0);
+                  var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
+                  this.asc = !this.asc;
+                  if (!this.asc) {
+                    rows = rows.reverse();
+                  }
+                  for (var i = 0; i < rows.length; i++) {
+                    table.append(rows[i]);
+                  }
+          
+                  saveCategoryOrder();
                 });
+          
+                function comparer(index) {
+                  return function(a, b) {
+                    var valA = getCellValue(a, index),
+                      valB = getCellValue(b, index);
+                    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB);
+                  };
+                }
+          
+                function getCellValue(row, index) {
+                  return $(row).children('td').eq(index).text();
+                }
+          
+                function saveCategoryOrder() {
+                  var table = $('table');
+                  var categoryOrder = [];
+          
+                  // 테이블의 각 행을 순회하며 카테고리 이름을 저장
+                  table.find('tr:gt(0)').each(function() {
+                    var categoryName = $(this).children('td:first-child').find('p').text().trim();
+                    
+                    if (categoryName !== "") {
+                      categoryOrder.push(categoryName);
+                    }
+                  });
+          
+                  localStorage.setItem('categoryOrder', JSON.stringify(categoryOrder));
+                }
+              });
             </script>
+            
             <form id="myForm" method="GET" action="">
                 <input type="hidden" id="category" name="category">
                 <input type="hidden" id="emotion" name="emotion">
