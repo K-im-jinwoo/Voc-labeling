@@ -80,8 +80,10 @@ select {
   color: #585757;
   letter-spacing: 0em;
   text-align: center;
-  
-  
+}
+
+.date_space_cut p:hover {
+  cursor: pointer;
 }
 svg{
   margin-right: 7.67px;
@@ -103,7 +105,9 @@ svg{
   overflow-y: auto;
 }
 
-
+.sort:hover {
+  cursor: pointer;
+}
 
 .data_label {
   background-color: #f2f2f2;
@@ -116,6 +120,31 @@ svg{
   color: #1a1a1a;
 }
 
+#targetPhenomenonTable tbody td {
+  font-size: 12px;
+  line-height: 24px;
+  font-family: lg_smartregular;
+  font-weight: 400;
+}
+
+#reviewTable tbody td{
+  font-size: 12px;
+  line-height: 24px;
+  font-family: lg_smartregular;
+  font-weight: 400;
+}
+
+#reviewTable tbody td:nth-child(2) {
+  text-align: left;
+}
+
+.num {
+  width: 20%;
+}
+
+.data {
+  width: 80%;
+}
 .data_space_cut{
   padding: auto;
 }

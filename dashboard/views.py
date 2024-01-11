@@ -8,7 +8,7 @@ from main import models as main_models
 def calculate_date_intervals(start_date, end_date, num_intervals):
     date_range = end_date - start_date
     interval = date_range // num_intervals
-    return [{"start": start_date + i * interval, "end": start_date + (i + 1) * interval - timedelta(days=1)} for i in range(num_intervals)]
+    return [{"start": start_date + i * interval, "end": start_date + (i + 1) * interval} for i in range(num_intervals)]
 
 @csrf_exempt
 def dashboard(request):

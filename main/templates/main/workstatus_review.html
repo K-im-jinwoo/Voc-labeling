@@ -31,106 +31,184 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+{{ product|json_script:"productData" }}
+<script type="text/javascript">
+  let productData = JSON.parse(document.getElementById('productData').textContent);
+  // productData가 로컬 스토리지에 없거나 빈 문자열일 때만 저장
+  let storedProductData = localStorage.getItem('productData');
+  if (!storedProductData || storedProductData === "") {
+      localStorage.setItem('productData', JSON.stringify(productData));
+  }
+</script>
+
 
 
 <div class="first-desc primary-bg gray-100">
   <div class="first-desc-wrap">
-    
     <form style="display: inline-block" action="" method="get" name="category_product">
       {% csrf_token %}
       <p class="subject fw-400 fs-base">제품 선택</p>
-      <select name="category_product" id="product_select_status">
+      <select name="product" id="product_select_status">
         {% if selected %}
           <option value="{{ selected }}" selected>{{ selected }}</option>
         {% else %}
           <option value="--제품을 선택하세요--" selected>제품이름을 선택하세요</option>
         {% endif %}
-          {% for product_name in product_names %}
-            <option class="subject fw-400 fs-base" value="{{ product_name.name }}"
-              {% if forloop.first %} selected {% endif %}>
-              {{ product_name.name }}
-            </option>
-          {% endfor %}
-        
       </select>
     </form>
-    
-    <form style="display: inline-block" action="" method="get"  name="category_model_name">
+
+    <form style="display: inline-block" action="" method="get" name="category_model_name">
       {% csrf_token %}
-      <select name="category_model_name" id="model_name_select_status">
+      <select name="model_name" id="model_name_select_status">
         {% if selected_name %}
           <option value="{{ selected_name }}" selected>{{ selected_name }}</option>
         {% else %}
           <option value="--모델명을 선택하세요--" selected>모델이름을 선택하세요</option>
         {% endif %}
-        {% for model_name in model_names %}
-    
-        {% if model_name.model_name %}
-          {% if model_name.model_name != "nan" %}
-            <option value={"{{ model_name.model_name }},{{selected}}"}>
-              {{ model_name.model_name }}
-            </option>
-          {% endif %}
-        {% endif %}
-          {% endfor %}
       </select>
     </form>
 
     <form style="display: inline-block" action="" method="get" name="category_model_code">
       {% csrf_token %}
-      <select name="category_model_code" id="model_code_select_status">
+      <select name="model_code" id="model_code_select_status">
         {% if selected_code %}
           <option value="{{ selected_code }}" selected>{{ selected_code }}</option>
         {% else %}
-          <option value="--모델명을 선택하세요--" selected>모델코드를 선택하세요</option>
+          <option value="--모델 코드를 선택하세요--" selected>모델 코드를 선택하세요</option>
         {% endif %}
-        {% for model_code in model_codes %}
-    
-        {% if model_code.model_code %}
-          {% if model_code.model_code != "nan" %}
-            <option value={"{{ model_code.model_code }},{{selected}},{{selected_name}}"}>
-              {{ model_code.model_code }}
-            </option>
-          {% endif %}
-        {% endif %}
-          {% endfor %}
       </select>
     </form>
-  
+
+    <!-- JavaScript 코드 -->
+    <script>
+      window.addEventListener('load', function() {
+        var selectElement = document.getElementById('product_select_status');
+        var modelSelectElement = document.getElementById('model_name_select_status');
+        var modelCodeSelectElement = document.getElementById('model_code_select_status');
+      
+        loadDataToSelect(selectElement, 'product');
+      
+        selectElement.addEventListener("change", function(event) {
+          event.preventDefault(); 
+          localStorage.setItem("product_select_status", this.value);
+          localStorage.removeItem('model_name_select_status');
+          localStorage.removeItem('model_code_select_status');
+          updateModelSelect(this.value);
+          document.forms['category_product'].submit();  // 'product' 선택 시 submit
+        });
+      
+        modelSelectElement.addEventListener("change", function(event) {
+          event.preventDefault();
+          localStorage.setItem("model_name_select_status", this.value);
+        
+          var productInput = document.createElement('input');
+          productInput.type = 'hidden';
+          productInput.name = 'product';
+          productInput.value = selectElement.value;
+          updateModelCodeSelect(selectElement.value, this.value);
+          localStorage.removeItem('model_code_select_status'); 
+          
+          // 그 후에 form을 제출합니다.
+          document.forms['category_model_name'].appendChild(productInput);
+          document.forms['category_model_name'].submit();  
+        });
+
+        modelCodeSelectElement.addEventListener("change", function(event) {
+          event.preventDefault();
+          localStorage.setItem("model_code_select_status", this.value);
+        
+          var productInput = document.createElement('input');
+          productInput.type = 'hidden';
+          productInput.name = 'product';
+          productInput.value = selectElement.value;
+          
+          var modelNameInput = document.createElement('input');
+          modelNameInput.type = 'hidden';
+          modelNameInput.name = 'model_name';
+          modelNameInput.value = modelSelectElement.value;
+        
+          var modelCodeInput = document.createElement('input');
+          modelCodeInput.type = 'hidden';
+          modelCodeInput.name = 'model_code';
+          modelCodeInput.value = this.value;
+        
+          // 그 후에 form을 제출합니다.
+          document.forms['category_model_code'].appendChild(productInput);
+          document.forms['category_model_code'].appendChild(modelNameInput);
+          document.forms['category_model_code'].appendChild(modelCodeInput);
+          document.forms['category_model_code'].submit();  
+        });
+      
+        var savedProduct = localStorage.getItem('product_select_status');
+        if (savedProduct) {
+          selectElement.value = savedProduct;
+          updateModelSelect(savedProduct);
+        }
+
+        var savedModelName = localStorage.getItem('model_name_select_status');
+        if (savedModelName) {
+          modelSelectElement.value = savedModelName;
+          updateModelCodeSelect(savedProduct, savedModelName)
+        }
+
+        var savedModelCode = localStorage.getItem('model_code_select_status');
+        if (savedModelCode) {
+          modelCodeSelectElement.value = savedModelCode;
+        }
+      });
+      
+      function loadDataToSelect(selectElement) {
+        var savedProductData = JSON.parse(localStorage.getItem('productData'));
+      
+        for (var key in savedProductData) {
+          if (savedProductData.hasOwnProperty(key)) {
+            var option = document.createElement('option');
+            option.value = key;
+            option.textContent = key;
+            selectElement.appendChild(option);
+          }
+        }
+      }
+      
+      function updateModelSelect(product) {
+        var modelSelectElement = document.getElementById('model_name_select_status');
+      
+        var savedProductData = JSON.parse(localStorage.getItem('productData'));
+        var selectedProductModels = savedProductData[product]["model_name"];
+        for (var key in selectedProductModels) {
+          if (selectedProductModels.hasOwnProperty(key)) {
+            var option = document.createElement('option');
+            option.value = key;
+            option.textContent = key;
+            modelSelectElement.appendChild(option);
+          }
+        }
+      }
+
+      function updateModelCodeSelect(product, modelName) {
+        var modelCodeSelectElement = document.getElementById('model_code_select_status');
     
-   
-<script> // 제품 선택
-  document.addEventListener("DOMContentLoaded", function() {
-    var select = document.getElementById("product_select_status");
-    var storedValue = localStorage.getItem("product_select_status");
-    if (storedValue) {
-      select.value = storedValue;
-    }
-    select.addEventListener("change", function() {
-      localStorage.setItem("product_select_status", this.value);
-    });
-  });
-
-  
-  $(document).ready(function() {
-    $('#product_select_status').change(function() {
-      $('form[name="category_product"]').submit();
-    });
-    $('#model_name_select_status').change(function() {
-      $('form[name="category_model_name"]').submit();
-    });
-    $('#model_code_select_status').change(function() {
-      $('form[name="category_model_code"]').submit();
-    });
-  });
-</script>
-
+        var savedProductData = JSON.parse(localStorage.getItem('productData'));
+        var modelData = savedProductData[product]["model_name"][modelName];
+        var modelCodes = modelData["model_code"];
+        
+        for (var i = 0; i < modelCodes.length; i++) {
+          var option = document.createElement('option');
+          option.value = modelCodes[i];
+          option.textContent = modelCodes[i];
+          modelCodeSelectElement.appendChild(option);
+        }
+      }
+      </script>
+      
+      
+    
   <div class = "submenubar">
     <div class="totalBar fw-400 fs-small">
-      <div class="right_top top1">총 개수 {{ alltotal }}</div>
-      <div class="right_top top2">작업완료 {{ first_num }}</div>
-      <div class="right_top top3">남은개수 {{ left }}</div>
-      <div class="right_top top4">삭제 {{ dummy_num }}</div>
+      <div class="right_top top1">총 개수 {{ total_count }}</div>
+      <div class="right_top top2">작업완료 {{ complete_count }}</div>
+      <div class="right_top top3">남은개수 {{ remain_count }}</div>
+      <div class="right_top top4">삭제 {{ deleted_count }}</div>
     </div>
 
     <div class="workStatus_now fw-600 fs-small">
@@ -150,222 +228,236 @@
     
     <div class="category_wrap">
       <div class="category category_1">
-        <div class="category_column  fw-600 fs-small">  
+        <div class="category_column  fw-600 fs-small">
           <table id='myTable'>
             <thead>
               <tr>
                 <th> <div class="data_label label1">카테고리</div></th>
-                <th><div class="data_label">
-                긍정</div></th>
-                <th><div class="data_label">
+                <th class="sortable"><div class="data_label sort">
+                  긍정
+                </div></th>
+                <th class="sortable"><div class="data_label sort">
                   부정
-                  
                 </div></th>
-                <th><div class="data_label">
+                <th class="sortable"><div class="data_label sort">
                   중립
-                  
                 </div></th>
-                <th><div class="data_label">
+                <th class="sortable"><div class="data_label sort">
                   총개수
-                  
                 </div></th>
               </tr>
             </thead>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('th.sortable').click(function(){
+                        var table = $(this).parents('table').eq(0)
+                        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+                        this.asc = !this.asc
+                        if (!this.asc){rows = rows.reverse()}
+                        for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+                    })
+                    function comparer(index) {
+                        return function(a, b) {
+                            var valA = getCellValue(a, index), valB = getCellValue(b, index)
+                            return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+                        }
+                    }
+                    function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+                });
+            </script>
+            <form id="myForm" method="GET" action="">
+                <input type="hidden" id="category" name="category">
+                <input type="hidden" id="emotion" name="emotion">
+                <input type="hidden" id="showing_index" name="showing_index">
+                <input type="hidden" id="product" name="product">
+                <input type="hidden" id="model_name" name="model_name">
+                <input type="hidden" id="model_code" name="model_code">
+            </form>
             <tbody>
-              
-              {% for category_detail_list, positive, negative, neutral, everything,order in  data %}
-
-              <tr>
-                <td><div class="date_space_cut cut1 fw-600 fs-small">
-                  <p>{{ category_detail_list }}</p>
-                </div>
-                </td>
-                <td><div class="date_space_cut fw-400 fs-tiny" >
-                  <p>
-                    {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=positive"
-                          >{{ positive.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=positive"
-                          >{{ positive.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=positive&asdfasdf=dkfj"
-                          >{{ positive.count }}</a
-                        >
-                      {% endif %}
-                  </p>
-                </div>
-                </td>
-                <td><div class="date_space_cut fw-400 fs-tiny" >
-                  <p>
-                    {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=negative"
-                          >{{ negative.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=negative"
-                          >{{ negative.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=negative&asdfasdf=dkfj"
-                          >{{ negative.count }}</a
-                        >
-                      {% endif %}
-                  </p>
-                </div>
-                </td>
-                <td> <!-- 중립 개수 -->
-                  <div class="date_space_cut fw-400 fs-tiny">
-                    <p>
-                      {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=neutral"
-                          >{{ neutral.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=neutral"
-                          >{{ neutral.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=neutral&asdfasdf=dkfj"
-                          >{{ neutral.count }}</a
-                        >
-                      {% endif %}
-                    </p>
-                  </div>
-                </td>
-                <td><div class="date_space_cut fw-400 fs-tiny">
-                  <p>
-                    {% if selected_code %}
-                        <a
-                          href="?category_model_code={{ selected_code }},{{selected}},{{selected_name}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ everything.count }}</a
-                        >
-                      {% elif selected_name %}
-                        <a
-                          href="?category_model_name={{ selected_name }},{{selected}}&showing_index={{ order }}&showing_type=everything"
-                          >{{ everything.count }}</a
-                        >
-                      {% else %}
-                        <a
-                          href="?category_product={{ category_product }}&showing_index={{ order }}&showing_type=everything&asdfasdf=dkfj"
-                          >{{ everything.count }}</a
-                        >
-                      {% endif %}
-                  </p>
-                </div>       
-              </td>
-              </tr>
+              {% for category__name, count in category_emotion_dict.items %}
+                <tr>
+                  <td>
+                    <div class="date_space_cut cut1 fw-600 fs-small">
+                      <p>{{ category__name }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="date_space_cut fw-400 fs-tiny">
+                      <p onclick="onClick('{{ category__name }}', 'positive', 
+                          {% if selected_code %}
+                              {{ count.positive_count }}
+                          {% elif selected_name %}
+                              {{ count.positive_count }}
+                          {% else %}
+                              {{ count.positive_count }}
+                          {% endif %}
+                      )">
+                          {% if selected_code %}
+                              {{ count.positive_count }}
+                          {% elif selected_name %}
+                              {{ count.positive_count }}
+                          {% else %}
+                              {{ count.positive_count }}
+                          {% endif %}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="date_space_cut fw-400 fs-tiny">
+                      <p onclick="onClick('{{ category__name }}', 'negative', 
+                        {% if selected_code %}
+                            {{ count.negative_count }}
+                        {% elif selected_name %}
+                            {{ count.negative_count }}
+                        {% else %}
+                            {{ count.negative_count }}
+                        {% endif %}
+                      )">
+                        {% if selected_code %}
+                            {{ count.negative_count }}
+                        {% elif selected_name %}
+                            {{ count.negative_count }}
+                        {% else %}
+                            {{ count.negative_count }}
+                        {% endif %}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="date_space_cut fw-400 fs-tiny">
+                      <p onclick="onClick('{{ category__name }}', 'neutral', 
+                        {% if selected_code %}
+                            {{ count.neutral_count }}
+                        {% elif selected_name %}
+                            {{ count.neutral_count }}
+                        {% else %}
+                            {{ count.neutral_count }}
+                        {% endif %}
+                      )">
+                        {% if selected_code %}
+                            {{ count.neutral_count }}
+                        {% elif selected_name %}
+                            {{ count.neutral_count }}
+                        {% else %}
+                            {{ count.neutral_count }}
+                        {% endif %}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="date_space_cut fw-400 fs-tiny">
+                      <p onclick="onClick('{{ category__name }}', 'total', 
+                        {% if selected_code %}
+                            {{ count.emotion_total_count }}
+                        {% elif selected_name %}
+                            {{ count.emotion_total_count }}
+                        {% else %}
+                            {{ count.emotion_total_count }}
+                        {% endif %}
+                      )">
+                        {% if selected_code %}
+                            {{ count.emotion_total_count }}
+                        {% elif selected_name %}
+                            {{ count.emotion_total_count }}
+                        {% else %}
+                            {{ count.emotion_total_count }}
+                        {% endif %}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
               {% endfor %}
-          
             </tbody>
           </table> 
-        
+          <script>
+            function onClick(category, emotion, count, targetPhenomenonListString) {
+              document.getElementById('category').value = category;
+              document.getElementById('emotion').value = emotion;
+              document.getElementById('showing_index').value = count;
+              document.getElementById('product').value = document.getElementById('product_select_status').value;
+          
+              var modelNameElement = document.getElementById('model_name_select_status'); 
+              if (modelNameElement && modelNameElement.value && modelNameElement.value !== '--모델명을 선택하세요--') { 
+                document.getElementById('model_name').value = modelNameElement.value;
+              }
+              
+              var modelCodeElement = document.getElementById('model_code_select_status');
+              if (modelCodeElement && modelCodeElement.value && modelCodeElement.value !== '--모델 코드를 선택하세요--') { 
+                document.getElementById('model_code').value = modelCodeElement.value;
+              }
+          
+              document.getElementById('myForm').submit();
+            }
+          </script>
         </div>
       </div>
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script>
-        $(document).ready(function() {
-          // 긍정/부정 클릭 시 정렬
-          $('th:nth-child(2)').click(function() { // 긍정 열
-            sortTable(1, 'desc');
-          });
-          $('th:nth-child(3)').click(function() { // 부정 열
-            sortTable(2, 'desc');
-          });
-          $('th:nth-child(4)').click(function() { // 중립 열
-            sortTable(3, 'desc');
-          });
-          $('th:nth-child(5)').click(function() { // 총개수 열
-            sortTable(4, 'desc');
-          });
-        
-          function sortTable(colNum, order) {
-            var tbody = $('#myTable tbody');
-            var rows = tbody.find('tr').get();
-            rows.sort(function(a, b) {
-              var aValue = $(a).find('td:eq(' + colNum + ') a').text();
-              var bValue = $(b).find('td:eq(' + colNum + ') a').text();
-              if (order === 'desc') {
-                return bValue - aValue;
-              } else {
-                return aValue - bValue;
-              }
-            });
-            $.each(rows, function(index, row) {
-              tbody.append(row);
-            });
-          }
-        });
-        </script>      
+      
       <div class="category category_2">
         <div class="category_target">
-          <table>
-            <thead class="thead fw-600 fs-small">
-              <tr>
-                <th><div class="data_label" style="width: 99px;">대상</div></th>
-                <th><div class="data_label" style="width: 99px;">현상</div></th>
-              </tr>
-            </thead>
-            <tbody>
-
-              {% for word in box %}
-              <tr>
-                <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
-                  
-                  ">
-                  {{ word.0 }}({{word.2}})
-                </div></td>
-                <td><div class="date_space_cut cut2 fw-400 fs-tiny" style="font-style: normal;
-                  font-weight: 400;
-          
-                  ">
-                  {{ word.1}}
-                </div></td>
-              {% endfor %}
-            </tbody>
+          <table id="targetPhenomenonTable"> <!-- 여기에 아이디를 추가했습니다 -->
+              <thead class="thead fw-600 fs-small">
+                  <tr>
+                      <th><div class="data_label" style="width: 99px;">대상</div></th>
+                      <th><div class="data_label" style="width: 99px;">현상</div></th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
           </table>
-        </div>
+          <script>
+              var targetPhenomenonList = {{ target_phenomenon_list | safe }};
+              var tableBody = document.querySelector("#targetPhenomenonTable tbody");
+      
+              targetPhenomenonList.forEach(function(item) {
+                  var parts = item.split('-');
+                  var row = document.createElement('tr');
+      
+                  var td1 = document.createElement('td');
+                  td1.textContent = parts[0];
+                  row.appendChild(td1);
+      
+                  var td2 = document.createElement('td');
+                  td2.textContent = parts[1];
+                  row.appendChild(td2);
+      
+                  tableBody.appendChild(row);
+              });
+          </script>
+        </div>      
       </div>
       <div class="category category_3">
         <div class="category_review">
-          <table>
-            <thead class="thead fw-600 fs-small">
-              <tr>
-                <th><div class="data_label"
-                  >번호</div></th>
-                <th><div class="data_label"
-                  >데이터</div></th>
-              </tr>
-            </thead>
-            <div>
-            <tbody>
-              <tr>
-                {% for review in labeled_review %}
-              </tr>
-              <td class="date_space_cut fw-600 fs-small" style="width:67px; padding: 16.5px">
-                {{ review.review_number }}
-              </td>
-              <td class="date_space_cut fw-400 fs-tiny" style="font-style: normal; padding-right: 15px;
-              
-              ">
-                {{ review.review_content }}
-              </td>
-              {% endfor %}
-            </tbody>
-          </div>
-          </table>                
-        </div>
+          <table id="reviewTable">
+              <thead class="thead fw-600 fs-small">
+                  <tr>
+                      <th class="num"><div class="data_label">번호</div></th>
+                      <th class="data"><div class="data_label">데이터</div></th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+          <script>
+              var reviewList = {{ review_list | safe }};
+              var tableBody = document.querySelector("#reviewTable tbody");
+      
+              reviewList.forEach(function(item) {
+                  var parts = item.split('-');  // '-'를 기준으로 문자열을 분리합니다
+                  var row = document.createElement('tr');
+      
+                  var td1 = document.createElement('td');
+                  td1.textContent = parts[0];  // '-' 앞의 문자열을 번호로 사용합니다
+                  row.appendChild(td1);
+      
+                  var td2 = document.createElement('td');
+                  td2.textContent = parts[1];  // '-' 뒤의 문자열을 데이터로 사용합니다
+                  row.appendChild(td2);
+      
+                  tableBody.appendChild(row);
+              });
+          </script>
+        </div>      
       </div>
     </div>
   </div>
