@@ -99,6 +99,7 @@
           localStorage.setItem("product_select_status", this.value);
           localStorage.removeItem('model_name_select_status');
           localStorage.removeItem('model_code_select_status');
+          localStorage.removeItem('categoryOrder');
           updateModelSelect(this.value);
           document.forms['category_product'].submit();  // 'product' 선택 시 submit
         });
@@ -112,9 +113,10 @@
           productInput.name = 'product';
           productInput.value = selectElement.value;
           updateModelCodeSelect(selectElement.value, this.value);
-          localStorage.removeItem('model_code_select_status'); 
+          localStorage.removeItem('model_code_select_status');
+
+          // localStorage.removeItem('categoryOrder'); 모델 네임 form 선택 시 정렬 상태 초기화
           
-          // 그 후에 form을 제출합니다.
           document.forms['category_model_name'].appendChild(productInput);
           document.forms['category_model_name'].submit();  
         });
@@ -137,8 +139,9 @@
           modelCodeInput.type = 'hidden';
           modelCodeInput.name = 'model_code';
           modelCodeInput.value = this.value;
+
+          // localStorage.removeItem('categoryOrder'); 모델 코드 form 선택 시 정렬 상태 초기화
         
-          // 그 후에 form을 제출합니다.
           document.forms['category_model_code'].appendChild(productInput);
           document.forms['category_model_code'].appendChild(modelNameInput);
           document.forms['category_model_code'].appendChild(modelCodeInput);
@@ -429,6 +432,29 @@
           
               document.getElementById('myForm').submit();
             }
+            window.onload = function() {
+              var categoryOrder = localStorage.getItem('categoryOrder');
+              if (categoryOrder) {
+                // 로컬 스토리지에서 가져온 정렬 상태를 적용하는 코드를 작성하세요.
+                // 예를 들어, categoryOrder 값을 기준으로 테이블의 행을 정렬하는 등의 작업을 수행할 수 있습니다.
+                var tableBody = document.querySelector('tbody');
+                var rows = Array.from(tableBody.rows);
+          
+                // categoryOrder를 기반으로 rows 정렬
+                rows.sort(function(a, b) {
+                  var aCategory = a.querySelector('.date_space_cut p').textContent;
+                  var bCategory = b.querySelector('.date_space_cut p').textContent;
+                  var aIndex = categoryOrder.indexOf(aCategory);
+                  var bIndex = categoryOrder.indexOf(bCategory);
+                  return aIndex - bIndex;
+                });
+          
+                // 정렬된 rows를 다시 tbody에 추가
+                rows.forEach(function(row) {
+                  tableBody.appendChild(row);
+                });
+              }
+            };
           </script>
         </div>
       </div>
