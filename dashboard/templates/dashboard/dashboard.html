@@ -43,10 +43,8 @@ src="https://www.gstatic.com/charts/loader.js"
   window.localStorage.clear();
   var receivedData = {{ product | safe }};
   var receivedDataKeys = Object.keys(receivedData);
-  console.log(receivedData)
   localStorage.setItem('receivedData', JSON.stringify(receivedData))
   localStorage.setItem('receivedDataKeys',JSON.stringify(receivedDataKeys))
-  console.log(JSON.parse(localStorage.getItem('receivedDataKeys')))
 </script>
 
 <div class="first-desc-wrap" style="padding: 0 45px 22px">

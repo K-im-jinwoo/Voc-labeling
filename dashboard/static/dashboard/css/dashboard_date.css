@@ -1,0 +1,8 @@
+#dashboard_date_main {
+    width: calc(100% - 70px); 
+    min-height: 730px;
+    border-radius: 10px;
+    border: 1px;
+    margin-left: 35px;
+    background-color: #FFFFFF;
+}

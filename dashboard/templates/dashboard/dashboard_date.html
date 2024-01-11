@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% load static %} {% block style %}
 <link
   rel="stylesheet"
-  href="{% static 'dashboard/css/dashboard.css' %}?after"
+  href="{% static 'dashboard/css/dashboard_date.css' %}?after"
 />
 {% endblock %} {% block content-title %}
 <div class="header-nav-wrap">
@@ -26,6 +26,111 @@
   {% endif %}
 </div>
 {% endblock %} 
-{% block content %}
 
+{% block content %}
+<script type="text/javascript">
+  window.localStorage.clear();
+  var receivedData = {{ product | safe }};
+  var receivedDataKeys = Object.keys(receivedData);
+  localStorage.setItem('receivedData', JSON.stringify(receivedData))
+  localStorage.setItem('receivedDataKeys',JSON.stringify(receivedDataKeys))
+</script>
+
+  <div id="dashboard_date_main">
+    <form id="menu_form" method="GET" action="{% url 'dashboard:dashboard_date'%}">
+      <div id="dashboard_date_menu">
+        <div class="menu_name_wrap">
+          <strong>제품명 :</strong>
+          <select name="product_name" id="product_select">
+            <option value="None">
+              제품이름을 선택하세요
+            </option>
+          </select>
+          <select name="model_name" id="model_select">
+            <option value="">
+              모델이름을 선택하세요
+            </option>
+          </select>
+        </div>
+        <div class="menu_date_wrap">
+          <strong>기간 :</strong>
+          <div>
+            <label>
+              <input type="radio" name="date_select"></input>
+              <span>3개월</span>
+            </label>
+            <label>
+              <input type="radio" name="date_select"></input>
+              <span>6개월</span>
+            </label>
+            <label>
+              <input type="radio" name="date_select"></input>
+              <span>12개월</span>
+            </label>
+          </div>
+          <div>
+            <input value="2023-12-10" name="start_date"></input>
+            <input value="2024-01-11" name="end_date"></input>
+          </div>
+        </div>
+        <button type="submit">전송</button>
+      </div>
+    </form>
+
+    {{review_count_by_category}}
+  </div>
+  <script>
+    var getProductName = JSON.parse(localStorage.getItem('receivedDataKeys'))
+    var product_select = document.getElementById('product_select');
+    var model_select = document.getElementById('model_select');
+
+    for (var i = 0; i < getProductName.length; i++) {
+      var option = document.createElement('option');
+      option.value = getProductName[i];
+      option.textContent = getProductName[i];
+      product_select.appendChild(option);
+    }
+    product_select.addEventListener('change', function() {
+      var receivedData = JSON.parse(localStorage.getItem('receivedData'))
+
+      var selectedProductName = this.value;
+
+      localStorage.setItem('selectedProductName', selectedProductName);
+      localStorage.setItem('select_data',JSON.stringify(receivedData[selectedProductName]))
+      var select_data = JSON.parse(localStorage.getItem('select_data'));
+
+      var getModelName = select_data.model_name;
+      localStorage.setItem('getModelName', JSON.stringify(getModelName));
+      const model_list = JSON.parse(localStorage.getItem('getModelName'));
+      while (model_select.length > 1) {
+        model_select.remove(1)
+      }
+      model_select.addEventListener('change', function() {
+        var selectedModelName = this.value
+        localStorage.setItem('selectedModelName', selectedModelName);
+      })
+    
+      for (var i = 0; i < model_list.length; i++) {
+        var option = document.createElement('option');
+        option.value = model_list[i];
+        option.textContent = model_list[i];
+        model_select.appendChild(option);
+      }
+    });
+    const currentDate = new Date();
+
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    const threeMonthsAgo = new Date(currentDate);
+    threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+    const preThreeMonth = String(threeMonthsAgo.getMonth() + 1).padStart(2, '0');
+    const threeData = `${year}-${preThreeMonth}-${day}`;
+    
+    console.log(formattedDate); 
+    console.log(threeData);
+
+  </script>
 {% endblock %}
