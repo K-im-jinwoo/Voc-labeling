@@ -5,7 +5,7 @@
 />
 {% endblock %} {% block content-title %}
 <div class="header-nav-wrap">
-  <h2 class="content-title fs-large fw-title gray-200">Dash board</h2>
+  <h2 class="content-title fs-large fw-title gray-200">Dashboard</h2>
   {% if user.is_authenticated %}
   <div class="fw-400 fs-medium">
     <a href="{% url 'main:logout' %}" class="header-signup">Logout</a>
@@ -357,7 +357,6 @@ src="https://www.gstatic.com/charts/loader.js"
           } else {
             data = data.filter(item => !positiveTargetData.includes(item));
           }
-          console.log(data);
           generateWordCloud(data);
         });
         
@@ -367,7 +366,6 @@ src="https://www.gstatic.com/charts/loader.js"
           } else {
             data = data.filter(item => !negativeTargetData.includes(item));
           }
-          console.log(data);
           generateWordCloud(data);
         });
         
@@ -377,7 +375,6 @@ src="https://www.gstatic.com/charts/loader.js"
           } else {
             data = data.filter(item => !neutralTargetData.includes(item));
           }
-          console.log(data);
           generateWordCloud(data);
         });
       });
@@ -399,7 +396,6 @@ src="https://www.gstatic.com/charts/loader.js"
           } else {
             data = data.filter(item => !positivePhenemenonData.includes(item));
           }
-          console.log(data);
           generateWordCloud(data);
         });
         
@@ -409,7 +405,6 @@ src="https://www.gstatic.com/charts/loader.js"
           } else {
             data = data.filter(item => !negativePhenemenonData.includes(item));
           }
-          console.log(data);
           generateWordCloud(data);
         });
         
@@ -419,7 +414,6 @@ src="https://www.gstatic.com/charts/loader.js"
           } else {
             data = data.filter(item => !neutralPhenemenonData.includes(item));
           }
-          console.log(data);
           generateWordCloud(data);
         });
       });
