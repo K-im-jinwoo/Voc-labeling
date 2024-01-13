@@ -5,5 +5,4 @@ app_name = "labeling"
 
 urlpatterns = [
     path(r"work/", views_labeling_work.labeling_work, name="work"),
-    path("dummy/", views_labeling_work.dummy, name="dummy"),
 ]

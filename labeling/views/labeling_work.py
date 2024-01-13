@@ -4,42 +4,42 @@ from django.views.decorators.csrf import csrf_exempt
 
 from main import models as main_models
 
-
-def print_review(category_product, request):
-    review = main_models.Review.objects.filter(
-        category_product=category_product,
-        first_status=0,
-        second_status=0,
-        dummy_status=0,
-        first_assign_user=request.user.pk,
-    ).order_by("review_number")[:1]
-    return review
-
-
+# 할당된 제일 최근 리뷰 데이터와 자동 라벨링 해주는 함수
 @csrf_exempt
-def dummy(request):
-    try:
-        review_id = request.POST.get("review_id")
-        main_models.Review.objects.filter(id=review_id).update(assigned_user=None, is_trashed=True)
-        return labeling_work()
-    except Exception as identifier:
-        print(identifier)
-        context = dict()
-        return render(request, "labeling/labeling_work.html", context=context)
+def find_review_auto_labeling(product, user):
+    first_data = main_models.Review.objects.filter(product__name=product, assigned_user=user, is_labeled=False, is_trashed=False).order_by("id").first()
+    # first_data에 대한 자동 라벨링 코드 작성 필요
+    #
+    #
+    #
+    review_auto_labeling = {}
+	# review_auto_labeling = {
+	# 	"id": [int],
+	# 	"content": "--------",
+	# 	"auto_labeling": [
+	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emtion": ""},
+	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emtion": ""},
+	# 		...
+	# 	]
+    # }
+    return review_auto_labeling
 
+# 라벨링 페이지의 모든 동작
 @csrf_exempt
 def labeling_work(request):
     try:
         context=dict()     
         if request.method == "GET":
-            if "product_name" in request.GET:
+            if "product_name" in request.GET: # 할당 -> 리뷰데이터 + 자동라벨링 보여주는 파트
                 context = dict()
 
-                # count가 0인경우(이미 할당된 데이터가 있으므로 할당 작업을 제외하고 바로 review데이터 보내기)
-                # count가 0이 아닌경우(할당된 데이터가 없으므로 할당 작업을 거치고 review데이터 보내기)
-
-                # !! review에 대한 labeling 작업이 끝나고 target, phenomenon, emotion 저장을 하게되면 review데이터의 assigned_user는 null로 변경
-                # !! review데이터를 가져올때는 is_labeled, is_trashed가 false인 것만 가져와야함
+                # is_assigned=True인 경우(이미 할당된 데이터가 있으므로 할당 작업을 제외하고 바로 review데이터 보내기)
+                # is_assigned=False 경우(할당된 데이터가 없으므로 할당 작업을 거치고 review데이터 보내기)
+                if not request.GET["is_assigned"]:
+                    # review에 해당 user들을 할당시킴(count수만큼)
+                    
+                review = find_review_auto_labeling(request.GET["product_name"], request.user)
+                context["review"] = review
 
             ## labeling page 탭을 누르고 처음 들어왔을 경우 기본적으로 프론트한테 전달해야하는 데이터 -> 프론트가 보관해두고 계속 써야할 데이터
             elif "product_name" not in request.GET:
@@ -80,7 +80,50 @@ def labeling_work(request):
                 context["product_names"] = product_names
                 context["category_list"] = category_list
                 context["emotion"] = list(emotion)
-        return render(request, "labeling/labeling_work.html", context=context)
+            return render(request, "labeling/labeling_work.html", context=context)
+        
+        elif request.method == "POST":
+            if request.GET.get("form-type") == "LabelingForm": # 라벨링 작업
+                # 프론트에서 받아야할 데이터
+                # labeling_data_list = [
+                #     {
+                #         "review_id": [int],
+                #         "prouct": 필요할 것 같음 -> 프론트에 물어보기
+                #         "category": "",
+                #         "target": "",
+                #         "phenomenon": "",
+                #         "emtion": ""
+                #     }, ...
+                # ]
+                labeling_data_liat = []
+
+                qs_categories = main_models.Category.objects.filter(product__name=product)
+
+                # 작업 데이터 저장
+                for labeling_data in labeling_data_liat:
+                    main_models.LabelingData.objects.create(
+                        review_id=labeling_data["review_id"],
+                        category=qs_categories.filter(name=labeling_data["category"]),
+                        emotion__e_name=labeling_data["emotion"],
+                        target=labeling_data["target"],
+                        phenomenon=labeling_data["phenomenon"]
+                    )
+                
+                # 리뷰의 라벨링 상태 업데이트 -> review_id를 가져오는 부분을 수정해야할 것 같음
+                main_models.Review.objects.get(id=review_id).update(assigned_user=None, is_labeled=True)
+                
+            elif request.GET.get("form-type") == "DummyForm": # 리뷰 -> is_trashed=True작업
+                # 프론트에서 받아야 할 데이터
+                # {
+                #     "revie_id": [int]
+                # }
+                review_id = request.POST.get("review_id")
+                main_models.Review.objects.filter(id=review_id).update(assigned_user=None, is_trashed=True)
+
+            # 다음 리뷰와 자동 라벨링 데이터 가져오기
+            review = find_review_auto_labeling(product, request.user)
+            context["review"] = review
+            return render(request, "labeling/labeling_work.html", context=context)
 
     # 예외처리
     except Exception as identifier:
