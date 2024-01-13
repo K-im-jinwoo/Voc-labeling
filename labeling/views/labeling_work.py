@@ -37,7 +37,7 @@ def labeling_work(request):
                 # is_assigned=False 경우(할당된 데이터가 없으므로 할당 작업을 거치고 review데이터 보내기)
                 if not request.GET["is_assigned"]:
                     # review에 해당 user들을 할당시킴(count수만큼)
-                    
+                    pass
                 review = find_review_auto_labeling(request.GET["product_name"], request.user)
                 context["review"] = review
 

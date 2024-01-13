@@ -126,9 +126,9 @@ def workstatus_review(request):
 
                 for product in qs_product:
                     model_data = {}
-                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    model_names_by_product = qs_review.filter(product=product, model_name__isnull=False, model_name__gt='').values_list("model_name", flat=True).distinct()
                     for model_name in model_names_by_product:
-                        model_codes = qs_review.filter(product=product, model_name=model_name).exclude(model_code="").values_list("model_code", flat=True).distinct()
+                        model_codes = qs_review.filter(product=product, model_name=model_name, model_code__isnull=False, model_code__gt='').values_list("model_code", flat=True).distinct()
                         model_data[model_name] = {"model_code": list(model_codes)}
             
                     res_data[product.name] = {"model_name": model_data}
