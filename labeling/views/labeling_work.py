@@ -17,21 +17,15 @@ def print_review(category_product, request):
 
 
 @csrf_exempt
-def reset(request):
-    print("작업 쪽 초기화 작업")
-    print(request.GET["review_id"])
-    main_models.LabelingData.objects.filter(
-        review_id=request.GET["review_id"]
-    ).delete()
-    return JsonResponse(data={})
-
-
-@csrf_exempt
-def delete_label(request):
-    print("실행!")
-    print(request.GET["label_number"])
-    main_models.LabelingData.objects.filter(pk=request.GET["label_number"]).delete()
-    return JsonResponse(data={})
+def dummy(request):
+    try:
+        review_id = request.POST.get("review_id")
+        main_models.Review.objects.filter(id=review_id).update(assigned_user=None, is_trashed=True)
+        return labeling_work()
+    except Exception as identifier:
+        print(identifier)
+        context = dict()
+        return render(request, "labeling/labeling_work.html", context=context)
 
 @csrf_exempt
 def labeling_work(request):

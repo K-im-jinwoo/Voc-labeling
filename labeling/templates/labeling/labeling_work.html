@@ -307,7 +307,7 @@
                 <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
                     <div class="bottom">
                         <div class="bet" >
-                            <form action="{% url 'labeling:work' %}" method="get" id="DummyForm">
+                            <form action="{% url 'labeling:dummy' %}" method="get" id="DummyForm">
                                 {% csrf_token %}
                                 <input type="hidden" name="form-type" value="DummyForm">
                                 <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
