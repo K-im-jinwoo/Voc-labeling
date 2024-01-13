@@ -49,7 +49,7 @@ src="https://www.gstatic.com/charts/loader.js"
 
 <div class="first-desc-wrap" style="padding: 0 45px 22px">
   {% comment %} 제품선택 {% endcomment %}
-  <form method="GET" action="{% url 'dashboard:dashboard' %}" onsubmit="return handleFormSubmit()">
+  <form id="dashboard_form" method="GET" action="{% url 'dashboard:dashboard' %}" onsubmit="return handleFormSubmit()">
     <p class="subject fw-400 fs-base">제품 선택</p>
     <select name="product" id="product_select_status">
       <option value="None" selected>
@@ -127,8 +127,9 @@ src="https://www.gstatic.com/charts/loader.js"
         const label = $('<label>', { class: 'switch' });
         const hiddenInput = $('<input>', { type: 'checkbox', value: category, name: 'category_list' });
         const span = $('<span>', { class: 'slider round' });
-          
-        hiddenInput.on('change', function() {
+        hiddenInput.prop('checked', true);
+
+        hiddenInput.on('input', function() {
           // 체크박스의 현재 상태를 가져옵니다.
           const isChecked = $(this).prop('checked');
       
@@ -158,6 +159,7 @@ src="https://www.gstatic.com/charts/loader.js"
     
         categoryContainer.append(categoryItem);
       });
+      handleFormSubmit();
     });
     function handleFormSubmit() {
       const selectElement = document.getElementById('model_name_select_status');
@@ -172,8 +174,7 @@ src="https://www.gstatic.com/charts/loader.js"
         }, 0);
       }
       
-      // form 제출 진행
-      return true;
+      document.getElementById('dashboard_form').submit();
     }
   
     // 페이지 로드 시 선택된 제품명을 가져와서 적용합니다.
@@ -185,50 +186,53 @@ src="https://www.gstatic.com/charts/loader.js"
       if (selectedProductName) {
         selectElement.value = selectedProductName; // selectElement에 저장된 제품명을 선택합니다.
         // 나머지 코드 실행
-        const category_list = JSON.parse(localStorage.getItem('getCategory'));
         const categoryContainer = $('.apply_box');
         categoryContainer.children(':not(h3)').remove();
-        
+
+        const category_list = JSON.parse(localStorage.getItem('getCategory')) || [];
+        let checkedCategories = JSON.parse(localStorage.getItem('checkedCategories')) || [];
+
+        // 'checkedCategories'가 비어있으면 category_list를 전체로 초기화
+        if (checkedCategories.length === 0) {
+          checkedCategories = category_list.slice();
+          localStorage.setItem('checkedCategories', JSON.stringify(checkedCategories));
+        }
+
         category_list.forEach(category => {
           const categoryItem = $('<div>', { class: 'category_item' });
-      
+
           const applyOnDiv = $('<div>', { class: 'apply_on' });
           const label = $('<label>', { class: 'switch' });
           const hiddenInput = $('<input>', { type: 'checkbox', value: category, name: 'category_list' });
           const span = $('<span>', { class: 'slider round' });
+
+          hiddenInput.prop('checked', checkedCategories.includes(category));
+
           hiddenInput.on('change', function() {
             // 체크박스의 현재 상태를 가져옵니다.
             const isChecked = $(this).prop('checked');
-        
-            // localStorage에 저장된 기존 체크박스 상태를 가져옵니다.
-            let checkedCategories = JSON.parse(localStorage.getItem('checkedCategories')) || [];
-        
-            if (isChecked) {
-              // 체크박스가 체크된 상태라면, 이 체크박스의 value를 배열에 추가합니다.
+
+            // 변경된 체크박스 상태를 바로 'checkedCategories'에 반영합니다.
+            if (isChecked && !checkedCategories.includes(category)) {
               checkedCategories.push(category);
-            } else {
-              // 체크박스가 체크 해제된 상태라면, 이 체크박스의 value를 배열에서 제거합니다.
+            } else if (!isChecked && checkedCategories.includes(category)) {
               checkedCategories = checkedCategories.filter(item => item !== category);
             }
-        
+
             // 변경된 체크박스 상태를 다시 localStorage에 저장합니다.
             localStorage.setItem('checkedCategories', JSON.stringify(checkedCategories));
           });
-      
+
           label.append(hiddenInput);
           label.append(span);
           applyOnDiv.append(label);
-      
+
           const applyMainDiv = $('<div>', { class: 'apply_main', text: category });
-      
+
           categoryItem.append(applyOnDiv);
           categoryItem.append(applyMainDiv);
-      
+
           categoryContainer.append(categoryItem);
-          const checkedCategories = JSON.parse(localStorage.getItem('checkedCategories')) || [];
-          if (checkedCategories.includes(category)) {
-            hiddenInput.prop('checked', true);
-          }
         });
       }
       if (selectedModelName) {
@@ -242,6 +246,7 @@ src="https://www.gstatic.com/charts/loader.js"
         selectModelElement.onchange = function() {
           // 선택된 모델명을 localStorage에 저장합니다.
           localStorage.setItem('selectedModelName', selectModelElement.value);
+          document.getElementById('dashboard_form').submit(handleFormSubmit());
         };
       }
       else if (!selectedModelName){
@@ -255,6 +260,7 @@ src="https://www.gstatic.com/charts/loader.js"
         selectModelElement.onchange = function() {
           // 선택된 모델명을 localStorage에 저장합니다.
           localStorage.setItem('selectedModelName', selectModelElement.value);
+          document.getElementById('dashboard_form').submit(handleFormSubmit());
         };
       }
     };
