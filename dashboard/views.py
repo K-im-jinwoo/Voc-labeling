@@ -145,7 +145,7 @@ def dashboard_by_date(request):
 
                 context["review_count_by_category"] = review_count_by_category
 
-            elif "product" not in request.GET:
+            elif "product_name" not in request.GET:
                 qs_product = main_models.Product.objects.all()
                 qs_review = main_models.Review.objects.all()
 

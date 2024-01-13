@@ -33,8 +33,69 @@ def delete_label(request):
     main_models.LabelingData.objects.filter(pk=request.GET["label_number"]).delete()
     return JsonResponse(data={})
 
-
+@csrf_exempt
 def labeling_work(request):
+    try:
+        context=dict()     
+        if request.method == "GET":
+            if "product_name" in request.GET:
+                context = dict()
+
+                # count가 0인경우(이미 할당된 데이터가 있으므로 할당 작업을 제외하고 바로 review데이터 보내기)
+                # count가 0이 아닌경우(할당된 데이터가 없으므로 할당 작업을 거치고 review데이터 보내기)
+
+                # !! review에 대한 labeling 작업이 끝나고 target, phenomenon, emotion 저장을 하게되면 review데이터의 assigned_user는 null로 변경
+                # !! review데이터를 가져올때는 is_labeled, is_trashed가 false인 것만 가져와야함
+
+            ## labeling page 탭을 누르고 처음 들어왔을 경우 기본적으로 프론트한테 전달해야하는 데이터 -> 프론트가 보관해두고 계속 써야할 데이터
+            elif "product_name" not in request.GET:
+                # login된 user
+                current_user = request.user
+
+                # 모든 Product
+                qs_product = main_models.Product.objects.all()
+
+                # 모든 Category
+                qs_category = main_models.Category.objects.select_related("product").all()
+
+                # assign정보를 알기위해 모든 review를 가져옴
+                qs_review = main_models.Review.objects.select_related("product", "assigned_user__user").all()
+
+                # product_names
+                product_names = []
+                for product in qs_product:
+                    product_names.append({
+                        "product_name": product.name,
+                        # review 데이터중 해당 제품과 assigned_user가 현재 유저인 경우가 존재하는지에 대한 필드
+                        "is_assigned": qs_review.filter(product=product, assigned_user__user=current_user).exists(), 
+                        "assigned_num": qs_review.filter(product=product, assigned_user__user=current_user).count()
+                    })
+
+                # category_list
+                category_list = {}
+                for product in qs_product:
+                    categories_by_product = qs_category.filter(product=product)
+                    name_color_list=[]
+                    for category in categories_by_product:
+                        name_color_list.append({"name":category.name, "color":category.color})
+                    category_list[product.name] = name_color_list
+
+                # emotion
+                emotion = main_models.Emotion.objects.all().values_list("e_name", flat=True)
+
+                context["product_names"] = product_names
+                context["category_list"] = category_list
+                context["emotion"] = list(emotion)
+        return render(request, "labeling/labeling_work.html", context=context)
+
+    # 예외처리
+    except Exception as identifier:
+        print(identifier)
+    context = dict()
+    return render(request, "labeling/labeling_work.html", context=context)
+
+# 기존 라벨링 페이지 예시보고 리팩토링 진행(아래 함수는 참고용)
+def ex_labeling_work(request):
     try:
         context = dict()
         context["product_names"] = (

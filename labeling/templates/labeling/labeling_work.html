@@ -57,7 +57,7 @@
                             <select name='category_product' id="product_select">
                                 <option value="--제품을 선택하세요--" selected>제품명을 선택하세요</option>
                                 {% for product_name in product_names %}
-                                    <option value='{{ product_name.category_product }}'>{{ product_name.category_product }}</option>
+                                    <option value='{{ product_name.product_name }}'>{{ product_name.product_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
