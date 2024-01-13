@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_apscheduler",
     "django_pydenticon",
+    "django_crontab"
 ]
 
 MIDDLEWARE = [

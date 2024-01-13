@@ -1,20 +1,45 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 from main import models as main_models
 
 # 할당된 제일 최근 리뷰 데이터와 자동 라벨링 해주는 함수
 @csrf_exempt
 def find_review_auto_labeling(product, user):
-    first_data = main_models.Review.objects.filter(product__name=product, assigned_user=user, is_labeled=False, is_trashed=False).order_by("id").first()
-    # first_data에 대한 자동 라벨링 코드 작성 필요
-    #
-    #
-    #
-    review_auto_labeling = {}
+
+    # 첫번째 데이터
+    first_data = main_models.Review.objects.filter(
+        product__name=product, assigned_user=main_models.Profile.objects.get(user=user), is_labeled=False, is_trashed=False
+        ).order_by("id").first()
+    
+    # 기존 데이터
+    exist_datas = main_models.LabelingData.objects.filter(category__product__name=product)
+    
+    # 자동 라벨링 데이터 리스트
+    auto_labeling_datas = []
+    for exist_data in exist_datas:
+        if first_data.content.__contains__(exist_data.target) and first_data.content.__contains__(exist_data.phenomenon):
+            auto_labeling_datas.append(
+                {
+                    "category": exist_data.category.name,
+                    "category_color": exist_data.category.color,
+                    "target": exist_data.target,
+                    "phenomenon": exist_data.phenomenon,
+                    "emotion": exist_data.emotion.k_name
+                }
+            )
+
+    review_auto_labeling = {
+        "id": first_data.id,
+        "content": first_data.content,
+        "auto_labeling": auto_labeling_datas
+    }
+
+    # 프론트에게 넘겨 줄 데이터 형식 => review_auto_labeling
 	# review_auto_labeling = {
-	# 	"id": [int],
+	# 	"id": int,
 	# 	"content": "--------",
 	# 	"auto_labeling": [
 	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emtion": ""},
@@ -28,7 +53,7 @@ def find_review_auto_labeling(product, user):
 @csrf_exempt
 def labeling_work(request):
     try:
-        context=dict()     
+        context=dict()
         if request.method == "GET":
             if "product_name" in request.GET: # 할당 -> 리뷰데이터 + 자동라벨링 보여주는 파트
                 context = dict()
@@ -80,6 +105,7 @@ def labeling_work(request):
                 context["product_names"] = product_names
                 context["category_list"] = category_list
                 context["emotion"] = list(emotion)
+
             return render(request, "labeling/labeling_work.html", context=context)
         
         elif request.method == "POST":
@@ -95,12 +121,12 @@ def labeling_work(request):
                 #         "emtion": ""
                 #     }, ...
                 # ]
-                labeling_data_liat = []
+                labeling_data_list = []
 
                 qs_categories = main_models.Category.objects.filter(product__name=product)
 
                 # 작업 데이터 저장
-                for labeling_data in labeling_data_liat:
+                for labeling_data in labeling_data_list:
                     main_models.LabelingData.objects.create(
                         review_id=labeling_data["review_id"],
                         category=qs_categories.filter(name=labeling_data["category"]),
@@ -111,14 +137,17 @@ def labeling_work(request):
                 
                 # 리뷰의 라벨링 상태 업데이트 -> review_id를 가져오는 부분을 수정해야할 것 같음
                 main_models.Review.objects.get(id=review_id).update(assigned_user=None, is_labeled=True)
-                
+            
             elif request.GET.get("form-type") == "DummyForm": # 리뷰 -> is_trashed=True작업
                 # 프론트에서 받아야 할 데이터
                 # {
-                #     "revie_id": [int]
+                #     "review_id": int
                 # }
                 review_id = request.POST.get("review_id")
-                main_models.Review.objects.filter(id=review_id).update(assigned_user=None, is_trashed=True)
+
+                # 테스트 결과 이렇게 하면 정상 작동하지만, profile이 존재해야만 정상 작동.
+                main_models.Review.objects.filter(id=review_id).update(assigned_user=None, is_trashed=True, worked_user=main_models.Profile.objects.get(user=request.user))
+            
 
             # 다음 리뷰와 자동 라벨링 데이터 가져오기
             review = find_review_auto_labeling(product, request.user)
@@ -130,6 +159,12 @@ def labeling_work(request):
         print(identifier)
     context = dict()
     return render(request, "labeling/labeling_work.html", context=context)
+
+
+
+
+
+
 
 # 기존 라벨링 페이지 예시보고 리팩토링 진행(아래 함수는 참고용)
 def ex_labeling_work(request):
