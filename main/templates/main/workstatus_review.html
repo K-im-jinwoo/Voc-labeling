@@ -33,12 +33,18 @@
 
 {{ product|json_script:"productData" }}
 <script type="text/javascript">
-  let productData = JSON.parse(document.getElementById('productData').textContent);
-  // productData가 로컬 스토리지에 없거나 빈 문자열일 때만 저장
-  let storedProductData = localStorage.getItem('productData');
-  if (!storedProductData || storedProductData === "") {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!localStorage.getItem('productDataInitialized')) {
+      let productData = JSON.parse(document.getElementById('productData').textContent);
       localStorage.setItem('productData', JSON.stringify(productData));
-  }
+      localStorage.setItem('productDataInitialized', 'true');
+    }
+
+    let storedProductData = localStorage.getItem('productData');
+    if (!storedProductData || storedProductData === "") {
+      localStorage.setItem('productData', JSON.stringify(productData));
+    }
+  });
 </script>
 
 
@@ -93,6 +99,7 @@
           localStorage.setItem("product_select_status", this.value);
           localStorage.removeItem('model_name_select_status');
           localStorage.removeItem('model_code_select_status');
+          localStorage.removeItem('categoryOrder');
           updateModelSelect(this.value);
           document.forms['category_product'].submit();  // 'product' 선택 시 submit
         });
@@ -106,9 +113,10 @@
           productInput.name = 'product';
           productInput.value = selectElement.value;
           updateModelCodeSelect(selectElement.value, this.value);
-          localStorage.removeItem('model_code_select_status'); 
+          localStorage.removeItem('model_code_select_status');
+
+          // localStorage.removeItem('categoryOrder'); 모델 네임 form 선택 시 정렬 상태 초기화
           
-          // 그 후에 form을 제출합니다.
           document.forms['category_model_name'].appendChild(productInput);
           document.forms['category_model_name'].submit();  
         });
@@ -131,8 +139,9 @@
           modelCodeInput.type = 'hidden';
           modelCodeInput.name = 'model_code';
           modelCodeInput.value = this.value;
+
+          // localStorage.removeItem('categoryOrder'); 모델 코드 form 선택 시 정렬 상태 초기화
         
-          // 그 후에 form을 제출합니다.
           document.forms['category_model_code'].appendChild(productInput);
           document.forms['category_model_code'].appendChild(modelNameInput);
           document.forms['category_model_code'].appendChild(modelCodeInput);
@@ -247,25 +256,59 @@
                 </div></th>
               </tr>
             </thead>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script>
-                $(document).ready(function() {
-                    $('th.sortable').click(function(){
-                        var table = $(this).parents('table').eq(0)
-                        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
-                        this.asc = !this.asc
-                        if (!this.asc){rows = rows.reverse()}
-                        for (var i = 0; i < rows.length; i++){table.append(rows[i])}
-                    })
-                    function comparer(index) {
-                        return function(a, b) {
-                            var valA = getCellValue(a, index), valB = getCellValue(b, index)
-                            return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
-                        }
-                    }
-                    function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+              $(document).ready(function() {
+                if (!localStorage.getItem('categoryOrderInitialized')) {
+                  localStorage.removeItem('categoryOrder');
+                  localStorage.setItem('categoryOrderInitialized', 'true');
+                }
+          
+                saveCategoryOrder();
+          
+                $('th.sortable').click(function() {
+                  var table = $(this).parents('table').eq(0);
+                  var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
+                  this.asc = !this.asc;
+                  if (!this.asc) {
+                    rows = rows.reverse();
+                  }
+                  for (var i = 0; i < rows.length; i++) {
+                    table.append(rows[i]);
+                  }
+          
+                  saveCategoryOrder();
                 });
+          
+                function comparer(index) {
+                  return function(a, b) {
+                    var valA = getCellValue(a, index),
+                      valB = getCellValue(b, index);
+                    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB);
+                  };
+                }
+          
+                function getCellValue(row, index) {
+                  return $(row).children('td').eq(index).text();
+                }
+          
+                function saveCategoryOrder() {
+                  var table = $('table');
+                  var categoryOrder = [];
+          
+                  // 테이블의 각 행을 순회하며 카테고리 이름을 저장
+                  table.find('tr:gt(0)').each(function() {
+                    var categoryName = $(this).children('td:first-child').find('p').text().trim();
+                    
+                    if (categoryName !== "") {
+                      categoryOrder.push(categoryName);
+                    }
+                  });
+          
+                  localStorage.setItem('categoryOrder', JSON.stringify(categoryOrder));
+                }
+              });
             </script>
+            
             <form id="myForm" method="GET" action="">
                 <input type="hidden" id="category" name="category">
                 <input type="hidden" id="emotion" name="emotion">
@@ -389,6 +432,29 @@
           
               document.getElementById('myForm').submit();
             }
+            window.onload = function() {
+              var categoryOrder = localStorage.getItem('categoryOrder');
+              if (categoryOrder) {
+                // 로컬 스토리지에서 가져온 정렬 상태를 적용하는 코드를 작성하세요.
+                // 예를 들어, categoryOrder 값을 기준으로 테이블의 행을 정렬하는 등의 작업을 수행할 수 있습니다.
+                var tableBody = document.querySelector('tbody');
+                var rows = Array.from(tableBody.rows);
+          
+                // categoryOrder를 기반으로 rows 정렬
+                rows.sort(function(a, b) {
+                  var aCategory = a.querySelector('.date_space_cut p').textContent;
+                  var bCategory = b.querySelector('.date_space_cut p').textContent;
+                  var aIndex = categoryOrder.indexOf(aCategory);
+                  var bIndex = categoryOrder.indexOf(bCategory);
+                  return aIndex - bIndex;
+                });
+          
+                // 정렬된 rows를 다시 tbody에 추가
+                rows.forEach(function(row) {
+                  tableBody.appendChild(row);
+                });
+              }
+            };
           </script>
         </div>
       </div>
