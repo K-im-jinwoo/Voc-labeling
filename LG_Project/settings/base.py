@@ -169,9 +169,3 @@ SCHEDULER_DEFAULT_ARGS = {
 }
 
 APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'
-
-# crontab
-CRONJOBS = [
-    # ('*/1 * * * *', 'core.cron.crontab_every_minute', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log'),
-    ('*/1 * * * *', 'labeling.cron.crontab_every_minute', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 ')
-]
