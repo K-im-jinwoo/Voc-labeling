@@ -42,3 +42,5 @@ tzdata==2022.1
 tzlocal==5.0.1
 urllib3==1.26.10
 XlsxWriter==3.0.3
+django-crontab==0.7.1
+django-apscheduler==0.6.2

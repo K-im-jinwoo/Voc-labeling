@@ -34,12 +34,3 @@ def workstatus_worker(request):
         context["product"] = qs_product
 
     return render(request, "main/workstatus_worker.html", context=context)
-
-
-def server(request):
-    print("버튼 적용 성공")
-    # 시간정해서 작업하지않은 리뷰 할당상태 변경하는 코드
-    main_models.Review.objects.all().update(first_assign_user=0, second_assign_user=0)
-    print("완료")
-
-    return render(request, "main/workstatus_worker.html")

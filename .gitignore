@@ -41,3 +41,6 @@ migrations/
 
 # database_config
 database_config.py
+
+# scheduler.log
+scheduler.log

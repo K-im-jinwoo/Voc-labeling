@@ -12,7 +12,7 @@ app_name = "main"
 
 urlpatterns = [
     path("", views_main_page.main_page, name="main"),
-    path("server/", views_workstatus_worker.server, name="server"),
+    # path("server/", views_workstatus_worker.server, name="server"),
     path("login/", LoginView.as_view(template_name="main/login.html"), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
 
