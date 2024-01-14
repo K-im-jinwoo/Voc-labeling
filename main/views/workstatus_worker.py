@@ -1,29 +1,38 @@
 from django.contrib.auth.models import User
-from django.db.models import Count
 from django.shortcuts import render
-
 from main import models as main_models
 
 def workstatus_worker(request):
     context = dict()
-    # 제품군 리스트
-    context["product_names"] = main_models.Product.objects.all().order_by("id")
+    if request.method == "GET":
+        # 프론트에서 넘겨줘야할 데이터: 제품
+        product_name = request.GET.get("product")
+        product_name = "테스트 제품"
+        users = main_models.User.objects.all()
 
-    if "product" in request.GET:
-        select_product = request.GET["product"]
-        context["product"] = select_product
+        user_count_list = []
+        review_obj = main_models.Review.objects.all()
+        for user in users:
+            work_count = review_obj.filter(worked_user__user=user, product__name=product_name).count()
+            work_count_dict = {user.username: work_count}
+            user_count_list.append(work_count_dict)
 
-        # user
-        user = main_models.Profile.objects.all().order_by("name")
-        # 제품군에 해당하는 작업완료 된 review
-        worked_review = main_models.Review.objects.filter(product__name=select_product, worked_user__isnull=False)
+        # 백에서 프론트로 넘겨줄 작업자별 작업 개수 데이터
+        # [
+        #     {
+        #         "사용자 id": 작업 개수(int)
+        #     },
+        #     {
+        #         "사용자 id": 작업 개수(int)
+        #     },
+        #     ...
+        # ]
+        context["user_count_list"] = user_count_list
 
-        worker_count_dict={}
-        for user in user:
-            user_review_count = worked_review.filter(worked_user=user).count()
-            worker_count_dict[user.name]=user_review_count
-        
-        context["worker_count_dict"]=worker_count_dict
+    elif "product" not in request.GET:
+        qs_product = main_models.Product.objects.all()
+        context["product"] = qs_product
+
     return render(request, "main/workstatus_worker.html", context=context)
 
 
