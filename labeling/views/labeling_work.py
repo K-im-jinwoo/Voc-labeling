@@ -152,7 +152,7 @@ def labeling_work(request):
                     categories_by_product = qs_category.filter(product=product)
                     name_color_list=[]
                     for category in categories_by_product:
-                        name_color_list.append({"name":category.name, "color":category.color})
+                        name_color_list.append({"category":category.name, "color":category.color})
                     category_list[product.name] = name_color_list
 
                 # emotion
@@ -161,7 +161,6 @@ def labeling_work(request):
                 context["product_names"] = product_names
                 context["category_list"] = category_list
                 context["emotion"] = list(emotion)
-
             return render(request, "labeling/labeling_work.html", context=context)
         
         elif request.method == "POST":
