@@ -40,7 +40,7 @@ def find_review_auto_labeling(product_name, user_profile):
                     "category_color": exist_data.category.color,
                     "target": exist_data.target,
                     "phenomenon": exist_data.phenomenon,
-                    "emotion": exist_data.emotion.k_name,
+                    "emotion": exist_data.emotion.e_name,
                 })
                 unique_entries.add(entry)
 
@@ -55,13 +55,14 @@ def find_review_auto_labeling(product_name, user_profile):
 	# 	"id": int,
 	# 	"content": "--------",
 	# 	"auto_labeling": [
-	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emtion": ""},
-	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emtion": ""},
+	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emotion": ""}, // emotion은 영어로 표현("positive","negative","netural")
+	# 		{"category": "", "category_color": "", "target": "" , "phenomenon": "", "emotion": ""},
 	# 		...
 	# 	]
     # }
     return review_auto_labeling
 
+# 사용자와 제품군에 따라 데이터 할당 정보
 def get_assigned_info(product_name, user_profile):
     # 모든 Product
     product = main_models.Product.objects.get(name=product_name)
@@ -77,6 +78,21 @@ def get_assigned_info(product_name, user_profile):
     }
 
     return assigned_info
+
+# 할당 작업
+def assignment_review(product_name, count, user_profile):
+    try:
+        reviews_to_update = main_models.Review.objects.filter(
+            product__name=product_name, is_labeled=False, is_trashed=False, assigned_user__isnull=True
+        ).order_by("id")[:count]
+
+        for review in reviews_to_update:
+            review.assigned_user = user_profile
+            review.save()
+        return True
+    except:
+        return False
+    
 
 # 라벨링 페이지의 모든 동작
 @csrf_exempt
@@ -99,25 +115,20 @@ def labeling_work(request):
                         current_user_count = main_models.Review.objects.filter(assigned_user=user_profile).count()
                         total_count = current_user_count + count
                         if total_count <= 1000: # 할당 작업
-                            main_models.Review.objects.filter(
-                                product__name=product_name, is_labeled=False, is_trashed=False
-                            ).order_by("id")[:count].update(assigned_user=user_profile)
+                            result = assignment_review(product_name, count, user_profile)
+                            if not result:
+                                raise ValueError("할당 실패")
                         else:
-                            print("count error") # 프론트에 에러 처리보내기
+                            raise ValueError("할당 데이터 개수가 1000개를 초과함") # 프론트에 에러 처리보내기
 
                 # is_assigned=False 경우(할당된 데이터가 없으므로 할당 작업을 거치고 review데이터 보내기)
                 elif not is_assigned:
                     if count <= 1000:
-                        qs_review = main_models.Review.objects.filter(
-                            product__name=product_name, is_labeled=False, is_trashed=False
-                        ).order_by("id")[:count]
-
-                        # 가져온 레코드에 대해서만 업데이트를 수행합니다.
-                        for review in qs_review:
-                            review.assigned_user = user_profile
-                            review.save()
+                        result = assignment_review(product_name, count, user_profile)
+                        if not result:
+                            raise ValueError("할당 실패")
                     else:
-                        print("count error2")
+                        raise ValueError("할당 데이터 개수가 1000개를 초과함")
                     
                 assigned_info = get_assigned_info(product_name, user_profile)
                 review_info = find_review_auto_labeling(product_name, user_profile)
