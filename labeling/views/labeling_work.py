@@ -199,39 +199,42 @@ def labeling_work(request):
                 # }
                 review_info = request.POST["review_info"]
                 labeling_data_list = request.POST["labeling_data_list"]
-                labeling_data_list = []
-
-                qs_categories = main_models.Category.objects.filter(product__name=review_info["product_name"])
+                
+                product_name = review_info["product_name"]
+                qs_categories = main_models.Category.objects.filter(product__name=product_name)
+                qs_emotions = main_models.Emotion.objects.all()
 
                 # 작업 데이터 저장
                 create_labeling_data_list=[]
                 for labeling_data in labeling_data_list:
                     create_labeling_data_list.append(main_models.LabelingData(
                         review_id=review_info["review_id"],
-                        category=qs_categories.filter(name=labeling_data["category"]),
+                        category=qs_categories.get(name=labeling_data["category"]),
                         target=labeling_data["target"],
                         phenomenon=labeling_data["phenomenon"],
-                        emotion__e_name=labeling_data["emotion"]
+                        emotion=qs_emotions.get(e_name=labeling_data["emotion"])
                     ))
                 main_models.LabelingData.objects.bulk_create(create_labeling_data_list)
                 
-                # 리뷰의 라벨링 상태 업데이트 -> review_id를 가져오는 부분을 수정해야할 것 같음
-                main_models.Review.objects.filter(id=review_info["review_id"]).update(assigned_user=None, worked_use=user_profile, is_labeled=True)
+                # 리뷰의 라벨링 상태 업데이트
+                main_models.Review.objects.filter(id=review_info["review_id"]).update(assigned_user=None, worked_user=user_profile, is_labeled=True)
             
-            elif request.GET.get("form-type") == "dummy_form": # 리뷰 -> is_trashed=True작업
+            elif request.POST.get("form-type") == "dummy_form": # 리뷰 -> is_trashed=True작업
                 # 프론트에서 받아야 할 데이터
                 # {
-                #     "review_id": int
+                #     "product_name": "",
+                #     "review_id": [int]
                 # }
-                review_id = request.POST.get("review_id")
+                product_name = request.POST["product_name"]
+                review_id = request.POST["review_id"]
 
-                # 테스트 결과 이렇게 하면 정상 작동하지만, profile이 존재해야만 정상 작동.
-                main_models.Review.objects.filter(id=review_id).update(assigned_user=None, worked_user=user_profile, is_trashed=True)
-            
+                main_models.Review.objects.filter(id=review_id).update(assigned_user=None, worked_user=user_profile, is_trashed=True)      
 
             # 다음 리뷰와 자동 라벨링 데이터 가져오기
-            assigned_info = get_assigned_info(product_name, request.user)
-            review_info = find_review_auto_labeling(product_name, request.user)
+            assigned_info = get_assigned_info(product_name, user_profile)
+            review_info = {}
+            if assigned_info["is_assigned"]: # 작업 후 할당된 데이터가 없는 경우
+                review_info = find_review_auto_labeling(product_name, user_profile)
 
             context["assigned_info"] = assigned_info
             context["review_info"] = review_info
