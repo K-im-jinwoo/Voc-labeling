@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from main import models as main_models
+from django.http import JsonResponse
 
 def workstatus_worker(request):
     context = dict()
@@ -27,10 +28,10 @@ def workstatus_worker(request):
         #     },
         #     ...
         # ]
-        context["user_count_list"] = user_count_list
+        return JsonResponse({"user_count_list": user_count_list})
 
     elif "product" not in request.GET:
         qs_product = main_models.Product.objects.all()
         context["product"] = qs_product
 
-    return render(request, "main/workstatus_worker.html", context=context)
+    return render(request, "main/workstatus_review.html", context=context)
