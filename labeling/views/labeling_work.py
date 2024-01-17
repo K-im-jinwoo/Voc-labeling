@@ -104,8 +104,13 @@ def labeling_work(request):
             if "product_name" in request.GET: # 할당 -> 리뷰데이터 + 자동라벨링 보여주는 파트
                 context = dict()
                 product_name = request.GET["product_name"]
-                is_assigned = request.GET["is_assigned"]
-                count = request.GET["count"]
+                get_is_assigned = request.GET["is_assigned"]
+                is_assigned = False if get_is_assigned.lower() == "false" else True
+                count = int(request.GET["count"])
+                print("product_name: ", product_name, "\nproduct_name_type: ", type(product_name))
+                print("is_assigned: ", is_assigned, "\nis_assigned_type: ", type(is_assigned))
+                print("count: ", count, "\ncount_type: ", type(count))
+
                 print("11111")
                 # is_assigned=True인 경우(count에 따라 할당리뷰를 보여줄지, 추가할당 후 할당 리뷰를 보여줄지 결정)
                 if is_assigned:
