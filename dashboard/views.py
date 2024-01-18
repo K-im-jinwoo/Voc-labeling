@@ -86,7 +86,7 @@ def dashboard(request):
 
                 res_data={}
                 for product in qs_product:
-                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    model_names_by_product = qs_review.filter(product=product, model_name__isnull=False, model_name__gt='').values_list("model_name", flat=True).distinct()
                     categories_by_product = qs_category.filter(product=product).values_list("name", flat=True)
                     res_data[product.name] = {"model_name":list(model_names_by_product), "category":list(categories_by_product)}
 
@@ -151,7 +151,7 @@ def dashboard_by_date(request):
 
                 res_data={}
                 for product in qs_product:
-                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    model_names_by_product = qs_review.filter(product=product, model_name__isnull=False, model_name__gt='').values_list("model_name", flat=True).distinct()
                     res_data[product.name] = {"model_name":list(model_names_by_product)}
 
                 context["product"] = res_data
