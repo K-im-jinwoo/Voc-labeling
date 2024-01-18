@@ -80,19 +80,8 @@
         var isAssigned = selectedOption.getAttribute('data-is-assigned') === 'true'; // 변환 부분
         document.getElementById('is_assigned').value = isAssigned;
     }
-    function checkSubmitData(form) {
-        var productName = form.elements['product_name'].value;
-        var count = form.elements['count'].value;
-        var isAssigned = form.elements['is_assigned'].value;
     
-        console.log('product_name:', productName);
-        console.log('count:', typeof(count));
-        console.log('is_assigned:', typeof(isAssigned));
-    
-        return true; // form 제출 막기
-    }
-    
-    
+   
 </script>
     <div class="mc">
         <div class="tool_box">
@@ -111,29 +100,58 @@
                             <p class="fw-400" style="margin-right : 15px">작업 개수</p>
                             <input class="input" type="text" name="count"  placeholder="0 ~ 1000">
                             <input type="hidden" id="is_assigned" name="is_assigned">
-                            <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인">
+                            <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인" id="submit-btn">
                         </div>
                     </div>
                 </form>
-                
             </div>
+            <div>여기 보세요</div>
+            {{assigned_info}}<br/>
+            {{review_info}}
             <div class = 'line'></div>
             <div class="show-container">
+                <script>
+                    // '확인' 버튼을 선택.
+                    var submitBtn = document.getElementById("submit-btn");
+                    // '확인' 버튼에 클릭 이벤트 핸들러를 등록.
+                    submitBtn.addEventListener("click", function(event) {
+                        // 폼의 기본 제출 동작을 막음.
+                        event.preventDefault();
+
+                        // 선택된 제품 이름을 가져옴.
+                        var productName = $("#product_select").val();
+
+                        // 로컬 스토리지에서 categoryList를 가져옴.
+                        var categoryList = JSON.parse(localStorage.getItem('categoryList') || '{}');
+
+                        // 해당 제품의 카테고리 데이터를 가져옴.
+                        var categories = categoryList[productName];
+
+                        // 카테고리를 출력할 요소를 선택함.
+                        var categoryContent = document.getElementById("category-content");
+
+                        // 카테고리를 출력할 요소의 내용을 비움.
+                        categoryContent.innerHTML = "";
+
+                        // 각 카테고리를 출력함.
+                        categories.forEach(function(category) {
+                            var categoryElement = document.createElement('div');
+                            categoryElement.className = 'category_value fw-400';
+                            categoryElement.style.backgroundColor = category.color;
+
+                            var categoryText = document.createElement('p');
+                            categoryText.textContent = category.category;
+
+                            categoryElement.appendChild(categoryText);
+                            categoryContent.appendChild(categoryElement);
+                        });
+                    });
+
+                </script>
                 <div class="category">
                     <div class="c_text fw-400">카테고리</div>
-                    <div class="c_content">
-                        {% if category_detail %}
-                            {% for category_detail in category_detail %}
-                                <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};">
-                                    <p>{{ category_detail.category_middle }}</p>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="category_value1 fw-medium" style="background-color: {{ category_detail.category_color }} width : 100px;">
-                                <p>제품 데이터가 업로드 되지 않았습니다.</p>
-                            </div>
-                        {% endif %}
-                        
+                    <div class="c_content" id="category-content">
+                        <!-- 카테고리 데이터가 여기에 들어갑니다. -->
                     </div>
                 </div>
                 <div class = 'line'></div>
