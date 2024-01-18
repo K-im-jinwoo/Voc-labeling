@@ -104,11 +104,17 @@ def labeling_work(request):
             if "product_name" in request.GET: # 할당 -> 리뷰데이터 + 자동라벨링 보여주는 파트
                 context = dict()
                 product_name = request.GET["product_name"]
-                is_assigned = request.GET["is_assigned"]
-                count = request.GET["count"]
+                get_is_assigned = request.GET["is_assigned"]
+                is_assigned = False if get_is_assigned.lower() == "false" else True
+                count = int(request.GET["count"])
+                print("product_name: ", product_name, "\nproduct_name_type: ", type(product_name))
+                print("is_assigned: ", is_assigned, "\nis_assigned_type: ", type(is_assigned))
+                print("count: ", count, "\ncount_type: ", type(count))
 
+                print("11111")
                 # is_assigned=True인 경우(count에 따라 할당리뷰를 보여줄지, 추가할당 후 할당 리뷰를 보여줄지 결정)
                 if is_assigned:
+                    print("222222222")
                     if count == 0: # 이미 할당된 데이터가 존재해서 바로 리뷰 보여주면됨
                         pass
                     elif count != 0: # 할당된 데이터가 존재하지만 추가할당을 원하는 경우
@@ -123,6 +129,7 @@ def labeling_work(request):
 
                 # is_assigned=False 경우(할당된 데이터가 없으므로 할당 작업을 거치고 review데이터 보내기)
                 elif not is_assigned:
+                    print("33333333333")
                     if count <= 1000:
                         result = assignment_review(product_name, count, user_profile)
                         if not result:
@@ -168,13 +175,13 @@ def labeling_work(request):
 
                 # emotion
                 emotion = main_models.Emotion.objects.all().values_list("e_name", flat=True)
-
                 context["product_names"] = product_names
                 context["category_list"] = category_list
                 context["emotion"] = list(emotion)
             return render(request, "labeling/labeling_work.html", context=context)
         
         elif request.method == "POST":
+            print("555555555")
             if request.POST.get("form-type") == "labeling_form": # 라벨링 작업
                 # 프론트에서 받아야할 데이터
                 # {
