@@ -402,7 +402,7 @@
               });
             </script>
             
-            <form id="myForm" method="GET" action="">
+            <form id="myForm2" method="GET" action="{% url 'main:workstatus_review' %}">
                 <input type="hidden" id="category" name="category">
                 <input type="hidden" id="emotion" name="emotion">
                 <input type="hidden" id="showing_index" name="showing_index">
@@ -523,7 +523,7 @@
                 document.getElementById('model_code').value = modelCodeElement.value;
               }
           
-              document.getElementById('myForm').submit();
+              document.getElementById('myForm2').submit();
             }
             window.onload = function() {
               var categoryOrder = localStorage.getItem('categoryOrder');
