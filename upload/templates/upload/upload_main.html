@@ -31,6 +31,7 @@
 
 {% endblock %}
 {% block content %}
+<script src="https://code.jquery.acom/jquery-3.6.0.min.js"></script>
 
 <div class="first-desc primary-bg gray-100">
     <div class="first-desc-wrap">
@@ -42,7 +43,7 @@
                   <select name='category_product' id="product_select" >
                     <option value="제품명 선택" selected>제품명을 선택하세요</option>
                     {% for product_name in product_names %}
-                            <option id= "s"  value='{{ product_name.name }}'>{{ product_name.name }}</option>
+                            <option id="s" value='{{ product_name.name }}'>{{ product_name.name }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -59,7 +60,6 @@
                   });
                 });
               </script>
-              <script src="https://code.jquery.acom/jquery-3.6.0.min.js"></script>
               <script>
                  $(document).ready(function() {
                   $('#product_select').change(function() {
@@ -67,34 +67,113 @@
                   });
                 });
               </script>
-            <form action="" method="post" class="">
+            <form action="" method="post" class="" name="productChange">
                 {% csrf_token %}
                 <div class="product_add">
                     <p class="subject fs-base fw-400">제품명 변경</p>
                     <input class="input" type="hidden" name="category_product" id="category_product_input">
-                    <input class="input" type="text" name="category_update">
-                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
+                    <input id="update_name" class="input" type="text" name="category_update" minlength="1">
+                    <button id="confirm_change" class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인" disabled>확인</button>
+                    <div id="change_err" class="error_message"></div>
                 </div>
             </form>
             <script>
-            $(document).ready(function() {
-                // localStorage에서 product_name 가져오기
-                const product_name = localStorage.getItem('product_select');
-
-                // 폼 필드에 product_name 값 적용
-                $('#category_product_input').val(product_name);
-            });
+                document.addEventListener("DOMContentLoaded", function() {
+                    var addNameInput = document.getElementById("update_name");
+                    var confirmButton = document.getElementById("confirm_change");
+                    var errorMessageDiv = document.getElementById("change_err");
+                
+                    // 입력 필드의 내용이 변경될 때마다 실행되는 함수
+                    addNameInput.addEventListener("input", function() {
+                        // 입력 필드의 값이 1글자 이상인지 확인하여 버튼 활성화/비활성화 결정
+                        confirmButton.disabled = addNameInput.value.length === 0;
+                
+                        // 입력 필드의 값이 product_name.name과 일치하는지 확인하여 버튼 및 에러 메시지 처리
+                        var productNameOptions = document.querySelectorAll('#s');
+                        var inputValue = addNameInput.value.trim().toLowerCase();
+                        var isError = false;
+                
+                        for (var i = 0; i < productNameOptions.length; i++) {
+                            var optionValue = productNameOptions[i].value.trim().toLowerCase();
+                            if (inputValue === optionValue) {
+                                isError = true;
+                                break;
+                            }
+                        }
+                
+                        if (isError) {
+                            confirmButton.disabled = true;
+                            errorMessageDiv.textContent = "이미 존재하는 제품명입니다.";
+                        } else {
+                            errorMessageDiv.textContent = "";
+                        }
+                    });
+                });
+                $('form[name="productChange"]').submit(function() {
+                    const product_name = localStorage.getItem('product_select');
+                        // 폼 필드에 product_name 값 적용
+                    $('#category_product_input').val(product_name);
+                    // select 요소의 값을 변경
+                    $('#product_select').val(product_name);
+                    localStorage.setItem('product_select', $('#update_name').val());
+                });
             </script>
-            <form action="" method="post" class= "second">
+            <form action="" method="post" class="second" name="product_add">
                 {% csrf_token %}
                 <div class="product_add">
                     <p class="subject fs-base fw-400">제품 추가</p>
-                    <input class="input" type="text" name="category_add">
-                    <input class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인">
+                    <input id="add_name" class="input" type="text" name="category_add" minlength="1">
+                    <button id="confirm_button" class="asdf btn btn-outline-dark btn-sm fs-small fw-600" type="submit" value="확인" disabled>확인</button>
+                    <div id="add_err" class="error_message"></div>
                 </div>
             </form>
         </div>
         <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var addNameInput = document.getElementById("add_name");
+                var confirmButton = document.getElementById("confirm_button");
+                var errorMessageDiv = document.getElementById("add_err");
+            
+                // 입력 필드의 내용이 변경될 때마다 실행되는 함수
+                addNameInput.addEventListener("input", function() {
+                    // 입력 필드의 값이 1글자 이상인지 확인하여 버튼 활성화/비활성화 결정
+                    confirmButton.disabled = addNameInput.value.length === 0;
+            
+                    // 입력 필드의 값이 product_name.name과 일치하는지 확인하여 버튼 및 에러 메시지 처리
+                    var productNameOptions = document.querySelectorAll('#s');
+                    var inputValue = addNameInput.value.trim().toLowerCase();
+                    var isError = false;
+            
+                    for (var i = 0; i < productNameOptions.length; i++) {
+                        var optionValue = productNameOptions[i].value.trim().toLowerCase();
+                        if (inputValue === optionValue) {
+                            isError = true;
+                            break;
+                        }
+                    }
+            
+                    if (isError) {
+                        confirmButton.disabled = true;
+                        errorMessageDiv.textContent = "이미 존재하는 제품명입니다.";
+                    } else {
+                        errorMessageDiv.textContent = "";
+                    }
+                });
+            });
+            $('form[name="product_add"]').submit(function() {
+                if ($('#add_name').val()===""){
+                    alert("글자를 입력해주세요")
+                }
+                else {
+                    const product_name = localStorage.getItem('product_select');
+                    // 폼 필드에 product_name 값 적용
+                    $('#category_product_input').val(product_name);
+                    // select 요소의 값을 변경
+                    $('#product_select').val(product_name);
+                    localStorage.setItem('product_select', $('#add_name').val());
+                }
+            });
+            
             function addDeleteButton() {
                 
                 // 카테고리 리스트를 가져옵니다.
@@ -119,8 +198,6 @@
                     </svg>삭제
                 </button>
             </div>
-
-            
             <script>
                 function deleteCategory(category_middle) {
                     fetch('delete-category/', {
@@ -150,7 +227,9 @@
                     {% if category_detail %}
                         {% for category_detail in category_detail %}
                             <div class="c_content fs-base fw-400" style="background-color: {{ category_detail.color }};">
-                                {{ category_detail.name }}
+                                <div id="category_names">
+                                    {{ category_detail.name }}
+                                </div>
                                 {% csrf_token %} 
                                 <button class="xbtn" style="display:none;" onclick="deleteCategory(`{{ category_detail.name }}`)">
                                     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -162,21 +241,54 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-
                 <form class="category_add" action="{% url 'upload:upload' %}" method="post" id="formOne">
                     {% csrf_token %}
                     <div class="add">
                       <input type="hidden" name="form-type" value="formOne">
                       <label for="category-label">
-                        <input class="category_name fs-small fw-400" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요">
+                        <input class="category_name fs-small fw-400" type="text" name="category_middle" id="category-label" placeholder="카테고리명을 입력해주세요" minlength="1">
                       </label>
                       <label for="color-label">
                         <input class="category_color" type='color' name="category_color" id="color-label" value='#0000ff'>
                       </label>
-                      <button class="category_plus fs-small fw-600" type="submit" name="category_submit" value="submit">추가</button>
+                      <button id="confirm_category" class="category_plus fs-small fw-600" type="submit" name="category_submit" value="submit" disabled>추가</button>
+                        <div id="category_err" class="error_message"></div>
+
                     </div>
                 </form>
-                  
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var addNameInput = document.getElementById("category-label");
+                        var confirmButton = document.getElementById("confirm_category");
+                        var errorMessageDiv = document.getElementById("category_err");
+                        var categoryNamesDiv = document.querySelectorAll('#category_names');
+
+                
+                        // 입력 필드의 내용이 변경될 때마다 실행되는 함수
+                        addNameInput.addEventListener("input", function() {
+                            // 입력 필드의 값이 1글자 이상인지 확인하여 버튼 활성화/비활성화 결정
+                            confirmButton.disabled = addNameInput.value.length === 0;
+                
+                            // 입력 필드의 값이 category names과 일치하는지 확인하여 버튼 및 에러 메시지 처리
+                            var inputValue = addNameInput.value.trim().toLowerCase();
+                            var isError = false;
+                
+                            categoryNamesDiv.forEach(function(categoryDiv) {
+                                var categoryText = categoryDiv.textContent.trim().toLowerCase();
+                                if (inputValue === categoryText) {
+                                    isError = true;
+                                }
+                            });
+                
+                            if (isError) {
+                                confirmButton.disabled = true;
+                                errorMessageDiv.textContent = "이미 존재하는 카테고리입니다.";
+                            } else {
+                                errorMessageDiv.textContent = "";
+                            }
+                        });
+                    });
+                </script>
             </div>
         </div>
 

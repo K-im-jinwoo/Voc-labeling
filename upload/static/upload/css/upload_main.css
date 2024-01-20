@@ -141,6 +141,7 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .category_plus {
@@ -224,4 +225,14 @@ p {
     border-radius: 5px;
 
     background:#6B6B6B ;
+  }
+
+  .error_message {
+    text-align: center;
+    margin-top: 10px;
+    color: #A50034;
+  }
+  #category_err {
+    position: absolute;
+    top: 29px;
   }
