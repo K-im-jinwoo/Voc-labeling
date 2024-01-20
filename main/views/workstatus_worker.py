@@ -17,7 +17,6 @@ def workstatus_worker(request):
             work_count = review_obj.filter(worked_user__user=user, product__name=product_name).count()
             work_count_dict = {user.username: work_count}
             user_count_list.append(work_count_dict)
-
         # 백에서 프론트로 넘겨줄 작업자별 작업 개수 데이터
         # [
         #     {
