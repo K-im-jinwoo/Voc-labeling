@@ -1,0 +1,57 @@
+.account_containor {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 10%;
+}
+.account_myprofile{
+    margin-bottom: 20px;
+}
+
+.profile_img{
+    width: 12rem;
+    border-radius: 8rem;
+    margin-bottom: 5px;
+}
+.account_content{
+    margin : 10px 0;
+}
+.account_content a {
+    color: black;
+}
+.updateProfile_containor{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 13%;
+}
+.updateProfile_containor form {
+    max-width: 500px;
+    margin : auto;
+    padding : 10px 0;
+}
+
+.updateProfile_containor form div {
+    margin-bottom: 20px;
+}
+
+.updateProfile_containor form a {
+    color:black;
+}
+
+.updateProfile_containor form label {
+    margin : 10px 0;
+}
+
+.update_containor{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 10%;
+}
+
+.update_containor form {
+    max-width: 500px;
+    margin : auto;
+    padding : 10px 0;
+}
