@@ -8,7 +8,6 @@ def workstatus_worker(request):
     if request.method == "GET":
         # 프론트에서 넘겨줘야할 데이터: 제품
         product_name = request.GET.get("product")
-        product_name = "테스트 제품"
         users = main_models.User.objects.all()
 
         user_count_list = []
@@ -27,6 +26,7 @@ def workstatus_worker(request):
         #     },
         #     ...
         # ]
+        print(user_count_list)
         return JsonResponse({"user_count_list": user_count_list})
 
     elif "product" not in request.GET:

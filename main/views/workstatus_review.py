@@ -38,7 +38,7 @@ def workstatus_review(request):
                 # print("작업 완료 개수 ", context["complete_count"])
                 
                 # 남은 개수
-                remain_count_query = total_count_query.filter(is_labeled=False)
+                remain_count_query = total_count_query.filter(is_labeled=False, is_trashed=False)
                 context["remain_count"] = remain_count_query.count()
                 # print("남은 개수 ", context["remain_count"])
 
@@ -126,9 +126,9 @@ def workstatus_review(request):
 
                 for product in qs_product:
                     model_data = {}
-                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    model_names_by_product = qs_review.filter(product=product, model_name__isnull=False, model_name__gt='').values_list("model_name", flat=True).distinct()
                     for model_name in model_names_by_product:
-                        model_codes = qs_review.filter(product=product, model_name=model_name).exclude(model_code="").values_list("model_code", flat=True).distinct()
+                        model_codes = qs_review.filter(product=product, model_name=model_name, model_code__isnull=False, model_code__gt='').values_list("model_code", flat=True).distinct()
                         model_data[model_name] = {"model_code": list(model_codes)}
             
                     res_data[product.name] = {"model_name": model_data}

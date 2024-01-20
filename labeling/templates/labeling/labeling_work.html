@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load my_filters %}
 {% block style %}
     <link rel="stylesheet" href="{% static 'labeling/css/labeling_work.css' %}">
 {% endblock %}
@@ -45,41 +45,77 @@
 {% endblock %}
 
 {% block content %}
+<script>
+    var product_names = {{ product_names | to_js_boolean | safe }};
+    var categoryList = {{ category_list |  safe }};
+    var emotion = {{ emotion |  safe }};
 
+    localStorage.setItem('product_names', JSON.stringify(product_names));
+    localStorage.setItem('categoryList', JSON.stringify(categoryList));
+    localStorage.setItem('emotion', JSON.stringify(emotion));
+    
+    var categoryList = JSON.parse(localStorage.getItem('categoryList') || '[]');
+    var emotion = JSON.parse(localStorage.getItem('emotion') || '[]');
+
+    console.log("product_names :",product_names);
+    console.log("category_list:", categoryList);
+    console.log("emotion :", emotion);
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var product_names = JSON.parse(localStorage.getItem('product_names') || '[]');
+        var selectElement = document.getElementById('product_select');
+        console.log("콘솔찍음")
+        for (var i = 0; i < product_names.length; i++) {
+            var option = document.createElement('option');
+            option.value = product_names[i].product_name;
+            option.text = product_names[i].product_name;
+            option.setAttribute('data-is-assigned', product_names[i].is_assigned);
+            selectElement.appendChild(option);
+        }
+    });
+    function setIsAssigned(productName) {
+        var selectElement = document.getElementById('product_select');
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var isAssigned = selectedOption.getAttribute('data-is-assigned') === 'true'; // 변환 부분
+        document.getElementById('is_assigned').value = isAssigned;
+    }
+    function checkSubmitData(form) {
+        var productName = form.elements['product_name'].value;
+        var count = form.elements['count'].value;
+        var isAssigned = form.elements['is_assigned'].value;
+    
+        console.log('product_name:', productName);
+        console.log('count:', typeof(count));
+        console.log('is_assigned:', typeof(isAssigned));
+    
+        return true; // form 제출 막기
+    }
+    
+    
+</script>
     <div class="mc">
         <div class="tool_box">
             <div class="top_box">
-                <form action="{% url 'labeling:work' %}" method="get">
+                <form action="{% url 'labeling:work' %}" method="get" onsubmit="return checkSubmitData(this)">
                     {% csrf_token %}
                     <div class="product">
                         <div class="product_name">
                             <p class="fw-400" style="margin-right:15px">제품명</p>
-                            <select name='category_product' id="product_select">
+                            <select id="product_select" name="product_name" onchange="setIsAssigned(this.value)">
                                 <option value="--제품을 선택하세요--" selected>제품명을 선택하세요</option>
-                                {% for product_name in product_names %}
-                                    <option value='{{ product_name.product_name }}'>{{ product_name.product_name }}</option>
-                                {% endfor %}
                             </select>
                         </div>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                            var select = document.getElementById("product_select");
-                            var storedValue = localStorage.getItem("product_select_labeling");
-                            if (storedValue) {
-                                select.value = storedValue;
-                            }
-                            select.addEventListener("change", function() {
-                                localStorage.setItem("product_select_labeling", this.value);
-                            });
-                            });
-                        </script>
+                        
                         <div class="work_count">
                             <p class="fw-400" style="margin-right : 15px">작업 개수</p>
-                            <input class="input" type="text" name="assignment_count"  placeholder="0 ~ 1000">
+                            <input class="input" type="text" name="count"  placeholder="0 ~ 1000">
+                            <input type="hidden" id="is_assigned" name="is_assigned">
                             <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인">
                         </div>
                     </div>
                 </form>
+                
             </div>
             <div class = 'line'></div>
             <div class="show-container">
@@ -101,25 +137,53 @@
                     </div>
                 </div>
                 <div class = 'line'></div>
+                <script>
+                    window.onload = function() {
+                        var emotion = JSON.parse(localStorage.getItem('emotion') || '[]');
+                        var emotionContainer = document.getElementById('emotion_container');
+                    
+                        var colors = {
+                            positive: 'blue',
+                            negative: 'red',
+                            neutral: 'gray'
+                        };
+                    
+                        for (var i = 0; i < emotion.length; i++) {
+                            var e = emotion[i];
+                            var div = document.createElement('div');
+                            div.style.borderRadius = '5px';
+                            div.style.display = 'inline-block';
+                            div.style.height = '34px';
+                            div.style.width = '105px';
+                            div.style.backgroundColor = 'white';
+                            div.style.padding = '0.3rem';
+                            div.style.textAlign = 'center';
+                            div.style.fontWeight = '400';
+                            div.style.color = colors[e] || 'black';
+                            div.style.border = '0.5px solid ' + (colors[e] || 'black');
+                            if (i > 0) {
+                                div.style.marginLeft = '15px';
+                            }
+                            if (i < emotion.length - 1) {
+                                div.style.marginRight = '15px';
+                            }
+                            div.textContent = e;
+                            emotionContainer.appendChild(div);
+                        }
+                    };
+                </script>
                 <div class="feel">
-                     <p>
+                    <p>
                         <p class="fw-400" style="border-radius: 5px; display: inline-block;  margin-left: 0.2rem; font-size: 1rem;  width : 100px ;margin-right:10px">
                             감정
                         </p>
-                        <div style="border-radius: 5px; border: 0.5px solid #0038FF; display: inline-block; height: 34px; width: 105px; background-color: white; 
-                                padding:0.3rem; color: blue; text-align: center; font-weight: 400;">
-                            긍정
-                        </div>
-                        <div style="border-radius: 5px; border: 0.5px solid #FF0000; display: inline-block; height: 34px; width: 105px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: red; text-align: center; font-weight: 400;">
-                            부정
-                        </div>
-                        <div style="border-radius: 5px; border: 0.5px solid #585757; display: inline-block; height: 34px; width: 105px; background-color: white; margin-left: 15px;
-                                padding:0.3rem; color: gray; text-align: center; font-weight: 400;">
-                            중립
+                        <!-- 감정 데이터는 JavaScript에서 추가 -->
+                        <div id="emotion_container">
                         </div>
                     </p>
                 </div>
+                
+                
                 
                 
             </div>

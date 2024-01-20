@@ -247,6 +247,9 @@
                           $.ajax({
                             url: '{% url 'main:workstatus_worker' %}',  // 'workstatus_worker' 뷰의 URL
                             type: 'GET',
+                            data: {
+                              product: localStorage.getItem("select_product")  // 선택한 제품을 'product'라는 이름으로 전송
+                            },
                             success: function(response){
                               var userCountList = response.user_count_list;  // 응답에서 'user_count_list' 추출
                       
