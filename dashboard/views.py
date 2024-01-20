@@ -74,7 +74,7 @@ def dashboard(request):
                 
                 # response_data
                 context["emotion_rank_data"] = emotion_rank_data
-                context["raw_data"] = list(review_by_condition.values_list("content", flat=True))
+                context["raw_data"] = list(labeling_data.values_list("review__content", flat=True).distinct())
                 context["count_by_category"] = count_by_category
                 context["total_by_review"] = total_by_review
                 context["select_raw_data"] = select_raw_data
