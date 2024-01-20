@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% load static %} 
+{% block style %}
+    <link rel="stylesheet" href="{% static 'main/css/account.css' %}" />
+{% endblock %}  
 
 {% block content %}
 
-    <div style="text-align: center; max-width: 500px; margin: 4rem auto">
+    <div class="update_containor">
       <div class="mb-4">
-          <h4>개인정보 수정</h4>
+          <p class="fs-medium fw-400">개인정보 수정</p>
       </div>
     <form action="{% url 'main:update' pk=target_user.pk %}" method="post">
         {% csrf_token %}
