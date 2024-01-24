@@ -207,8 +207,8 @@ def labeling_work(request):
                 #         }, ...
                 #     ]
                 # }
-                review_info = request.POST["review_info"]
-                labeling_data_list = request.POST["labeling_data_list"]
+                review_info = json.loads(request.POST["review_info"])
+                labeling_data_list = json.loads(request.POST["labeling_data_list"])
                 
                 product_name = review_info["product_name"]
                 qs_categories = main_models.Category.objects.filter(product__name=product_name)
@@ -218,7 +218,7 @@ def labeling_work(request):
                 create_labeling_data_list=[]
                 for labeling_data in labeling_data_list:
                     create_labeling_data_list.append(main_models.LabelingData(
-                        review_id=review_info["review_id"],
+                        review_id=int(review_info["review_id"]),
                         category=qs_categories.get(name=labeling_data["category"]),
                         target=labeling_data["target"],
                         phenomenon=labeling_data["phenomenon"],
@@ -227,7 +227,7 @@ def labeling_work(request):
                 main_models.LabelingData.objects.bulk_create(create_labeling_data_list)
                 
                 # 리뷰의 라벨링 상태 업데이트
-                main_models.Review.objects.filter(id=review_info["review_id"]).update(assigned_user=None, worked_user=user_profile, is_labeled=True)
+                main_models.Review.objects.filter(id=int(review_info["review_id"])).update(assigned_user=None, worked_user=user_profile, is_labeled=True)
             
             elif request.POST.get("form-type") == "dummy_form": # 리뷰 -> is_trashed=True작업
                 # 프론트에서 받아야 할 데이터
@@ -236,7 +236,7 @@ def labeling_work(request):
                 #     "review_id": [int]
                 # }
                 product_name = request.POST["product_name"]
-                review_id = request.POST["review_id"]
+                review_id = int(request.POST["review_id"])
 
                 main_models.Review.objects.filter(id=review_id).update(assigned_user=None, worked_user=user_profile, is_trashed=True)      
 
@@ -248,8 +248,6 @@ def labeling_work(request):
 
             context["assigned_info"] = assigned_info
             context["review_info"] = review_info
-            print("gdgdgdgdgd")
-            print('review: ',review_info)
             return render(request, "labeling/labeling_work.html", context=context)
 
     # 예외처리
