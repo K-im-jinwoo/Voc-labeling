@@ -15,6 +15,11 @@
       padding: 10px;
       border-radius: 5px;
     }
+    #auto_labeling_output {
+        display: flex; 
+        flex-direction: column; 
+    }
+    
 </style>
 
 <!-- content title 부분 -->
@@ -46,10 +51,11 @@
 
 {% block content %}
 <script>
+    window.localStorage.clear();
     var product_names = {{ product_names | to_js_boolean | safe }};
     var categoryList = {{ category_list |  safe }};
     var emotion = {{ emotion |  safe }};
-
+    
     localStorage.setItem('product_names', JSON.stringify(product_names));
     localStorage.setItem('categoryList', JSON.stringify(categoryList));
     localStorage.setItem('emotion', JSON.stringify(emotion));
@@ -57,15 +63,29 @@
     var categoryList = JSON.parse(localStorage.getItem('categoryList') || '[]');
     var emotion = JSON.parse(localStorage.getItem('emotion') || '[]');
 
-    console.log("product_names :",product_names);
-    console.log("category_list:", categoryList);
-    console.log("emotion :", emotion);
+    
+
 </script>
 <script>
+    var selectElement = document.getElementById('product_select');
+</script>
+<script>
+    
     document.addEventListener('DOMContentLoaded', function() {
         var product_names = JSON.parse(localStorage.getItem('product_names') || '[]');
         var selectElement = document.getElementById('product_select');
-        console.log("콘솔찍음")
+        var review_info = {{review_info | safe}}
+        localStorage.setItem('review_info', JSON.stringify(review_info)); //리뷰 저장
+        
+        
+        // option값 변경할 때 마다 로컬스토리지 변경
+        selectElement.addEventListener('change', function() {
+            var categoryList = JSON.parse(localStorage.getItem('categoryList'))
+            var selectedProductNameLabeling = this.value;
+            localStorage.setItem('selectedProductNameLabeling',selectedProductNameLabeling);
+            localStorage.setItem('selectedCategory',JSON.stringify(categoryList[selectedProductNameLabeling]))
+        });
+
         for (var i = 0; i < product_names.length; i++) {
             var option = document.createElement('option');
             option.value = product_names[i].product_name;
@@ -73,26 +93,80 @@
             option.setAttribute('data-is-assigned', product_names[i].is_assigned);
             selectElement.appendChild(option);
         }
+        
+        // 로컬 스토리지에서 'selectedProductNameLabeling' 값을 가져옵니다.
+        var selectedProductNameLabeling = localStorage.getItem('selectedProductNameLabeling');
+        
+        // 'selectedProductNameLabeling' 값이 null이 아니라면, 해당 값과 같은 value를 가진 옵션을 선택합니다.
+        if (selectedProductNameLabeling !== null) {
+            var options = selectElement.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === selectedProductNameLabeling) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
     });
-    function setIsAssigned(productName) {
+    window.addEventListener('load', function() {
+        // 로컬 스토리지에서 review_info 값을 가져옵니다.
+        
+        var review_info_string = localStorage.getItem('review_info');
+
+    // 로컬 스토리지에서 가져온 값이 undefined가 아닌 경우에만 JSON.parse() 호출
+         var review_info = review_info_string ? JSON.parse(review_info_string) : {};
+        // id와 content를 설정합니다.
+        document.getElementById('review_id').textContent = review_info.id;
+        document.getElementById('review_content').textContent = review_info.content;
+        // auto_labeling이 비어있는지 확인합니다.
+        if (review_info.auto_labeling.length === 0) {
+            // auto_labeling이 비어있으면 '없습니다'를 출력합니다.
+            document.getElementById('auto_labeling_output').textContent = '없습니다';
+        } else {
+            // auto_labeling의 각 항목에 대해 target과 phenomenon 값을 출력합니다.
+            var output = '';
+            for (var i = 0; i < review_info.auto_labeling.length; i++) {
+                var item = review_info.auto_labeling[i];
+    
+                // emotion 값에 따라 color를 설정합니다.
+                var color;
+                if (item.emotion === 'neutral') {
+                    color = 'gray';
+                } else if (item.emotion === 'positive') {
+                    color = 'blue';
+                } else if (item.emotion === 'negative') {
+                    color = 'red';
+                }
+    
+                // HTML 코드를 생성합니다.
+                output += '<div id="' + item.target + item.phenomenon + '" class="view" style="color:' + color + 
+                          '" onclick="select_result(`' + item.target + '`, `' + item.phenomenon + '`)">' +
+                          '<div class="cate fw-400" style="background:' + item.category_color + '">' + item.category + '</div>' +
+                          ' - ' +
+                          '<div class="fw-400">' + item.target + ' - </div>' +
+                          '<div class="fw-400">' + item.phenomenon + '</div>' +
+                          '<button class="x" onclick="delete_label(`' + item.id + '`)">' +
+                          '<svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                          '<path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>' +
+                          '</svg>' +
+                          '</button>' +
+                          '</div>';
+            }
+    
+            // 출력 값을 HTML에 설정합니다.
+            document.getElementById('auto_labeling_output').innerHTML = output;
+        }
+    });
+    
+    function setIsAssigned(productName) { 
         var selectElement = document.getElementById('product_select');
         var selectedOption = selectElement.options[selectElement.selectedIndex];
         var isAssigned = selectedOption.getAttribute('data-is-assigned') === 'true'; // 변환 부분
         document.getElementById('is_assigned').value = isAssigned;
     }
-    function checkSubmitData(form) {
-        var productName = form.elements['product_name'].value;
-        var count = form.elements['count'].value;
-        var isAssigned = form.elements['is_assigned'].value;
-    
-        console.log('product_name:', productName);
-        console.log('count:', typeof(count));
-        console.log('is_assigned:', typeof(isAssigned));
-    
-        return true; // form 제출 막기
-    }
-    
-    
+
+
+   
 </script>
     <div class="mc">
         <div class="tool_box">
@@ -103,7 +177,7 @@
                         <div class="product_name">
                             <p class="fw-400" style="margin-right:15px">제품명</p>
                             <select id="product_select" name="product_name" onchange="setIsAssigned(this.value)">
-                                <option value="--제품을 선택하세요--" selected>제품명을 선택하세요</option>
+                                <option value="" selected>제품명을 선택하세요</option>
                             </select>
                         </div>
                         
@@ -111,33 +185,76 @@
                             <p class="fw-400" style="margin-right : 15px">작업 개수</p>
                             <input class="input" type="text" name="count"  placeholder="0 ~ 1000">
                             <input type="hidden" id="is_assigned" name="is_assigned">
-                            <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인">
+                            <input class="asdf btn btn-outline-dark btn-sm fw-400" type="submit" value="확인" id="submit-btn">
                         </div>
                     </div>
                 </form>
-                
             </div>
+            <div>여기 보세요</div>
+            {{assigned_info}}<br/>
+            {{review_info}}
             <div class = 'line'></div>
-            <div class="show-container">
+            <div class="show-container">       
+                <style>
+                    .category_value {
+                        font-weight: 400;
+                    }
+                    .category_value1 {
+                        font-weight: 500;
+                        width: 100%; /* 너비를 충분히 크게 설정 */
+                        white-space: nowrap; /* 줄바꿈을 하지 않도록 설정 */
+                    }
+                    
+                </style>
+                
                 <div class="category">
                     <div class="c_text fw-400">카테고리</div>
-                    <div class="c_content">
-                        {% if category_detail %}
-                            {% for category_detail in category_detail %}
-                                <div class="category_value fw-400" style="background-color: {{ category_detail.category_color }};">
-                                    <p>{{ category_detail.category_middle }}</p>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="category_value1 fw-medium" style="background-color: {{ category_detail.category_color }} width : 100px;">
-                                <p>제품 데이터가 업로드 되지 않았습니다.</p>
-                            </div>
-                        {% endif %}
-                        
+                    <div class="c_content" id="category-content">
+                        <!-- 카테고리 데이터 -->
                     </div>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // 로드 되면 category 가져오기
+                
+                        var selectedCategory = JSON.parse(localStorage.getItem('selectedCategory') || '[]');
+                        var categoryContentElement = document.getElementById('category-content');
+                        
+                        if (selectedCategory.length > 0) {
+                            for (var i = 0; i < selectedCategory.length; i++) {
+                                var div = document.createElement('div');
+                                div.className = 'category_value fw-400';
+                                div.style.backgroundColor = selectedCategory[i].color;
+                                var p = document.createElement('p');
+                                p.textContent = selectedCategory[i].category;
+                                div.appendChild(p);
+                                categoryContentElement.appendChild(div);
+                            }
+                        } else {
+                            var div = document.createElement('div');
+                            div.className = 'category_value1 fw-medium';
+                            div.style.backgroundColor = '#ffffff'; // 기본 배경색을 설정
+                            div.style.whiteSpace = 'nowrap'; // 줄바꿈을 하지 않도록 설정
+                            var p = document.createElement('p');
+                            p.textContent = '제품 데이터가 업로드 되지 않았습니다.';
+                            div.appendChild(p);
+                            categoryContentElement.appendChild(div);
+                        }
+
+                        var productForm = document.getElementById('product_form');
+                        var selectElement = document.getElementById('product_select');
+
+                        productForm.addEventListener('submit', function(event) {
+                            var selectedProductNameLabeling = selectElement.value;
+                            localStorage.setItem('selectedProductNameLabeling', selectedProductNameLabeling);
+                        });
+        
+                    });
+                </script>
+                
                 <div class = 'line'></div>
                 <script>
+                    // emotion 가져오기
                     window.onload = function() {
                         var emotion = JSON.parse(localStorage.getItem('emotion') || '[]');
                         var emotionContainer = document.getElementById('emotion_container');
@@ -183,13 +300,9 @@
                     </p>
                 </div>
                 
-                
-                
-                
             </div>
-            {% for review_first in review_first %}
+            
                 <div class="result-container">
-                
                     <div class="result_main">
                         <script>
                             window.addEventListener('DOMContentLoaded', function() {
@@ -207,7 +320,7 @@
                                             const bubble = document.getElementById("bubble");
                                             bubble.style.position = "absolute";
                                             bubble.style.display = "flex";
-                                            bubble.style.flex_direction = "row";
+                                            bubble.style.flex_direction = "columnw";
                                             bubble.style.align_items = "flex-start";
                                             bubble.style.padding = "3px";
                                             bubble.style.top = (y - 65) + 'px';
@@ -259,99 +372,116 @@
                         </div>
                         <p fw-400>
                         <!-- 하이라이트 부분, 클래스로 적용할 부분 지정, repalce함수를 통해 status_result로 받아온 글에 해당되는 부분 라벨링 -->
-                            <span class="fw-400">
-                                {{ review_first.review_number }}.
+                            <span class="fw-400" id="review_id">
+                                <!-- 자바스크립트로 id 값을 설정합니다 -->
                             </span>
-                            <span class="current_target dragg fw-400">{{ review_first.review_content }}</span>
-                            <script>
-                                function select_result(target,expression){
-                                    const view = document.querySelectorAll('.view');
-                                    view.forEach(view => {
-                                        view.style.backgroundColor = "white"
-                                    });
-                                    const s_view = document.getElementById(target+expression);
-                                    s_view.style.background = "#F2F2F2";
-                                    const work_result = document.querySelectorAll('#s');
-                                    work_result.forEach(work_result => {
-                                        if(work_result != null){
-                                            work_result.style.backgroundColor = "white";
-                                        }
-                                    });
-                                    {% for status_result in status_result %}
-                                        if(target == "{{status_result.first_labeled_target}}"){
-                                            $('.current_target').each(function () {
-                                                $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span id="s" style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
-                                                $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span id="s" style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
-                                            });
-                                        }  
-                                    {% endfor %}
-                                }
-                                
-                                {% comment %} {% for status_result in status_result %}
-                                $('.current_target').each(function () {
-                                    $(this).html($(this).html().replace("{{status_result.first_labeled_target}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_target}}</span>'));
-                                    $(this).html($(this).html().replace("{{status_result.first_labeled_expression}}", '<span style="background-color:{{ status_result.category_id.category_color }}">{{status_result.first_labeled_expression}}</span>'));
-                                });
-                                {% endfor %} {% endcomment %}
-                            </script>
-
+                            <span class="current_target dragg fw-400" id="review_content">
+                                <!-- 자바스크립트로 content 값을 설정합니다 -->
+                            </span>
+                            
+                            <!--오토라벨링-->
                             <div class="work_result">
-                                
-                                {% for status_result in status_result %}
-                                    {% if status_result.first_labeled_emotion == 'neutral' %}
-                                        <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: gray" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            <div class="cate fw-400" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
-                                             - 
-                                            <div class="fw-400">{{ status_result.first_labeled_target }} - </div>
-                                            <div class="fw-400">{{ status_result.first_labeled_expression }}</div>
-
-                                            {# 라벨링 하고 옆에 뜨는 x표시 체크하는 부분 새로고침을 눌러야 현재 적용 #}
-                                            <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
-                                                </svg>
-                                                </button>
-                                        </div>
-
-                                    {% elif status_result.first_labeled_emotion == 'positive' %}
-                                        <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: blue" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            <div class="cate fw-400" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
-                                             -
-                                             <div class="fw-400">{{ status_result.first_labeled_target }} - </div>
-                                             <div class="fw-400">{{ status_result.first_labeled_expression }}</div>
-                                            <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
-                                                </svg>
-                                                </button>
-                                        </div>
-                                    {% elif status_result.first_labeled_emotion == 'negative' %}
-                                    {% csrf_token %}
-                                        <div id="{{ status_result.first_labeled_target }}{{ status_result.first_labeled_expression }}" class="view" style="color: red" onclick="select_result(`{{ status_result.first_labeled_target }}`, `{{ status_result.first_labeled_expression }}`)">
-                                            <div class="cate fw-400" style="background:{{ status_result.category_id.category_color }}">{{ status_result.category_id.category_middle }}</div>
-                                             -
-                                             <div class="fw-400">{{ status_result.first_labeled_target }} - </div>
-                                             <div class="fw-400">{{ status_result.first_labeled_expression }}</div>
-                                            <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
-                                                </svg>
-                                                </button>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
+                                <div id="auto_labeling_output"></div>
+                                <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
+                                    </svg>
+                                    </button>
                             </div>
                         </p>
+                        <script>
+                            window.addEventListener('load', function() {
+                                var selectedCategory = JSON.parse(localStorage.getItem('selectedCategory'));
+                                var select = document.querySelector('.category_id');
+                        
+                                // 로컬스토리지에 labeling_data_list가 없다면 초기화
+                                if (!localStorage.getItem('labeling_data_list')) {
+                                    localStorage.setItem('labeling_data_list', JSON.stringify([]));
+                                }
+                        
+                                for (var i = 0; i < selectedCategory.length; i++) {
+                                    var option = document.createElement('option');
+                                    option.value = selectedCategory[i].category;
+                                    option.text = selectedCategory[i].category;
+                                    select.appendChild(option);
+                                }
+                        
+                                // 로컬 스토리지에서 review_info 객체를 가져옵니다.
+                                var review_info_string = localStorage.getItem('review_info');
 
+                                // 로컬 스토리지에서 가져온 값이 undefined가 아닌 경우에만 JSON.parse() 호출
+                                var review_info = review_info_string ? JSON.parse(review_info_string) : {};
+                                var review_id = review_info.id;
+                                localStorage.setItem('review_id', JSON.stringify(review_id))
+                                document.querySelector('.select_box').addEventListener('submit', function(event) {
+                                    event.preventDefault();
+                        
+                                    var category = document.querySelector('.category_id').value;
+                                    var target = document.getElementById('in_target').value;
+                                    var phenomenon = document.getElementById('in_phenomenon').value;
+                                    var emotion = document.querySelector('.labeled_emotion').value;
+                        
+                                    var newLabeling = {
+                                        category: category,
+                                        target: target,
+                                        phenomenon: phenomenon,
+                                        emotion: emotion
+                                    };
+                                
+                                    // 로컬스토리지에서 labeling_data_list를 가져와서 추가
+                                    var labeling_data_list = JSON.parse(localStorage.getItem('labeling_data_list'));
+                                    labeling_data_list.push(newLabeling);
+                                    localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
+                                
+                                    // 데이터를 화면에 출력합니다.
+                                    printData(review_info, labeling_data_list);
+                                });
+                        
+                                // 페이지 로드 시에도 데이터를 화면에 출력합니다.
+                                var labeling_data_list = JSON.parse(localStorage.getItem('labeling_data_list'));
+                                printData(review_info, labeling_data_list);
+                            });
+                        
+                            function printData(review_info, labeling_data_list) {
+                                document.getElementById('review_id').textContent = review_info.id;
+                                document.getElementById('review_content').textContent = review_info.content;
+                        
+                                if (labeling_data_list.length === 0) {
+                                    document.getElementById('auto_labeling_output').textContent = '없습니다';
+                                } else {
+                                    var output = '';
+                                    for (var i = 0; i < labeling_data_list.length; i++) {
+                                        var item = labeling_data_list[i];
+                        
+                                        var color;
+                                        if (item.emotion === 'neutral') {
+                                            color = 'gray';
+                                        } else if (item.emotion === 'positive') {
+                                            color = 'blue';
+                                        } else if (item.emotion === 'negative') {
+                                            color = 'red';
+                                        }
+                        
+                                        output += '<div id="' + item.target + item.phenomenon + '" class="view" style="color:' + color + 
+                                                  '" onclick="select_result(`' + item.target + '`, `' + item.phenomenon + '`)">' +
+                                                  '<div class="cate fw-400" style="background:' + item.category_color + '">' + item.category + '</div>' +
+                                                  ' - ' +
+                                                  '<div class="fw-400">' + item.target + ' - </div>' +
+                                                  '<div class="fw-400">' + item.phenomenon + '</div>' +
+                                                  '</div>';
+                                    }
+                        
+                                    document.getElementById('auto_labeling_output').innerHTML = output;
+                                }
+                            }
+                        </script>
                         <p>
                             <form class="select_box" action="" method="post">
                                 {% csrf_token %}
                                 <div class="s_box"> 
-                                    <select class="category_id fw-400" name='category_id' style="display: inline-block; margin-left: 20px;
-                                                      ">
-                                        {% for category_detail in category_detail %}
-                                        <option value='{{ category_detail.category_id }}'>
-                                            {{ category_detail.category_middle }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
+                                    <select class="category_id fw-400" name='category_id' style="display: inline-block; margin-left: 20px;">
+                                        <!-- 자바스크립트를 사용하여 option 태그를 동적으로 생성합니다. -->
+                                    </select>                    
+                                    
                                     <input style="margin-left: 20px;" id="in_target" type="text" name="labeled_target" placeholder="키워드">
                                     <input style="margin-left: 20px;" id="in_phenomenon" type="text" name="labeled_expression" placeholder="현상">
                                     <select class="labeled_emotion fw-400" name="labeled_emotion" style="display: inline-block; margin-left: 20px;
@@ -360,9 +490,9 @@
                                         <option value="negative">부정</option>
                                         <option value="neutral">중립</option>
                                     </select>
-                                    <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
+                                    <input type="hidden" name="review_id" value="{{ review_info.id }}">
                                     <input style="margin-left: 20px; color: white;" class="submit_btn" type="submit" value="확인"
-                                        onClick="window.location.reload()">
+                                        >
                                 </div>
                             </form>
                         </p>
@@ -374,7 +504,7 @@
                             <form action="{% url 'labeling:work' %}" method="get" id="DummyForm">
                                 {% csrf_token %}
                                 <input type="hidden" name="form-type" value="DummyForm">
-                                <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
+                                <input type="hidden" name="review_id" value="{{ review_info.id }}">
                                 <input type="hidden" name="category_product" value="{{ category_product }}">
                                 <input type="hidden" name="start" value="{{ start }}">
                                 <input type="hidden" name="end" value="{{ end }}">
@@ -386,7 +516,7 @@
                                 </button>
                             </form>
                             <div >
-                                <button class="btn btn-sm fw-400" onclick="reset(`{{ review_first.review_id }}`)"
+                                <button class="btn btn-sm fw-400" onclick="reset(`{{ review_info.id }}`)"
                                         style="background: #F2F2F2; color: #313238; font-size: 1rem; width:115px ; height:34px">
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9.76672 2.23329C8.68005 1.14662 7.14005 0.519954 5.44672 0.693287C3.00005 0.939954 0.986722 2.92662 0.713388 5.37329C0.346722 8.60662 2.84672 11.3333 6.00005 11.3333C8.12672 11.3333 9.95339 10.0866 10.8067 8.29329C11.0201 7.84662 10.7001 7.33329 10.2067 7.33329C9.96005 7.33329 9.72672 7.46662 9.62005 7.68662C8.86672 9.30662 7.06005 10.3333 5.08672 9.89329C3.60672 9.56662 2.41339 8.35995 2.10005 6.87995C1.54005 4.29329 3.50672 1.99995 6.00005 1.99995C7.10672 1.99995 8.09339 2.45995 8.81339 3.18662L7.80672 4.19329C7.38672 4.61329 7.68005 5.33329 8.27339 5.33329H10.6667C11.0334 5.33329 11.3334 5.03329 11.3334 4.66662V2.27329C11.3334 1.67995 10.6134 1.37995 10.1934 1.79995L9.76672 2.23329Z" fill="#313238"/>
@@ -395,34 +525,65 @@
                                 </button>
                             </div>
                         </div>
-    
-    
-                        <div class="bet">
+                        <script>
+                            window.onload = function() {
+                                var formElement = document.querySelector('#labeling_form');
                             
-        
+                                // 선택한 요소가 제대로 출력되는지 확인
+                                console.log(formElement);
+                            
+                                if (formElement) {
+                                    formElement.addEventListener('submit', function(event) {
+                                        // 로컬 스토리지에서 데이터 가져오기
+                                        var selectedProductNameLabeling = localStorage.getItem('selectedProductNameLabeling');
+                                        var review_id = localStorage.getItem('review_id');  // JSON 파싱 필요 없음
+                                        var labeling_data_list = localStorage.getItem('labeling_data_list');  // JSON 파싱 필요 없음
+                            
+                                        console.log(selectedProductNameLabeling);  // 값 출력
+                                        console.log(review_id);  // 값 출력
+                                        console.log(labeling_data_list);  // 값 출력
+                            
+                                        // review_info 객체 생성
+                                        var review_info = {
+                                            product_name: selectedProductNameLabeling,
+                                            review_id: review_id
+                                        };
+                            
+                                        // hidden input에 값 설정
+                                        document.querySelector('#review_info').value = JSON.stringify(review_info);
+                                        document.querySelector('#labeling_data_list').value = labeling_data_list;  // JSON 문자열화 필요 없음
+                                        
+                                        // 선택한 제품 이름을 화면에 표시
+                                        document.getElementById('selected_product_name').textContent = selectedProductNameLabeling;
+                                    });
+                                }
+                            }
+                            </script>
+                        
+                        <div class="bet">
                             <div style="margin-left: 20px;">
-                                <form action="{% url 'labeling:work' %}" method="get" id="NextForm" >
+                                <form action="{% url 'labeling:work' %}" method="post" id="labeling_form">
                                     {% csrf_token %}
-                                    <input type="hidden" name="form-type" value="NextForm">
-                                    <input type="hidden" name="review_id" value="{{ review_first.review_id }}">
-                                    <input type="hidden" name="category_product" value="{{ category_product }}">
-                                    <input type="hidden" name="start" value="{{ start }}">
-                                    <input type="hidden" name="end" value="{{ end }}">
+                                    <input type="hidden" name="form-type" value="labeling_form">
+                                
+                                    <!-- hidden input 추가 -->
+                                    <input type="hidden" name="review_info" id="review_info">
+                                    <input type="hidden" name="labeling_data_list" id="labeling_data_list">
+                                
                                     <button class="btn btn-sm fw-400" type="submit" value="다음"
                                         style="background: #E8E8E8; color:#585757 ;  font-size: 1rem;width:115px; height:34px">
                                         다음
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M1.33327 6.66665H8.77993L5.5266 9.91998C5.2666 10.18 5.2666 10.6066 5.5266 10.8666C5.7866 11.1266 6.2066 11.1266 6.4666 10.8666L10.8599 6.47331C11.1199 6.21331 11.1199 5.79331 10.8599 5.53331L6.4666 1.13998C6.2066 0.879978 5.7866 0.879978 5.5266 1.13998C5.2666 1.39998 5.2666 1.81998 5.5266 2.07998L8.77993 5.33331H1.33327C0.966599 5.33331 0.666599 5.63331 0.666599 5.99998C0.666599 6.36665 0.966599 6.66665 1.33327 6.66665Z" fill="#585757"/>
-                                            </svg>
-                                            
+                                        </svg>
                                     </button>
                                 </form>
                             </div>
                         </div>
                     </div>
-            {% endfor %}
             
             
+                    
         </div>
     </div>    
     
@@ -467,4 +628,18 @@
             })
         }
     </script>
+    <style>
+        .work_result > div {
+            display: flex;
+            flex-direction: column; /* 수정된 부분 */
+            justify-content: center;
+            align-items: center;
+            border: 0.5px solid #D5D5D5;
+            border-radius: 30px;
+            padding: 15px;
+            margin-bottom: 15px;
+            height: 44px;
+            gap: 10;
+        }
+    </style>
 {% endblock %}

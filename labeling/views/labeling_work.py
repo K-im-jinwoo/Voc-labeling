@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
+import json
 from main import models as main_models
 
 # 할당된 제일 최근 리뷰 데이터와 자동 라벨링 해주는 함수
@@ -181,8 +181,11 @@ def labeling_work(request):
             return render(request, "labeling/labeling_work.html", context=context)
         
         elif request.method == "POST":
-            print("555555555")
-            if request.POST.get("form-type") == "labeling_form": # 라벨링 작업
+            print("request body:", request.body)
+            print("POST data:", request.POST)
+            if request.POST and request.POST.get("form-type") == "labeling_form": # 라벨링 작업
+                print("gdgdg")
+
                 # 프론트에서 받아야할 데이터
                 # {
                 #     "review_info" : {
@@ -245,6 +248,8 @@ def labeling_work(request):
 
             context["assigned_info"] = assigned_info
             context["review_info"] = review_info
+            print("gdgdgdgdgd")
+            print('review: ',review_info)
             return render(request, "labeling/labeling_work.html", context=context)
 
     # 예외처리
