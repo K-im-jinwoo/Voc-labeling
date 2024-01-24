@@ -66,6 +66,8 @@ def main_page(request):
     labeled_reviews_count = main_models.Review.objects.filter(is_labeled=True).count()
     if total_review_count != 0 and labeled_reviews_count != 0:
         ratio = round(labeled_reviews_count / total_review_count * 100, 1)
+        print(total_review_count)
+        print(labeled_reviews_count)
         context["review_ratio"] = ratio
     else:
         context["review_ratio"] = 0

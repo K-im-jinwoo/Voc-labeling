@@ -6,8 +6,8 @@ from . import models as main_models
 
 # 할당 상태 자동 리셋
 def assignment_delete():
-    main_models.Review.objects.all().update(first_assign_user=0)
-    print("삭제완료")
+    main_models.Review.objects.all().update(assigned_user=None)
+    print("할당 상태 자동 리셋 완료")
 
 
 # 오후 23시 59분마다 리셋됨

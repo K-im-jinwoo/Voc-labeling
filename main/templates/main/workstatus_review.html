@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% load static %} {% block style %}
+{% extends 'base.html' %} {% load static %} 
+{% block style %}
 <link rel="stylesheet" href="{% static 'main/css/work_status.css' %}?after" />
 {% endblock %} 
 {% block content-title %}
@@ -51,7 +52,7 @@
 
 <div class="first-desc primary-bg gray-100">
   <div class="first-desc-wrap">
-    <form style="display: inline-block" action="" method="get" name="category_product">
+    <form style="display: inline-block" action="{% url 'main:workstatus_review' %}" method="get" name="category_product">
       {% csrf_token %}
       <p class="subject fw-400 fs-base">제품 선택</p>
       <select name="product" id="product_select_status">
@@ -63,7 +64,7 @@
       </select>
     </form>
 
-    <form style="display: inline-block" action="" method="get" name="category_model_name">
+    <form style="display: inline-block" action="{% url 'main:workstatus_review' %}" method="get" name="category_model_name">
       {% csrf_token %}
       <select name="model_name" id="model_name_select_status">
         {% if selected_name %}
@@ -74,7 +75,7 @@
       </select>
     </form>
 
-    <form style="display: inline-block" action="" method="get" name="category_model_code">
+    <form style="display: inline-block" action="{% url 'main:workstatus_review' %}" method="get" name="category_model_code">
       {% csrf_token %}
       <select name="model_code" id="model_code_select_status">
         {% if selected_code %}
@@ -220,18 +221,114 @@
       <div class="right_top top4">삭제 {{ deleted_count }}</div>
     </div>
 
-    <div class="workStatus_now fw-600 fs-small">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" >
-        <path d="M6.00002 6.00008C7.47335 6.00008 8.66669 4.80675 8.66669 3.33341C8.66669 1.86008 7.47335 0.666748 6.00002 0.666748C4.52669 0.666748 3.33335 1.86008 3.33335 3.33341C3.33335 4.80675 4.52669 6.00008 6.00002 6.00008ZM6.00002 7.33342C4.22002 7.33342 0.666687 8.22675 0.666687 10.0001V10.6667C0.666687 11.0334 0.966687 11.3334 1.33335 11.3334H10.6667C11.0334 11.3334 11.3334 11.0334 11.3334 10.6667V10.0001C11.3334 8.22675 7.78002 7.33342 6.00002 7.33342Z" fill="#585757"/>
-        </svg>
-      <a href="{% url 'main:workstatus_worker' %}" 
-        onclick={statusls2()}>작업자별 진행 현황 </a>
-        <script>
-          function statusls2(){
-            var workStatus = localStorage.getItem("product_select_status2");
-            localStorage.setItem("product_select_status2", "--제품을 선택하세요--");
+    <div class="fw-600 fs-small">       
+      <button class="workerBtn"id="openModal"><img src="{% static 'images/worker.svg' %}" alt="Worker" />작업자별 진행 현황</button>
+    
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div class="modal_containor">
+            <div class="pop_top">
+              <form class='modal_form'id="myForm" style="display: inline-block" action="{% url 'main:workstatus_worker' %}" method="get">
+                {% csrf_token %}
+                <div class="subject first fw-400">제품 선택</div>
+                <select class="select" name="product" id="select_product">
+                    <option value="--제품을 선택하세요--" selected>제품명을 선택하세요</option>
+                </select>
+              </form>
+              <script>
+                  $(document).ready(function() {
+                      var selectElement = document.getElementById('select_product');
+              
+                      loadDataToSelect(selectElement, 'product');
+              
+                      $('#myForm').on('submit', function(event) {
+                          event.preventDefault();  // Prevent form from being submitted normally
+              
+                          $.ajax({
+                            url: '{% url 'main:workstatus_worker' %}',  // 'workstatus_worker' 뷰의 URL
+                            type: 'GET',
+                            data: {
+                              product: localStorage.getItem("select_product")  // 선택한 제품을 'product'라는 이름으로 전송
+                            },
+                            success: function(response){
+                              var userCountList = response.user_count_list;  // 응답에서 'user_count_list' 추출
+                      
+                              // 테이블의 tbody를 선택
+                              var tbody = $('.tbody');
+                      
+                              // 기존의 tbody 내용을 비움
+                              tbody.empty();
+                      
+                              // userCountList에 있는 각 항목을 tbody에 추가
+                              userCountList.forEach(function(item){
+                                for (var name in item) {
+                                    var count = item[name];
+                    
+                                    // 새로운 행을 생성
+                                    var row = $('<tr></tr>');
+                    
+                                    // 이름과 개수를 행에 추가
+                                    row.append('<td class="modalTd" style="width:250px">' + name + '</td>');
+                                    row.append('<td class="modalTd" style="width:190px">' + count + '</td>');
+                    
+                                    // 행을 tbody에 추가
+                                    tbody.append(row);
+                                }
+                                console.log(response)
+                              });
+                            },
+                            error: function(error){
+                              console.log(error);
+                            }
+                          });
+                      });
+              
+                      selectElement.addEventListener("change", function(event) {
+                          event.preventDefault(); 
+                          localStorage.setItem("select_product", this.value);
+                          updateModelSelect(this.value);
+                          $('#myForm').submit();  // 'product' 선택 시 submit
+                      });
+                  });
+              </script>            
+              <div class="count_table">
+                <table>
+                  <thead class='thead fw-600 fs-small'>
+                    <tr style="background:#f2f2f2">
+                      <th class="data_label"style="width:250px">ID</th>
+                      <th class="data_label"style="width:190px">개수</th>
+                    </tr>
+                  </thead>
+                  <tbody class='tbody fw-400 fs-small'>
+                  <tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        var modal = document.getElementById("myModal");
+        var btn = document.getElementById("openModal");
+        var span = document.getElementsByClassName("close")[0];
+      
+        btn.onclick = function() {
+          var workStatus = localStorage.getItem("product_select_status2");
+          localStorage.setItem("product_select_status2", "--제품을 선택하세요--");
+          modal.style.display = "block";
+        }
+      
+        span.onclick = function() {
+          modal.style.display = "none";
+        }
+      
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
           }
-        </script>
+        }
+      </script>      
     </div>
   </div>
     
@@ -309,7 +406,7 @@
               });
             </script>
             
-            <form id="myForm" method="GET" action="">
+            <form id="myForm2" method="GET" action="{% url 'main:workstatus_review' %}">
                 <input type="hidden" id="category" name="category">
                 <input type="hidden" id="emotion" name="emotion">
                 <input type="hidden" id="showing_index" name="showing_index">
@@ -430,7 +527,7 @@
                 document.getElementById('model_code').value = modelCodeElement.value;
               }
           
-              document.getElementById('myForm').submit();
+              document.getElementById('myForm2').submit();
             }
             window.onload = function() {
               var categoryOrder = localStorage.getItem('categoryOrder');

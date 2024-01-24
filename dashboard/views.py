@@ -74,7 +74,7 @@ def dashboard(request):
                 
                 # response_data
                 context["emotion_rank_data"] = emotion_rank_data
-                context["raw_data"] = list(review_by_condition.values_list("content", flat=True))
+                context["raw_data"] = list(labeling_data.values_list("review__content", flat=True).distinct())
                 context["count_by_category"] = count_by_category
                 context["total_by_review"] = total_by_review
                 context["select_raw_data"] = select_raw_data
@@ -86,7 +86,7 @@ def dashboard(request):
 
                 res_data={}
                 for product in qs_product:
-                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    model_names_by_product = qs_review.filter(product=product, model_name__isnull=False, model_name__gt='').values_list("model_name", flat=True).distinct()
                     categories_by_product = qs_category.filter(product=product).values_list("name", flat=True)
                     res_data[product.name] = {"model_name":list(model_names_by_product), "category":list(categories_by_product)}
 
@@ -151,7 +151,7 @@ def dashboard_by_date(request):
 
                 res_data={}
                 for product in qs_product:
-                    model_names_by_product = qs_review.filter(product=product).exclude(model_name="").values_list("model_name", flat=True).distinct()
+                    model_names_by_product = qs_review.filter(product=product, model_name__isnull=False, model_name__gt='').values_list("model_name", flat=True).distinct()
                     res_data[product.name] = {"model_name":list(model_names_by_product)}
 
                 context["product"] = res_data

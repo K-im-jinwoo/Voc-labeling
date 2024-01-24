@@ -221,75 +221,7 @@ def upload_main(request):
                         + f'?category_product={request.POST.get("category_product")}'
                     )
                     return HttpResponseRedirect(url)
-                
-            # # 텍스트 영역 입력을 통한 업로드 처리 (피그마 존재하지 않음)
-            # elif request.POST.get("form-type") == "formThree":
-            #     try:
-            #         textarea_value = request.POST.get("textarea", None)
-            #         if textarea_value is not None and textarea_value != "":
-            #             input_text = textarea_value
-            #             dbframe = pd.read_csv(io.StringIO(input_text), sep="\t")
-            #             print(dbframe)
-            #             print("Before cleansing")
-            #             inputdata = cleansing_data(dbframe, is_csv=False)
-            #             print("After cleansing")
-            #             dbreviews = main_models.Review.objects.filter(
-            #                 category_product=product_instance
-            #             ).values_list("content", flat=True)
-            #             dbreviews = pd.DataFrame({"Original Comments": dbreviews})
-            #             inputdata = (
-            #                 pd.merge(dbreviews, inputdata, how="outer", indicator=True)
-            #                 .query('_merge == "right_only"')
-            #                 .drop(columns=["_merge"])
-            #             )
 
-            #             category_max_num = (
-            #                 main_models.Review.objects.filter(
-            #                     category_product=product_instance
-            #                 )
-            #                 .aggregate(temp=Max("review_number"))
-            #                 .get("temp", None)
-            #             )
-            #             if category_max_num == None:
-            #                 category_max_num = 0
-            #             inputdata.reset_index(inplace=True)
-            #             inputdata["index"] = (
-            #                 inputdata["index"] + int(category_max_num) + 1
-            #             )
-            #             print(inputdata.columns)
-            #             review_obj = [
-            #                 main_models.Review(
-            #                     product=product_instance,
-            #                     assigned_user=None,
-            #                     worked_user=None,
-            #                     number=row["index"],
-            #                     content=row["Original Comments"],
-            #                     is_labeled=False,
-            #                     is_trashed=False,
-            #                     model_name=row["Model Name"] if not pd.isna(row["Model Name"]) else "",
-            #                     model_code=row["Model Code"] if not pd.isna(row["Model Code"]) else "",
-            #                     date_writted=row["Date"],
-            #                 )
-            #                 for _, row in inputdata.iterrows()
-            #             ]
-            #             main_models.Review.objects.bulk_create(review_obj)
-            #             request.session["message"] = "업로드가 완료되었습니다."
-            #             url = (
-            #                 reverse("upload:upload")
-            #                 + f'?category_product={request.POST.get("category_product")}'
-            #             )
-            #             return HttpResponseRedirect(url)
-            #         else:
-            #             request.session[
-            #                 "message"
-            #             ] = "<<Error>> 업로드 하려는 파일의 내용을 붙여넣은 후 업로드 해주세요."
-            #             request.session.set_expiry(3)
-            #             return HttpResponseRedirect(reverse("upload:upload"))
-            #     except Exception as e:
-            #         print(
-            #             f"Error at line {sys.exc_info()[-1].tb_lineno}: {e}"
-            #         )  # 추가한 라인; 발생하는 오류와 몇 번째 줄에서 발생하는지 출력
-            #         raise e
         return render(request, "upload/upload_main.html", {})
 
     # 예외 처리
