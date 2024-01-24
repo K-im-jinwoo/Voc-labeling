@@ -455,20 +455,32 @@
                 <!-- delete 버튼 및 reset 버튼 및 next 버튼 -->
                     <div class="bottom">
                         <div class="bet" >
-                            <form action="{% url 'labeling:work' %}" method="get" id="DummyForm">
+                            <form action="{% url 'labeling:work' %}" method="post" id="dummy_form">
                                 {% csrf_token %}
-                                <input type="hidden" name="form-type" value="DummyForm">
-                                <input type="hidden" name="review_id" value="{{ review_info.id }}">
+                                <input type="hidden" name="form-type" value="dummy_form">
+                                <input type="hidden" name="review_id" id="review_id_input" value="{{ review_info.id }}">
+                                <input type="hidden" name="product_name" id="product_name_input">
                                 <input type="hidden" name="category_product" value="{{ category_product }}">
                                 <input type="hidden" name="start" value="{{ start }}">
                                 <input type="hidden" name="end" value="{{ end }}">
                                 <button id="trash" class="btn btn-sm" type="submit">
                                     <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.66658 4V10.6667H2.33325V4H7.66658ZM6.66658 0H3.33325L2.66659 0.666667H0.333252V2H9.66658V0.666667H7.33325L6.66658 0ZM8.99992 2.66667H0.999919V10.6667C0.999919 11.4 1.59992 12 2.33325 12H7.66658C8.39992 12 8.99992 11.4 8.99992 10.6667V2.66667Z" fill="#A50034"/>
-                                        </svg>
+                                    </svg>
                                     <div class="fw-400">버리기</div>
                                 </button>
                             </form>
+                            <script>
+                            window.addEventListener('load', function() {
+                                // 로컬 스토리지에서 product_name과 review_id 값을 가져옵니다.
+                                var product_name = localStorage.getItem('selectedProductNameLabeling');
+                                var review_id = localStorage.getItem('review_id');
+
+                                // product_name과 review_id를 설정합니다.
+                                document.getElementById('product_name_input').value = product_name;
+                                document.getElementById('review_id_input').value = review_id;
+                            });
+                        </script>
                             <div >
                                 <button class="btn btn-sm fw-400" onclick="reset(`{{ review_info.id }}`)"
                                         style="background: #F2F2F2; color: #313238; font-size: 1rem; width:115px ; height:34px">
