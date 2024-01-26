@@ -389,15 +389,26 @@
                                     };
                                     // 로컬스토리지에서 labeling_data_list를 가져와서 추가합니다.
                                     // review_info의 auto_labeling 배열에 newLabeling1을 추가합니다.
-                                    review_info.auto_labeling.push(newLabeling1);
+                                    
+                                   
 
-                                    // 변경된 review_info를 다시 로컬 스토리지에 저장합니다.
-                                    localStorage.setItem('review_info', JSON.stringify(review_info));
                                     var labeling_data_list = JSON.parse(localStorage.getItem('labeling_data_list'));
                                     labeling_data_list.push(newLabeling);
                                     localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
 
-                                    
+                                    // review_info의 auto_labeling 배열에 newLabeling1을 추가합니다.
+                                    var review_info_string = localStorage.getItem('review_info');
+                                    var review_info = review_info_string ? JSON.parse(review_info_string) : {};
+
+                                    // auto_labeling 배열이 없거나 초기화되었다면, 새 배열을 생성합니다.
+                                    if (!review_info.auto_labeling) {
+                                        review_info.auto_labeling = [];
+                                    }
+
+                                    review_info.auto_labeling.push(newLabeling1);
+
+                                    // 변경된 review_info를 다시 로컬 스토리지에 저장합니다.
+                                    localStorage.setItem('review_info', JSON.stringify(review_info));
                                 
                                     // 데이터를 화면에 출력합니다.
                                     printData(review_info, labeling_data_list);
@@ -419,16 +430,16 @@
                                 for (var i = 0; i < review_info.auto_labeling.length; i++) {
                                     var item = review_info.auto_labeling[i];
                     
-                                    var color;
+                                    var emotionClass;
                                     if (item.emotion === 'neutral') {
-                                        color = 'gray';
+                                        emotionClass = 'neutral';
                                     } else if (item.emotion === 'positive') {
-                                        color = 'blue';
+                                        emotionClass = 'positive';
                                     } else if (item.emotion === 'negative') {
-                                        color = 'red';
+                                        emotionClass = 'negative';
                                     }
                     
-                                    output += '<div id="' + item.target + item.phenomenon + '" class="view">' +
+                                    output += '<div id="' + item.target + item.phenomenon + '" class="view ' + emotionClass + '">' +
                                         '<div class="cate fw-400" style="margin-right: 5px;">' + item.category + '</div>' +
                                         ' - ' +
                                         '<div class="fw-400" style="margin: 0 10px;">' + item.target + ' - </div>' +
@@ -667,17 +678,32 @@
             display: flex;
             flex-direction: column;
         }
-        .work_result > div > div{
+        .work_result > div > div {
             display: flex;
             flex-direction: row; /* 수정된 부분 */
             justify-content: center;
             align-items: center;
-            border: 0.5px solid #D5D5D5;
+            border: 0.5px solid;
             border-radius: 30px;
             padding: 15px;
             margin-bottom: 15px;
             height: 44px;
             gap: 10;
+        }
+        
+        .work_result > div > div.neutral {
+            border-color: gray;
+            color: gray;
+        }
+        
+        .work_result > div > div.positive {
+            border-color: blue;
+            color: blue;
+        }
+        
+        .work_result > div > div.negative {
+            border-color: red;
+            color: red;
         }
     </style>
 {% endblock %}
