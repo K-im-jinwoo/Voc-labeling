@@ -230,7 +230,6 @@ def labeling_work(request):
                 main_models.Review.objects.filter(id=int(review_info["review_id"])).update(assigned_user=None, worked_user=user_profile, is_labeled=True)
             
             elif request.POST.get("form-type") == "dummy_form": # 리뷰 -> is_trashed=True작업
-                print("버리기")
                 # 프론트에서 받아야 할 데이터
                 # {
                 #     "product_name": "",

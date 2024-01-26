@@ -327,17 +327,14 @@
                             <span class="fw-400" id="review_id">
                                 <!-- 자바스크립트로 id 값을 설정합니다 -->
                             </span>
+                            <span>.</span>
                             <span class="current_target dragg fw-400" id="review_content">
                                 <!-- 자바스크립트로 content 값을 설정합니다 -->
                             </span>
                             
                             <!--오토라벨링-->
-                            <div class="work_result",id="work_result">
-                                <div id="auto_labeling_output"></div>
-                                <button class="x" onclick="delete_label(`{{ status_result.pk }}`)"><svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>
-                                    </svg>
-                                    </button>
+                            <div class="work_result",id="work_result"> 
+                                    <div id="auto_labeling_output"></div>       
                             </div>
                         </p>
                         <script>
@@ -366,6 +363,7 @@
                                 var review_info = review_info_string ? JSON.parse(review_info_string) : {};
                                 var review_id = review_info.id;
                                 localStorage.setItem('review_id', JSON.stringify(review_id));
+                                printData(review_info.auto_labeling);
                                 document.querySelector('.select_box').addEventListener('submit', function(event) {
                                     event.preventDefault();
                             
@@ -373,18 +371,31 @@
                                     var target = document.getElementById('in_target').value;
                                     var phenomenon = document.getElementById('in_phenomenon').value;
                                     var emotion = document.querySelector('.labeled_emotion').value;
-                            
+                                    
                                     var newLabeling = {
                                         category: category,
                                         target: target,
                                         phenomenon: phenomenon,
                                         emotion: emotion
                                     };
-                                
+                                    var newLabeling1 = {
+                                        category: category,
+                                        category_color: "",
+                                        target: target,
+                                        phenomenon: phenomenon,
+                                        emotion: emotion
+                                    };
                                     // 로컬스토리지에서 labeling_data_list를 가져와서 추가합니다.
+                                    // review_info의 auto_labeling 배열에 newLabeling1을 추가합니다.
+                                    review_info.auto_labeling.push(newLabeling1);
+
+                                    // 변경된 review_info를 다시 로컬 스토리지에 저장합니다.
+                                    localStorage.setItem('review_info', JSON.stringify(review_info));
                                     var labeling_data_list = JSON.parse(localStorage.getItem('labeling_data_list'));
                                     labeling_data_list.push(newLabeling);
                                     localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
+
+                                    
                                 
                                     // 데이터를 화면에 출력합니다.
                                     printData(review_info, labeling_data_list);
@@ -392,20 +403,21 @@
                             
                                 // 페이지 로드 시에도 데이터를 화면에 출력합니다.
                                 var labeling_data_list = JSON.parse(localStorage.getItem('labeling_data_list'));
-                                printData(review_info, labeling_data_list);
-                            });
+                                printData(review_info);
+                               
+                                });
                             
-                            function printData(review_info, labeling_data_list) {
+                            function printData(review_info) {
+                                var review_info = JSON.parse(localStorage.getItem('review_info'));
                                 document.getElementById('review_id').textContent = review_info.id;
                                 document.getElementById('review_content').textContent = review_info.content;
-                            
-                                if (labeling_data_list.length === 0) {
-                                    document.getElementById('work_result').innerHTML = '<div class="auto_labeling_output">없습니다</div>';
-                                } else {
-                                    // labeling_data_list의 각 항목에 대해 HTML 코드를 생성하고 work_result 요소에 추가합니다.
-                                    for (var i = 0; i < labeling_data_list.length; i++) {
-                                        var item = labeling_data_list[i];
-                            
+                                if (review_info.auto_labeling.length === 0) {
+                                    document.getElementById('auto_labeling_output').textContent = '없습니다';
+                                }else {
+                                    var output = '';
+                                    for (var i = 0; i < review_info.auto_labeling.length; i++) {
+                                        var item = review_info.auto_labeling[i];
+                        
                                         var color;
                                         if (item.emotion === 'neutral') {
                                             color = 'gray';
@@ -414,22 +426,26 @@
                                         } else if (item.emotion === 'negative') {
                                             color = 'red';
                                         }
-                            
-                                        var output = '<div class="auto_labeling_output" id="' + item.target + item.phenomenon + 
-                                                     '" style="color:' + color + '" onclick="select_result(`' + item.target + '`, `' + item.phenomenon + '`)">' +
-                                                     '<div class="cate fw-400" style="background:' + item.category_color + '">' + item.category + '</div>' +
-                                                     ' - ' +
-                                                     '<div class="fw-400">' + item.target + ' - </div>' +
-                                                     '<div class="fw-400">' + item.phenomenon + '</div>' +
-                                                     '</div>';
-                            
-                                        document.getElementById('work_result').insertAdjacentHTML('beforeend', output);
+                        
+                                        output += '<div id="' + item.target + item.phenomenon + '" class="view" style="color:' + color + 
+                                                  '" onclick="select_result(`' + item.target + '`, `' + item.phenomenon + '`)">' +
+                                                  '<div class="cate fw-400" style="background:' + item.category_color + '">' + item.category + '</div>' +
+                                                  ' - ' +
+                                                  '<div class="fw-400">' + item.target + ' - </div>' +
+                                                  '<div class="fw-400">' + item.phenomenon + '</div>' +
+                                                  '<button class="x" onclick="delete_label(`' + item.id + '`)">' +
+                                                  '</button>' +
+                                                  '</div>';
                                     }
+                        
+                                    document.getElementById('auto_labeling_output').innerHTML = output;
                                 }
+                                
                             }
                             </script>
+                            
                         <p>
-                            <form class="select_box" action="" method="post">
+                            <form class="select_box" action="" method="post",id="review_form">
                                 {% csrf_token %}
                                 <div class="s_box"> 
                                     <select class="category_id fw-400" name='category_id' style="display: inline-block; margin-left: 20px;">
@@ -554,7 +570,10 @@
     </div>    
     
     <script>
-        function delete_label(label_number) {
+        function delete_label{
+            
+        }
+        function delete_label1(label_number) {
             console.log(label_number)
             $.ajax({
                 url: 'delete_label',
@@ -595,9 +614,13 @@
         }
     </script>
     <style>
-        .work_result > div {
+        .auto_labeling_output{
             display: flex;
-            flex-direction: column; /* 수정된 부분 */
+            flex-direction: column;
+        }
+        .work_result > div > div{
+            display: flex;
+            flex-direction: row; /* 수정된 부분 */
             justify-content: center;
             align-items: center;
             border: 0.5px solid #D5D5D5;
