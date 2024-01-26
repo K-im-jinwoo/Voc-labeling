@@ -320,10 +320,12 @@ div{
 #trash{
     background: #FFF4F7;
     color:#A50034;
+    margin-right: 8px;
 }
 
 #trash > div{
     margin-top: 5px;
+    
 }
 
 .x{

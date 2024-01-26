@@ -364,6 +364,8 @@
                                 var review_id = review_info.id;
                                 localStorage.setItem('review_id', JSON.stringify(review_id));
                                 printData(review_info.auto_labeling);
+
+                                //확인 버튼 누를 때
                                 document.querySelector('.select_box').addEventListener('submit', function(event) {
                                     event.preventDefault();
                             
@@ -407,40 +409,59 @@
                                
                                 });
                             
+                                
                             function printData(review_info) {
                                 var review_info = JSON.parse(localStorage.getItem('review_info'));
                                 document.getElementById('review_id').textContent = review_info.id;
                                 document.getElementById('review_content').textContent = review_info.content;
-                                if (review_info.auto_labeling.length === 0) {
-                                    document.getElementById('auto_labeling_output').textContent = '없습니다';
-                                }else {
-                                    var output = '';
-                                    for (var i = 0; i < review_info.auto_labeling.length; i++) {
-                                        var item = review_info.auto_labeling[i];
-                        
-                                        var color;
-                                        if (item.emotion === 'neutral') {
-                                            color = 'gray';
-                                        } else if (item.emotion === 'positive') {
-                                            color = 'blue';
-                                        } else if (item.emotion === 'negative') {
-                                            color = 'red';
-                                        }
-                        
-                                        output += '<div id="' + item.target + item.phenomenon + '" class="view" style="color:' + color + 
-                                                  '" onclick="select_result(`' + item.target + '`, `' + item.phenomenon + '`)">' +
-                                                  '<div class="cate fw-400" style="background:' + item.category_color + '">' + item.category + '</div>' +
-                                                  ' - ' +
-                                                  '<div class="fw-400">' + item.target + ' - </div>' +
-                                                  '<div class="fw-400">' + item.phenomenon + '</div>' +
-                                                  '<button class="x" onclick="delete_label(`' + item.id + '`)">' +
-                                                  '</button>' +
-                                                  '</div>';
-                                    }
-                        
-                                    document.getElementById('auto_labeling_output').innerHTML = output;
-                                }
                                 
+                                var output = '';
+                                for (var i = 0; i < review_info.auto_labeling.length; i++) {
+                                    var item = review_info.auto_labeling[i];
+                    
+                                    var color;
+                                    if (item.emotion === 'neutral') {
+                                        color = 'gray';
+                                    } else if (item.emotion === 'positive') {
+                                        color = 'blue';
+                                    } else if (item.emotion === 'negative') {
+                                        color = 'red';
+                                    }
+                    
+                                    output += '<div id="' + item.target + item.phenomenon + '" class="view">' +
+                                        '<div class="cate fw-400" style="margin-right: 5px;">' + item.category + '</div>' +
+                                        ' - ' +
+                                        '<div class="fw-400" style="margin: 0 10px;">' + item.target + ' - </div>' +
+                                        '<div class="fw-400" style="margin-right: 10px;">' + item.phenomenon + '</div>' +
+                                        '<button class="x" onclick="delete_label(' + i + ')">' +
+                                        '<svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                                        '<path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>' +
+                                        '</svg>' +
+                                        '</button>' +
+                                        '</div>';
+                                }
+                    
+                                document.getElementById('auto_labeling_output').innerHTML = output;
+                                
+                                
+                            }
+                            function delete_label(index) {
+                                // 로컬 스토리지에서 review_info를 가져옵니다.
+                                var review_info_string = localStorage.getItem('review_info');
+                                var review_info = review_info_string ? JSON.parse(review_info_string) : {};
+                                
+                                var labeling_data_list_string = localStorage.getItem('labeling_data_list');
+                                var labeling_data_list = labeling_data_list_string ? JSON.parse(labeling_data_list_string) : {};
+
+                                // auto_labeling에서 index에 해당하는 항목을 삭제합니다.
+                                review_info.auto_labeling.splice(index, 1);
+                                labeling_data_list.splice(index, 1);
+
+                                // 변경된 review_info를 다시 로컬 스토리지에 저장합니다.
+                                localStorage.setItem('review_info', JSON.stringify(review_info));
+                                localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
+
+                                printData(review_info)
                             }
                             </script>
                             
@@ -498,7 +519,7 @@
                             });
                         </script>
                             <div >
-                                <button class="btn btn-sm fw-400" onclick="reset(`{{ review_info.id }}`)"
+                                <button class="btn btn-sm fw-400" id="reset_btn"
                                         style="background: #F2F2F2; color: #313238; font-size: 1rem; width:115px ; height:34px">
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9.76672 2.23329C8.68005 1.14662 7.14005 0.519954 5.44672 0.693287C3.00005 0.939954 0.986722 2.92662 0.713388 5.37329C0.346722 8.60662 2.84672 11.3333 6.00005 11.3333C8.12672 11.3333 9.95339 10.0866 10.8067 8.29329C11.0201 7.84662 10.7001 7.33329 10.2067 7.33329C9.96005 7.33329 9.72672 7.46662 9.62005 7.68662C8.86672 9.30662 7.06005 10.3333 5.08672 9.89329C3.60672 9.56662 2.41339 8.35995 2.10005 6.87995C1.54005 4.29329 3.50672 1.99995 6.00005 1.99995C7.10672 1.99995 8.09339 2.45995 8.81339 3.18662L7.80672 4.19329C7.38672 4.61329 7.68005 5.33329 8.27339 5.33329H10.6667C11.0334 5.33329 11.3334 5.03329 11.3334 4.66662V2.27329C11.3334 1.67995 10.6134 1.37995 10.1934 1.79995L9.76672 2.23329Z" fill="#313238"/>
@@ -507,6 +528,24 @@
                                 </button>
                             </div>
                         </div>
+                        <script>
+                            //초기화 버튼 눌렀을 때
+                            document.getElementById('reset_btn').addEventListener('click', function() {
+                                // 로컬 스토리지에서 review_info를 가져옵니다.
+                                var review_info_string = localStorage.getItem('review_info');
+                                var review_info = review_info_string ? JSON.parse(review_info_string) : {};
+                            
+                                // review_info의 auto_labeling 데이터를 비웁니다.
+                                review_info.auto_labeling = [];
+                            
+                                // 변경된 review_info를 다시 로컬 스토리지에 저장합니다.
+                                localStorage.setItem('review_info', JSON.stringify(review_info));
+                                localStorage.setItem('labeling_data_list', JSON.stringify([]));
+                                // 화면에 출력된 데이터를 비웁니다.
+                                var displayElement = document.getElementById('auto_labeling_output');
+                                displayElement.innerHTML = '';
+                            });
+                        </script>
                         <script>
                             window.onload = function() {
                                 var formElement = document.querySelector('#labeling_form');
@@ -539,6 +578,19 @@
                                         document.getElementById('selected_product_name').textContent = selectedProductNameLabeling;
                                     });
                                 }
+                                var review_info_string = localStorage.getItem('review_info');
+                                var review_info = review_info_string ? JSON.parse(review_info_string) : {};
+
+                                var labeling_data_list = (review_info.auto_labeling || []).map(function(item) {
+                                    return {
+                                        category: item.category,
+                                        target: item.target,
+                                        phenomenon: item.phenomenon,
+                                        emotion: item.emotion
+                                    };
+                                });
+                            
+                                localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
                             }
                             </script>
                         
@@ -570,9 +622,6 @@
     </div>    
     
     <script>
-        function delete_label{
-            
-        }
         function delete_label1(label_number) {
             console.log(label_number)
             $.ajax({
