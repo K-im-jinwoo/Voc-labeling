@@ -19,7 +19,9 @@
         display: flex; 
         flex-direction: column; 
     }
-    
+    .fw-400 {
+        line-height: 34px;
+    }
 </style>
 
 <!-- content title 부분 -->
@@ -187,9 +189,6 @@
                     }
                 </script>
             </div>
-            <div>여기 보세요</div>
-            {{assigned_info}}<br/>
-            {{review_info}}
            
             <div class = 'line'></div>
             <div class="show-container">       
@@ -251,51 +250,16 @@
                 </script>
                 
                 <div class = 'line'></div>
-                <script>
-                    // emotion 가져오기
-                    window.onload = function() {
-                        var emotion = JSON.parse(localStorage.getItem('emotion') || '[]');
-                        var emotionContainer = document.getElementById('emotion_container');
-                    
-                        var colors = {
-                            positive: 'blue',
-                            negative: 'red',
-                            neutral: 'gray'
-                        };
-                    
-                        for (var i = 0; i < emotion.length; i++) {
-                            var e = emotion[i];
-                            var div = document.createElement('div');
-                            div.style.borderRadius = '5px';
-                            div.style.display = 'inline-block';
-                            div.style.height = '34px';
-                            div.style.width = '105px';
-                            div.style.backgroundColor = 'white';
-                            div.style.padding = '0.3rem';
-                            div.style.textAlign = 'center';
-                            div.style.fontWeight = '400';
-                            div.style.color = colors[e] || 'black';
-                            div.style.border = '0.5px solid ' + (colors[e] || 'black');
-                            if (i > 0) {
-                                div.style.marginLeft = '15px';
-                            }
-                            if (i < emotion.length - 1) {
-                                div.style.marginRight = '15px';
-                            }
-                            div.textContent = e;
-                            emotionContainer.appendChild(div);
-                        }
-                    };
-                </script>
+                
                 <div class="feel">
-                    <p>
-                        <p class="fw-400" style="border-radius: 5px; display: inline-block;  margin-left: 0.2rem; font-size: 1rem;  width : 100px ;margin-right:10px">
-                            감정
-                        </p>
-                        <!-- 감정 데이터는 JavaScript에서 추가 -->
-                        <div id="emotion_container">
-                        </div>
+                    <p class="fw-400" style="border-radius: 5px; display: inline-block;  margin-top: 0.2rem; font-size: 1rem;  width : 100px ;margin-right:10px">
+                        감정
                     </p>
+                    <div id="emotion_container">
+                        <div style="border-radius: 5px; display: inline-block; height: 34px; width: 105px; background-color: white; padding: 0.3rem; text-align: center; font-weight: 400; color: blue; border: 0.5px solid blue; margin-right: 15px;">긍정</div>
+                        <div style="border-radius: 5px; display: inline-block; height: 34px; width: 105px; background-color: white; padding: 0.3rem; text-align: center; font-weight: 400; color: red; border: 0.5px solid red; margin-left: 15px; margin-right: 15px;">부정</div>
+                        <div style="border-radius: 5px; display: inline-block; height: 34px; width: 105px; background-color: white; padding: 0.3rem; text-align: center; font-weight: 400; color: gray; border: 0.5px solid gray; margin-left: 15px;">중립</div>
+                    </div>
                 </div>
                 
             </div>
@@ -419,7 +383,10 @@
                                     var target = document.getElementById('in_target').value;
                                     var phenomenon = document.getElementById('in_phenomenon').value;
                                     var emotion = document.querySelector('.labeled_emotion').value;
-                                    
+                                    var categoryColor = selectedCategory.find(function(categoryItem) {
+                                        return categoryItem.category === category;
+                                    }).color;
+                                
                                     var newLabeling = {
                                         category: category,
                                         target: target,
@@ -428,7 +395,7 @@
                                     };
                                     var newLabeling1 = {
                                         category: category,
-                                        category_color: "",
+                                        category_color: categoryColor,
                                         target: target,
                                         phenomenon: phenomenon,
                                         emotion: emotion
@@ -459,6 +426,7 @@
                                     // 데이터를 화면에 출력합니다.
                                     printData(review_info, labeling_data_list);
                                     
+                                    
                                 });
                             
                                 // 페이지 로드 시에도 데이터를 화면에 출력합니다.
@@ -467,32 +435,35 @@
                                
                                 });
                             
-                            function highlightText(item) {
-                                var reviewContent = document.getElementById('review_content');
-                                var content = reviewContent.innerHTML;
-                                var targetIndex = item.target ? content.indexOf(item.target) : -1;
-                                var phenomenonIndex = item.phenomenon ? content.indexOf(item.phenomenon) : -1;
-                                var firstIndex, firstText;
-                                if (targetIndex !== -1 && (phenomenonIndex === -1 || targetIndex < phenomenonIndex)) {
-                                    firstIndex = targetIndex;
-                                    firstText = item.target;
-                                } else if (phenomenonIndex !== -1) {
-                                    firstIndex = phenomenonIndex;
-                                    firstText = item.phenomenon;
-                                } else {
-                                    return;
+                                function highlightText(item) {
+                                    
+                                    var reviewContent = document.getElementById('review_content');
+                                    var content = reviewContent.innerHTML;
+                                
+                                    var targetText = item.target;
+                                    var phenomenonText = item.phenomenon;
+                                
+                                    var targetExists = targetText && content.includes(targetText);
+                                    var phenomenonExists = phenomenonText && content.includes(phenomenonText);
+                                
+                                    
+                                
+                                    ['target', 'phenomenon'].forEach((type) => {
+                                        var text = item[type];
+                                        var textExists = text && content.includes(text);
+                                        if (!textExists) return;
+                                        var highlightedText = '<span style="background-color:' + item.category_color + '">' + text + '</span>';
+                                        var highlightedTextRegExp = new RegExp('<span style="background-color:' + item.category_color + '">' + text + '</span>', 'g');
+                                        if (highlightedTextRegExp.test(content)) {
+                                            content = content.replace(highlightedTextRegExp, text);
+                                            console.log("색깔 해제")
+                                        } else {
+                                            content = content.replace(text, highlightedText);
+                                            console.log("색 적용")
+                                        }
+                                    });
+                                    reviewContent.innerHTML = content;
                                 }
-                            
-                                var preText = content.substring(0, firstIndex);
-                                var postText = content.substring(firstIndex + firstText.length);
-                                var highlightedText = '<span style="background-color:' + item.category_color + '">' + firstText + '</span>';
-                                var highlightedTextRegExp = new RegExp('<span style="background-color:' + item.category_color + '">' + firstText + '</span>', 'g');
-                                if (highlightedTextRegExp.test(content)) {
-                                    reviewContent.innerHTML = content.replace(highlightedTextRegExp, firstText);
-                                } else {
-                                    reviewContent.innerHTML = preText + highlightedText + postText;
-                                }
-                            } 
                             function printData(review_info) {
                                 var review_info = JSON.parse(localStorage.getItem('review_info'));
                                 var selectedCategory = JSON.parse(localStorage.getItem('selectedCategory'));
@@ -519,8 +490,7 @@
                                         ' - ' +
                                         '<div class="fw-400" style="margin: 0 10px;">' + item.target + ' - </div>' +
                                         '<div class="fw-400" style="margin-right: 10px;">' + item.phenomenon + '</div>' +
-                                        '<button class="x" onclick="document.getElementById(\'review_content\').innerHTML = document.getElementById(\'review_content\').innerHTML.replace(\'' + item.target + '\', \'<strong>' + item.target + '</strong>\'); delete_label(' + i + ');">' +
-                                        // SVG 코드 생략
+                                        '<button class="x" onclick="delete_label(' + i + '); event.stopPropagation();">' +
                                     
                                         '<svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">' +
                                         '<path d="M6.71399 0.219121C6.52828 0.0334067 6.22828 0.0334067 6.04256 0.219121L3.71399 2.54293L1.38542 0.214359C1.19971 0.0286447 0.899707 0.0286447 0.713993 0.214359C0.528278 0.400073 0.528278 0.700073 0.713993 0.885788L3.04256 3.21436L0.713993 5.54293C0.528278 5.72864 0.528278 6.02864 0.713993 6.21436C0.899707 6.40007 1.19971 6.40007 1.38542 6.21436L3.71399 3.88579L6.04256 6.21436C6.22828 6.40007 6.52828 6.40007 6.71399 6.21436C6.89971 6.02864 6.89971 5.72864 6.71399 5.54293L4.38542 3.21436L6.71399 0.885788C6.89495 0.704835 6.89495 0.400073 6.71399 0.219121Z" fill="#969696"/>' +
@@ -528,9 +498,9 @@
                                         '</button>' +
                                         '</div>';
                                 }
+                                
                     
                                 document.getElementById('auto_labeling_output').innerHTML = output;
-                                
                                 for (var item of review_info.auto_labeling) {
                                     var div = document.getElementById(item.target + item.phenomenon);
                                     div.addEventListener('click', (function(item) {
@@ -539,27 +509,55 @@
                                         };
                                     })(item));
                                 }
+                                
+                        }
+                            
+                        function delete_label(index) {
+                            var review_info_string = localStorage.getItem('review_info');
+                            var review_info = review_info_string ? JSON.parse(review_info_string) : {};   
+                            var labeling_data_list_string = localStorage.getItem('labeling_data_list');
+                            var labeling_data_list = labeling_data_list_string ? JSON.parse(labeling_data_list_string) : {};
+                        
+                            // 삭제하려는 auto_labeling 항목을 가져옵니다.
+                            var item = review_info.auto_labeling[index];
+                        var reviewContent = document.getElementById('review_content');
+                        var content = reviewContent.innerHTML;
+                    
+                        var targetText = item.target;
+                        var phenomenonText = item.phenomenon;
+                    
+                        var targetExists = targetText && content.includes(targetText);
+                        var phenomenonExists = phenomenonText && content.includes(phenomenonText);
+                    
+                        if (targetExists && phenomenonExists) {
+                            console.log("대상, 현상 둘 다 있음");
+                        } else if (targetExists) {
+                            console.log("대상 있음: " + targetText);
+                        } else if (phenomenonExists) {
+                            console.log("현상 있음: " + phenomenonText);
+                        }
+                    
+                        ['target', 'phenomenon'].forEach((type) => {
+                            var text = item[type];
+                            var textExists = text && content.includes(text);
+                            if (!textExists) return;
+                            var highlightedText = '<span style="background-color:' + item.category_color + '">' + text + '</span>';
+                            if (content.includes(highlightedText)) {
+                                content = content.replace(highlightedText, text);
                             }
-                            function delete_label(index) {
-                                var review_info_string = localStorage.getItem('review_info');
-                                var review_info = review_info_string ? JSON.parse(review_info_string) : {};   
-                                var labeling_data_list_string = localStorage.getItem('labeling_data_list');
-                                var labeling_data_list = labeling_data_list_string ? JSON.parse(labeling_data_list_string) : {};
-                            
-                                // 삭제하려는 auto_labeling 항목을 가져옵니다.
-                                var item = review_info.auto_labeling[index];
-                            
-                                review_info.auto_labeling.splice(index, 1);
-                                labeling_data_list.splice(index, 1);
-                                localStorage.setItem('review_info', JSON.stringify(review_info));
-                                localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
-                            
-                                // review_content에서 해당 부분의 색깔을 제거합니다.
-                                var div = document.getElementById('colorDiv' + index);
-                                div.style.backgroundColor = 'black';
-                            
-                                printData(review_info);
-                            }
+                        });
+                        reviewContent.innerHTML = content;
+                        
+                        
+                            // 이제 아이템을 삭제합니다.
+                            review_info.auto_labeling.splice(index, 1);
+                            labeling_data_list.splice(index, 1);
+                            localStorage.setItem('review_info', JSON.stringify(review_info));
+                            localStorage.setItem('labeling_data_list', JSON.stringify(labeling_data_list));
+                        
+                            // 화면을 갱신합니다.
+                            printData(review_info);
+                        }
                             </script>
                             
                         <p>
