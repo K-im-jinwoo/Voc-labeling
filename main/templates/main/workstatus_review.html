@@ -36,6 +36,7 @@
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     if (!localStorage.getItem('productDataInitialized')) {
+      localStorage.clear();
       let productData = JSON.parse(document.getElementById('productData').textContent);
       localStorage.setItem('productData', JSON.stringify(productData));
       localStorage.setItem('productDataInitialized', 'true');
