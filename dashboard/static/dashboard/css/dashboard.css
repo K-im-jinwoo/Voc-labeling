@@ -26,7 +26,7 @@ select {
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 272px;
+  width: 25%;
   height: 392px;
   padding: 10px;
   overflow: auto;
@@ -36,7 +36,7 @@ select {
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 448px;
+  width: 45%;
   height: 392px;
   margin-right: 10px;
 }
@@ -45,7 +45,7 @@ select {
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 360px;
+  width: 30%;
   height: 392px;
   overflow-y : auto;
 }
@@ -54,8 +54,7 @@ select {
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 1100px;
-  margin-right: 10px;
+  width: 100%;
 }
 .rank{
   background-color: white;
@@ -70,7 +69,7 @@ select {
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 730px;
+  width: 70%;
   height: 392px;
   margin-right: 10px;
 }
@@ -79,7 +78,7 @@ select {
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 360px;
+  width: 30%;
   height: 392px;
 }
 
@@ -117,6 +116,18 @@ border-radius: 10px;
 }
 .rawdata_text{
 margin-bottom: 10px;
+}
+.category_ratio_box{
+  width: 100%;
+  height: 93%;
+}
+#ratio_category{
+  height: 100%;
+  width: 100%;
+}
+.canvas-container{
+  width: 100%;
+  height: 100%;
 }
 
 .category_ratio_text{

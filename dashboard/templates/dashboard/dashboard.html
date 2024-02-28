@@ -557,14 +557,14 @@ src="https://www.gstatic.com/charts/loader.js"
     <div class="category_ratio">
       <h3 class="category_ratio_text fw-400 fs-base">카테고리별 긍정/부정</h3>
       <div class="category_ratio_box fs-small fw-400">
-        <canvas id="ratio_category" width="500px" height="230px"></canvas>
+        <canvas id="ratio_category"></canvas>
       </div>
     </div>
     <div class="ratio1">
       <h3 class="ratio1_text fw-400 fs-base">긍/부정 비율</h3>
       <div class="ratio1_box">
         <div class="canvas-container fs-small fw-400">
-          <canvas id="ratio" height="230px"></canvas>
+          <canvas id="ratio"></canvas>
         </div>
       </div>
     </div>
@@ -676,6 +676,8 @@ src="https://www.gstatic.com/charts/loader.js"
         }))
       },
       options: {
+        responsive:true,
+        maintainAspectRatio: false,
         scales: {
           x: {
             stacked: true
@@ -703,6 +705,7 @@ src="https://www.gstatic.com/charts/loader.js"
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: { display: false },
           y: { display: false }
